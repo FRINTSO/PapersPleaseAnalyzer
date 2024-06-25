@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "base/documents/passport.h"
 
+#include "base/booth.h"
 #include "base/image_process.h"
 #include "base/shape.h"
 
@@ -246,4 +247,9 @@ PassportData GetPassportData(const Passport& passport) {
 	auto passportNumber = GetFieldString(ExtractDocumentField(binaryPassport, passport.layoutProvider->GetPassportNumberBox()), DocumentType::Passport);
 
 	return PassportData{ name, dob, sex, iss, expirationDate, passportNumber, passport.type };
+}
+
+
+bool ValidatePassportData(const PassportData& data, const BoothData& boothData) {
+	return false;
 }

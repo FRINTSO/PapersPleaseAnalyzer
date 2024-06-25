@@ -6,7 +6,7 @@
 #include "base/color.h"
 #include "base/common.h"
 #include "base/documents/document.h"
-#include "base/layout.h"
+#include "base/documents/layout.h"
 
 
 namespace {
@@ -34,5 +34,6 @@ struct CertificateOfVaccinationData {
 
 CertificateOfVaccination FindCertificateOfVaccination(const cv::Mat& inspection);
 CertificateOfVaccinationData GetCertificateOfVaccinationData(CertificateOfVaccination& cov);
+bool ValidateCertificateOfVaccinationData(const CertificateOfVaccinationData& data);
 
 cv::Mat PreprocessCertificateOfVaccination(const CertificateOfVaccination& certificateOfVaccination);

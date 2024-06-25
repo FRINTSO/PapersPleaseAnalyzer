@@ -4,10 +4,11 @@
 
 #include <opencv2/opencv.hpp>
 
+#include "base/booth.h"
 #include "base/color.h"
 #include "base/common.h"
 #include "base/documents/document.h"
-#include "base/layout.h"
+#include "base/documents/layout.h"
 
 // Passports:
 // Antegria
@@ -67,5 +68,6 @@ struct PassportData {
 
 Passport FindPassport(const cv::Mat& inspection);
 PassportData GetPassportData(const Passport& passport);
+bool ValidatePassportData(const PassportData& data, const BoothData& boothData);
 
 cv::Mat PreprocessPassport(const Passport& passport);

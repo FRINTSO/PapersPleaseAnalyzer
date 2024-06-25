@@ -6,7 +6,7 @@
 #include "base/color.h"
 #include "base/common.h"
 #include "base/documents/document.h"
-#include "base/layout.h"
+#include "base/documents/layout.h"
 
 
 namespace {
@@ -34,5 +34,6 @@ struct IdentityCardData {
 
 IdentityCard FindIdentityCard(const cv::Mat& inspection);
 IdentityCardData GetIdentityCardData(const IdentityCard& identityCard);
+bool ValidateIdentityCardData(const IdentityCardData& data);
 
 cv::Mat PreprocessIdentityCard(const IdentityCard& identityCard);

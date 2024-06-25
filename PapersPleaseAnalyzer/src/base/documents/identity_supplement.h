@@ -6,7 +6,7 @@
 #include "base/color.h"
 #include "base/common.h"
 #include "base/documents/document.h"
-#include "base/layout.h"
+#include "base/documents/layout.h"
 
 
 namespace {
@@ -33,5 +33,7 @@ struct IdentitySupplementData {
 
 IdentitySupplement FindIdentitySupplement(const cv::Mat& inspection);
 IdentitySupplementData GetIdentitySupplementData(IdentitySupplement& idSupplement);
+bool ValidateIdentitySupplementData(const IdentitySupplementData& data);
+
 
 cv::Mat PreprocessIdentitySupplement(const IdentitySupplement& identitySupplement);

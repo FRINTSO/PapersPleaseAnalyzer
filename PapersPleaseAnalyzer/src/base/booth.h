@@ -3,8 +3,9 @@
 
 #include <opencv2/opencv.hpp>
 
+#include "base/documents/data.h"
 #include "base/documents/document.h"
-#include "base/layout.h"
+#include "base/documents/layout.h"
 
 class Booth : public Document<BoothLayout> {
 public:

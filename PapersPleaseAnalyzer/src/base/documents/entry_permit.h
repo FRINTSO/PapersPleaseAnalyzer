@@ -7,7 +7,7 @@
 #include "base/common.h"
 #include "base/documents/document.h"
 #include "base/documents/seal.h"
-#include "base/layout.h"
+#include "base/documents/layout.h"
 
 namespace {
 	constexpr RgbColor EntryPermitBorderColors[] = {
@@ -39,5 +39,7 @@ struct EntryPermitData {
 
 EntryPermit FindEntryPermit(const cv::Mat& inspection);
 EntryPermitData GetEntryPermitData(EntryPermit& entryPermit);
+bool ValidateEntryPermitData(const EntryPermitData& data);
+
 
 cv::Mat PreprocessEntryPermit(const EntryPermit& entryPermit);

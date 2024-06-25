@@ -6,7 +6,7 @@
 #include "base/color.h"
 #include "base/common.h"
 #include "base/documents/document.h"
-#include "base/layout.h"
+#include "base/documents/layout.h"
 
 
 namespace {
@@ -30,5 +30,6 @@ struct EntryTicketData {
 
 EntryTicket FindEntryTicket(const cv::Mat& inspection);
 EntryTicketData GetEntryTicketData(EntryTicket& entryTicket);
+bool ValidateEntryTicketData(const EntryTicketData& data);
 
 cv::Mat PreprocessEntryTicket(const EntryTicket& entryTicket);

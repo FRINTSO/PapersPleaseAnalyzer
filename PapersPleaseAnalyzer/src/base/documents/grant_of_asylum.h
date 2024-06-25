@@ -7,7 +7,7 @@
 #include "base/common.h"
 #include "base/documents/document.h"
 #include "base/documents/seal.h"
-#include "base/layout.h"
+#include "base/documents/layout.h"
 
 
 namespace {
@@ -42,5 +42,6 @@ struct GrantOfAsylumData {
 
 GrantOfAsylum FindGrantOfAsylum(const cv::Mat& inspection);
 GrantOfAsylumData GetGrantOfAsylumData(GrantOfAsylum& goa);
+bool ValidateGrantOfAsylumData(const GrantOfAsylumData& data);
 
 cv::Mat PreprocessGrantOfAsylum(const GrantOfAsylum& goa);

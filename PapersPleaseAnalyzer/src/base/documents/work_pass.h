@@ -8,7 +8,7 @@
 #include "base/common.h"
 #include "base/documents/document.h"
 #include "base/documents/seal.h"
-#include "base/layout.h"
+#include "base/documents/layout.h"
 
 namespace {
 	constexpr RgbColor WorkPassBorderColors[] = {
@@ -38,5 +38,6 @@ struct WorkPassData {
 
 WorkPass FindWorkPass(const cv::Mat& inspection);
 WorkPassData GetWorkPassData(WorkPass& workPass);
+bool ValidateWorkPassData(const WorkPassData& data);
 
 cv::Mat PreprocessWorkPass(const WorkPass& workPass);

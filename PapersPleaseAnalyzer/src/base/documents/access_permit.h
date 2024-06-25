@@ -5,7 +5,7 @@
 #include "base/common.h"
 #include "base/documents/document.h"
 #include "base/documents/seal.h"
-#include "base/layout.h"
+#include "base/documents/layout.h"
 
 namespace {
 	constexpr RgbColor AccessPermitBorderColors[] = {
@@ -41,5 +41,6 @@ struct AccessPermitData {
 
 AccessPermit FindAccessPermit(const cv::Mat& inspection);
 AccessPermitData GetAccessPermitData(AccessPermit& accessPermit);
+bool ValidateAccessPermitData(const AccessPermitData& data);
 
 cv::Mat PreprocessAccessPermit(const AccessPermit& accessPermit);

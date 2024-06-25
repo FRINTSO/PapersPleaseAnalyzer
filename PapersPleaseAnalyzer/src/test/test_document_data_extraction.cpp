@@ -20,6 +20,7 @@ void test_access_permit_data_extraction(const std::string& number) {
 	AccessPermit accessPermit = FindAccessPermit(game.inspection);
 	AccessPermitData accessPermitData = GetAccessPermitData(accessPermit);
 
+	std::cout << "AccessPermitData Data:\n";
 	std::cout << accessPermitData.name << "\n";
 	std::cout << accessPermitData.country << "\n";
 	std::cout << accessPermitData.passportNumber << "\n";
@@ -35,6 +36,7 @@ void test_booth_data_extraction(const std::string& number) {
 	GameView game = GetGameView(number);
 	BoothData boothData = GetBoothData(game.booth);
 
+	std::cout << "Booth Data Data:\n";
 	std::cout << boothData.date << "\n";
 	std::cout << boothData.counter << "\n";
 	std::cout << boothData.weight << "\n";
@@ -45,6 +47,7 @@ void test_certificate_of_vaccination_data_extraction(const std::string& number) 
 	CertificateOfVaccination cov = FindCertificateOfVaccination(game.inspection);
 	CertificateOfVaccinationData covData = GetCertificateOfVaccinationData(cov);
 
+	std::cout << "Certificate of Vaccination Data:\n";
 	std::cout << covData.name << "\n";
 	std::cout << covData.passportNumber << "\n";
 	std::cout << covData.vaccination1 << "\n";
@@ -57,6 +60,7 @@ void test_diplomatic_authorization_data_extraction(const std::string& number) {
 	DiplomaticAuthorization da = FindDiplomaticAuthorization(game.inspection);
 	DiplomaticAuthorizationData daData = GetDiplomaticAuthorizationData(da);
 
+	std::cout << "Diplomatic Authorization Data:\n";
 	std::cout << daData.name << "\n";
 	std::cout << daData.passportNumber << "\n";
 	std::cout << daData.issuingCountry << "\n";
@@ -69,6 +73,7 @@ void test_entry_permit_data_extraction(const std::string& number) {
 	EntryPermit entryPermit = FindEntryPermit(game.inspection);
 	EntryPermitData entryPermitData = GetEntryPermitData(entryPermit);
 
+	std::cout << "Entry Permit Data:\n";
 	std::cout << entryPermitData.name << "\n";
 	std::cout << entryPermitData.passportNumber << "\n";
 	std::cout << entryPermitData.purpose << "\n";
@@ -79,6 +84,7 @@ void test_entry_permit_data_extraction(const std::string& number) {
 void test_entry_ticket_data_extraction(const std::string& number) {
 	GameView game = GetGameView(number);
 
+	std::cout << "Entry Ticket Data:\n";
 	EntryTicket entryTicket = FindEntryTicket(game.inspection);
 	EntryTicketData entryTicketData = GetEntryTicketData(entryTicket);
 
@@ -90,6 +96,7 @@ void test_grant_of_asylum_data_extraction(const std::string& number) {
 	GrantOfAsylum goa = FindGrantOfAsylum(game.inspection);
 	GrantOfAsylumData goaData = GetGrantOfAsylumData(goa);
 
+	std::cout << "Grant of Asylum Data:\n";
 	std::cout << goaData.name << "\n";
 	std::cout << goaData.country << "\n";
 	std::cout << goaData.passportNumber << "\n";
@@ -105,6 +112,7 @@ void test_identity_card_data_extraction(const std::string& number) {
 	IdentityCard idCard = FindIdentityCard(game.inspection);
 	IdentityCardData idCardData = GetIdentityCardData(idCard);
 
+	std::cout << "Identity Card Data:\n";
 	std::cout << idCardData.district << "\n";
 	std::cout << idCardData.name << "\n";
 	std::cout << idCardData.dateOfBirth << "\n";
@@ -117,6 +125,7 @@ void test_identity_supplement_data_extraction(const std::string& number) {
 	IdentitySupplement idSupplement = FindIdentitySupplement(game.inspection);
 	IdentitySupplementData idSupplementData = GetIdentitySupplementData(idSupplement);
 
+	std::cout << "Identity Supplement Data:\n";
 	std::cout << idSupplementData.height << "\n";
 	std::cout << idSupplementData.weight << "\n";
 	std::cout << idSupplementData.description << "\n";
@@ -128,6 +137,7 @@ void test_passport_data_extraction(const std::string& number) {
 	Passport passport = FindPassport(game.inspection);
 	PassportData passportData = GetPassportData(passport);
 
+	std::cout << "Passport Data:\n";
 	std::cout << passportData.name << "\n";
 	std::cout << passportData.dateOfBirth << "\n";
 	std::cout << passportData.sex << "\n";
@@ -142,6 +152,7 @@ void test_work_pass_data_extraction(const std::string& number) {
 	WorkPass workPass = FindWorkPass(game.inspection);
 	WorkPassData workPassData = GetWorkPassData(workPass);
 
+	std::cout << "Work Pass Data:\n";
 	std::cout << workPassData.name << "\n";
 	std::cout << workPassData.field << "\n";
 	std::cout << workPassData.endDate << "\n";

@@ -7,7 +7,7 @@
 #include "base/common.h"
 #include "base/documents/document.h"
 #include "base/documents/seal.h"
-#include "base/layout.h"
+#include "base/documents/layout.h"
 
 
 namespace {
@@ -40,5 +40,6 @@ struct DiplomaticAuthorizationData {
 
 DiplomaticAuthorization FindDiplomaticAuthorization(const cv::Mat& inspection);
 DiplomaticAuthorizationData GetDiplomaticAuthorizationData(DiplomaticAuthorization& auth);
+bool ValidateDiplomaticAuthorizationData(const DiplomaticAuthorizationData& data);
 
 cv::Mat PreprocessDiplomaticAuthorization(const DiplomaticAuthorization& diplomaticAuthorization);

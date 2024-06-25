@@ -75,6 +75,12 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\base\screencap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\validation\document_validator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\documents\passport.h">
@@ -86,7 +92,7 @@
     <ClInclude Include="src\base\ocr\ocr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\base\layout.h">
+    <ClInclude Include="src\base\documents\layout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\base\shape.h">
@@ -156,6 +162,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\base\documents\bounding_box_finder.inc">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\screencap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\validation\profile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\validation\document_validator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\validation\booth_state.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\validation\rules.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\documents\data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
