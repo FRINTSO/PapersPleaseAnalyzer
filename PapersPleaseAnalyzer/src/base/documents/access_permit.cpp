@@ -1,10 +1,22 @@
 #include "pch.h"
 #include "base/documents/access_permit.h"
 
+#include "base/color.h"
+#include "base/common.h"
 #include "base/image_process.h"
 #include "base/shape.h"
 
 #include "base/documents/bounding_box_finder.inc"
+
+namespace {
+constexpr RgbColor AccessPermitBorderColors[] = {
+	{ 215, 233, 210 },
+	{ 176, 168, 173 },
+};
+}
+
+#define ACCESS_PERMIT_WIDTH DOWNSCALE(294)
+#define ACCESS_PERMIT_HEIGHT DOWNSCALE(392)
 
 AccessPermit FindAccessPermit(const cv::Mat& inspection) {
 	auto boundingBox = FindDocumentBoundingBox(inspection, AccessPermitBorderColors, 2);

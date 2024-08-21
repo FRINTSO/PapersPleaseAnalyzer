@@ -1,8 +1,25 @@
 #include "pch.h"
 #include "base/documents/passport.h"
 
+#include "base/color.h"
+#include "base/common.h"
 #include "base/image_process.h"
 #include "base/shape.h"
+
+// Border Colors
+namespace BorderColors {
+constexpr RgbColor Antegria{ 49, 77, 33 }; // 50 78 33
+constexpr RgbColor Arstotzka{ 59, 72, 59 }; // 60 72 59
+constexpr RgbColor Impor{ 102, 31, 9 }; //
+constexpr RgbColor Kolechia{ 85, 37, 63 }; // 83 35 64
+constexpr RgbColor Obristan{ 138, 12, 12 }; // 73 42 28
+constexpr RgbColor Republia{ 76, 42, 27 }; // 27 42 76
+constexpr RgbColor UnitedFederation{ 35, 30, 85 }; // 39 26 85
+}
+
+#define PASSPORT_WIDTH DOWNSCALE(260)
+#define PASSPORT_HEIGHT DOWNSCALE(324)
+
 
 static PassportType FindPassportTypeAndBoundingBox(const cv::Mat& inspection, Rectangle& outBoundingBox) {
 	PassportType type = PassportType::Invalid;

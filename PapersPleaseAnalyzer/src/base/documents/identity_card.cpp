@@ -1,10 +1,23 @@
 #include "pch.h"
 #include "base/documents/identity_card.h"
 
+#include "base/color.h"
+#include "base/common.h"
 #include "base/image_process.h"
 #include "base/shape.h"
 
 #include "base/documents/bounding_box_finder.inc"
+
+namespace {
+constexpr RgbColor IdentitiyCardBorderColors[] = {
+	{ 217, 189, 247 },
+	{ 178, 156, 204 },
+};
+}
+
+#define IDENTITY_CARD_WIDTH DOWNSCALE(252)
+#define IDENTITY_CARD_HEIGHT DOWNSCALE(142)
+
 
 IdentityCard FindIdentityCard(const cv::Mat& inspection) {
 	auto boundingBox = FindDocumentBoundingBox(inspection, IdentitiyCardBorderColors, 2);

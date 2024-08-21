@@ -1,10 +1,24 @@
 #include "pch.h"
 #include "base/documents/diplomatic_authorization.h"
 
+#include "base/color.h"
+#include "base/common.h"
 #include "base/image_process.h"
 #include "base/shape.h"
 
 #include "base/documents/bounding_box_finder.inc"
+
+namespace {
+constexpr RgbColor DiplomaticAuthorizationBorderColors[] = {
+	{ 238, 238, 251 },
+	{ 190, 202, 209 },
+	{ 154, 179, 168 },
+};
+}
+
+#define DIPLOMATIC_AUTHORIZATION_WIDTH DOWNSCALE(300)
+#define DIPLOMATIC_AUTHORIZATION_HEIGHT DOWNSCALE(400)
+
 
 DiplomaticAuthorization FindDiplomaticAuthorization(const cv::Mat& inspection) {
 	auto boundingBox = FindDocumentBoundingBox(inspection, DiplomaticAuthorizationBorderColors, 3);

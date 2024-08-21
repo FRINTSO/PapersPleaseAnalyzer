@@ -1,10 +1,22 @@
 #include "pch.h"
 #include "base/documents/certificate_of_vaccination.h"
 
+#include "base/color.h"
+#include "base/common.h"
 #include "base/image_process.h"
 #include "base/shape.h"
 
 #include "base/documents/bounding_box_finder.inc"
+
+namespace {
+constexpr RgbColor CertificateOfVaccinationBorderColors[] = {
+	{ 234, 223, 128 },
+	{ 177, 151, 97 },
+};
+}
+
+#define CERTIFICATE_OF_VACCINATION_WIDTH DOWNSCALE(270)
+#define CERTIFICATE_OF_VACCINATION_HEIGHT DOWNSCALE(312)
 
 CertificateOfVaccination FindCertificateOfVaccination(const cv::Mat& inspection) {
 	auto boundingBox = FindDocumentBoundingBox(inspection, CertificateOfVaccinationBorderColors, 2);

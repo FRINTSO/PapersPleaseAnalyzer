@@ -1,21 +1,9 @@
 #pragma once
 #include <string>
 
-#include "base/color.h"
-#include "base/common.h"
 #include "base/documents/document.h"
 #include "base/documents/seal.h"
 #include "base/layout.h"
-
-namespace {
-	constexpr RgbColor AccessPermitBorderColors[] = {
-		{ 215, 233, 210 },
-		{ 176, 168, 173 },
-	};
-}
-
-#define ACCESS_PERMIT_WIDTH DOWNSCALE(294)
-#define ACCESS_PERMIT_HEIGHT DOWNSCALE(392)
 
 class AccessPermit : public Document<AccessPermitLayout>, public ISealed {
 public:

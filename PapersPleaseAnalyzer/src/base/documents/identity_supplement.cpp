@@ -1,10 +1,23 @@
 #include "pch.h"
 #include "base/documents/identity_supplement.h"
 
+#include "base/color.h"
+#include "base/common.h"
 #include "base/image_process.h"
 #include "base/shape.h"
 
 #include "base/documents/bounding_box_finder.inc"
+
+namespace {
+constexpr RgbColor IdentitySupplementBorderColors[] = {
+	{ 232, 218, 199 },
+	{ 181, 167, 166 },
+};
+}
+
+#define IDENTITY_SUPPLEMENT_WIDTH DOWNSCALE(180)
+#define IDENTITY_SUPPLEMENT_HEIGHT DOWNSCALE(300)
+
 
 IdentitySupplement FindIdentitySupplement(const cv::Mat& inspection) {
 	auto boundingBox = FindDocumentBoundingBox(inspection, IdentitySupplementBorderColors, 2);

@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\base\analyzer\analyzer.cpp" />
     <ClCompile Include="src\base\booth.cpp" />
     <ClCompile Include="src\base\documents\access_permit.cpp" />
     <ClCompile Include="src\base\documents\certificate_of_vaccination.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="src\base\documents\identity_supplement.cpp" />
     <ClCompile Include="src\base\documents\seal.cpp" />
     <ClCompile Include="src\base\documents\work_pass.cpp" />
+    <ClCompile Include="src\base\game_view.cpp" />
     <ClCompile Include="src\base\screencap.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\base\ocr\font.cpp" />
@@ -174,6 +176,9 @@
     <ClCompile Include="src\test\test_hsv.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\base\analyzer\analyzer.h" />
+    <ClInclude Include="src\base\analyzer\context.h" />
+    <ClInclude Include="src\base\analyzer\profile.h" />
     <ClInclude Include="src\base\booth.h" />
     <ClInclude Include="src\base\color.h" />
     <ClInclude Include="src\base\common.h" />

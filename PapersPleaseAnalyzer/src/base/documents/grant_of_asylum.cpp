@@ -1,10 +1,23 @@
 #include "pch.h"
 #include "base/documents/grant_of_asylum.h"
 
+#include "base/color.h"
+#include "base/common.h"
 #include "base/shape.h"
 #include "base/image_process.h"
 
 #include "base/documents/bounding_box_finder.inc"
+
+namespace {
+constexpr RgbColor GrantOfAsylumBorderColors[] = {
+	{ 253, 222, 223 },
+	{ 180, 157, 175 },
+};
+}
+
+#define GRANT_OF_ASYLUM_WIDTH DOWNSCALE(320)
+#define GRANT_OF_ASYLUM_HEIGHT DOWNSCALE(374)
+
 
 GrantOfAsylum FindGrantOfAsylum(const cv::Mat& inspection) {
 	auto boundingBox = FindDocumentBoundingBox(inspection, GrantOfAsylumBorderColors, 2);

@@ -1,174 +1,61 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="src\base\booth.cpp" />
+    <ClCompile Include="src\base\documents\access_permit.cpp" />
+    <ClCompile Include="src\base\documents\certificate_of_vaccination.cpp" />
+    <ClCompile Include="src\base\documents\diplomatic_authorization.cpp" />
+    <ClCompile Include="src\base\documents\entry_permit.cpp" />
+    <ClCompile Include="src\base\documents\entry_ticket.cpp" />
+    <ClCompile Include="src\base\documents\grant_of_asylum.cpp" />
+    <ClCompile Include="src\base\documents\identity_card.cpp" />
+    <ClCompile Include="src\base\documents\identity_supplement.cpp" />
+    <ClCompile Include="src\base\documents\seal.cpp" />
+    <ClCompile Include="src\base\documents\work_pass.cpp" />
+    <ClCompile Include="src\base\screencap.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\base\ocr\font.cpp" />
+    <ClCompile Include="src\base\ocr\ocr.cpp" />
+    <ClCompile Include="src\base\documents\passport.cpp" />
+    <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\test\test_document_data_extraction.cpp" />
+    <ClCompile Include="src\test\test_document_preprocessing.cpp" />
+    <ClCompile Include="src\test\test_document_text_boxing.cpp" />
+    <ClCompile Include="src\test\test_hsv.cpp" />
+    <ClCompile Include="src\base\analyzer\analyzer.cpp" />
+    <ClCompile Include="src\base\game_view.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\passport.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\ocr\ocr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\identity_card.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\work_pass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\entry_permit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\ocr\font.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\seal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\booth.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\diplomatic_authorization.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\identity_supplement.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\certificate_of_vaccination.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\grant_of_asylum.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\access_permit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\entry_ticket.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\test\test_document_text_boxing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\test\test_hsv.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\test\test_document_data_extraction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\test\test_document_preprocessing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\base\documents\passport.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\color.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\ocr\ocr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\layout.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\shape.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\identity_card.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\document.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\work_pass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\entry_permit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\booth.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\seal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\ocr\font.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\image_process.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\diplomatic_authorization.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\identity_supplement.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\certificate_of_vaccination.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\grant_of_asylum.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\access_permit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\entry_ticket.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\game_view.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\test\test_document_text_boxing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\test\test_document_data_extraction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\test\test_hsv.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\test\test_document_preprocessing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\bounding_box_finder.inc">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-<<<<<<< Updated upstream
-=======
-    <ClInclude Include="src\base\screencap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\exceptions\not_implemented_exception.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\test\test_screencapture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
->>>>>>> Stashed changes
+    <ClInclude Include="src\base\booth.h" />
+    <ClInclude Include="src\base\color.h" />
+    <ClInclude Include="src\base\common.h" />
+    <ClInclude Include="src\base\documents\access_permit.h" />
+    <ClInclude Include="src\base\documents\bounding_box_finder.inc" />
+    <ClInclude Include="src\base\documents\certificate_of_vaccination.h" />
+    <ClInclude Include="src\base\documents\diplomatic_authorization.h" />
+    <ClInclude Include="src\base\documents\document.h" />
+    <ClInclude Include="src\base\documents\entry_permit.h" />
+    <ClInclude Include="src\base\documents\entry_ticket.h" />
+    <ClInclude Include="src\base\documents\grant_of_asylum.h" />
+    <ClInclude Include="src\base\documents\identity_card.h" />
+    <ClInclude Include="src\base\documents\identity_supplement.h" />
+    <ClInclude Include="src\base\documents\seal.h" />
+    <ClInclude Include="src\base\documents\work_pass.h" />
+    <ClInclude Include="src\base\game_view.h" />
+    <ClInclude Include="src\base\image_process.h" />
+    <ClInclude Include="src\base\ocr\font.h" />
+    <ClInclude Include="src\base\layout.h" />
+    <ClInclude Include="src\base\ocr\ocr.h" />
+    <ClInclude Include="src\base\documents\passport.h" />
+    <ClInclude Include="src\base\screencap.h" />
+    <ClInclude Include="src\base\shape.h" />
+    <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\test\test_document_data_extraction.h" />
+    <ClInclude Include="src\test\test_document_preprocessing.h" />
+    <ClInclude Include="src\test\test_document_text_boxing.h" />
+    <ClInclude Include="src\test\test_hsv.h" />
+    <ClInclude Include="src\base\analyzer\context.h" />
+    <ClInclude Include="src\base\analyzer\analyzer.h" />
+    <ClInclude Include="src\base\analyzer\profile.h" />
   </ItemGroup>
 </Project>

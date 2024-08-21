@@ -1,10 +1,22 @@
 #include "pch.h"
 #include "base/documents/entry_ticket.h"
 
+#include "base/color.h"
+#include "base/common.h"
 #include "base/image_process.h"
 #include "base/shape.h"
 
 #include "base/documents/bounding_box_finder.inc"
+
+namespace {
+constexpr RgbColor EntryTicketBorderColors[] = {
+	{ 224, 233, 199 },
+	{ 180, 169, 151 },
+};
+}
+
+#define ENTRY_TICKET_WIDTH DOWNSCALE(280)
+#define ENTRY_TICKET_HEIGHT DOWNSCALE(102)
 
 EntryTicket FindEntryTicket(const cv::Mat& inspection) {
 	auto boundingBox = FindDocumentBoundingBox(inspection, EntryTicketBorderColors, 2);

@@ -3,21 +3,10 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "base/color.h"
-#include "base/common.h"
 #include "base/documents/document.h"
 #include "base/layout.h"
 
 
-namespace {
-	constexpr RgbColor IdentitiyCardBorderColors[] = {
-		{ 217, 189, 247 },
-		{ 178, 156, 204 },
-	};
-}
-
-#define IDENTITY_CARD_WIDTH DOWNSCALE(252)
-#define IDENTITY_CARD_HEIGHT DOWNSCALE(142)
 
 class IdentityCard : public Document<IdentityCardLayout> {
 public:

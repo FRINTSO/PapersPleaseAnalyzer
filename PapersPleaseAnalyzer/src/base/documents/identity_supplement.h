@@ -3,21 +3,10 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "base/color.h"
-#include "base/common.h"
 #include "base/documents/document.h"
 #include "base/layout.h"
 
 
-namespace {
-	constexpr RgbColor IdentitySupplementBorderColors[] = {
-		{ 232, 218, 199 },
-		{ 181, 167, 166 },
-	};
-}
-
-#define IDENTITY_SUPPLEMENT_WIDTH DOWNSCALE(180)
-#define IDENTITY_SUPPLEMENT_HEIGHT DOWNSCALE(300)
 
 class IdentitySupplement : public Document<IdentitySupplementLayout> {
 public:

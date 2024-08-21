@@ -1,10 +1,22 @@
 #include "pch.h"
 #include "base/documents/entry_permit.h"
 
+#include "base/color.h"
+#include "base/common.h"
 #include "base/image_process.h"
 #include "base/shape.h"
 
 #include "base/documents/bounding_box_finder.inc"
+
+namespace {
+	constexpr RgbColor EntryPermitBorderColors[] = {
+		{ 224, 233, 199 },
+		{ 202, 201, 175 },
+	};
+}
+
+#define ENTRY_PERMIT_WIDTH DOWNSCALE(300)
+#define ENTRY_PERMIT_HEIGHT DOWNSCALE(402)
 
 EntryPermit FindEntryPermit(const cv::Mat& inspection) {
 	auto boundingBox = FindDocumentBoundingBox(inspection, EntryPermitBorderColors, 2);

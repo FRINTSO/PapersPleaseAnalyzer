@@ -3,22 +3,11 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "base/color.h"
-#include "base/common.h"
 #include "base/documents/document.h"
 #include "base/documents/seal.h"
 #include "base/layout.h"
 
 
-namespace {
-	constexpr RgbColor GrantOfAsylumBorderColors[] = {
-		{ 253, 222, 223 },
-		{ 180, 157, 175 },
-	};
-}
-
-#define GRANT_OF_ASYLUM_WIDTH DOWNSCALE(320)
-#define GRANT_OF_ASYLUM_HEIGHT DOWNSCALE(374)
 
 class GrantOfAsylum : public Document<GrantOfAsylumLayout>, public ISealed {
 public:

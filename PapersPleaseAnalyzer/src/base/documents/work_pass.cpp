@@ -3,10 +3,22 @@
 
 #include <array>
 
+#include "base/color.h"
+#include "base/common.h"
 #include "base/shape.h"
 #include "base/image_process.h"
 
 #include "base/documents/bounding_box_finder.inc"
+
+namespace {
+constexpr RgbColor WorkPassBorderColors[] = {
+	{ 233, 199, 211 },
+	{ 204, 175, 192 },
+};
+}
+
+#define WORK_PASS_WIDTH DOWNSCALE(294)
+#define WORK_PASS_HEIGHT DOWNSCALE(270)
 
 WorkPass FindWorkPass(const cv::Mat& inspection) {
 	auto boundingBox = FindDocumentBoundingBox(inspection, WorkPassBorderColors, 2);
