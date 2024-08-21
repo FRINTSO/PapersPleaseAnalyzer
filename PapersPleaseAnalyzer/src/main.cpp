@@ -12,7 +12,8 @@ int main()
 {
 	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
 
-	GameView view = GetGameView("7");
+	// GameView view = GetGameView("7");
+	GameView view = GetGameView("20");
 	Analyze(view);
 
 	/*
