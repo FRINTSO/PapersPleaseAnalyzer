@@ -41,7 +41,7 @@ static std::vector<Rectangle> ImageToBoxesMultiline(const cv::Mat& mat, const Fo
 		int bottom = -1;
 		for (int x = 0; x < mat.cols; x++) {
 			bool columnHasBlackPixel = false;
-			for (int y = lineTop; y < lineTop + fontInfo.size; y++) {
+			for (int y = lineTop; y < lineTop + fontInfo.size && y < mat.rows; y++) {
 				if (mat.at<uchar>(y, x)) continue;
 				// We found a black pixel
 				columnHasBlackPixel = true;
@@ -111,7 +111,7 @@ std::vector<Rectangle> ImageToBoxes(const cv::Mat& mat, const FontInfo& fontInfo
 }
 
 static int checksum_of_character(const cv::Mat& character) {
-	cv::Mat ch = (DownScale(character, 2.0f) & 1) ^ 1;
+	cv::Mat ch = (DownScaleImage(character, 2.0f) & 1) ^ 1;
 
 	if (ch.rows * ch.cols >= 32) {
 		std::cout << "\n";

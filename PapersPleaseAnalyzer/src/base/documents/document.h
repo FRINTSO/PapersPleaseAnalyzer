@@ -33,6 +33,3 @@ public:
 	//Document& operator=(const Document&) = delete;
 };
 
-inline cv::Mat ExtractDocumentField(const cv::Mat& document, const Rectangle& boundingBox) {
-	return document(cv::Rect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height));
-}

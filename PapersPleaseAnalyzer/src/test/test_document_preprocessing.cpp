@@ -14,6 +14,22 @@
 #include "base/documents/work_pass.h"
 #include "base/game_view.h"
 
+#include "base/documents_v2/doc_class.h"
+
+void test_document_preprocessing(const cv::Mat& image, Documents::V2::DocType docType) {
+	auto doc = Documents::V2::FindDocument(image, docType);
+	auto binary = doc.PreprocessDocument();
+	cv::imshow("Binary Document", binary);
+}
+
+void test_document_preprocessing(const std::string& number, Documents::V2::DocType docType) {
+	GameView game = GetGameView(number);
+
+	auto doc = Documents::V2::FindDocument(game.inspection, docType);
+	auto binary = doc.PreprocessDocument();
+	cv::imshow("Binary Document", binary);
+}
+
 void test_access_permit_preprocessing(const std::string& number) {
 	GameView game = GetGameView(number);
 

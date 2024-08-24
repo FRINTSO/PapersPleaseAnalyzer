@@ -6,7 +6,7 @@ static void on_trackbar(int, void*)
 
 }
 
-void test_hsv() {
+void test_hsv(const cv::Mat& image) {
 	int hueMin = 0;
 	int hueMax = 179;
 	int satMin = 0;
@@ -24,7 +24,7 @@ void test_hsv() {
 	cv::createTrackbar("Val Max", "TrackBars", &valMax, 255, on_trackbar);
 
 	while (true) {
-		auto image = cv::imread("c:/dev/PapersPleaseAnalyzer/PapersPleaseAnalyzer/images/game_47.png");
+		
 		cv::Mat imgHsv;
 		cv::cvtColor(image, imgHsv, cv::COLOR_BGR2HSV);
 

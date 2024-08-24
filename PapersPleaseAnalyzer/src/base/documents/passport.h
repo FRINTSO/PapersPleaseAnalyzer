@@ -16,6 +16,7 @@
 // Republia
 // United Federation
 
+
 enum class PassportType {
 	Invalid,
 	Antegria,
@@ -31,7 +32,7 @@ enum class PassportType {
 class Passport : public Document<PassportLayout> {
 public:
 	PassportType type;
-	
+
 	Passport(cv::Mat mat, PassportType type) : Document<PassportLayout>(mat, nullptr), type(type) {
 		layoutProvider = CreatePassportLayout(type);
 	}

@@ -35,6 +35,12 @@ Analysis Analyze(const GameView& gameView) {
 	WorkPass workPass = FindWorkPass(gameView.inspection);
 
 
+	
+	/*
+	
+	*/
+
+
 	cv::imshow("Inspection Area", gameView.inspection);
 	cv::imshow("Booth Area", gameView.booth.mat);
 

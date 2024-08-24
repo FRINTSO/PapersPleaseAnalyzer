@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 
+#include "base/documents_v2/doc_type.h"
+
 void test_access_permit_text_boxing(const std::string& number);
 void test_booth_text_boxing(const std::string& number);
 void test_certificate_of_vaccination_text_boxing(const std::string& number);
@@ -12,3 +14,5 @@ void test_identity_card_text_boxing(const std::string& number);
 void test_identity_supplement_text_boxing(const std::string& number);
 void test_passport_text_boxing(const std::string& number);
 void test_work_pass_text_boxing(const std::string& number);
+
+void test_document_text_boxing(const std::string& number, Documents::V2::DocType docType);

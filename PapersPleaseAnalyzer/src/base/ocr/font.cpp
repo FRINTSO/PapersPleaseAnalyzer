@@ -38,6 +38,36 @@ static Typeface GetTypefaceByDocumentType(DocumentType documentType) {
 	return Typeface::Invalid;
 }
 
+static Typeface GetTypefaceByDocumentType(Documents::V2::DocType documentType) {
+	switch (documentType)
+	{
+	case Documents::V2::DocType::Passport:
+		return Typeface::BM_Mini;
+	case Documents::V2::DocType::IdentityCard:
+		return Typeface::MiniKylie;
+	case Documents::V2::DocType::DiplomaticAuthorization:
+		return Typeface::BM_Mini;
+	case Documents::V2::DocType::EntryTicket:
+		return Typeface::BM_Mini;
+	case Documents::V2::DocType::EntryPermit:
+		return Typeface::BM_Mini;
+	case Documents::V2::DocType::AccessPermit:
+		return Typeface::BM_Mini;
+	case Documents::V2::DocType::WorkPass:
+		return Typeface::BM_Mini;
+	case Documents::V2::DocType::GrantOfAsylum:
+		return Typeface::BM_Mini;
+	case Documents::V2::DocType::IdentitySupplement:
+		return Typeface::BM_Mini;
+	case Documents::V2::DocType::CertificateOfVaccination:
+		return Typeface::BM_Mini;
+	default:
+		return Typeface::Invalid;
+	}
+
+	return Typeface::Invalid;
+}
+
 static const FontInfo& GetFontInfoByTypeface(Typeface typeface) {
 	switch (typeface)
 	{
@@ -55,6 +85,11 @@ static const FontInfo& GetFontInfoByTypeface(Typeface typeface) {
 }
 
 const FontInfo& GetFontInfo(DocumentType documentType) {
+	Typeface type = GetTypefaceByDocumentType(documentType);
+	return GetFontInfoByTypeface(type);
+}
+
+const FontInfo& GetFontInfo(Documents::V2::DocType documentType) {
 	Typeface type = GetTypefaceByDocumentType(documentType);
 	return GetFontInfoByTypeface(type);
 }

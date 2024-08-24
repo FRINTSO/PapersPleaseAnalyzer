@@ -14,9 +14,13 @@
 #include "base/documents/passport.h"
 #include "base/documents/work_pass.h"
 #include "base/game_view.h"
+#include "base/image_process.h"
 #include "base/ocr/font.h"
 #include "base/ocr/ocr.h"
 #include "base/shape.h"
+
+#include "base/documents_v2/doc_class.h"
+#include "base/documents_v2/doc_layout.h"
 
 static void display_document_info_boxing(const cv::Mat& document, DocumentType documentType, const Rectangle& boundingBox, std::string&& partName) {
 	auto passPart = ExtractDocumentField(document, boundingBox);
@@ -27,7 +31,39 @@ static void display_document_info_boxing(const cv::Mat& document, DocumentType d
 		cv::rectangle(passPart, cv::Rect(rect.x, rect.y, rect.width, rect.height), cv::Scalar(127));
 	}
 
-	cv::imshow(partName, DownScale(passPart, 0.25f));
+	cv::imshow(partName, DownScaleImage(passPart, 0.25f));
+}
+
+static void display_document_info_boxing(const cv::Mat& document, Documents::V2::DocType documentType, const Rectangle& boundingBox, std::string&& partName) {
+	auto passPart = ExtractDocumentField(document, boundingBox);
+
+	auto& fontInfo = GetFontInfo(documentType);
+	auto boxes = ImageToBoxes(passPart, fontInfo);
+
+	for (const auto& rect : boxes) {
+		cv::rectangle(passPart, cv::Rect(rect.x, rect.y, rect.width, rect.height), cv::Scalar(127));
+	}
+
+	cv::imshow(partName, DownScaleImage(passPart, 0.25f));
+}
+
+void test_document_text_boxing(const std::string& number, Documents::V2::DocType docType) {
+	GameView game = GetGameView(number);
+
+	using namespace Documents;
+
+	auto doc = V2::FindDocument(game.inspection, docType);
+	auto binary = doc.PreprocessDocument();
+
+	char name = 'a';
+	auto layouts = doc.GetLayout()->GetAllLayouts();
+	auto layoutCount = doc.GetLayout()->GetLayoutCount();
+	for (size_t i = 0; i < layoutCount; i++) {
+		if (layouts[i].GetType() == Documents::V2::DataFieldType::TextField) {
+			display_document_info_boxing(binary, docType, layouts[i].GetBox(), "" + name);
+			name += 1;
+		}
+	}
 }
 
 void test_access_permit_text_boxing(const std::string& number) {

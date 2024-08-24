@@ -39,5 +39,8 @@ inline Rectangle FindDocumentBoundingBox(const cv::Mat& inspection, const RgbCol
 		}
 	}
 
+	// Nothing was found
+	if (left == INT_MAX && top == INT_MAX && !right && !bottom) return Rectangle{};
+
 	return Rectangle{ left, top, right - left + 1, bottom - top + 1 };
 }

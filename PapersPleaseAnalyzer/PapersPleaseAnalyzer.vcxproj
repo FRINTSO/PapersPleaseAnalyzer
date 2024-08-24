@@ -111,7 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\opencv\build\include;$(SolutionDir)PapersPleaseAnalyzer/src</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/external:anglebrackets /external:W0 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -132,7 +132,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\opencv\build\include;$(SolutionDir)PapersPleaseAnalyzer/src</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/external:anglebrackets /external:W0 %(AdditionalOptions)</AdditionalOptions>
@@ -152,6 +152,8 @@
     <ClCompile Include="src\base\documents\access_permit.cpp" />
     <ClCompile Include="src\base\documents\certificate_of_vaccination.cpp" />
     <ClCompile Include="src\base\documents\diplomatic_authorization.cpp" />
+    <ClCompile Include="src\base\documents_v2\data\date.cpp" />
+    <ClCompile Include="src\base\documents_v2\doc_class.cpp" />
     <ClCompile Include="src\base\documents\entry_permit.cpp" />
     <ClCompile Include="src\base\documents\entry_ticket.cpp" />
     <ClCompile Include="src\base\documents\grant_of_asylum.cpp" />
@@ -159,6 +161,7 @@
     <ClCompile Include="src\base\documents\identity_supplement.cpp" />
     <ClCompile Include="src\base\documents\seal.cpp" />
     <ClCompile Include="src\base\documents\work_pass.cpp" />
+    <ClCompile Include="src\base\documents_v2\doc_layout.cpp" />
     <ClCompile Include="src\base\game_view.cpp" />
     <ClCompile Include="src\base\screencap.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -187,6 +190,8 @@
     <ClInclude Include="src\base\documents\certificate_of_vaccination.h" />
     <ClInclude Include="src\base\documents\diplomatic_authorization.h" />
     <ClInclude Include="src\base\documents\document.h" />
+    <ClInclude Include="src\base\documents_v2\data\date.h" />
+    <ClInclude Include="src\base\documents_v2\doc_class.h" />
     <ClInclude Include="src\base\documents\entry_permit.h" />
     <ClInclude Include="src\base\documents\entry_ticket.h" />
     <ClInclude Include="src\base\documents\grant_of_asylum.h" />
@@ -194,6 +199,10 @@
     <ClInclude Include="src\base\documents\identity_supplement.h" />
     <ClInclude Include="src\base\documents\seal.h" />
     <ClInclude Include="src\base\documents\work_pass.h" />
+    <ClInclude Include="src\base\documents_v2\doc_appearance.h" />
+    <ClInclude Include="src\base\documents_v2\doc_data.h" />
+    <ClInclude Include="src\base\documents_v2\doc_layout.h" />
+    <ClInclude Include="src\base\documents_v2\doc_type.h" />
     <ClInclude Include="src\base\game_view.h" />
     <ClInclude Include="src\base\image_process.h" />
     <ClInclude Include="src\base\ocr\font.h" />

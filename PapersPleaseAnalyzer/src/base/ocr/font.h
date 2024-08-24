@@ -1,6 +1,7 @@
 #pragma once
 
 #include "base/documents/document.h"
+#include "base/documents_v2/doc_type.h"
 
 // https://designmodo.com/letterform
 // Anatomy:
@@ -33,3 +34,4 @@ const struct FontInfo {
 };
 
 const FontInfo& GetFontInfo(DocumentType documentType);
+const FontInfo& GetFontInfo(Documents::V2::DocType documentType);
