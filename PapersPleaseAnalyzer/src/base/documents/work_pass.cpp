@@ -10,45 +10,53 @@
 
 #include "base/documents/bounding_box_finder.inc"
 
-namespace {
-constexpr RgbColor WorkPassBorderColors[] = {
-	{ 233, 199, 211 },
-	{ 204, 175, 192 },
-};
-}
+namespace Documents::V1 {
+
+	namespace {
+		constexpr RgbColor WorkPassBorderColors[] = {
+			{ 233, 199, 211 },
+			{ 204, 175, 192 },
+		};
+	}
 
 #define WORK_PASS_WIDTH DOWNSCALE(294)
 #define WORK_PASS_HEIGHT DOWNSCALE(270)
 
-WorkPass FindWorkPass(const cv::Mat& inspection) {
-	auto boundingBox = FindDocumentBoundingBox(inspection, WorkPassBorderColors, 2);
-	
-	cv::Mat canvas(cv::Size(WORK_PASS_WIDTH, WORK_PASS_HEIGHT), inspection.type(), CV_RGB(255, 255, 255));
-	//cv::Mat canvas = cv::Mat::zeros(cv::Size(WORK_PASS_WIDTH, WORK_PASS_HEIGHT), inspection.type());
+	WorkPass FindWorkPass(const cv::Mat& inspection)
+	{
+		auto boundingBox = FindDocumentBoundingBox(inspection, WorkPassBorderColors, 2);
 
-	if (boundingBox.width == WORK_PASS_WIDTH && boundingBox.height == WORK_PASS_HEIGHT) {
-		return WorkPass{ inspection(cv::Rect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height)) };
+		cv::Mat canvas(cv::Size(WORK_PASS_WIDTH, WORK_PASS_HEIGHT), inspection.type(), CV_RGB(255, 255, 255));
+		//cv::Mat canvas = cv::Mat::zeros(cv::Size(WORK_PASS_WIDTH, WORK_PASS_HEIGHT), inspection.type());
+
+		if (boundingBox.width == WORK_PASS_WIDTH && boundingBox.height == WORK_PASS_HEIGHT)
+		{
+			return WorkPass{ inspection(cv::Rect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height)) };
+		}
+
+		return WorkPass(cv::Mat{});
 	}
 
-	return WorkPass(cv::Mat{});
-}
+	cv::Mat PreprocessWorkPass(const WorkPass& workPass)
+	{
+		cv::Mat grayscale = ToGrayscale(workPass.mat);
 
-cv::Mat PreprocessWorkPass(const WorkPass& workPass) {
-	cv::Mat grayscale = ToGrayscale(workPass.mat);
+		cv::Mat thresh;
+		cv::threshold(grayscale, thresh, 127, 255, cv::THRESH_BINARY);
 
-	cv::Mat thresh;
-	cv::threshold(grayscale, thresh, 127, 255, cv::THRESH_BINARY);
+		return thresh;
+	}
 
-	return thresh;
-}
+	WorkPassData GetWorkPassData(WorkPass& workPass)
+	{
+		auto binaryWorkPass = PreprocessWorkPass(workPass);
 
-WorkPassData GetWorkPassData(WorkPass& workPass) {
-	auto binaryWorkPass = PreprocessWorkPass(workPass);
+		auto name = GetFieldString(ExtractDocumentField(binaryWorkPass, workPass.layoutProvider->GetNameBox()), DocumentType::WorkPass);
+		auto field = GetFieldString(ExtractDocumentField(binaryWorkPass, workPass.layoutProvider->GetFieldBox()), DocumentType::WorkPass);
+		auto endDate = GetFieldString(ExtractDocumentField(binaryWorkPass, workPass.layoutProvider->GetEndDateBox()), DocumentType::WorkPass);
+		auto hasValidSeal = workPass.HasValidSeal();
 
-	auto name = GetFieldString(ExtractDocumentField(binaryWorkPass, workPass.layoutProvider->GetNameBox()), DocumentType::WorkPass);
-	auto field = GetFieldString(ExtractDocumentField(binaryWorkPass, workPass.layoutProvider->GetFieldBox()), DocumentType::WorkPass);
-	auto endDate = GetFieldString(ExtractDocumentField(binaryWorkPass, workPass.layoutProvider->GetEndDateBox()), DocumentType::WorkPass);
-	auto hasValidSeal = workPass.HasValidSeal();
+		return WorkPassData{ name, field, endDate, hasValidSeal };
+	}
 
-	return WorkPassData{ name, field, endDate, hasValidSeal };
 }

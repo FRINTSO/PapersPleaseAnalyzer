@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include <iostream>
 
+namespace Documents::Data {
+
 class Date {
 public:
 	Date();
@@ -34,3 +36,5 @@ bool operator <=(const Date&, const Date&);
 bool operator >=(const Date&, const Date&);
 
 std::ostream& operator << (std::ostream& os, const Date& d); // output operator
+
+}

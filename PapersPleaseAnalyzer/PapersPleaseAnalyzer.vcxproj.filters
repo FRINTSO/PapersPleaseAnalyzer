@@ -18,15 +18,14 @@
     <ClCompile Include="src\base\ocr\ocr.cpp" />
     <ClCompile Include="src\base\documents\passport.cpp" />
     <ClCompile Include="src\pch.cpp" />
-    <ClCompile Include="src\test\test_document_data_extraction.cpp" />
-    <ClCompile Include="src\test\test_document_preprocessing.cpp" />
-    <ClCompile Include="src\test\test_document_text_boxing.cpp" />
-    <ClCompile Include="src\test\test_hsv.cpp" />
+    <ClCompile Include="src\test\documents\test_document_data_extraction.cpp" />
+    <ClCompile Include="src\test\documents\test_document_preprocessing.cpp" />
+    <ClCompile Include="src\test\documents\test_document_boxing.cpp" />
+    <ClCompile Include="src\test\documents\test_hsv.cpp" />
     <ClCompile Include="src\base\analyzer\analyzer.cpp" />
     <ClCompile Include="src\base\game_view.cpp" />
     <ClCompile Include="src\base\documents_v2\doc_class.cpp" />
-    <ClCompile Include="src\base\documents_v2\data\date.cpp" />
-    <ClCompile Include="src\base\documents_v2\doc_layout.cpp" />
+    <ClCompile Include="src\base\document_data\date.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\booth.h" />
@@ -47,16 +46,16 @@
     <ClInclude Include="src\base\game_view.h" />
     <ClInclude Include="src\base\image_process.h" />
     <ClInclude Include="src\base\ocr\font.h" />
-    <ClInclude Include="src\base\layout.h" />
+    <ClInclude Include="src\base\documents\layout.h" />
     <ClInclude Include="src\base\ocr\ocr.h" />
     <ClInclude Include="src\base\documents\passport.h" />
     <ClInclude Include="src\base\screencap.h" />
     <ClInclude Include="src\base\shape.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\test\test_document_data_extraction.h" />
-    <ClInclude Include="src\test\test_document_preprocessing.h" />
-    <ClInclude Include="src\test\test_document_text_boxing.h" />
-    <ClInclude Include="src\test\test_hsv.h" />
+    <ClInclude Include="src\test\documents\test_document_data_extraction.h" />
+    <ClInclude Include="src\test\documents\test_document_preprocessing.h" />
+    <ClInclude Include="src\test\documents\test_document_boxing.h" />
+    <ClInclude Include="src\test\documents\test_hsv.h" />
     <ClInclude Include="src\base\analyzer\context.h" />
     <ClInclude Include="src\base\analyzer\analyzer.h" />
     <ClInclude Include="src\base\analyzer\profile.h" />
@@ -64,7 +63,11 @@
     <ClInclude Include="src\base\documents_v2\doc_appearance.h" />
     <ClInclude Include="src\base\documents_v2\doc_type.h" />
     <ClInclude Include="src\base\documents_v2\doc_data.h" />
-    <ClInclude Include="src\base\documents_v2\data\date.h" />
+    <ClInclude Include="src\base\document_data\date.h" />
     <ClInclude Include="src\base\documents_v2\doc_layout.h" />
+    <ClInclude Include="src\base\documents_v2\doc_appearance.inl.h" />
+    <ClInclude Include="src\base\documents_v2\doc_layout.inl.h" />
+    <ClInclude Include="src\base\document_data\field_data.h" />
+    <ClInclude Include="src\base\documents_v2\data\arstotzka_data.h" />
   </ItemGroup>
 </Project>

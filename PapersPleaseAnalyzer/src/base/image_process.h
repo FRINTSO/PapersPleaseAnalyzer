@@ -16,7 +16,15 @@ inline cv::Mat ToGrayscale(const cv::Mat& mat) {
 	return grayscale;
 }
 
-inline std::string GetFieldString(const cv::Mat& field, DocumentType documentType) {
+
+inline cv::Mat ScaleImage(const cv::Mat& in, float scale)
+{
+	cv::Mat result;
+	cv::resize(in, result, cv::Size((int)((float)in.cols / (1.0f / scale)), (int)((float)in.rows / (1.0f / scale))), 0, 0, cv::INTER_NEAREST);
+	return result;
+}
+
+inline std::string GetFieldString(const cv::Mat& field, Documents::V1::DocumentType documentType) {
 	const FontInfo fontInfo = GetFontInfo(documentType);
 	return ImageToString(field, fontInfo);
 }

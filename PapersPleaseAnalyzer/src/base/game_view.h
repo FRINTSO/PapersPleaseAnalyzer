@@ -8,7 +8,7 @@
 struct GameView {
 	GameView(const std::string& filename);
 
-	Booth booth;
+	Documents::V1::Booth booth;
 	cv::Mat inspection;
 };
 

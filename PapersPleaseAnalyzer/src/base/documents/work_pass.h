@@ -6,26 +6,32 @@
 
 #include "base/documents/document.h"
 #include "base/documents/seal.h"
-#include "base/layout.h"
+#include "base/documents/layout.h"
 
+namespace Documents::V1 {
 
-class WorkPass : public Document<WorkPassLayout>, public ISealed {
-public:
-	using Document<WorkPassLayout>::Document;
+	class WorkPass : public Document<WorkPassLayout>, public ISealed
+	{
+	public:
+		using Document<WorkPassLayout>::Document;
 
-	bool HasValidSeal() override {
-		return IsDocumentValidlySealed(mat, DocumentType::WorkPass);
-	}
-};
+		bool HasValidSeal() override
+		{
+			return IsDocumentValidlySealed(mat, DocumentType::WorkPass);
+		}
+	};
 
-struct WorkPassData {
-	std::string name;
-	std::string field;
-	std::string endDate;
-	bool		hasValidSeal;
-};
+	struct WorkPassData
+	{
+		std::string name;
+		std::string field;
+		std::string endDate;
+		bool		hasValidSeal;
+	};
 
-WorkPass FindWorkPass(const cv::Mat& inspection);
-WorkPassData GetWorkPassData(WorkPass& workPass);
+	WorkPass FindWorkPass(const cv::Mat& inspection);
+	WorkPassData GetWorkPassData(WorkPass& workPass);
 
-cv::Mat PreprocessWorkPass(const WorkPass& workPass);
+	cv::Mat PreprocessWorkPass(const WorkPass& workPass);
+
+}

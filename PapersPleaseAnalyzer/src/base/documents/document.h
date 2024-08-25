@@ -6,30 +6,35 @@
 
 #include "base/shape.h"
 
-enum class DocumentType {
-	AccessPermit,
-	Booth,
-	CertificateOfVaccination,
-	DiplomaticAuthorization,
-	EntryPermit,
-	EntryTicket,
-	GrantOfAsylum,
-	IdentityCard,
-	IdentitySupplement,
-	Passport,
-	WorkPass,
-};
+namespace Documents::V1 {
 
-template<typename Layout>
-class Document {
-public:
-	cv::Mat mat;
-	std::unique_ptr<Layout> layoutProvider;
+	enum class DocumentType
+	{
+		AccessPermit,
+		Booth,
+		CertificateOfVaccination,
+		DiplomaticAuthorization,
+		EntryPermit,
+		EntryTicket,
+		GrantOfAsylum,
+		IdentityCard,
+		IdentitySupplement,
+		Passport,
+		WorkPass,
+	};
 
-	Document(cv::Mat mat) : mat(mat), layoutProvider(std::make_unique<Layout>()) {}
-	Document(cv::Mat mat, std::unique_ptr<Layout> provider) : mat(mat), layoutProvider(std::move(provider)) {}
+	template<typename Layout>
+	class Document
+	{
+	public:
+		cv::Mat mat;
+		std::unique_ptr<Layout> layoutProvider;
 
-	//Document(const Document&) = delete;
-	//Document& operator=(const Document&) = delete;
-};
+		Document(cv::Mat mat) : mat(mat), layoutProvider(std::make_unique<Layout>()) { }
+		Document(cv::Mat mat, std::unique_ptr<Layout> provider) : mat(mat), layoutProvider(std::move(provider)) { }
 
+		//Document(const Document&) = delete;
+		//Document& operator=(const Document&) = delete;
+	};
+
+}

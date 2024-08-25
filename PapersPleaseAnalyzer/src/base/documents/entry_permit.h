@@ -5,28 +5,34 @@
 
 #include "base/documents/document.h"
 #include "base/documents/seal.h"
-#include "base/layout.h"
+#include "base/documents/layout.h"
 
+namespace Documents::V1 {
 
-class EntryPermit : public Document<EntryPermitLayout>, public ISealed {
-public:
-	using Document<EntryPermitLayout>::Document;
+	class EntryPermit : public Document<EntryPermitLayout>, public ISealed
+	{
+	public:
+		using Document<EntryPermitLayout>::Document;
 
-	bool HasValidSeal() override {
-		return IsDocumentValidlySealed(mat, DocumentType::EntryPermit);
-	}
-};
+		bool HasValidSeal() override
+		{
+			return IsDocumentValidlySealed(mat, DocumentType::EntryPermit);
+		}
+	};
 
-struct EntryPermitData {
-	std::string name;
-	std::string passportNumber;
-	std::string purpose;
-	std::string duration;
-	std::string expirationDate;
-	bool		hasValidSeal;
-};
+	struct EntryPermitData
+	{
+		std::string name;
+		std::string passportNumber;
+		std::string purpose;
+		std::string duration;
+		std::string expirationDate;
+		bool		hasValidSeal;
+	};
 
-EntryPermit FindEntryPermit(const cv::Mat& inspection);
-EntryPermitData GetEntryPermitData(EntryPermit& entryPermit);
+	EntryPermit FindEntryPermit(const cv::Mat& inspection);
+	EntryPermitData GetEntryPermitData(EntryPermit& entryPermit);
 
-cv::Mat PreprocessEntryPermit(const EntryPermit& entryPermit);
+	cv::Mat PreprocessEntryPermit(const EntryPermit& entryPermit);
+
+}

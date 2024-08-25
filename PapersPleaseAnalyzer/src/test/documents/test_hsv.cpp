@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "test/test_hsv.h"
+#include "test/documents/test_hsv.h"
 
 static void on_trackbar(int, void*)
 {

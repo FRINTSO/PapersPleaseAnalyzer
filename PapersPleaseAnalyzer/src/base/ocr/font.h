@@ -22,16 +22,19 @@
 // 15. X-height
 
 enum class Typeface {
-	Invalid,
+	Invalid = 0,
 	BM_Mini,
 	MiniKylie,
 	BoothNumber
 };
 
-const struct FontInfo {
-	Typeface typeface;
-	int size;
+struct FontInfo {
+	const Typeface typeface;
+	const int size;
+
+	const int letterSpacing;
+	const int whitespaceSize;
 };
 
-const FontInfo& GetFontInfo(DocumentType documentType);
+const FontInfo& GetFontInfo(Documents::V1::DocumentType documentType);
 const FontInfo& GetFontInfo(Documents::V2::DocType documentType);

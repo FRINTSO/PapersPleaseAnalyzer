@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "base/ocr/ocr.h"
 
-#include "base/common.h"
+#include "base/image_process.h"
 
 
 static int FindTopLine(const cv::Mat& mat) {
@@ -73,13 +73,16 @@ std::vector<Rectangle> ImageToBoxes(const cv::Mat& mat, const FontInfo& fontInfo
 	// We'll assume that text is black, meaning has a pixel value of 0
 	// Find top left most black pixel
 	// Find complete bounding box of that
+	
+	// Add max whitespace after last character as a cut-off?
 
 	if (mat.rows / fontInfo.size > 1) {
 		return ImageToBoxesMultiline(mat, fontInfo);
 	}
 
 	std::vector<Rectangle> boxes{};
-
+#define USE_OLD_VERSION 0
+#if USE_OLD_VERSION
 	int left = -1;
 	int top = -1;
 	int width = -1;
@@ -106,12 +109,54 @@ std::vector<Rectangle> ImageToBoxes(const cv::Mat& mat, const FontInfo& fontInfo
 			bottom = -1;
 		}
 	}
+#else
+
+	int lastBoxX = INT_MAX;
+	const int whitespaceSize = fontInfo.whitespaceSize; // depends on font
+	constexpr int maxAllowedWhitespace = 4;
+	const int maxStepsFromLastCharacter = whitespaceSize * maxAllowedWhitespace;
+
+	int left = -1;
+	int top = -1;
+	int width = -1;
+	int bottom = -1;
+	for (int x = 0; x < mat.cols; x++)
+	{
+		// check last character x position, if it's greater than max, cut scanner short
+		if (x - lastBoxX > maxStepsFromLastCharacter) break;
+
+		bool columnHasBlackPixel = false;
+		for (int y = 0; y < mat.rows; y++)
+		{
+			if (mat.at<uchar>(y, x)) continue;
+			// We found a black pixel
+			columnHasBlackPixel = true;
+			if (left == -1) left = x;
+			if (top == -1 || y < top) top = y;
+
+			if (y > bottom && y < top + fontInfo.size) bottom = y;
+		}
+
+		if (!columnHasBlackPixel && left != -1 && top != -1)
+		{
+			lastBoxX = x;
+
+			width = x - left;
+			boxes.emplace_back(Rectangle{ left, top, width, bottom - top + 1 });
+			left = -1;
+			top = -1;
+			width = -1;
+			bottom = -1;
+		}
+	}
+#endif
+#undef USE_OLD_VERSION
 	
 	return boxes;
 }
 
-static int checksum_of_character(const cv::Mat& character) {
-	cv::Mat ch = (DownScaleImage(character, 2.0f) & 1) ^ 1;
+static inline int checksum_of_character(const cv::Mat& character) {
+	cv::Mat ch = (ScaleImage(character, 1 / 2.0f) & 1) ^ 1;
 
 	if (ch.rows * ch.cols >= 32) {
 		std::cout << "\n";
@@ -131,7 +176,7 @@ static int checksum_of_character(const cv::Mat& character) {
 	return num;
 }
 
-static std::string GetPathByFontInfo(const FontInfo& fontInfo) {
+static constexpr std::string GetPathByFontInfo(const FontInfo& fontInfo) {
 	switch (fontInfo.typeface)
 	{
 	case Typeface::Invalid:
@@ -150,9 +195,9 @@ static std::string GetPathByFontInfo(const FontInfo& fontInfo) {
 }
 
 static std::unordered_map<int, char> load_all_chars(const FontInfo& fontInfo) {
-	std::string path = GetPathByFontInfo(fontInfo);
-
 	std::unordered_map<int, char> chars{};
+	std::string path = GetPathByFontInfo(fontInfo);
+#if 0
 	for (const auto& entry : std::filesystem::directory_iterator(path)) {
 		if (entry.is_directory()) {
 			for (const auto& entry1 : std::filesystem::directory_iterator(entry.path())) {
@@ -169,6 +214,19 @@ static std::unordered_map<int, char> load_all_chars(const FontInfo& fontInfo) {
 			chars[sum] = entry.path().filename().string()[0];
 		}
 	}
+#else
+	for (const auto& entry : std::filesystem::recursive_directory_iterator(path))
+	{
+		if (!entry.is_regular_file())
+		{
+			continue;
+		}
+
+		auto character = cv::imread(entry.path().string(), cv::IMREAD_UNCHANGED);
+		int checksum = checksum_of_character(character);
+		chars[checksum] = entry.path().filename().string()[0];
+	}
+#endif
 	return chars;
 }
 

@@ -23,16 +23,16 @@ Analysis Analyze(const GameView& gameView) {
 	// Add Document in comparision que, and compare same fields of all documents against each other
 
 
-	AccessPermit accessPermit = FindAccessPermit(gameView.inspection);
-	CertificateOfVaccination cov = FindCertificateOfVaccination(gameView.inspection);
-	DiplomaticAuthorization da = FindDiplomaticAuthorization(gameView.inspection);
-	EntryPermit entryPermit = FindEntryPermit(gameView.inspection);
-	EntryTicket entryTicket = FindEntryTicket(gameView.inspection);
-	GrantOfAsylum goa = FindGrantOfAsylum(gameView.inspection);
-	IdentityCard idCard = FindIdentityCard(gameView.inspection);
-	IdentitySupplement idSupplement = FindIdentitySupplement(gameView.inspection);
-	Passport passport = FindPassport(gameView.inspection);
-	WorkPass workPass = FindWorkPass(gameView.inspection);
+	Documents::V1::AccessPermit accessPermit = Documents::V1::FindAccessPermit(gameView.inspection);
+	Documents::V1::CertificateOfVaccination cov = Documents::V1::FindCertificateOfVaccination(gameView.inspection);
+	Documents::V1::DiplomaticAuthorization da = Documents::V1::FindDiplomaticAuthorization(gameView.inspection);
+	Documents::V1::EntryPermit entryPermit = Documents::V1::FindEntryPermit(gameView.inspection);
+	Documents::V1::EntryTicket entryTicket = Documents::V1::FindEntryTicket(gameView.inspection);
+	Documents::V1::GrantOfAsylum goa = Documents::V1::FindGrantOfAsylum(gameView.inspection);
+	Documents::V1::IdentityCard idCard = Documents::V1::FindIdentityCard(gameView.inspection);
+	Documents::V1::IdentitySupplement idSupplement = Documents::V1::FindIdentitySupplement(gameView.inspection);
+	Documents::V1::Passport passport = Documents::V1::FindPassport(gameView.inspection);
+	Documents::V1::WorkPass workPass = Documents::V1::FindWorkPass(gameView.inspection);
 
 
 	

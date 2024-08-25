@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
-#include "base/documents_v2/data/Date.h"
+#include "base/document_data/Date.h"
+
+namespace Documents::Data {
 
 ///////////////////////////// construction //////////
 Date::Date(const int& d, const int& m, const int& y) {
@@ -92,12 +94,12 @@ inline Date NextDate(const Date& d) {
 inline Date PreviousDate(const Date& d) {
 	Date ndat;
 	if (!d.IsValid()) { return ndat; }; // return zero
-	ndat = Date((d.GetDay()-1), d.GetMonth(), d.GetYear()); if (ndat.IsValid()) return ndat;
-	ndat = Date(31, (d.GetMonth()-1), d.GetYear()); if (ndat.IsValid()) return ndat;
-	ndat = Date(30, (d.GetMonth()-1), d.GetYear()); if (ndat.IsValid()) return ndat;
-	ndat = Date(29, (d.GetMonth()-1), d.GetYear()); if (ndat.IsValid()) return ndat;
-	ndat = Date(28, (d.GetMonth()-1), d.GetYear()); if (ndat.IsValid()) return ndat;
-	ndat = Date(31, 12, (d.GetYear()-1)); return ndat;
+	ndat = Date((d.GetDay() - 1), d.GetMonth(), d.GetYear()); if (ndat.IsValid()) return ndat;
+	ndat = Date(31, (d.GetMonth() - 1), d.GetYear()); if (ndat.IsValid()) return ndat;
+	ndat = Date(30, (d.GetMonth() - 1), d.GetYear()); if (ndat.IsValid()) return ndat;
+	ndat = Date(29, (d.GetMonth() - 1), d.GetYear()); if (ndat.IsValid()) return ndat;
+	ndat = Date(28, (d.GetMonth() - 1), d.GetYear()); if (ndat.IsValid()) return ndat;
+	ndat = Date(31, 12, (d.GetYear() - 1)); return ndat;
 };
 Date Date::operator ++(int) { // postfix operator
 	Date d = *this;
@@ -125,4 +127,6 @@ std::ostream& operator << (std::ostream& os, const Date& d) {
 	if (d.IsValid()) { os << " " << LongDate(d) << " "; }
 	else { os << " inIsValid Date "; };
 	return os;
+}
+
 }

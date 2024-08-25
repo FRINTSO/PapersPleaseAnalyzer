@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
-#include "base/documents_v2/data/date.h"
+#include "base/document_data/date.h"
+#include "base/document_data/field_data.h"
 
 // A profile on the current applicant
 
@@ -17,28 +18,6 @@ struct {
 	// 
 	// 
 	//
-};
-
-struct Name {
-	std::string firstName;
-	std::string lastName;
-};
-
-enum class Country {
-	Invalid = 0,
-	Antegria,
-	Arstotzka,
-	Impor,
-	Kolechia,
-	Obristan,
-	Republia,
-	UnitedFederation,
-};
-
-enum class Sex {
-	Invalid = 0,
-	Male,
-	Female,
 };
 
 

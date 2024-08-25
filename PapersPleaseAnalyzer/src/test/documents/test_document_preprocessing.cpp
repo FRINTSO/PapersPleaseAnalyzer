@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "test/test_document_preprocessing.h"
+#include "test/documents/test_document_preprocessing.h"
 
 #include "base/booth.h"
 #include "base/documents/access_permit.h"
@@ -15,6 +15,8 @@
 #include "base/game_view.h"
 
 #include "base/documents_v2/doc_class.h"
+
+using namespace Documents::V1;
 
 void test_document_preprocessing(const cv::Mat& image, Documents::V2::DocType docType) {
 	auto doc = Documents::V2::FindDocument(image, docType);

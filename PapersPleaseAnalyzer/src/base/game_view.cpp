@@ -13,7 +13,7 @@ GameView::GameView(const std::string& filename) {
 		cv::Mat boothMat = gameView(cv::Rect(1, 237, 356, 434));
 		inspection = gameView(cv::Rect(357, 237, 784, 434));
 #endif
-		booth = Booth{ boothMat };
+		booth = Documents::V1::Booth{ boothMat };
 }
 
 GameView GetGameView(const std::string& number) {

@@ -1,35 +1,35 @@
 #include "pch.h"
 #include "base/ocr/font.h"
 
-static const FontInfo g_Invalid{ Typeface::Invalid, 0 };
-static const FontInfo g_BM_MiniInfo{ Typeface::BM_Mini, 16 };
-static const FontInfo g_MiniKylie{ Typeface::MiniKylie, 12 };
-static const FontInfo g_BoothNumber{ Typeface::BoothNumber, 12 };
+static constinit FontInfo g_Invalid{ Typeface::Invalid, 0, -1, -1 };
+static constinit FontInfo g_BM_MiniInfo{ Typeface::BM_Mini, 16, 2, 4 };
+static constinit FontInfo g_MiniKylie{ Typeface::MiniKylie, 12, -1, -1 };
+static constinit FontInfo g_BoothNumber{ Typeface::BoothNumber, 12, -1, -1 };
 
-static Typeface GetTypefaceByDocumentType(DocumentType documentType) {
+static constexpr Typeface GetTypefaceByDocumentType(Documents::V1::DocumentType documentType) {
 	switch (documentType)
 	{
-	case DocumentType::Passport:
+	case Documents::V1::DocumentType::Passport:
 		return Typeface::BM_Mini;
-	case DocumentType::IdentityCard:
+	case Documents::V1::DocumentType::IdentityCard:
 		return Typeface::MiniKylie;
-	case DocumentType::DiplomaticAuthorization:
+	case Documents::V1::DocumentType::DiplomaticAuthorization:
 		return Typeface::BM_Mini;
-	case DocumentType::EntryTicket:
+	case Documents::V1::DocumentType::EntryTicket:
 		return Typeface::BM_Mini;
-	case DocumentType::EntryPermit:
+	case Documents::V1::DocumentType::EntryPermit:
 		return Typeface::BM_Mini;
-	case DocumentType::AccessPermit:
+	case Documents::V1::DocumentType::AccessPermit:
 		return Typeface::BM_Mini;
-	case DocumentType::WorkPass:
+	case Documents::V1::DocumentType::WorkPass:
 		return Typeface::BM_Mini;
-	case DocumentType::GrantOfAsylum:
+	case Documents::V1::DocumentType::GrantOfAsylum:
 		return Typeface::BM_Mini;
-	case DocumentType::IdentitySupplement:
+	case Documents::V1::DocumentType::IdentitySupplement:
 		return Typeface::BM_Mini;
-	case DocumentType::CertificateOfVaccination:
+	case Documents::V1::DocumentType::CertificateOfVaccination:
 		return Typeface::BM_Mini;
-	case DocumentType::Booth:
+	case Documents::V1::DocumentType::Booth:
 		return Typeface::BoothNumber;
 	default:
 		return Typeface::Invalid;
@@ -38,7 +38,7 @@ static Typeface GetTypefaceByDocumentType(DocumentType documentType) {
 	return Typeface::Invalid;
 }
 
-static Typeface GetTypefaceByDocumentType(Documents::V2::DocType documentType) {
+static constexpr Typeface GetTypefaceByDocumentType(const Documents::V2::DocType documentType) { // I think TypeFace should be in DocAppearance
 	switch (documentType)
 	{
 	case Documents::V2::DocType::Passport:
@@ -68,7 +68,7 @@ static Typeface GetTypefaceByDocumentType(Documents::V2::DocType documentType) {
 	return Typeface::Invalid;
 }
 
-static const FontInfo& GetFontInfoByTypeface(Typeface typeface) {
+static constexpr const FontInfo& GetFontInfoByTypeface(Typeface typeface) {
 	switch (typeface)
 	{
 	case Typeface::Invalid:
@@ -84,12 +84,12 @@ static const FontInfo& GetFontInfoByTypeface(Typeface typeface) {
 	}
 }
 
-const FontInfo& GetFontInfo(DocumentType documentType) {
+const FontInfo& GetFontInfo(const Documents::V1::DocumentType documentType) {
 	Typeface type = GetTypefaceByDocumentType(documentType);
 	return GetFontInfoByTypeface(type);
 }
 
-const FontInfo& GetFontInfo(Documents::V2::DocType documentType) {
+const FontInfo& GetFontInfo(const Documents::V2::DocType documentType) {
 	Typeface type = GetTypefaceByDocumentType(documentType);
 	return GetFontInfoByTypeface(type);
 }

@@ -14,6 +14,8 @@
 #include "base/documents/work_pass.h"
 #include "base/game_view.h"
 
+using namespace Documents::V1;
+
 void test_access_permit_data_extraction(const std::string& number) {
 	GameView game = GetGameView(number);
 

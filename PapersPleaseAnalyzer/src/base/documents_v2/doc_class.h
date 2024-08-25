@@ -1,7 +1,5 @@
 #pragma once
-#include <array>
 #include <vector>
-#include <tuple>
 
 #include <opencv2/opencv.hpp>
 
@@ -13,22 +11,18 @@
 namespace Documents::V2
 {
 
-class LayoutProvider {
-
-};
-
 class Doc {
 public:
 	Doc(const cv::Mat& mat, DocAppearance appearance, DocType docType, PassportType passportType);
 
-	bool IsValidDocument();
-
 	cv::Mat PreprocessDocument() const;
-	const DocLayout const* const GetLayout() const noexcept;
+	const DocLayout const& const GetLayout() const noexcept;
 	DocData GetDocumentData() const;
+	bool IsValid() const;
+
+	const cv::Mat& RevealMat() const;
 private:
 	AppearanceType ToAppearanceType() const;
-	bool IsValid() const;
 private:
 	cv::Mat m_mat;
 	DocAppearance m_appearance;

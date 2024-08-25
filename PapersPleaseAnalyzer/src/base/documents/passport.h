@@ -5,53 +5,61 @@
 #include <opencv2/opencv.hpp>
 
 #include "base/documents/document.h"
-#include "base/layout.h"
+#include "base/documents/layout.h"
 
-// Passports:
-// Antegria
-// Arstotzka
-// Impor
-// Kolechia
-// Obristan
-// Republia
-// United Federation
+namespace Documents::V1 {
 
-
-enum class PassportType {
-	Invalid,
-	Antegria,
-	Arstotzka,
-	Impor,
-	Kolechia,
-	Obristan,
-	Republia,
-	UnitedFederation
-};
+	// Passports:
+	// Antegria
+	// Arstotzka
+	// Impor
+	// Kolechia
+	// Obristan
+	// Republia
+	// United Federation
 
 
-class Passport : public Document<PassportLayout> {
-public:
-	PassportType type;
+	enum class PassportType
+	{
+		Invalid,
+		Antegria,
+		Arstotzka,
+		Impor,
+		Kolechia,
+		Obristan,
+		Republia,
+		UnitedFederation
+	};
 
-	Passport(cv::Mat mat, PassportType type) : Document<PassportLayout>(mat, nullptr), type(type) {
-		layoutProvider = CreatePassportLayout(type);
-	}
 
-private:
-	std::unique_ptr<PassportLayout> CreatePassportLayout(PassportType type);
-};
+	class Passport : public Document<PassportLayout>
+	{
+	public:
+		PassportType type;
 
-struct PassportData {
-	std::string name;
-	std::string dateOfBirth;
-	std::string sex;
-	std::string issuingCity;
-	std::string expirationDate;
-	std::string passportNumber;
-	PassportType passportType;
-};
+		Passport(cv::Mat mat, PassportType type) : Document<PassportLayout>(mat, nullptr), type(type)
+		{
+			layoutProvider = CreatePassportLayout(type);
+		}
 
-Passport FindPassport(const cv::Mat& inspection);
-PassportData GetPassportData(const Passport& passport);
+	private:
+		std::unique_ptr<PassportLayout> CreatePassportLayout(PassportType type);
+	};
 
-cv::Mat PreprocessPassport(const Passport& passport);
+	struct PassportData
+	{
+		std::string name;
+		std::string dateOfBirth;
+		std::string sex;
+		std::string issuingCity;
+		std::string expirationDate;
+		std::string passportNumber;
+		PassportType passportType;
+	};
+
+	Passport FindPassport(const cv::Mat& inspection);
+	PassportData GetPassportData(const Passport& passport);
+
+	cv::Mat PreprocessPassport(const Passport& passport);
+
+}

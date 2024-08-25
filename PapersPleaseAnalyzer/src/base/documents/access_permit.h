@@ -3,31 +3,38 @@
 
 #include "base/documents/document.h"
 #include "base/documents/seal.h"
-#include "base/layout.h"
+#include "base/documents/layout.h"
 
-class AccessPermit : public Document<AccessPermitLayout>, public ISealed {
-public:
-	using Document<AccessPermitLayout>::Document;
+namespace Documents::V1 {
 
-	bool HasValidSeal() override {
-		return IsDocumentValidlySealed(mat, DocumentType::AccessPermit);
-	}
-};
+	class AccessPermit : public Document<AccessPermitLayout>, public ISealed
+	{
+	public:
+		using Document<AccessPermitLayout>::Document;
 
-struct AccessPermitData {
-	std::string name;
-	std::string country;
-	std::string passportNumber;
-	std::string purpose;
-	std::string durationOfStay;
-	std::string height;
-	std::string weight;
-	std::string physicalAppearance;
-	std::string expirationDate;
-	bool		hasValidSeal;
-};
+		bool HasValidSeal() override
+		{
+			return IsDocumentValidlySealed(mat, DocumentType::AccessPermit);
+		}
+	};
 
-AccessPermit FindAccessPermit(const cv::Mat& inspection);
-AccessPermitData GetAccessPermitData(AccessPermit& accessPermit);
+	struct AccessPermitData
+	{
+		std::string name;
+		std::string country;
+		std::string passportNumber;
+		std::string purpose;
+		std::string durationOfStay;
+		std::string height;
+		std::string weight;
+		std::string physicalAppearance;
+		std::string expirationDate;
+		bool		hasValidSeal;
+	};
 
-cv::Mat PreprocessAccessPermit(const AccessPermit& accessPermit);
+	AccessPermit FindAccessPermit(const cv::Mat& inspection);
+	AccessPermitData GetAccessPermitData(AccessPermit& accessPermit);
+
+	cv::Mat PreprocessAccessPermit(const AccessPermit& accessPermit);
+
+}
