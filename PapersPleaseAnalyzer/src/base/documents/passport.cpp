@@ -34,7 +34,7 @@ namespace Documents::V1 {
 
 		for (int y = 0; y < inspection.rows; y++)
 		{
-			const RgbColor* bgr = inspection.ptr<RgbColor>(y);
+			const BgrColor* bgr = inspection.ptr<BgrColor>(y);
 
 			int min_x = INT_MAX;
 			int max_x = 0;
@@ -85,7 +85,7 @@ namespace Documents::V1 {
 
 	static bool IsBorderColor(const cv::Mat& inspection, int x, int y)
 	{
-		RgbColor* bgr = (RgbColor*)inspection.ptr(y);
+		const BgrColor* bgr = inspection.ptr<BgrColor>(y);
 		switch (BGR_VAL(bgr[x]))
 		{
 			case RGB_VAL(BorderColors::Antegria):

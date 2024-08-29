@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\base\booth.cpp" />
+    <ClCompile Include="src\base\documents\booth.cpp" />
     <ClCompile Include="src\base\documents\access_permit.cpp" />
     <ClCompile Include="src\base\documents\certificate_of_vaccination.cpp" />
     <ClCompile Include="src\base\documents\diplomatic_authorization.cpp" />
@@ -26,9 +26,15 @@
     <ClCompile Include="src\base\game_view.cpp" />
     <ClCompile Include="src\base\documents_v2\doc_class.cpp" />
     <ClCompile Include="src\base\document_data\date.cpp" />
+    <ClCompile Include="src\base\documents_v2\doc_data.cpp" />
+    <ClCompile Include="src\base\documents_v2\doc_extractor.cpp" />
+    <ClCompile Include="src\base\analyzer\context.cpp" />
+    <ClCompile Include="src\base\game_state\game_state.cpp" />
+    <ClCompile Include="src\base\game_state\doc_tracker.cpp" />
+    <ClCompile Include="src\base\game_state\booth_state.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\base\booth.h" />
+    <ClInclude Include="src\base\documents\booth.h" />
     <ClInclude Include="src\base\color.h" />
     <ClInclude Include="src\base\common.h" />
     <ClInclude Include="src\base\documents\access_permit.h" />
@@ -69,5 +75,16 @@
     <ClInclude Include="src\base\documents_v2\doc_layout.inl.h" />
     <ClInclude Include="src\base\document_data\field_data.h" />
     <ClInclude Include="src\base\documents_v2\data\arstotzka_data.h" />
+    <ClInclude Include="src\base\documents_v2\doc_extractor.h" />
+    <ClInclude Include="src\base\game_state\game_state.h" />
+    <ClInclude Include="src\base\game_state\doc_tracker.h" />
+    <ClInclude Include="src\base\game_state\rules.h" />
+    <ClInclude Include="src\base\game_state\criminals.h" />
+    <ClInclude Include="src\base\document_data\photo.h" />
+    <ClInclude Include="src\base\game_state\transcript.h" />
+    <ClInclude Include="src\base\game_state\booth_state.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\base\documents_v2\bounding_box_finder.inc" />
   </ItemGroup>
 </Project>

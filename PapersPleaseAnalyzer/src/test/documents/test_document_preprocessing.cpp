@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "test/documents/test_document_preprocessing.h"
 
-#include "base/booth.h"
+#include "base/documents/booth.h"
 #include "base/documents/access_permit.h"
 #include "base/documents/certificate_of_vaccination.h"
 #include "base/documents/diplomatic_authorization.h"
@@ -18,16 +18,10 @@
 
 using namespace Documents::V1;
 
-void test_document_preprocessing(const cv::Mat& image, Documents::V2::DocType docType) {
-	auto doc = Documents::V2::FindDocument(image, docType);
-	auto binary = doc.PreprocessDocument();
-	cv::imshow("Binary Document", binary);
-}
-
 void test_document_preprocessing(const std::string& number, Documents::V2::DocType docType) {
 	GameView game = GetGameView(number);
 
-	auto doc = Documents::V2::FindDocument(game.inspection, docType);
+	auto doc = Documents::V2::FindDocument(game, docType);
 	auto binary = doc.PreprocessDocument();
 	cv::imshow("Binary Document", binary);
 }

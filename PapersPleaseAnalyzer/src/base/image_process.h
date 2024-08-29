@@ -10,30 +10,30 @@
 #include "base/ocr/ocr.h"
 #include "base/shape.h"
 
-inline cv::Mat ToGrayscale(const cv::Mat& mat) {
-	cv::Mat grayscale;
+static inline cv::Mat ToGrayscale(const cv::Mat& mat) {
+  	cv::Mat grayscale;
 	cv::cvtColor(mat, grayscale, cv::COLOR_BGR2GRAY);
 	return grayscale;
 }
 
 
-inline cv::Mat ScaleImage(const cv::Mat& in, float scale)
+static inline cv::Mat ScaleImage(const cv::Mat& in, float scale)
 {
 	cv::Mat result;
 	cv::resize(in, result, cv::Size((int)((float)in.cols / (1.0f / scale)), (int)((float)in.rows / (1.0f / scale))), 0, 0, cv::INTER_NEAREST);
 	return result;
 }
 
-inline std::string GetFieldString(const cv::Mat& field, Documents::V1::DocumentType documentType) {
-	const FontInfo fontInfo = GetFontInfo(documentType);
+static inline std::string GetFieldString(const cv::Mat& field, Documents::V1::DocumentType documentType) {
+	const FontInfo& fontInfo = GetFontInfo(documentType);
 	return ImageToString(field, fontInfo);
 }
 
-inline cv::Mat ExtractDocumentField(const cv::Mat& document, const Rectangle& boundingBox) {
+static inline cv::Mat ExtractDocumentField(const cv::Mat& document, const Rectangle& boundingBox) {
 	return document(cv::Rect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height));
 }
 
-inline std::string GetFieldString(const cv::Mat& field, Documents::V2::DocType documentType) {
-	const FontInfo fontInfo = GetFontInfo(documentType);
+static inline std::string GetFieldString(const cv::Mat& field, Documents::V2::DocType documentType) {
+	const FontInfo& fontInfo = GetFontInfo(documentType);
 	return ImageToString(field, fontInfo);
 }

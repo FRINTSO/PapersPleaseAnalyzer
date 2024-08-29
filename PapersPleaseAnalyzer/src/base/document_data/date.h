@@ -1,12 +1,13 @@
 ﻿#pragma once
 #include <iostream>
+#include <string>
 
 namespace Documents::Data {
 
 class Date {
 public:
 	Date();
-	Date(const int& d, const int& m, const int& y);
+	Date(const int d, const int m, const int y);
 
 	bool IsValid() const;
 
@@ -14,9 +15,9 @@ public:
 	int GetMonth() const;
 	int GetYear() const;
 
-	void SetDay(const int& day);
-	void SetMonth(const int& month);
-	void SetYear(const int& year);
+	void SetDay(const int day);
+	void SetMonth(const int month);
+	void SetYear(const int year);
 
 	Date operator ++(); // prefix
 	Date operator ++(int); // postfix

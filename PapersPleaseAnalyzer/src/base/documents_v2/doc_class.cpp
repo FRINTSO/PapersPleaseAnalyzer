@@ -8,11 +8,13 @@
 
 #include "base/common.h"
 #include "base/documents_v2/doc_appearance.h"
+#include "base/documents_v2/doc_extractor.h"
 #include "base/image_process.h"
 
-#include "base/documents/bounding_box_finder.inc"
+#include "base/documents_v2/bounding_box_finder.inc"
 
 namespace Documents::V2 {
+
 
 	Doc::Doc(const cv::Mat& mat, DocAppearance appearance, DocType docType, PassportType passportType)
 		: m_mat{ mat }, m_appearance{ appearance }, m_docType{ docType }, m_passportType{ passportType }, m_docLayout{ DocLayout::Get(this->ToAppearanceType()) }
@@ -44,10 +46,10 @@ namespace Documents::V2 {
 		int top = INT_MAX;
 		int right = 0;
 		int bottom = 0;
-
+		bool has_found_top_left = false;
 		for (int y = 0; y < inspection.rows; y++)
 		{
-			const RgbColor* bgr = inspection.ptr<RgbColor>(y);
+			const BgrColor* bgr = inspection.ptr<BgrColor>(y);
 
 			int min_x = INT_MAX;
 			int max_x = 0;
@@ -79,6 +81,26 @@ namespace Documents::V2 {
 					default:
 						continue;
 				}
+#if CHEEKY_OPTIMIZATION
+				// cheeky optimization
+				if (!has_found_top_left) {
+					has_found_top_left = !has_found_top_left;
+
+					int width = DocAppearance::Get((AppearanceType)type).GetWidth();
+					int height = DocAppearance::Get((AppearanceType)type).GetHeight();
+
+					if (y + height - 1 < inspection.rows && x + width - 1 < inspection.cols)
+					{
+						// bottom_right
+						const BgrColor* bgr_2 = inspection.ptr<BgrColor>(y + height - 1);
+						if (BGR_VAL(bgr_2[x + width - 1]) == RGB_VAL(DocAppearance::Get((AppearanceType)type).GetColors()[0]))
+						{
+							outBoundingBox = Rectangle{ x, y, width, height };
+							return type;
+						}
+					}
+				}
+#endif
 				if (x < min_x) min_x = x;
 				if (x > max_x) max_x = x;
 				if (y < top) top = y;
@@ -108,7 +130,18 @@ namespace Documents::V2 {
 
 		for (int y = 0; y < inspection.rows; y++)
 		{
-			const RgbColor* bgr = inspection.ptr<RgbColor>(y);
+#if 0 // COLOR_OPTIMIZATION
+			const BgrColor* bgr = inspection.ptr<BgrColor>(y);
+			for (int x = 0; x < inspection.cols; x++) {
+				for (const auto& docAppearance : appearanceTypes) {
+					AppearanceType type = docAppearance.GetType();
+					auto* colors = docAppearance.GetColors();
+					auto colorCount = docAppearance.GetColorCount();
+
+					for (size_t i = 0; i < colorCount; i++) {
+						if (BGR_VAL(bgr[x]) == RGB_VAL(colors[i]) && !types.contains(type))
+#else
+			const BgrColor* bgr = inspection.ptr<BgrColor>(y);
 			for (int x = 0; x < inspection.cols; x++)
 			{
 				for (const auto& docAppearance : appearanceTypes)
@@ -116,9 +149,11 @@ namespace Documents::V2 {
 					AppearanceType type = docAppearance.GetType();
 					auto* colors = docAppearance.GetColors();
 					auto colorCount = docAppearance.GetColorCount();
+					
 					for (size_t i = 0; i < colorCount; i++)
 					{
 						if (BGR_VAL(bgr[x]) == RGB_VAL(colors[i]) && !types.contains(type))
+#endif
 						{
 							types.emplace(type);
 							goto DO_LOOP;
@@ -133,7 +168,7 @@ namespace Documents::V2 {
 
 	static bool IsBorderColor(const cv::Mat& inspection, int x, int y, const DocAppearance& appearance)
 	{
-		RgbColor* bgr = (RgbColor*)inspection.ptr(y);
+		const BgrColor* bgr = inspection.ptr<BgrColor>(y);
 
 		bool isBorderColor = false;
 		for (size_t i = 0; i < appearance.GetColorCount(); i++)
@@ -199,7 +234,8 @@ namespace Documents::V2 {
 			&& IsBorderColor(inspection, xCorner, yCorner + step * (-1 + 2 * isTop), appearance);
 	}
 
-	cv::Mat CutoutDocumentProper(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance)
+	[[deprecated]]
+	static inline cv::Mat CutoutDocumentProper(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance)
 	{
 		// Corner defintions
 		// Top Left
@@ -290,7 +326,7 @@ namespace Documents::V2 {
 
 #pragma endregion
 
-	Doc FindDocument(const cv::Mat& inspection, const DocType type)
+	Doc FindDocument(const GameView& gameView, const DocType type)
 	{
 		PassportType passportType = PassportType::Invalid;
 		Rectangle boundingBox{};
@@ -298,13 +334,13 @@ namespace Documents::V2 {
 
 		if (type == DocType::Passport)
 		{
-			passportType = FindPassportTypeAndBoundingBox(inspection, boundingBox);
+			passportType = FindPassportTypeAndBoundingBox(gameView.inspection, boundingBox);
 			appearance = DocAppearance::Get(static_cast<AppearanceType>(passportType));
 		}
 		else
 		{
 			appearance = DocAppearance::Get(static_cast<AppearanceType>(type));
-			boundingBox = FindDocumentBoundingBox(inspection, appearance.GetColors(), appearance.GetColorCount());
+			boundingBox = FindDocumentBoundingBox(gameView, appearance);
 		}
 
 		// Check if the bounding box is invalid
@@ -314,19 +350,20 @@ namespace Documents::V2 {
 		}
 
 		// Cut out the document from the inspection image
-		auto mat = CutoutDocumentProper(inspection, boundingBox, appearance);
+		// auto mat = CutoutDocumentProper(inspection, boundingBox, appearance);
+		auto mat = ExtractDocument(gameView.inspection, boundingBox, appearance);
 
 		// Return the document with valid data
 		return Doc{ mat, appearance, type, passportType };
 	}
 
-	std::vector<Doc> FindAllDocuments(const cv::Mat& inspection)
+	std::vector<Doc> FindAllDocuments(const GameView& gameView)
 	{
 		std::vector<Doc> documents{};
 
-		for (const auto& type : FindAllDocumentsAppearanceType(inspection))
+		for (const auto& type : FindAllDocumentsAppearanceType(gameView.inspection))
 		{
-			const auto doc = FindDocument(inspection, ((int)type > (int)DocType::Passport) ? DocType::Passport : (DocType)type);
+			const auto doc = FindDocument(gameView, ((int)type > (int)DocType::Passport) ? DocType::Passport : (DocType)type);
 			if (doc.IsValid())
 			{
 				documents.push_back(doc);
@@ -347,15 +384,19 @@ namespace Documents::V2 {
 		if (m_mat.empty()) return false;
 
 		const Shape shape = m_appearance.GetShape();
-		if (shape.width < m_mat.cols) return false;
-		if (shape.height < m_mat.rows) return false;
-
+#if STRICT_DOCUMENT_SCANNING
+		if (shape.width != m_mat.cols) return false;
+		if (shape.height != m_mat.rows) return false;
+#else
+		//if (shape.width < m_mat.cols) return false;
+		//if (shape.height < m_mat.rows) return false;
+#endif
 		return true;
 	}
 
 	cv::Mat Doc::PreprocessDocument() const
 	{
-		if (m_docType == DocType::Invalid) return {};
+		if (m_docType == DocType::Invalid || !this->IsValid()) return {};
 
 		cv::Mat grayscale = ToGrayscale(m_mat);
 
@@ -561,39 +602,50 @@ namespace Documents::V2 {
 #endif
 #pragma endregion
 
-	const DocLayout const& const Doc::GetLayout() const noexcept
+	const DocLayout& Doc::GetLayout() const noexcept
 	{
 		return m_docLayout;
+	}
+
+	DocData Doc::ExtractDocData() const
+	{
+		auto binary = this->PreprocessDocument();
+		auto layout = m_docLayout;
+		auto layouts = layout.GetAllLayouts();
+
+		DocDataBuilder builder{};
+
+		// Future
+		// Extraction Method -> Processing Method
+		// Ex.
+		// Text Field Extraction -> Name Formatting
+
+		for (size_t i = 0; i < layout.GetLayoutCount(); i++) {
+			switch (layouts[i].GetType()) {
+				case Documents::V2::FieldType::Text:
+				{
+					auto raw_data = GetFieldString(ExtractDocumentField(binary, layouts[i].GetBox()), m_docType);
+					builder.AddFieldData(layouts[i].GetCategory(), FieldData{ Data{raw_data}, layouts[i].GetType(), layouts[i].GetCategory() });
+					break;
+				}
+				case Documents::V2::FieldType::Image:
+				case Documents::V2::FieldType::Invalid:
+				default:
+				{
+					
+					builder.AddFieldData(layouts[i].GetCategory(), FieldData{ Data{} , layouts[i].GetType(), layouts[i].GetCategory()});
+					break;
+				}
+			}
+		}
+		
+		return { builder.GetDocData() };
 	}
 
 	DocData Doc::GetDocumentData() const
 	{
 		if (!this->IsValid()) return {};
-
-		auto binary = this->PreprocessDocument();
-		auto layout = m_docLayout;
-		auto layouts = layout.GetAllLayouts();
-
-		std::array<Data, DocData::ARRAY_LENGTH> fields{};
-
-		for (size_t i = 0; i < layout.GetLayoutCount(); i++)
-		{
-			if (layouts[i].GetType() == DataFieldType::TextField)
-			{
-				auto string = GetFieldString(ExtractDocumentField(binary, layouts[i].GetBox()), m_docType);
-
-				auto position = static_cast<size_t>(layouts[i].GetCategory());
-				fields[position] = Data{ string, layouts[i].GetCategory() };
-			}
-			else
-			{
-				auto position = static_cast<size_t>(layouts[i].GetCategory());
-				fields[position] = Data{ "", layouts[i].GetCategory() };
-			}
-		}
-
-		// return { fields, count };
-		return { fields };
+		return this->ExtractDocData();
 	}
 
 	const cv::Mat& Doc::RevealMat() const

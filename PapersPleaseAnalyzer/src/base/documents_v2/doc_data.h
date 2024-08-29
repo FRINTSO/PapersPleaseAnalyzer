@@ -1,4 +1,8 @@
 #pragma once
+#include "base/document_data/date.h"
+#include "base/document_data/field_data.h"
+
+#include <variant>
 
 namespace Documents::V2 {
 
@@ -33,68 +37,135 @@ namespace Documents::V2 {
 		Vaccination3,
 		ValidDate,
 		Weight,
+		BoothDate,
+		BoothCounter,
+
 		DATA_FIELD_CATEGORY_LENGTH,
 	};
 
-	enum class DataFieldType
+	enum class DataType
 	{
 		Invalid = 0,
-		TextField,
-		ImageField,
+		GenericString,
+		GenericNumber,
+		StrList,
+		Date,
+		Image,
+		SIUnit,
+		Vaccine,
+		Sex,
 	};
 
-	struct Data
+	enum class FieldType
 	{
-		std::string str;
-		DataFieldCategory category;
+		Invalid = 0,
+		Text,
+		Image,
+	};
+
+	enum class DataFieldState
+	{
+		Empty = 0,
+		Initialized,
+		ProcessedData
+	};
+
+	class Data
+	{
+	public:
+
+	public:
+		Data() = default;
+		template<typename T>
+		Data(const T& data, DataType type);
+		template<typename T>
+		Data(const T& data, DataType type, bool isBroken);
+
+		Data(const std::string& data);
+		Data(const long long data);
+		Data(const Documents::Data::Date& data);
+		Data(const Documents::Data::SIUnitValue& data);
+		Data(const Documents::Data::Vaccine& data);
+		Data(const Documents::Data::StrList& data);
+		Data(const Documents::Data::Sex data);
+
+		template<typename T>
+		constexpr const T& Get() const
+		{
+			return std::get<T>(m_data);
+		}
+
+		std::string Text() const;
+		DataType Type() const;
+
+	private:
+		std::variant<
+			long long,
+			std::string,
+			Documents::Data::Date,
+			Documents::Data::SIUnitValue,
+			Documents::Data::Vaccine,
+			Documents::Data::StrList,
+			Documents::Data::Sex> m_data;
+		DataType m_type;
+		bool m_isBroken;
+	};
+
+	class FieldData
+	{  // Represents the data of any field
+	public:
+		FieldData() = default;
+		FieldData(const Data& data, const FieldType type, const DataFieldCategory category);
+
+		const Data& GetData() const;
+		std::string Text() const;
+		FieldType Type() const;
+	private:
+		friend class DocDataBuilder;
+	private:
+		Data m_data; // temporary
+		FieldType m_fieldType;
+		DataFieldCategory m_fieldCategory; // index in DocData array
+		DataFieldState m_fieldState;
 	};
 
 	class DocData
-	{
+	{  // Represents the data of any document
 	public:
-		static const size_t ARRAY_LENGTH = static_cast<size_t>(DataFieldCategory::DATA_FIELD_CATEGORY_LENGTH);
+		static const size_t ArrayLength = static_cast<size_t>(DataFieldCategory::DATA_FIELD_CATEGORY_LENGTH) - 1;
 	public:
 		DocData() = default;
-		DocData(std::array<Data, ARRAY_LENGTH> data)
-			: m_data{ data }
-		{}
-		/*
-		DocData(std::array<Data, ARRAY_LENGTH> data, size_t dataLength)
-			: m_data{ data }, m_dataLength{ dataLength }
-		{}
-		*/
 
-		constexpr const std::array<Data, ARRAY_LENGTH> GetData() const
+		FieldData Get(DataFieldCategory category) const;
+		void PrintAllFields() const // temporary for ease of development
 		{
-			return m_data;
-		}
-
-		constexpr const Data& GetData(DataFieldCategory field) const
-		{
-			return m_data[static_cast<size_t>(field)];
-		}
-
-		void Print()
-		{
-			for (size_t i = 0; i < ARRAY_LENGTH; i++)
+			for (const auto& data : m_data)
 			{
-				if (m_data[i].category != DataFieldCategory::Invalid)
-				{
-					std::cout << m_data[i].str << "\n";
-				}
+				if (data.Type() != FieldType::Text) continue;
+				std::cout << data.Text() << "\n";
 			}
 		}
-
-		/*
-		constexpr const size_t GetLength() const {
-			return m_dataLength;
-		}
-		*/
 	private:
-		std::array<Data, ARRAY_LENGTH> m_data;
-		// size_t m_dataLength;
+		DocData(const std::array<FieldData, ArrayLength>& data);
+	private:
+		friend class DocDataBuilder;
+
+		std::array<FieldData, ArrayLength> m_data;
 	};
 
+	class DocDataBuilder
+	{  // Builds a document data instance
+	public:
+		static const size_t ArrayLength = static_cast<size_t>(DataFieldCategory::DATA_FIELD_CATEGORY_LENGTH) - 1;
+	public:
+		DocDataBuilder() = default;
+
+		bool AddFieldData(const DataFieldCategory category, FieldData&& data);
+		DocData GetDocData();
+		void Clear();
+	private:
+		std::array<FieldData, ArrayLength> m_data;
+	};
 
 
 #pragma region Data
@@ -198,6 +269,9 @@ namespace Documents::V2 {
 
 #endif
 #pragma endregion
+
+	
+	const DocData ProcessDocData();
 
 	constexpr const std::string DataFieldCategoryAsString(DataFieldCategory dataFieldCategory)
 	{

@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "base/ocr/font.h"
 
-static constinit FontInfo g_Invalid{ Typeface::Invalid, 0, -1, -1 };
-static constinit FontInfo g_BM_MiniInfo{ Typeface::BM_Mini, 16, 2, 4 };
-static constinit FontInfo g_MiniKylie{ Typeface::MiniKylie, 12, -1, -1 };
-static constinit FontInfo g_BoothNumber{ Typeface::BoothNumber, 12, -1, -1 };
+static inline constinit FontInfo g_Invalid{ Typeface::Invalid, 0, -1, -1 };
+static inline constinit FontInfo g_BM_MiniInfo{ Typeface::BM_Mini, 16, 2, 4 };
+static inline constinit FontInfo g_MiniKylie{ Typeface::MiniKylie, 12, 2, 3 };
+static inline constinit FontInfo g_BoothNumber{ Typeface::BoothNumber, 12, 2, 3 /* Guess 3 */};
 
 static constexpr Typeface GetTypefaceByDocumentType(Documents::V1::DocumentType documentType) {
 	switch (documentType)
@@ -34,8 +34,6 @@ static constexpr Typeface GetTypefaceByDocumentType(Documents::V1::DocumentType 
 	default:
 		return Typeface::Invalid;
 	}
-
-	return Typeface::Invalid;
 }
 
 static constexpr Typeface GetTypefaceByDocumentType(const Documents::V2::DocType documentType) { // I think TypeFace should be in DocAppearance
@@ -64,8 +62,6 @@ static constexpr Typeface GetTypefaceByDocumentType(const Documents::V2::DocType
 	default:
 		return Typeface::Invalid;
 	}
-
-	return Typeface::Invalid;
 }
 
 static constexpr const FontInfo& GetFontInfoByTypeface(Typeface typeface) {

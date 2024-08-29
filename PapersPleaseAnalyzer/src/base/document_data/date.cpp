@@ -1,10 +1,11 @@
 ﻿#include "pch.h"
 #include "base/document_data/Date.h"
+#include <sstream>
 
 namespace Documents::Data {
 
 ///////////////////////////// construction //////////
-Date::Date(const int& d, const int& m, const int& y) {
+Date::Date(const int d, const int m, const int y) {
 	m_day = d;
 	m_month = m;
 	m_year = y; // this assumes year is given fully, not Y2K corrections
@@ -17,9 +18,9 @@ int Date::GetDay() const { return m_day; };
 int Date::GetMonth() const { return m_month; };
 int Date::GetYear() const { return m_year; };
 
-void Date::SetDay(const int& day) { Date::m_day = day; };
-void Date::SetMonth(const int& month) { Date::m_month = month; };
-void Date::SetYear(const int& year) { Date::m_year = year; };
+void Date::SetDay(const int day) { Date::m_day = day; };
+void Date::SetMonth(const int month) { Date::m_month = month; };
+void Date::SetYear(const int year) { Date::m_year = year; };
 
 bool Date::IsValid() const {
 	// This function will check the given date is valid or not.
@@ -60,14 +61,9 @@ bool operator <(const Date& d1, const Date& d2) {
 	if (!d2.IsValid()) { return false; }; // should really be an exception, but ?
 	if (d1.GetYear() < d2.GetYear()) { return true; }
 	else if (d1.GetYear() > d2.GetYear()) { return false; }
-	else { // same GetYear
-		if (d1.GetMonth() < d2.GetMonth()) { return true; }
-		else if (d1.GetMonth() > d2.GetMonth()) { return false; }
-		else { // same GetMonth
-			if (d1.GetDay() < d2.GetDay()) { return true; }
-			else { return false; }
-		};
-	};
+	else if (d1.GetMonth() < d2.GetMonth()) { return true; }
+	else if (d1.GetMonth() > d2.GetMonth()) { return false; }
+	else if (d1.GetDay() < d2.GetDay()) { return true; }
 	return false;
 };
 bool operator >(const Date& d1, const Date& d2) {

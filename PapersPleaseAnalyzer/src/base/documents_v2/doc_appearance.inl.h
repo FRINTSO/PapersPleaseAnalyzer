@@ -204,7 +204,7 @@ namespace Documents::V2 {
 						RgbColor{ 233, 199, 211 },
 						RgbColor{ 204, 175, 192 },
 					},
-					1,
+					2,
 					Shape{ DOWNSCALE(294), DOWNSCALE(270) },
 					type
 				};
@@ -214,4 +214,98 @@ namespace Documents::V2 {
 		}
 	}
 
+	/*
+	const DocAppearance& DocAppearance::GetRef(AppearanceType type) noexcept
+	{
+		switch (type)
+		{
+			case AppearanceType::AccessPermit:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::AccessPermit);
+				return appearance;
+			}
+			case AppearanceType::CertificateOfVaccination:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::CertificateOfVaccination);
+				return appearance;
+			}
+			case AppearanceType::DiplomaticAuthorization:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::DiplomaticAuthorization);
+				return appearance;
+			}
+			case AppearanceType::EntryPermit:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::EntryPermit);
+				return appearance;
+			}
+			case AppearanceType::EntryTicket:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::EntryTicket);
+				return appearance;
+			}
+			case AppearanceType::GrantOfAsylum:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::GrantOfAsylum);
+				return appearance;
+			}
+			case AppearanceType::IdentityCard:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::IdentityCard);
+				return appearance;
+			}
+			case AppearanceType::IdentitySupplement:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::IdentitySupplement);
+				return appearance;
+			}
+			case AppearanceType::Passport_Antegria:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::Passport_Antegria);
+				return appearance;
+			}
+			case AppearanceType::Passport_Arstotzka:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::Passport_Arstotzka);
+				return appearance;
+			}
+			case AppearanceType::Passport_Impor:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::Passport_Impor);
+				return appearance;
+			}
+			case AppearanceType::Passport_Kolechia:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::Passport_Kolechia);
+				return appearance;
+			}
+			case AppearanceType::Passport_Obristan:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::Passport_Obristan);
+				return appearance;
+			}
+			case AppearanceType::Passport_Republia:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::Passport_Republia);
+				return appearance;
+			}
+			case AppearanceType::Passport_UnitedFederation:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::Passport_UnitedFederation);
+				return appearance;
+			}
+			case AppearanceType::WorkPass:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::WorkPass);
+				return appearance;
+			}
+			case AppearanceType::Invalid:
+			default:
+			{
+				static const auto appearance = DocAppearance::Get(AppearanceType::Invalid);
+				return appearance;
+			}
+		}
+	}
+	*/
 }

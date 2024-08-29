@@ -41,8 +41,6 @@ Analysis Analyze(const GameView& gameView) {
 	*/
 
 
-	cv::imshow("Inspection Area", gameView.inspection);
-	cv::imshow("Booth Area", gameView.booth.mat);
 
 	cv::waitKey();
 

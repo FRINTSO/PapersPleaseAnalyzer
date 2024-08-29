@@ -72,6 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(IncludePath)</IncludePath>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(IncludePath)</IncludePath>
@@ -112,7 +113,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\opencv\build\include;$(SolutionDir)PapersPleaseAnalyzer/src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalOptions>/external:anglebrackets /external:W0 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/external:anglebrackets /external:I C:\opencv\build\include /external:W0 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -121,6 +122,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opencv_world470d.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\opencv\build\x64\vc16\lib</AdditionalLibraryDirectories>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -144,14 +146,21 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\opencv\build\x64\vc16\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>opencv_world470.lib</AdditionalDependencies>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\base\analyzer\analyzer.cpp" />
-    <ClCompile Include="src\base\booth.cpp" />
+    <ClCompile Include="src\base\analyzer\context.cpp" />
+    <ClCompile Include="src\base\game_state\booth_state.cpp" />
+    <ClCompile Include="src\base\game_state\doc_tracker.cpp" />
+    <ClCompile Include="src\base\game_state\game_state.cpp" />
+    <ClCompile Include="src\base\documents\booth.cpp" />
     <ClCompile Include="src\base\documents\access_permit.cpp" />
     <ClCompile Include="src\base\documents\certificate_of_vaccination.cpp" />
     <ClCompile Include="src\base\documents\diplomatic_authorization.cpp" />
+    <ClCompile Include="src\base\documents_v2\doc_data.cpp" />
+    <ClCompile Include="src\base\documents_v2\doc_extractor.cpp" />
     <ClCompile Include="src\base\document_data\date.cpp" />
     <ClCompile Include="src\base\documents_v2\doc_class.cpp" />
     <ClCompile Include="src\base\documents\entry_permit.cpp" />
@@ -180,8 +189,11 @@
   <ItemGroup>
     <ClInclude Include="src\base\analyzer\analyzer.h" />
     <ClInclude Include="src\base\analyzer\context.h" />
+    <ClInclude Include="src\base\game_state\booth_state.h" />
+    <ClInclude Include="src\base\game_state\doc_tracker.h" />
+    <ClInclude Include="src\base\game_state\game_state.h" />
     <ClInclude Include="src\base\analyzer\profile.h" />
-    <ClInclude Include="src\base\booth.h" />
+    <ClInclude Include="src\base\documents\booth.h" />
     <ClInclude Include="src\base\color.h" />
     <ClInclude Include="src\base\common.h" />
     <ClInclude Include="src\base\documents\access_permit.h" />
@@ -190,6 +202,7 @@
     <ClInclude Include="src\base\documents\diplomatic_authorization.h" />
     <ClInclude Include="src\base\documents\document.h" />
     <ClInclude Include="src\base\documents_v2\data\arstotzka_data.h" />
+    <ClInclude Include="src\base\documents_v2\doc_extractor.h" />
     <ClInclude Include="src\base\documents_v2\doc_appearance.inl.h" />
     <ClInclude Include="src\base\documents_v2\doc_layout.inl.h" />
     <ClInclude Include="src\base\document_data\date.h" />
@@ -206,6 +219,10 @@
     <ClInclude Include="src\base\documents_v2\doc_layout.h" />
     <ClInclude Include="src\base\documents_v2\doc_type.h" />
     <ClInclude Include="src\base\document_data\field_data.h" />
+    <ClInclude Include="src\base\document_data\photo.h" />
+    <ClInclude Include="src\base\game_state\criminals.h" />
+    <ClInclude Include="src\base\game_state\rules.h" />
+    <ClInclude Include="src\base\game_state\transcript.h" />
     <ClInclude Include="src\base\game_view.h" />
     <ClInclude Include="src\base\image_process.h" />
     <ClInclude Include="src\base\ocr\font.h" />
@@ -219,6 +236,9 @@
     <ClInclude Include="src\test\documents\test_document_preprocessing.h" />
     <ClInclude Include="src\test\documents\test_document_boxing.h" />
     <ClInclude Include="src\test\documents\test_hsv.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\base\documents_v2\bounding_box_finder.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

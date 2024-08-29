@@ -30,6 +30,7 @@ enum class AppearanceType {
 class DocAppearance {
 public:
 	[[nodiscard]] static constexpr DocAppearance Get(AppearanceType type) noexcept;
+	[[nodiscard]] static const DocAppearance& GetRef(AppearanceType type) noexcept;
 public:
 	constexpr DocAppearance() noexcept;
 

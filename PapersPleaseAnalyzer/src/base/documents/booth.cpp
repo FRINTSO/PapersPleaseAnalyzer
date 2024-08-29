@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "base/booth.h"
+#include "base/documents/booth.h"
 
 #include "base/common.h"
 #include "base/image_process.h"

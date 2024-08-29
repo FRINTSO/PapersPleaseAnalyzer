@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "test/documents/test_document_boxing.h"
 
-#include "base/booth.h"
+#include "base/documents/booth.h"
 #include "base/documents/access_permit.h"
 #include "base/documents/certificate_of_vaccination.h"
 #include "base/documents/diplomatic_authorization.h"
@@ -65,11 +65,11 @@ namespace Documents {
 		{
 			GameView game = GetGameView(number);
 
-			auto binary = PreprocessBooth(game.booth.mat);
+			auto binary = PreprocessBooth(game.booth);
 
-			Utils::display_document_info_boxing(binary, DocumentType::Booth, game.booth.layoutProvider->GetDateBox(), "Date");
-			Utils::display_document_info_boxing(binary, DocumentType::Booth, game.booth.layoutProvider->GetCounterBox(), "Counter");
-			Utils::display_document_info_boxing(binary, DocumentType::Booth, game.booth.layoutProvider->GetWeightBox(), "Weight");
+			// Utils::display_document_info_boxing(binary, DocumentType::Booth, game.booth.layoutProvider->GetDateBox(), "Date");
+			// Utils::display_document_info_boxing(binary, DocumentType::Booth, game.booth.layoutProvider->GetCounterBox(), "Counter");
+			// Utils::display_document_info_boxing(binary, DocumentType::Booth, game.booth.layoutProvider->GetWeightBox(), "Weight");
 		}
 
 		void test_certificate_of_vaccination_text_boxing(const std::string& number)
@@ -228,7 +228,13 @@ namespace Documents {
 
 			// Setup
 			GameView game = GetGameView(number);
-			auto doc = V2::FindDocument(game.inspection, docType);
+			auto doc = V2::FindDocument(game, docType);
+
+			if (!doc.IsValid()) {
+				std::cerr << "Document is not valid, test failed on setup!\n";
+				return;
+			}
+
 			auto binary = doc.PreprocessDocument();
 
 			// Test
@@ -237,7 +243,7 @@ namespace Documents {
 			auto layoutCount = doc.GetLayout().GetLayoutCount();
 			for (size_t i = 0; i < layoutCount; i++)
 			{
-				if (layouts[i].GetType() == DataFieldType::TextField)
+				if (layouts[i].GetType() == FieldType::Text)
 				{
 					Utils::display_text_field_character_boxing(binary, docType, layouts[i].GetBox(), "" + name);
 					name += 1;
@@ -253,7 +259,7 @@ namespace Documents {
 		{
 			// Setup
 			GameView game = GetGameView(number);
-			auto doc = V2::FindDocument(game.inspection, docType);
+			auto doc = V2::FindDocument(game, docType);
 
 			if (!doc.IsValid())
 			{
@@ -279,7 +285,7 @@ namespace Documents {
 		{
 			// Setup
 			GameView game = GetGameView(number);
-			auto doc = V2::FindDocument(game.inspection, docType);
+			auto doc = V2::FindDocument(game, docType);
 
 			if (!doc.IsValid())
 			{

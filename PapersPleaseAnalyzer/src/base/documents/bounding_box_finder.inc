@@ -4,6 +4,7 @@
 #include <opencv2/opencv.hpp>
 
 #include "base/color.h"
+#include "base/common.h"
 #include "base/shape.h"
 
 inline Rectangle FindDocumentBoundingBox(const cv::Mat& inspection, const RgbColor* colors, const size_t size) {
@@ -13,7 +14,7 @@ inline Rectangle FindDocumentBoundingBox(const cv::Mat& inspection, const RgbCol
 	int bottom = 0;
 
 	for (int y = 0; y < inspection.rows; y++) {
-		const RgbColor* bgr = inspection.ptr<RgbColor>(y);
+		const BgrColor* bgr = inspection.ptr<BgrColor>(y);
 
 		int min_x = INT_MAX;
 		int max_x = 0;

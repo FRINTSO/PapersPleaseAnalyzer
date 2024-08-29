@@ -3,12 +3,10 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "base/booth.h"
-
 struct GameView {
 	GameView(const std::string& filename);
 
-	Documents::V1::Booth booth;
+	cv::Mat booth;
 	cv::Mat inspection;
 };
 

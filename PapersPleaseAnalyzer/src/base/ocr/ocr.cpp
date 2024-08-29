@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "base/ocr/ocr.h"
 
+#include "base/common.h"
 #include "base/image_process.h"
 
 
@@ -113,12 +114,13 @@ std::vector<Rectangle> ImageToBoxes(const cv::Mat& mat, const FontInfo& fontInfo
 
 	int lastBoxX = INT_MAX;
 	const int whitespaceSize = fontInfo.whitespaceSize; // depends on font
-	constexpr int maxAllowedWhitespace = 4;
+	constexpr int maxAllowedWhitespace = 10;
 	const int maxStepsFromLastCharacter = whitespaceSize * maxAllowedWhitespace;
 
 	int left = -1;
 	int top = -1;
 	int width = -1;
+	int height = -1;
 	int bottom = -1;
 	for (int x = 0; x < mat.cols; x++)
 	{
@@ -142,7 +144,9 @@ std::vector<Rectangle> ImageToBoxes(const cv::Mat& mat, const FontInfo& fontInfo
 			lastBoxX = x;
 
 			width = x - left;
-			boxes.emplace_back(Rectangle{ left, top, width, bottom - top + 1 });
+			height = bottom - top + 1;
+			// std::cout << "Width * Height: " << width * height << "\n";
+			boxes.emplace_back(Rectangle{ left, top, width, height });
 			left = -1;
 			top = -1;
 			width = -1;
@@ -156,21 +160,42 @@ std::vector<Rectangle> ImageToBoxes(const cv::Mat& mat, const FontInfo& fontInfo
 }
 
 static inline int checksum_of_character(const cv::Mat& character) {
-	cv::Mat ch = (ScaleImage(character, 1 / 2.0f) & 1) ^ 1;
+#if IS_DOWNSCALED
+#if !OCR_CHAR_CHECKSUM_OPTIMIZATION
+	cv::Mat ch = (character & 1) ^ 1;
+#endif
+#else
+#if !OCR_CHAR_CHECKSUM_OPTIMIZATION
+	cv::Mat ch = (ScaleImage(character, 1.0f / 2.0f) & 1) ^ 1;
+#endif
+#endif
 
+#if OCR_CHAR_CHECKSUM_OPTIMIZATION
+	const cv::Mat& ch = character;
+#endif
+
+#if 1
 	if (ch.rows * ch.cols >= 32) {
-		std::cout << "\n";
-		cv::imshow("Char", character);
-		cv::waitKey();
+		std::cout << "ERROR CHARACTER \n";
+		//cv::imshow("Char", character);
+		//cv::waitKey();
+		return -1;
 	}
-	assert(ch.rows * ch.cols < 32);
-
+#else
+#if _DEBUG
+	// assert(ch.rows * ch.cols < 32);
+#endif
+#endif
 
 	int num = 0;
 	for (int i = 0; i < ch.rows; i++) {
 		for (int j = 0; j < ch.cols; j++) {
-			int c = ch.at<uchar>(i, j);
+			auto c = ch.at<uchar>(i, j);
+#if OCR_CHAR_CHECKSUM_OPTIMIZATION
+			num = (num << 1) | ((c & 1) ^ 1); // concatenate binary digits row-wise
+#else
 			num = (num << 1) | c; // concatenate binary digits row-wise
+#endif
 		}
 	}
 	return num;
@@ -197,24 +222,6 @@ static constexpr std::string GetPathByFontInfo(const FontInfo& fontInfo) {
 static std::unordered_map<int, char> load_all_chars(const FontInfo& fontInfo) {
 	std::unordered_map<int, char> chars{};
 	std::string path = GetPathByFontInfo(fontInfo);
-#if 0
-	for (const auto& entry : std::filesystem::directory_iterator(path)) {
-		if (entry.is_directory()) {
-			for (const auto& entry1 : std::filesystem::directory_iterator(entry.path())) {
-				auto character = cv::imread(entry1.path().generic_string(), cv::IMREAD_UNCHANGED);
-
-				int sum = checksum_of_character(character);
-				chars[sum] = entry1.path().filename().string()[0];
-			}
-		}
-		else {
-			auto character = cv::imread(entry.path().generic_string(), cv::IMREAD_UNCHANGED);
-
-			int sum = checksum_of_character(character);
-			chars[sum] = entry.path().filename().string()[0];
-		}
-	}
-#else
 	for (const auto& entry : std::filesystem::recursive_directory_iterator(path))
 	{
 		if (!entry.is_regular_file())
@@ -223,17 +230,47 @@ static std::unordered_map<int, char> load_all_chars(const FontInfo& fontInfo) {
 		}
 
 		auto character = cv::imread(entry.path().string(), cv::IMREAD_UNCHANGED);
+#if DOWN_SCALE_OPTIMIZATION
+		character = ScaleImage(character, 1.0f / 2.0f);
+#endif
+
 		int checksum = checksum_of_character(character);
 		chars[checksum] = entry.path().filename().string()[0];
 	}
-#endif
 	return chars;
+}
+
+static std::unordered_map<int, char> GetFontCharacters(const FontInfo& fontInfo)
+{
+	switch (fontInfo.typeface)
+	{
+		case Typeface::BM_Mini:
+		{
+			static const auto chars = load_all_chars(fontInfo);
+			return chars;
+		}
+		case Typeface::MiniKylie:
+		{
+			static const auto chars = load_all_chars(fontInfo);
+			return chars;
+		}
+		case Typeface::BoothNumber:
+		{
+			static const auto chars = load_all_chars(fontInfo);
+			return chars;
+		}
+		default:
+		{
+			static const auto chars = load_all_chars(fontInfo);
+			return chars;
+		}
+	}
 }
 
 std::string ImageToString(const cv::Mat& mat, const FontInfo& fontInfo) {
 	std::vector<Rectangle> boxes = ImageToBoxes(mat, fontInfo);
-
-	auto chars = load_all_chars(fontInfo);
+	
+	auto chars = GetFontCharacters(fontInfo); // temp fix
 
 	const Rectangle* previousRectangle = nullptr;
 	char previousChar = '\0';
@@ -242,13 +279,29 @@ std::string ImageToString(const cv::Mat& mat, const FontInfo& fontInfo) {
 	for (const auto& box : boxes) {
 		cv::Mat character = mat(cv::Rect(box.x, box.y, box.width, box.height));
 		int number = checksum_of_character(character);
+
+		// unrecognizable character
+		if (number <= 0 || chars.find(number) == chars.end())
+		{
+			std::cerr << "Unrecognized character\n";
+			//cv::imshow("Char", ScaleImage(character, 10.f));
+			//cv::waitKey(500);
+			continue;
+		}
+
 		char ch = chars[number];
 
 		if (previousRectangle) { // add spaces
 			int spaceSize = box.x - (previousRectangle->x + previousRectangle->width);
 
-			if ((unsigned int)spaceSize >= 6 && previousChar != '1' && ch != '1') { // space between two ones is same as a regular space
-				int spaces = spaceSize < 0 ? 1 : spaceSize / 6;
+#if DOWN_SCALE_OPTIMIZATION
+			constexpr int sizeFactor = 1;
+#else
+			constexpr int sizeFactor = 2;
+#endif
+
+			if ((unsigned int)spaceSize >= (3 * sizeFactor) && previousChar != '1' && ch != '1') { // space between two ones is same as a regular space
+				int spaces = spaceSize < 0 ? 1 : spaceSize / (3 * sizeFactor);
 				for (int i = 0; i < spaces; i++) {
 					field.push_back(' ');
 				}

@@ -1,29 +1,40 @@
 #pragma once
 #include <opencv2/opencv.hpp>
 
-#define PREFER_MACRO false
-#if PREFER_MACRO
-#define IS_DOWNSCALED false
-#define SCALE 0.25f
+#pragma region Options
 
-#if IS_DOWNSCALED
-#define DOWNSCALE(x) (int)(x/SCALE)
+#define DO_OPTIMIZATIONS 0
+#define STRICT_DOCUMENT_SCANNING 1
+#define USE_CONST_REF 0
+
+#pragma endregion
+
+#if DO_OPTIMIZATIONS
+#define COLOR_OPTIMIZATION 1
+#define CHEEKY_OPTIMIZATION 1
+#define DOWN_SCALE_OPTIMIZATION 1
+#define EFFECTIVE_SCANNING_OPTIMIZATION 1
+#define OCR_CHAR_CHECKSUM_OPTIMIZATION 1
 #else
-#define DOWNSCALE(x) x
+#define COLOR_OPTIMIZATION 0
+#define CHEEKY_OPTIMIZATION 1
+#define DOWN_SCALE_OPTIMIZATION 0
+#define EFFECTIVE_SCANNING_OPTIMIZATION 0
+#define OCR_CHAR_CHECKSUM_OPTIMIZATION 0
 #endif
-#else
-constexpr bool IS_DOWNSCALED = false;
-constexpr float SCALE = 0.25f;
+#undef DO_OPTIMIZATIONS
+
+#define IS_DOWNSCALED DOWN_SCALE_OPTIMIZATION
+constexpr float SCALE = 0.5f;
 
 consteval int Scale(int x) {
 	if constexpr (IS_DOWNSCALED) {
-		return static_cast<int>(x / SCALE);
-	}
-	else {
+		return static_cast<int>(x / (1.0f / SCALE));
+	} else {
 		return x;
 	}
 }
 
 #define DOWNSCALE(x) Scale(x)
-#endif
+
 #undef PREFER_MACRO

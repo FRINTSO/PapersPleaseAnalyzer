@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "test/test_document_data_extraction.h"
+#include "test/documents/test_document_data_extraction.h"
 
-#include "base/booth.h"
+#include "base/documents/booth.h"
 #include "base/documents/access_permit.h"
 #include "base/documents/certificate_of_vaccination.h"
 #include "base/documents/diplomatic_authorization.h"
