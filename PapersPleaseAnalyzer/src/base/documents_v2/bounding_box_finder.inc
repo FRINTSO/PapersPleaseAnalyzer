@@ -1,7 +1,5 @@
 #pragma once
 #include <algorithm>
-#include <array>
-#include <unordered_set>
 
 #include <opencv2/opencv.hpp>
 
@@ -23,9 +21,12 @@ namespace Documents::V2
 		bool hasFoundtopLeft = false;
 
 		const auto& inspection = gameView.inspection;
-
+#if MATCH_ONE_COLOR
+		const auto color = RGB_VAL(appearance.GetColors()[0]);
+#else
 		const RgbColor* colors = appearance.GetColors();
 		const size_t size = appearance.GetColorCount();
+#endif
 
 		int maxScanY = inspection.rows;
 		int minScanX = 0;
@@ -41,20 +42,20 @@ namespace Documents::V2
 
 			for (int x = minScanX; x < maxScanX; x++)
 			{
-
 				// CHECK IF BGR_VAL(bgr[x]) is in colors
+#if MATCH_ONE_COLOR
+				if (color != BGR_VAL(bgr[x])) continue;
+#else
 				bool colorMatch = false;
 				for (size_t i = 0; i < size; i++) {
 					if (RGB_VAL(colors[i]) == BGR_VAL(bgr[x]))
 					{
-						std::cout << PRINT_RGB(bgr[x]) << "\n";
-						std::cout << PRINT_RGB(colors[i]) << "\n\n";
 						colorMatch = true;
 						break;
 					}
 				}
 				if (!colorMatch) continue;
-
+#endif
 #if CHEEKY_OPTIMIZATION
 				// cheeky optimization
 				if (!hasFoundtopLeft) {
@@ -67,7 +68,10 @@ namespace Documents::V2
 					{
 						// bottom_right
 						const auto& bottomRightColor = *inspection.ptr<BgrColor>(y + height - 1, x + width - 1);
-
+#if MATCH_ONE_COLOR
+						if (color == BGR_VAL(bgr[x]))
+							return Rectangle{ x,y,width,height };
+#else
 						for (size_t i = 0; i < size; i++)
 						{
 							if (RGB_VAL(colors[i]) == BGR_VAL(bottomRightColor))
@@ -75,6 +79,7 @@ namespace Documents::V2
 								return Rectangle{ x, y, width, height };
 							}
 						}
+#endif
 					}
 				}
 #endif
@@ -125,8 +130,10 @@ namespace Documents::V2
  		return Rectangle{ left, top, right - left + 1, bottom - top + 1 };
 	}
 
+	/*
 	inline Rectangle ShrinkDocumentBoundingBox(const cv::Mat& inspection, const Rectangle& boundingBox, const RgbColor* colors) {
 		return {};
 	}
+	*/
 
 }

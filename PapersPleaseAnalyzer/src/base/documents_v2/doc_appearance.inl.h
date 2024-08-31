@@ -2,23 +2,26 @@
 
 namespace Documents::V2 {
 
+#pragma region Constructors
+
 	constexpr DocAppearance::DocAppearance() noexcept
 		: m_borderColors{}, m_colorCount{}, m_shape{}, m_appearanceType{}
 	{ }
 
-	constexpr DocAppearance::DocAppearance(std::array<RgbColor, 4> borderColors, size_t colorCount, Shape shape, AppearanceType appearanceType) noexcept
-		: m_borderColors{ borderColors }, m_colorCount{ colorCount }, m_shape{ shape }, m_appearanceType{ appearanceType }
+	constexpr DocAppearance::DocAppearance(
+		const std::array<RgbColor, 4>& borderColors,
+		const size_t colorCount,
+		const Shape shape,
+		const AppearanceType appearanceType) noexcept
+		: m_borderColors{ borderColors },
+		m_colorCount{ colorCount },
+		m_shape{ shape },
+		m_appearanceType{ appearanceType }
 	{ }
 
-	constexpr size_t DocAppearance::CountValidColors(std::array<RgbColor, 4> borderColors) noexcept
-	{
-		size_t count = 0;
-		for (size_t i = 0; i < borderColors.size(); i++)
-		{
-			count += (borderColors[i].blue + borderColors[i].green + borderColors[i].red) != 0;
-		}
-		return count;
-	}
+#pragma endregion
+
+#pragma region Getters
 
 	constexpr const RgbColor* DocAppearance::GetColors() const noexcept
 	{
@@ -50,7 +53,11 @@ namespace Documents::V2 {
 		return m_appearanceType;
 	}
 
-	constexpr DocAppearance DocAppearance::Get(AppearanceType type) noexcept
+#pragma endregion
+
+#pragma region Object Acquisition
+
+	constexpr const DocAppearance DocAppearance::Get(AppearanceType type) noexcept
 	{
 		switch (type)
 		{
@@ -96,6 +103,16 @@ namespace Documents::V2 {
 					type
 				};
 			case AppearanceType::EntryTicket:
+#if MATCH_ONE_COLOR
+				return DocAppearance{
+					{
+						RgbColor{ 137, 106, 103 },
+					},
+					1,
+					Shape{ DOWNSCALE(256), DOWNSCALE(88) },
+					type
+				};
+#else
 				return DocAppearance{
 					{
 						RgbColor{ 224, 233, 199 },
@@ -105,6 +122,7 @@ namespace Documents::V2 {
 					Shape{ DOWNSCALE(280), DOWNSCALE(102) },
 					type
 				};
+#endif
 			case AppearanceType::GrantOfAsylum:
 				return DocAppearance{
 					{
@@ -208,104 +226,46 @@ namespace Documents::V2 {
 					Shape{ DOWNSCALE(294), DOWNSCALE(270) },
 					type
 				};
+			case AppearanceType::RuleBook:
+				return DocAppearance{
+					{
+						RgbColor{87, 72, 72}
+					},
+					1,
+					Shape{DOWNSCALE(480), DOWNSCALE(320)},
+					AppearanceType::RuleBook
+				};
+			case AppearanceType::Bulletin:
+				return DocAppearance{
+					{
+						RgbColor{240, 240, 240}
+					},
+					1,
+					Shape{DOWNSCALE(298), DOWNSCALE(398)},
+					AppearanceType::Bulletin
+				};
+			case AppearanceType::Transcript:
+				return DocAppearance{
+					{
+						RgbColor{210, 237, 236}
+					},
+					1,
+					Shape{DOWNSCALE(300), DOWNSCALE(400)},
+					AppearanceType::Transcript
+				};
 			case AppearanceType::Invalid:
+				return {};
 			default:
+				std::cerr << "AppearanceType not implemented in DocAppearance::Get()!\n";
 				return {};
 		}
 	}
 
-	/*
-	const DocAppearance& DocAppearance::GetRef(AppearanceType type) noexcept
+	consteval const DocAppearance DocAppearance::GetInstant(AppearanceType type) noexcept
 	{
-		switch (type)
-		{
-			case AppearanceType::AccessPermit:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::AccessPermit);
-				return appearance;
-			}
-			case AppearanceType::CertificateOfVaccination:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::CertificateOfVaccination);
-				return appearance;
-			}
-			case AppearanceType::DiplomaticAuthorization:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::DiplomaticAuthorization);
-				return appearance;
-			}
-			case AppearanceType::EntryPermit:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::EntryPermit);
-				return appearance;
-			}
-			case AppearanceType::EntryTicket:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::EntryTicket);
-				return appearance;
-			}
-			case AppearanceType::GrantOfAsylum:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::GrantOfAsylum);
-				return appearance;
-			}
-			case AppearanceType::IdentityCard:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::IdentityCard);
-				return appearance;
-			}
-			case AppearanceType::IdentitySupplement:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::IdentitySupplement);
-				return appearance;
-			}
-			case AppearanceType::Passport_Antegria:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::Passport_Antegria);
-				return appearance;
-			}
-			case AppearanceType::Passport_Arstotzka:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::Passport_Arstotzka);
-				return appearance;
-			}
-			case AppearanceType::Passport_Impor:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::Passport_Impor);
-				return appearance;
-			}
-			case AppearanceType::Passport_Kolechia:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::Passport_Kolechia);
-				return appearance;
-			}
-			case AppearanceType::Passport_Obristan:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::Passport_Obristan);
-				return appearance;
-			}
-			case AppearanceType::Passport_Republia:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::Passport_Republia);
-				return appearance;
-			}
-			case AppearanceType::Passport_UnitedFederation:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::Passport_UnitedFederation);
-				return appearance;
-			}
-			case AppearanceType::WorkPass:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::WorkPass);
-				return appearance;
-			}
-			case AppearanceType::Invalid:
-			default:
-			{
-				static const auto appearance = DocAppearance::Get(AppearanceType::Invalid);
-				return appearance;
-			}
-		}
+		return DocAppearance::Get(type);
 	}
-	*/
+
+#pragma endregion
+
 }

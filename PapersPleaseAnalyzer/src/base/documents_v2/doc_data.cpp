@@ -62,7 +62,7 @@ namespace Documents::V2 {
             constexpr bool MatchDigits(const size_t minDigits, const size_t maxDigits)
             {
                 assert(minDigits <= maxDigits);
-                assert(minDigits != 0);
+                //assert(minDigits != 0);
 
                 size_t count = 0;
                 
@@ -349,7 +349,7 @@ namespace Documents::V2 {
 
                 // digits
                 scanner.StartMatch();
-                if (!scanner.MatchDigits(1, INT_MAX)) return Err::FailedSIUnitProcess();
+                if (!scanner.MatchDigits(0, INT_MAX)) return Err::FailedSIUnitProcess();
                 int value = scanner.MatchToInt();
 
                 Documents::Data::SIUnit unit;
@@ -633,6 +633,11 @@ namespace Documents::V2 {
         return m_type;
     }
 
+    bool Data::Broken() const
+    {
+        return m_isBroken;
+    }
+
     FieldData::FieldData(const Data& data, const FieldType type, const DataFieldCategory category)
         : m_data{ data }, m_fieldType{ type }, m_fieldCategory{ category }, m_fieldState{DataFieldState::Initialized}
     {}
@@ -651,10 +656,22 @@ namespace Documents::V2 {
         return m_fieldType;
     }
 
+    bool FieldData::Broken() const
+    {
+        return m_data.Broken();
+    }
+
     FieldData DocData::Get(DataFieldCategory category) const
     {
         if (category == DataFieldCategory::Invalid) return {};
         size_t index = static_cast<size_t>(category) - 1;
+
+        if (m_data[index].Broken())
+        {
+            __debugbreak();
+            return {};
+        }
+
         return m_data[index];
     }
 
@@ -677,14 +694,19 @@ namespace Documents::V2 {
         return false;
     }
 
-    DocData DocDataBuilder::GetDocData()
+    std::optional<DocData> DocDataBuilder::GetDocData()
     {
         for (auto& fieldData : m_data)
         {
             if (fieldData.m_fieldState != DataFieldState::Empty) {
                 fieldData.m_data = Utils::ProcessFieldData(fieldData.m_data, fieldData.m_fieldType, fieldData.m_fieldCategory);
-                // fieldData.m_fieldType = fieldData.m_data.Type(); // messy -- maybe I want to know what general type a field is?
                 fieldData.m_fieldState = DataFieldState::ProcessedData;
+
+                if (fieldData.Broken())
+                {
+                    this->Clear();
+                    return std::nullopt;
+                }
             }
         }
         DocData docData{m_data};

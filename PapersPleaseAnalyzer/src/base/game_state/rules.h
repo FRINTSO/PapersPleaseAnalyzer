@@ -2,6 +2,8 @@
 #include <array>
 #include <string>
 
+#include "base/documents_v2/doc_class.h"
+
 enum class ERule
 {
 	Invalid = 0,
@@ -26,6 +28,8 @@ enum class ERule
 
 class Rule
 {
+public:
+	Rule() = default;
 private:
 	std::string m_description;
 	void* m_implication;
@@ -35,6 +39,15 @@ private:
 
 class RuleBook
 {
+public:
+	RuleBook() = default;
+
+	friend RuleBook CreateRuleBook(const Documents::V2::Doc& document);
 private:
-	std::array<Rule, 10> m_rules;
+	static constexpr size_t RuleCapacity = 10;
+private:
+	std::array<Rule, RuleBook::RuleCapacity> m_rules;
+	size_t m_ruleCount;
 };
+
+RuleBook CreateRuleBook(const Documents::V2::Doc& document);

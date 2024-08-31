@@ -228,19 +228,19 @@ namespace Documents {
 
 			// Setup
 			GameView game = GetGameView(number);
-			auto doc = V2::FindDocument(game, docType);
 
-			if (!doc.IsValid()) {
+			auto doc = V2::FindDocument(game, docType);
+			if (!doc.has_value()) {
 				std::cerr << "Document is not valid, test failed on setup!\n";
 				return;
 			}
 
-			auto binary = doc.PreprocessDocument();
+			auto binary = doc.value().PreprocessDocument();
 
 			// Test
 			char name = 'a';
-			auto layouts = doc.GetLayout().GetAllLayouts();
-			auto layoutCount = doc.GetLayout().GetLayoutCount();
+			auto layouts = doc.value().GetLayout().GetAllLayouts();
+			auto layoutCount = doc.value().GetLayout().GetLayoutCount();
 			for (size_t i = 0; i < layoutCount; i++)
 			{
 				if (layouts[i].GetType() == FieldType::Text)
@@ -253,22 +253,21 @@ namespace Documents {
 			cv::imshow("Document", ScaleImage(binary, 2.0f));
 			cv::waitKey();
 		}
-
-
+			
 		void test_document_field_boxing(const std::string& number, DocType docType)
 		{
 			// Setup
 			GameView game = GetGameView(number);
-			auto doc = V2::FindDocument(game, docType);
 
-			if (!doc.IsValid())
+			auto doc = V2::FindDocument(game, docType);
+			if (!doc.has_value())
 			{
 				std::cerr << "Document is not valid, test failed on setup!\n";
 				return;
 			}
 
-			auto binary = doc.PreprocessDocument();
-			const auto& layout = doc.GetLayout();
+			auto binary = doc.value().PreprocessDocument();
+			const auto& layout = doc.value().GetLayout();
 
 			// Test
 
@@ -285,16 +284,16 @@ namespace Documents {
 		{
 			// Setup
 			GameView game = GetGameView(number);
+			
 			auto doc = V2::FindDocument(game, docType);
-
-			if (!doc.IsValid())
+			if (!doc.has_value())
 			{
 				std::cerr << "Document is not valid, test failed on setup!\n";
 				return;
 			}
 
-			auto binary = doc.PreprocessDocument();
-			const auto& layout = doc.GetLayout();
+			auto binary = doc.value().PreprocessDocument();
+			const auto& layout = doc.value().GetLayout();
 
 			auto dataLayout = layout.GetLayout(dataField);
 

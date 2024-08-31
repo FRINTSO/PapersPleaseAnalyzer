@@ -1,6 +1,8 @@
 #pragma once
 #include "base/common.h"
 
+#include <cstdint>
+
 #if COLOR_OPTIMIZATION
 
 struct RgbColor {

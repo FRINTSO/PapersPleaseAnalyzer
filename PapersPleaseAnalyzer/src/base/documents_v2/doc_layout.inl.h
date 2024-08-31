@@ -2,6 +2,10 @@
 
 namespace Documents::V2 {
 
+#pragma region DataLayout
+
+#pragma region Constructors
+
 	constexpr DocLayout::DataLayout::DataLayout() noexcept
 		: m_dataBox{}, m_dataFieldCategory{}, m_dataFieldType{}
 	{}
@@ -9,6 +13,10 @@ namespace Documents::V2 {
 	constexpr DocLayout::DataLayout::DataLayout(Rectangle dataBox, DataFieldCategory dataFieldCategory, FieldType dataFieldType) noexcept
 		: m_dataBox{ dataBox }, m_dataFieldCategory{ dataFieldCategory }, m_dataFieldType{ dataFieldType }
 	{}
+
+#pragma endregion
+
+#pragma region Getters
 
 	constexpr const Rectangle DocLayout::DataLayout::GetBox() const noexcept
 	{
@@ -23,32 +31,76 @@ namespace Documents::V2 {
 		return m_dataFieldType;
 	}
 
-	///////////////////////////// construction //////////
+#pragma endregion
+
+#pragma endregion
+
+#pragma region Constructors
+
 	constexpr DocLayout::DocLayout() noexcept
-		: m_layouts{}, m_layoutCount{}//, m_appearanceType{}
+		: m_layouts{}, m_layoutCount{}
 	{}
 
-	constexpr DocLayout::DocLayout(std::array<DataLayout, 9> layouts, size_t layoutCount/*, AppearanceType type*/) noexcept
-		: m_layouts{ layouts }, m_layoutCount{ layoutCount }//, m_appearanceType{// type}
+	constexpr DocLayout::DocLayout(std::array<DataLayout, DocLayout::Layouts> layouts, size_t layoutCount) noexcept
+		: m_layouts{ layouts }, m_layoutCount{ layoutCount }
 	{}
 
-	constexpr size_t DocLayout::CountValidLayouts(std::array<DataLayout, 9> layouts) const noexcept
+#pragma endregion
+
+#pragma region Getters
+
+	constexpr Rectangle DocLayout::GetFieldBox(DataFieldCategory type)
 	{
-		size_t count = 0;
-		for (size_t i = 0; i < 9; i++)
+		for (size_t i = 0; i < m_layoutCount; i++)
 		{
-			count += layouts[i].GetCategory() != DataFieldCategory::Invalid;
+			if (m_layouts[i].GetCategory() == type)
+			{
+				return m_layouts[i].GetBox();
+			}
 		}
-		return count;
+		return Rectangle{};
 	}
 
-	///////////////////////////// static methods //////////
+	constexpr const std::array<Rectangle, DocLayout::Layouts> DocLayout::GetAllFieldBoxes()
+	{
+		std::array<Rectangle, DocLayout::Layouts> boxes{};
+		for (size_t i = 0; i < m_layoutCount; i++)
+		{
+			boxes[i] = m_layouts[i].GetBox();
+		}
+		return boxes;
+	}
+
+	constexpr const DocLayout::DataLayout DocLayout::GetLayout(DataFieldCategory type) const noexcept
+	{
+		for (size_t i = 0; i < m_layoutCount; i++)
+		{
+			if (m_layouts[i].GetCategory() == type)
+			{
+				return m_layouts[i];
+			}
+		}
+		return m_layouts[(size_t)DataFieldCategory::Invalid];
+	}
+
+	constexpr const DocLayout::DataLayout* DocLayout::GetAllLayouts() const noexcept
+	{
+		return m_layouts.data();
+	}
+
+	constexpr const size_t DocLayout::GetLayoutCount() const noexcept
+	{
+		return m_layoutCount;
+	}
+
+#pragma endregion
+
+#pragma region Object Acquisition
 
 	constexpr const DocLayout DocLayout::Get(AppearanceType type) noexcept
 	{
 		switch (type)
 		{
-
 			case AppearanceType::AccessPermit:
 				return DocLayout{
 					{
@@ -131,7 +183,7 @@ namespace Documents::V2 {
 						}
 					},
 					5,
-				// type
+					// type
 				};
 			case AppearanceType::DiplomaticAuthorization:
 				return DocLayout{
@@ -158,7 +210,7 @@ namespace Documents::V2 {
 						}
 					},
 					4,
-				// type
+					// type
 				};
 			case AppearanceType::EntryPermit:
 				return DocLayout{
@@ -190,7 +242,7 @@ namespace Documents::V2 {
 						}
 					},
 					5,
-				// type
+					// type
 				};
 			case AppearanceType::EntryTicket:
 				return DocLayout{
@@ -202,7 +254,7 @@ namespace Documents::V2 {
 						},
 					},
 					1,
-				// type
+					// type
 				};
 			case AppearanceType::GrantOfAsylum:
 				return DocLayout{
@@ -254,7 +306,7 @@ namespace Documents::V2 {
 						},
 					},
 					9,
-				// type
+					// type
 				};
 			case AppearanceType::IdentityCard:
 				return DocLayout{
@@ -291,7 +343,7 @@ namespace Documents::V2 {
 						},
 					},
 					6,
-				// type
+					// type
 				};
 			case AppearanceType::IdentitySupplement:
 				return DocLayout{
@@ -323,7 +375,7 @@ namespace Documents::V2 {
 						},
 					},
 					5,
-				// type
+					// type
 				};
 			case AppearanceType::WorkPass:
 				return DocLayout{
@@ -345,7 +397,7 @@ namespace Documents::V2 {
 						},
 					},
 					3,
-				// type
+					// type
 				};
 			case AppearanceType::Passport_Antegria:
 				return DocLayout{
@@ -388,7 +440,7 @@ namespace Documents::V2 {
 
 					},
 					7,
-				// type
+					// type
 				};
 			case AppearanceType::Passport_Arstotzka:
 				return DocLayout{
@@ -431,7 +483,7 @@ namespace Documents::V2 {
 
 					},
 					7,
-				// type
+					// type
 				};
 			case AppearanceType::Passport_Impor:
 				return DocLayout{
@@ -474,7 +526,7 @@ namespace Documents::V2 {
 
 					},
 					7,
-				// type
+					// type
 				};
 			case AppearanceType::Passport_Kolechia:
 				return DocLayout{
@@ -517,7 +569,7 @@ namespace Documents::V2 {
 
 					},
 					7,
-				// type
+					// type
 				};
 			case AppearanceType::Passport_Obristan:
 				return DocLayout{
@@ -560,7 +612,7 @@ namespace Documents::V2 {
 
 					},
 					7,
-				// type
+					// type
 				};
 			case AppearanceType::Passport_Republia:
 				return DocLayout{
@@ -603,7 +655,7 @@ namespace Documents::V2 {
 
 					},
 					7,
-				// type
+					// type
 				};
 			case AppearanceType::Passport_UnitedFederation:
 				return DocLayout{
@@ -646,15 +698,111 @@ namespace Documents::V2 {
 
 					},
 					7,
-				// type
+					// type
+				};
+			case AppearanceType::RuleBook:
+				return DocLayout{
+					{
+						DataLayout{
+							Rectangle{ DOWNSCALE(32), DOWNSCALE(50), DOWNSCALE(188), DOWNSCALE(38)},
+							DataFieldCategory::Rule1,
+							FieldType::Text
+						},
+						DataLayout{
+							Rectangle{ DOWNSCALE(32), DOWNSCALE(98), DOWNSCALE(188), DOWNSCALE(38)},
+							DataFieldCategory::Rule2,
+							FieldType::Text
+						},
+						DataLayout{
+							Rectangle{ DOWNSCALE(32), DOWNSCALE(146), DOWNSCALE(188), DOWNSCALE(38)},
+							DataFieldCategory::Rule3,
+							FieldType::Text
+						},
+						DataLayout{
+							Rectangle{ DOWNSCALE(32), DOWNSCALE(194), DOWNSCALE(188), DOWNSCALE(38)},
+							DataFieldCategory::Rule4,
+							FieldType::Text
+						},
+						DataLayout{
+							Rectangle{ DOWNSCALE(32), DOWNSCALE(242), DOWNSCALE(188), DOWNSCALE(38)},
+							DataFieldCategory::Rule5,
+							FieldType::Text
+						},
+						DataLayout{
+							Rectangle{ DOWNSCALE(274), DOWNSCALE(50), DOWNSCALE(188), DOWNSCALE(38)},
+							DataFieldCategory::Rule6,
+							FieldType::Text
+						},
+						DataLayout{
+							Rectangle{ DOWNSCALE(274), DOWNSCALE(98), DOWNSCALE(188), DOWNSCALE(38)},
+							DataFieldCategory::Rule7,
+							FieldType::Text
+						},
+						DataLayout{
+							Rectangle{ DOWNSCALE(274), DOWNSCALE(146), DOWNSCALE(188), DOWNSCALE(38)},
+							DataFieldCategory::Rule8,
+							FieldType::Text
+						},
+						DataLayout{
+							Rectangle{ DOWNSCALE(274), DOWNSCALE(194), DOWNSCALE(188), DOWNSCALE(38)},
+							DataFieldCategory::Rule9,
+							FieldType::Text
+						},
+						DataLayout{
+							Rectangle{ DOWNSCALE(274), DOWNSCALE(242), DOWNSCALE(188), DOWNSCALE(38)},
+							DataFieldCategory::Rule10,
+							FieldType::Text
+						}
+					},
+					10
+				};
+			case AppearanceType::Bulletin:
+				return DocLayout{
+					{
+						DataLayout{
+							Rectangle{DOWNSCALE(38), DOWNSCALE(92), DOWNSCALE(64), DOWNSCALE(78)},
+							DataFieldCategory::CriminalPhoto1,
+							FieldType::Image
+						},
+						DataLayout{
+							Rectangle{DOWNSCALE(38), DOWNSCALE(190), DOWNSCALE(64), DOWNSCALE(78)},
+							DataFieldCategory::CriminalPhoto2,
+							FieldType::Image
+						},
+						DataLayout{
+							Rectangle{DOWNSCALE(38), DOWNSCALE(288), DOWNSCALE(64), DOWNSCALE(78)},
+							DataFieldCategory::CriminalPhoto3,
+							FieldType::Image
+						}
+					},
+					3
+				};
+			case AppearanceType::Transcript:
+				return DocLayout{
+					{
+						DataLayout{
+							Rectangle{DOWNSCALE(14), DOWNSCALE(32), DOWNSCALE(272), DOWNSCALE(362)},
+							DataFieldCategory::TranscriptPage,
+							FieldType::Text
+						}
+					},
+					1
 				};
 			case AppearanceType::Invalid:
-			default:
 				return {};
+			default:
+			{
+				assert(false);
+			}
 		}
 	}
 
-	constexpr const DocLayout DocLayout::GetBooth() noexcept
+	consteval const DocLayout DocLayout::GetInstant(AppearanceType type) noexcept
+	{
+		return DocLayout::Get(type);
+	}
+
+	consteval const DocLayout DocLayout::GetBooth() noexcept
 	{
 
 		return DocLayout{
@@ -666,7 +814,7 @@ namespace Documents::V2 {
 				},
 				DataLayout{
 					Rectangle{ DOWNSCALE(168), DOWNSCALE(416), DOWNSCALE(22), DOWNSCALE(12) },
-					DataFieldCategory::BoothCounter ,
+					DataFieldCategory::BoothCounter,
 					FieldType::Text
 				},
 				DataLayout{
@@ -679,49 +827,6 @@ namespace Documents::V2 {
 		};
 	}
 
-	///////////////////////////// public methods //////////
+#pragma endregion
 
-	constexpr Rectangle DocLayout::GetFieldBox(DataFieldCategory type)
-	{
-		for (size_t i = 0; i < m_layoutCount; i++)
-		{
-			if (m_layouts[i].GetCategory() == type)
-			{
-				return m_layouts[i].GetBox();
-			}
-		}
-		return Rectangle{};
-	}
-
-	constexpr const std::array<Rectangle, 9> DocLayout::GetAllFieldBoxes()
-	{
-		std::array<Rectangle, 9> boxes{};
-		for (size_t i = 0; i < m_layoutCount; i++)
-		{
-			boxes[i] = m_layouts[i].GetBox();
-		}
-		return boxes;
-	}
-
-	constexpr const DocLayout::DataLayout DocLayout::GetLayout(DataFieldCategory type) const noexcept
-	{
-		for (size_t i = 0; i < m_layoutCount; i++)
-		{
-			if (m_layouts[i].GetCategory() == type)
-			{
-				return m_layouts[i];
-			}
-		}
-		return m_layouts[(size_t)DataFieldCategory::Invalid];
-	}
-
-	constexpr const DocLayout::DataLayout* DocLayout::GetAllLayouts() const noexcept
-	{
-		return m_layouts.data();
-	}
-
-	constexpr const size_t DocLayout::GetLayoutCount() const noexcept
-	{
-		return m_layoutCount;
-	}
 }

@@ -2,6 +2,7 @@
 #include "base/document_data/date.h"
 #include "base/document_data/field_data.h"
 
+#include <optional>
 #include <variant>
 
 namespace Documents::V2 {
@@ -39,7 +40,20 @@ namespace Documents::V2 {
 		Weight,
 		BoothDate,
 		BoothCounter,
-
+		Rule1,
+		Rule2,
+		Rule3,
+		Rule4,
+		Rule5,
+		Rule6,
+		Rule7,
+		Rule8,
+		Rule9,
+		Rule10,
+		CriminalPhoto1,
+		CriminalPhoto2,
+		CriminalPhoto3,
+		TranscriptPage,
 		DATA_FIELD_CATEGORY_LENGTH,
 	};
 
@@ -97,6 +111,7 @@ namespace Documents::V2 {
 
 		std::string Text() const;
 		DataType Type() const;
+		bool Broken() const;
 
 	private:
 		std::variant<
@@ -120,6 +135,7 @@ namespace Documents::V2 {
 		const Data& GetData() const;
 		std::string Text() const;
 		FieldType Type() const;
+		bool Broken() const;
 	private:
 		friend class DocDataBuilder;
 	private:
@@ -161,7 +177,7 @@ namespace Documents::V2 {
 		DocDataBuilder() = default;
 
 		bool AddFieldData(const DataFieldCategory category, FieldData&& data);
-		DocData GetDocData();
+		std::optional<DocData> GetDocData();
 		void Clear();
 	private:
 		std::array<FieldData, ArrayLength> m_data;

@@ -1,4 +1,6 @@
 #pragma once
+#include "base/documents_v2/doc_class.h"
+
 
 enum class SpeakerRole
 {
@@ -16,6 +18,15 @@ private:
 
 class Transcript
 {
+public:
+	Transcript() = default;
+
+	friend Transcript CreateTranscript(const Documents::V2::Doc& document);
 private:
-	std::array<TranscriptEntry, 10> m_entries;
+	static constexpr size_t EntriesCapacity = 10;
+private:
+	std::array<TranscriptEntry, Transcript::EntriesCapacity> m_entries;
 };
+
+
+Transcript CreateTranscript(const Documents::V2::Doc& document);

@@ -4,6 +4,7 @@
 #include <opencv2/opencv.hpp>
 
 struct GameView {
+	GameView() = default;
 	GameView(const std::string& filename);
 
 	cv::Mat booth;
@@ -11,3 +12,4 @@ struct GameView {
 };
 
 GameView GetGameView(const std::string& number);
+bool GetNextGameSimView(const std::string& num, GameView& view);

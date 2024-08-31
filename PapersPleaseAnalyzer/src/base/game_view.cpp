@@ -1,10 +1,13 @@
 #include "pch.h"
 #include "base/game_view.h"
 
+#include <filesystem>
+
 #include "base/common.h"
 #include "base/image_process.h"
 
-GameView::GameView(const std::string& filename) {
+GameView::GameView(const std::string& filename)
+{
 #if	USE_GRAY
 	auto gameView = ToGrayscale(cv::imread(filename));
 #else
@@ -24,3 +27,36 @@ GameView GetGameView(const std::string& number) {
 	return GameView(path);
 }
 
+static inline int GetGameSimCount(const std::string& path)
+{
+	int count = 0;
+	for (const auto& entry : std::filesystem::directory_iterator(path))
+	{
+		if (entry.is_regular_file())
+		{
+			count++;
+		}
+	}
+	return count;
+}
+
+bool GetNextGameSimView(const std::string& num, GameView& view)
+{
+	auto path = "c:/dev/PapersPleaseAnalyzer/PapersPleaseAnalyzer/images/game_sim/" + num;
+
+	static auto fileCount = GetGameSimCount(path) + 1;
+	static int count = 1;
+
+
+	if (count < fileCount)
+	{
+		std::cout << "Game view: " << count << "\n";
+		auto filePath = path + "/game_" + std::to_string(count) + ".png";
+
+		view = GameView(filePath);
+		count++;
+		return true;
+	}
+
+	return false;
+}

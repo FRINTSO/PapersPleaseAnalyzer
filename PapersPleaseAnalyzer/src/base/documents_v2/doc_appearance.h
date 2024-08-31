@@ -2,7 +2,6 @@
 #include <array>
 
 #include "base/color.h"
-#include "base/common.h"
 #include "base/shape.h"
 
 namespace Documents::V2 {
@@ -17,8 +16,11 @@ enum class AppearanceType {
 	GrantOfAsylum,
 	IdentityCard,
 	IdentitySupplement,
-	WorkPass = 9,
-	Passport_Antegria = 10,
+	WorkPass,
+	RuleBook,
+	Bulletin,
+	Transcript = 12,
+	Passport_Antegria = 13,
 	Passport_Arstotzka,
 	Passport_Impor,
 	Passport_Kolechia,
@@ -29,8 +31,9 @@ enum class AppearanceType {
 
 class DocAppearance {
 public:
-	[[nodiscard]] static constexpr DocAppearance Get(AppearanceType type) noexcept;
+	[[nodiscard]] static constexpr const DocAppearance Get(AppearanceType type) noexcept;
 	[[nodiscard]] static const DocAppearance& GetRef(AppearanceType type) noexcept;
+	[[nodiscard]] static consteval const DocAppearance GetInstant(AppearanceType type) noexcept;
 public:
 	constexpr DocAppearance() noexcept;
 
@@ -41,14 +44,12 @@ public:
 	[[nodiscard]] constexpr const int GetHeight() const noexcept;
 	[[nodiscard]] constexpr const AppearanceType GetType() const noexcept;
 private:
-	constexpr DocAppearance(std::array<RgbColor, 4> borderColors, size_t colorCount, Shape shape, AppearanceType appearanceType) noexcept;
-
-	constexpr size_t CountValidColors(std::array<RgbColor, 4> borderColors) noexcept;
+	constexpr DocAppearance(const std::array<RgbColor, 4>& borderColors, const size_t colorCount, const Shape shape, const AppearanceType appearanceType) noexcept;
 private:
-	std::array<RgbColor, 4> m_borderColors;
-	size_t m_colorCount;
-	Shape m_shape;
-	AppearanceType m_appearanceType;
+	const std::array<RgbColor, 4> m_borderColors;
+	const size_t m_colorCount;
+	const Shape m_shape;
+	const AppearanceType m_appearanceType;
 };
 
 }

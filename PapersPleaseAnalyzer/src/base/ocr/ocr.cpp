@@ -3,7 +3,8 @@
 
 #include "base/common.h"
 #include "base/image_process.h"
-
+#include <string>
+#include <cstring>
 
 static int FindTopLine(const cv::Mat& mat) {
 	int top = -1;
@@ -35,25 +36,25 @@ static std::vector<Rectangle> ImageToBoxesMultiline(const cv::Mat& mat, const Fo
 	cv::Mat remainMat = mat;
 
 	int lineTop = FindTopLine(mat);
-	do {
+	while (lineTop != -1) {
 		int top = -1;
 		int left = -1;
 		int width = -1;
 		int bottom = -1;
-		for (int x = 0; x < mat.cols; x++) {
+		for (int col = 0; col < mat.cols; col++) {
 			bool columnHasBlackPixel = false;
-			for (int y = lineTop; y < lineTop + fontInfo.size && y < mat.rows; y++) {
-				if (mat.at<uchar>(y, x)) continue;
+			for (int row = lineTop; row < lineTop + fontInfo.size && row < mat.rows; row++) {
+				if (mat.at<uchar>(row, col)) continue;
 				// We found a black pixel
 				columnHasBlackPixel = true;
-				if (left == -1) left = x;
-				if (top == -1 || y < top) top = y;
+				if (left == -1) left = col;
+				if (top == -1 || row < top) top = row;
 
-				if (y > bottom) bottom = y;
+				if (row > bottom) bottom = row;
 			}
 
 			if (!columnHasBlackPixel && left != -1 && top != -1) {
-				width = x - left;
+				width = col - left;
 
 				boxes.emplace_back(Rectangle{ left, top, width, bottom - top + 1 });
 				top = -1;
@@ -64,7 +65,7 @@ static std::vector<Rectangle> ImageToBoxesMultiline(const cv::Mat& mat, const Fo
 		}
 
 		lineTop = FindNextTopLine(mat, lineTop, fontInfo.size);
-	} while (lineTop != -1);
+	}
 
 	return boxes;
 }
@@ -206,6 +207,8 @@ static constexpr std::string GetPathByFontInfo(const FontInfo& fontInfo) {
 	{
 	case Typeface::Invalid:
 		break;
+	case Typeface::_04b03:
+		return "C:\\dev\\PapersPleaseAnalyzer\\PapersPleaseAnalyzer\\images\\typefaces\\04b03\\14px";
 	case Typeface::BM_Mini:
 		return "C:\\dev\\PapersPleaseAnalyzer\\PapersPleaseAnalyzer\\images\\typefaces\\BM Mini\\16px";
 	case Typeface::MiniKylie:
@@ -219,6 +222,18 @@ static constexpr std::string GetPathByFontInfo(const FontInfo& fontInfo) {
 	return "";
 }
 
+static constexpr char GetCharacter(const std::string& str)
+{
+	if (str == "QUESTION_MARK")
+	{
+		return '?';
+	}
+	else
+	{
+		return str[0];
+	}
+}
+
 static std::unordered_map<int, char> load_all_chars(const FontInfo& fontInfo) {
 	std::unordered_map<int, char> chars{};
 	std::string path = GetPathByFontInfo(fontInfo);
@@ -228,14 +243,15 @@ static std::unordered_map<int, char> load_all_chars(const FontInfo& fontInfo) {
 		{
 			continue;
 		}
-
-		auto character = cv::imread(entry.path().string(), cv::IMREAD_UNCHANGED);
 #if DOWN_SCALE_OPTIMIZATION
-		character = ScaleImage(character, 1.0f / 2.0f);
+		auto character = cv::imread(entry.path().string(), cv::IMREAD_REDUCED_GRAYSCALE_2);
+		// character = ScaleImage(character, 1.0f / 2.0f);
+#else
+		auto character = cv::imread(entry.path().string(), cv::IMREAD_UNCHANGED);
 #endif
 
 		int checksum = checksum_of_character(character);
-		chars[checksum] = entry.path().filename().string()[0];
+		chars[checksum] = GetCharacter(entry.path().filename().stem().string());
 	}
 	return chars;
 }
@@ -284,21 +300,35 @@ std::string ImageToString(const cv::Mat& mat, const FontInfo& fontInfo) {
 		if (number <= 0 || chars.find(number) == chars.end())
 		{
 			std::cerr << "Unrecognized character\n";
-			//cv::imshow("Char", ScaleImage(character, 10.f));
-			//cv::waitKey(500);
+#if 0
+			cv::imshow("Char", mat);
+			cv::waitKey(500);
+#endif
 			continue;
 		}
 
 		char ch = chars[number];
 
-		if (previousRectangle) { // add spaces
-			int spaceSize = box.x - (previousRectangle->x + previousRectangle->width);
-
 #if DOWN_SCALE_OPTIMIZATION
-			constexpr int sizeFactor = 1;
+		constexpr int sizeFactor = 1;
 #else
-			constexpr int sizeFactor = 2;
+		constexpr int sizeFactor = 2;
 #endif
+
+		if (previousRectangle) { // add spaces
+#if 1
+			int horizontalSpaceFromLastBox = box.x - (previousRectangle->x + previousRectangle->width);
+			const int letterSpaceSize = fontInfo.letterSpacingHorizontal * sizeFactor;
+			const int whitespaceSize = fontInfo.whitespaceSize * sizeFactor;
+
+			int whitespaces = ((horizontalSpaceFromLastBox - letterSpaceSize) / whitespaceSize);
+
+			for (int i = 0; i < whitespaces; i++)
+			{
+				field.push_back(' ');
+			}
+#else 
+			int spaceSize = box.x - (previousRectangle->x + previousRectangle->width);
 
 			if ((unsigned int)spaceSize >= (3 * sizeFactor) && previousChar != '1' && ch != '1') { // space between two ones is same as a regular space
 				int spaces = spaceSize < 0 ? 1 : spaceSize / (3 * sizeFactor);
@@ -306,7 +336,27 @@ std::string ImageToString(const cv::Mat& mat, const FontInfo& fontInfo) {
 					field.push_back(' ');
 				}
 			}
+#endif
 		}
+		
+		if (previousRectangle)
+		{ // add newlines
+			int verticalSpaceFromLastBox = box.y - (previousRectangle->y + previousRectangle->height);
+			const int wrapSize = fontInfo.letterSpacingVertical * sizeFactor;
+			const int newLineSize = fontInfo.newlineSize * sizeFactor;
+			int newLines = ((verticalSpaceFromLastBox - wrapSize) / newLineSize);
+
+			if (verticalSpaceFromLastBox - wrapSize >= 0)
+			{ // add extra space when wrapping
+				field.push_back(' ');
+			}
+
+			for (int i = 0; i < newLines; i++)
+			{
+				field.push_back('\n');
+			}
+		}
+
 		previousRectangle = &box;
 		previousChar = ch;
 

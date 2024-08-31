@@ -1,23 +1,26 @@
 #include "pch.h"
 
+#include <chrono>
+
 #include <opencv2/core/utils/logger.hpp>
 
-#include "test/documents/test_document_data_extraction.h"
+#include "base/game_state/mediators/context.h"
+
 #include "test/documents/test_document_boxing.h"
 #include "test/documents/test_document_preprocessing.h"
+#include "test/documents/test_hsv.h"
 
-#include "base/analyzer/analyzer.h"
-#include "base/documents_v2/doc_class.h"
-#include "base/documents_v2/doc_layout.h"
-#include "base/ocr/font.h"
-#include "base/image_process.h"
+#include "base/utils/log.h"
+
 
 using namespace Documents::V2;
 
 int main()
 {
 	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
-	
+	Utils::Log::Init();
+	Utils::Log::GetLogger()->trace("Hello");
+
 	// GameView view = GetGameView("4");
 	// auto doc = FindDocument(view.inspection, DocType::Passport);
 	// auto data = doc.GetDocumentData();
@@ -28,12 +31,23 @@ int main()
 	//Test::test_document_field_boxing("51", DocType::EntryPermit);
 	//cv::waitKey();
 
-	for (size_t i = 1; i < 54; i++)
+	//Test::test_document_character_boxing("54", DocType::RuleBook);
+	// Test::test_document_field_boxing("54", DocType::RuleBook);
+	// Test::test_text_field_character_boxing("54", DocType::RuleBook, DataFieldCategory::Rule1);
+	// Test::test_document_character_boxing("4", DocType::IdentityCard);
+
+	//Documents::Test::test_hsv(GetGameView("57").inspection);
+	// Test::test_document_preprocessing("35", DocType::Transcript);
+
+	// Test::test_document_character_boxing("35", DocType::Transcript);
+
+	AnalysisContext context{false};
+	GameView view;
+	while (GetNextGameSimView("2", view))
 	{
-		std::cout << i << "\n";
-		Test::test_document_field_boxing(std::to_string(i), DocType::WorkPass);
-		
+		context.Update(view);
 	}
 
+	// Don't scan transcript until finished?
 	cv::waitKey();
 }

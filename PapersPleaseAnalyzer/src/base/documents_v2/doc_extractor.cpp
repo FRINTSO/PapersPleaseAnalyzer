@@ -1,5 +1,4 @@
 #include "pch.h"
-
 #include "base/documents_v2/doc_extractor.h"
 
 namespace Documents::V2 {
@@ -66,26 +65,17 @@ namespace Documents::V2 {
 		}
 
 
-		typedef bool (*DocumentExtractionHandlerFunction)(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance, cv::Mat& outMat);
+		typedef std::optional<cv::Mat> (*DocumentExtractionHandlerFunction)(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance);
 
-		static constexpr bool IsInvalidTypeMatched(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance, cv::Mat& outMat) {
-			if (appearance.GetType() == AppearanceType::Invalid) {
-				std::cerr << "INVALID\n";
-				outMat = cv::Mat{};
-				return true;
-			}
-			return false;
-		}
-
-		static constexpr bool IsExactSizeMatched(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance, cv::Mat& outMat) {
+		static std::optional<cv::Mat> IsExactSizeMatched(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance) {
 			if (boundingBox.width == appearance.GetWidth() && boundingBox.height == appearance.GetHeight()) {
-				outMat = inspection(cv::Rect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height));
-				return true;
+				cv::Mat outMat = inspection(cv::Rect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height));
+				return outMat;
 			}
-			return false;
+			return std::nullopt;
 		}
 
-		static inline bool IsCornerMatched(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance, cv::Mat& outMat) {
+		static inline std::optional<cv::Mat> IsCornerMatched(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance) {
 			cv::Mat canvas{ cv::Size(appearance.GetWidth(), appearance.GetHeight()), inspection.type(), CV_RGB(255, 255, 255) };
 			cv::Mat cutDoc = inspection(cv::Rect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height));
 
@@ -93,32 +83,28 @@ namespace Documents::V2 {
 				cv::Mat insetImage(canvas, cv::Rect(0, 0, cutDoc.cols, cutDoc.rows));
 				cutDoc.copyTo(insetImage);
 
-				outMat = canvas;
-				return true;
+				return canvas;
 			} else if (IsCorner(inspection, boundingBox, true, false, appearance)) { // top right
 				cv::Mat insetImage(canvas, cv::Rect(appearance.GetWidth() - cutDoc.cols, 0, cutDoc.cols, cutDoc.rows));
 				cutDoc.copyTo(insetImage);
 
-				outMat = canvas;
-				return true;
+				return canvas;
 			} else if (IsCorner(inspection, boundingBox, false, true, appearance)) { // bottom left
 				cv::Mat insetImage(canvas, cv::Rect(0, appearance.GetHeight() - cutDoc.rows, cutDoc.cols, cutDoc.rows));
 				cutDoc.copyTo(insetImage);
 
-				outMat = canvas;
-				return true;
+				return canvas;
 			} else if (IsCorner(inspection, boundingBox, false, false, appearance)) { // bottom right
 				cv::Mat insetImage(canvas, cv::Rect(appearance.GetWidth() - cutDoc.cols, appearance.GetHeight() - cutDoc.rows, cutDoc.cols, cutDoc.rows));
 				cutDoc.copyTo(insetImage);
 
-				outMat = canvas;
-				return true;
+				return canvas;
 			}
 
-			return false;
+			return std::nullopt;
 		}
 
-		static inline bool IsEdgeMatched(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance, cv::Mat& outMat) {
+		static inline std::optional<cv::Mat> IsEdgeMatched(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance) {
 			cv::Mat canvas{ cv::Size(appearance.GetWidth(), appearance.GetHeight()), inspection.type(), CV_RGB(255, 255, 255) };
 			cv::Mat cutDoc = inspection(cv::Rect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height));
 
@@ -133,8 +119,7 @@ namespace Documents::V2 {
 				cv::Mat insetImage(canvas, cv::Rect(0, top, cutDoc.cols, cutDoc.rows));
 				cutDoc.copyTo(insetImage);
 
-				outMat = canvas;
-				return true;
+				return canvas;
 			}
 
 			if (boundingBox.height == appearance.GetHeight()) { // Correct Height
@@ -148,34 +133,35 @@ namespace Documents::V2 {
 				cv::Mat insetImage(canvas, cv::Rect(left, 0, cutDoc.cols, cutDoc.rows));
 				cutDoc.copyTo(insetImage);
 
-				outMat = canvas;
-				return true;
+				return canvas;
 			}
 
-			return false;
+			return std::nullopt;
 		}
 
 	}
 
-	cv::Mat ExtractDocument(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance) {
+	std::optional<cv::Mat> ExtractDocument(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance) {
 		constexpr Utils::DocumentExtractionHandlerFunction handlers[]
 		{
-			Utils::IsInvalidTypeMatched,
 			Utils::IsExactSizeMatched,
 #if !STRICT_DOCUMENT_SCANNING
 			Utils::IsCornerMatched
 #endif
 		};
 
+		assert(appearance.GetType() != AppearanceType::Invalid);
+
 		cv::Mat mat; // if handler returns true, then mat is initialized
 
 		for (auto& handler : handlers) {
-			if (handler(inspection, boundingBox, appearance, mat)) {
-				return mat;
+			auto document = handler(inspection, boundingBox, appearance);
+			if (document) {
+				return document.value();
 			}
 		}
 
-		return {};
+		return std::nullopt;
 	}
 
 }
