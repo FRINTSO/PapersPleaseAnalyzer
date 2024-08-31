@@ -1,0 +1,3 @@
+[submodule "PapersPleaseAnalyzer/vendor/spdlog"]
+	path = PapersPleaseAnalyzer/vendor/spdlog
+	url = https://github.com/gabime/spdlog
