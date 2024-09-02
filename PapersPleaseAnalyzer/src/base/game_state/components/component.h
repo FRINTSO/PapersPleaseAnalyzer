@@ -1,10 +1,10 @@
 #pragma once
 #include "base/game_state/mediators/analysis_mediator.h"
 
-class State
+class Component
 {
 public:
-	State(AnalysisMediator* mediator)
+	Component(AnalysisMediator* mediator)
 		: m_mediator{ mediator }
 	{}
 

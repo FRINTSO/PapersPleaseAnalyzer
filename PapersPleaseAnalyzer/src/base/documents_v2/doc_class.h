@@ -20,13 +20,18 @@ namespace Documents::V2 {
 
 		~Doc();
 		Doc(const Doc& other);
+		Doc(Doc&& other) noexcept;
 		Doc& operator=(const Doc& other);
+		Doc& operator=(Doc&& other) noexcept;
 
 		DocData GetDocumentData() const;
 
 		const DocType GetDocumentType() const;
 		const PassportType GetPassportType() const;
 		bool IsValid() const;
+
+		bool HasSeal() const;
+		bool IsAuthentic() const;
 
 		friend std::optional<Doc> FindDocument(const GameView& gameView, DocType documentType);
 	public: // Used for testing

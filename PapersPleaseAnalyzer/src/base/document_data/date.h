@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <iostream>
 #include <string>
 
 namespace Documents::Data {
@@ -23,6 +22,8 @@ public:
 	Date operator ++(int); // postfix
 	Date operator --(); // prefix
 	Date operator --(int); // postfix
+
+	std::string ToString() const;
 private:
 	int m_year;
 	int m_month;

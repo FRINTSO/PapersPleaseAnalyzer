@@ -29,22 +29,22 @@ namespace Documents::V1 {
 		int top = -1;
 		int width = -1;
 		int bottom = -1;
-		for (int x = 0; x < mat.cols; x++)
+		for (int col = 0; col < mat.cols; col++)
 		{
 			bool columnHasBlackPixel = false;
-			for (int y = 0; y < mat.rows; y++)
+			for (int row = 0; row < mat.rows; row++)
 			{
-				if (mat.at<uchar>(y, x)) continue;
+				if (mat.at<uchar>(row, col)) continue;
 				columnHasBlackPixel = true;
-				if (left == -1) left = x;
-				if (top == -1 || y < top) top = y;
+				if (left == -1) left = col;
+				if (top == -1 || row < top) top = row;
 
-				if (y > bottom) bottom = y;
+				if (row > bottom) bottom = row;
 			}
 
 			if (!columnHasBlackPixel && left != -1 && top != -1)
 			{
-				width = x - left;
+				width = col - left;
 				return mat(cv::Rect(left, top, width, bottom - top + 1));
 			}
 		}

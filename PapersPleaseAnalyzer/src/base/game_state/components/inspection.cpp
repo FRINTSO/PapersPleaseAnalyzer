@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "base/game_state/states/inspection_state.h"
+#include "base/game_state/components/inspection.h"
 
 #include <iostream>
 #include <utility>
@@ -8,28 +8,33 @@
 
 using namespace Documents::V2;
 
-void InspectionState::Update(const GameView& gameView)
+
+std::array<Doc, InspectionComponent::DocumentScanCapacity> InspectionComponent::Scan(const GameView& gameView) const
 {
-	BeginLOG(InspectionState::Update);
+	std::array<Doc, InspectionComponent::DocumentScanCapacity> foundDocuments;
+	size_t count = 0;
 
-	// check if new applicant
+	for (auto documentType : GetDocTypeIterator())
+	{
+		auto document = FindDocument(gameView, documentType);
+		if (!document) continue;
 
-	// Update passports
-	// Cheap implementation
-	this->TrackDocuments(gameView);
+		assert(count < InspectionComponent::DocumentScanCapacity);
+		foundDocuments[count] = std::move(document.value());
+		count++;
+	}
 
-
-
-	EndLOG(InspectionState::Update);
+	return foundDocuments;
 }
 
 
+#if OUTDATED
 #pragma region Mediator Functions
 
-void InspectionState::AddDocumentToLookout(DocType documentType)
+void InspectionComponent::AddDocumentToLookout(DocType documentType)
 {
 	if (this->IsDocumentBeingLookedFor(documentType)) return;
-	assert(m_lookoutDocumentCount != InspectionState::LookoutDocumentCapacity);
+	assert(m_lookoutDocumentCount != InspectionComponent::LookoutDocumentCapacity);
 
 	for (auto& doc : m_documentsToLookoutFor)
 	{
@@ -43,7 +48,7 @@ void InspectionState::AddDocumentToLookout(DocType documentType)
 
 #pragma endregion
 
-bool InspectionState::IsDocumentBeingLookedFor(DocType documentType) const
+bool InspectionComponent::IsDocumentBeingLookedFor(DocType documentType) const
 {
 	for (DocType doc : m_documentsToLookoutFor)
 	{
@@ -55,7 +60,7 @@ bool InspectionState::IsDocumentBeingLookedFor(DocType documentType) const
 	return false;
 }
 
-void InspectionState::TryRemoveDocumentFromLookout(DocType documentType)
+void InspectionComponent::TryRemoveDocumentFromLookout(DocType documentType)
 {
 	for (DocType& doc : m_documentsToLookoutFor)
 	{
@@ -67,7 +72,7 @@ void InspectionState::TryRemoveDocumentFromLookout(DocType documentType)
 	}
 }
 
-void InspectionState::NotifyLookoutDocumentFound(Documents::V2::DocType documentType) const
+void InspectionComponent::NotifyLookoutDocumentFound(Documents::V2::DocType documentType) const
 {
 	switch (documentType)
 	{
@@ -94,7 +99,7 @@ void InspectionState::NotifyLookoutDocumentFound(Documents::V2::DocType document
 	}
 }
 
-void InspectionState::OnNewApplicant()
+void InspectionComponent::OnNewApplicant()
 { // Clear Docs
 	for (auto& documentType : m_foundApplicantDocuments)
 	{
@@ -130,7 +135,7 @@ static constexpr int ApplicantDocTypeToIndex(DocType documentType)
 		case DocType::Passport:
 			return 9;
 		default:
-			return InspectionState::InvalidIndex;
+			return InspectionComponent::InvalidIndex;
 	}
 }
 
@@ -149,7 +154,7 @@ static constexpr DocType IndexToDocType(int index)
 #pragma endregion
 
 
-bool InspectionState::TryRegisterIfApplicantDocument(const Doc& document)
+bool InspectionComponent::TryRegisterIfApplicantDocument(const Doc& document)
 {
 	if (!IsApplicantDocument(document.GetDocumentType())) return false;
 
@@ -169,7 +174,7 @@ bool InspectionState::TryRegisterIfApplicantDocument(const Doc& document)
 	}
 }
 
-void InspectionState::TrackDocuments(const GameView& gameView)
+void InspectionComponent::TrackDocuments(const GameView& gameView)
 {
 	
 	for (auto documentType : GetDocTypeIterator())
@@ -189,3 +194,5 @@ void InspectionState::TrackDocuments(const GameView& gameView)
 		
 	}
 }
+
+#endif

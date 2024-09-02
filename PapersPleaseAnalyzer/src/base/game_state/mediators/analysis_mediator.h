@@ -1,6 +1,6 @@
 #pragma once
-
 #include "base/documents_v2/doc_class.h"
+#include "base/document_data/date.h"
 
 enum class Sender
 {
@@ -27,4 +27,6 @@ public:
 	~AnalysisMediator() {}
 	virtual void Notify(const Sender sender, const Event event) = 0;
 	virtual void NotifyDocumentFound(const Documents::V2::Doc& document) = 0;
+
+	virtual const Documents::Data::Date& RequestCurrentDate() = 0;
 };

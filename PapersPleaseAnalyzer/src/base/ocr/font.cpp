@@ -3,7 +3,7 @@
 
 static inline constinit FontInfo g_Invalid{ Typeface::Invalid, 0, -1, -1 };
 static inline constinit FontInfo g_04b04{ Typeface::_04b03, 14, 1, 2 /* Guess 3*/, 4, 2 };
-static inline constinit FontInfo g_BM_MiniInfo{ Typeface::BM_Mini, 16, 2, 4, 4, 2 };
+static inline constinit FontInfo g_BM_MiniInfo{ Typeface::BM_Mini, 16, 1, 2, 2, 4 };
 static inline constinit FontInfo g_MiniKylie{ Typeface::MiniKylie, 12, 2, 3, 4, 2 };
 static inline constinit FontInfo g_BoothNumber{ Typeface::BoothNumber, 12, 2, 3 /* Guess 3 */, 4, 2 };
 

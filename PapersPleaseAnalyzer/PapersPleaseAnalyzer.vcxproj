@@ -153,17 +153,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\base\documents_v2\seal.cpp" />
+    <ClCompile Include="src\base\game_state\document_state.cpp" />
     <ClCompile Include="src\base\utils\log.cpp" />
-    <ClCompile Include="src\base\analyzer\analyzer.cpp" />
+    <ClCompile Include="src\base\game_state\components\analyzer.cpp" />
     <ClCompile Include="src\base\documents_v2\doc_appearance.cpp" />
     <ClCompile Include="src\base\documents_v2\doc_layout.cpp" />
     <ClCompile Include="src\base\game_state\criminals.cpp" />
-    <ClCompile Include="src\base\game_state\mediators\context.cpp" />
+    <ClCompile Include="src\base\game_state\mediators\gamer_controller.cpp" />
     <ClCompile Include="src\base\game_state\rules.cpp" />
-    <ClCompile Include="src\base\game_state\states\booth_state.cpp" />
-    <ClCompile Include="src\base\game_state\states\inspection_state.cpp" />
-    <ClCompile Include="src\base\game_state\states\game_state.cpp" />
-    <ClCompile Include="src\base\documents\booth.cpp" />
+    <ClCompile Include="src\base\game_state\components\booth.cpp" />
+    <ClCompile Include="src\base\game_state\components\inspection.cpp" />
+    <ClCompile Include="src\base\game_state\components\game_state.cpp" />
+    <ClCompile Include="src\base\documents\booth_2.cpp" />
     <ClCompile Include="src\base\documents\access_permit.cpp" />
     <ClCompile Include="src\base\documents\certificate_of_vaccination.cpp" />
     <ClCompile Include="src\base\documents\diplomatic_authorization.cpp" />
@@ -176,9 +178,9 @@
     <ClCompile Include="src\base\documents\grant_of_asylum.cpp" />
     <ClCompile Include="src\base\documents\identity_card.cpp" />
     <ClCompile Include="src\base\documents\identity_supplement.cpp" />
-    <ClCompile Include="src\base\documents\seal.cpp" />
+    <ClCompile Include="src\base\documents\seal_2.cpp" />
     <ClCompile Include="src\base\documents\work_pass.cpp" />
-    <ClCompile Include="src\base\game_state\states\profiler_state.cpp" />
+    <ClCompile Include="src\base\game_state\components\profiler_state.cpp" />
     <ClCompile Include="src\base\game_state\transcript.cpp" />
     <ClCompile Include="src\base\game_view.cpp" />
     <ClCompile Include="src\base\screencap.cpp" />
@@ -197,13 +199,15 @@
     <ClCompile Include="src\test\documents\test_hsv.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\base\documents_v2\seal.h" />
+    <ClInclude Include="src\base\game_state\document_state.h" />
     <ClInclude Include="src\base\utils\log.h" />
-    <ClInclude Include="src\base\analyzer\analyzer.h" />
+    <ClInclude Include="src\base\game_state\components\analyzer.h" />
     <ClInclude Include="src\base\game_state\mediators\analysis_mediator.h" />
-    <ClInclude Include="src\base\game_state\mediators\context.h" />
-    <ClInclude Include="src\base\game_state\states\booth_state.h" />
-    <ClInclude Include="src\base\game_state\states\inspection_state.h" />
-    <ClInclude Include="src\base\game_state\states\game_state.h" />
+    <ClInclude Include="src\base\game_state\mediators\game_controller.h" />
+    <ClInclude Include="src\base\game_state\components\booth.h" />
+    <ClInclude Include="src\base\game_state\components\inspection.h" />
+    <ClInclude Include="src\base\game_state\components\game_state.h" />
     <ClInclude Include="src\base\analyzer\profile.h" />
     <ClInclude Include="src\base\documents\booth.h" />
     <ClInclude Include="src\base\color.h" />
@@ -234,8 +238,8 @@
     <ClInclude Include="src\base\document_data\photo.h" />
     <ClInclude Include="src\base\game_state\criminals.h" />
     <ClInclude Include="src\base\game_state\rules.h" />
-    <ClInclude Include="src\base\game_state\states\profiler_state.h" />
-    <ClInclude Include="src\base\game_state\states\state.h" />
+    <ClInclude Include="src\base\game_state\components\profiler_state.h" />
+    <ClInclude Include="src\base\game_state\components\component.h" />
     <ClInclude Include="src\base\game_state\transcript.h" />
     <ClInclude Include="src\base\game_view.h" />
     <ClInclude Include="src\base\image_process.h" />

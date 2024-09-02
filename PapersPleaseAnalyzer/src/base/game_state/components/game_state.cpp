@@ -1,22 +1,45 @@
 #include "pch.h"
-#include "base/game_state/states/game_state.h"
+#include "base/game_state/components/game_state.h"
 
 #include <iostream>
 
 #include "base/utils/log.h"
 
-void GameState::Update(const GameView& gameView)
+#pragma region State Functions
+bool GameState::IsNewDate(Documents::Data::Date date)
 {
-	BeginLOG(GameState::Update);
-
-
-
-
-	// certain data only needs to update once per day
-	// other data needs to update once per applicant
-
-	EndLOG(GameState::Update);
+	if (date != m_currentDate)
+	{
+		LOG("New date!");
+		m_currentDate = date;
+		return true;
+	}
+	return false;
 }
+
+bool GameState::IsNewApplicant(int applicantNumber)
+{
+	if (applicantNumber != m_applicantNumber)
+	{
+		LOG("New applicant!");
+		m_applicantNumber = applicantNumber;
+		return true;
+	}
+	return false;
+}
+
+bool GameState::HasCurrentRuleBook()
+{
+	return m_hasCurrentRules;
+}
+
+bool GameState::HasCurrentCriminals()
+{
+	return m_hasCurrentCriminals;
+}
+
+#pragma endregion
+
 
 #pragma region Mediator Functions
 
@@ -48,8 +71,15 @@ void GameState::OnNewApplicant()
 
 void GameState::ReceiveRuleBookDocument(const Documents::V2::Doc& document)
 {
+	
+	auto ruleBook = CreateRuleBook(document);
+	if (!ruleBook)
+	{
+		LOG_ERR("Rule book could not be loaded!");
+		return;
+	}
 	LOG("Rule book has been loaded!");
-	m_ruleBook = CreateRuleBook(document);
+	m_ruleBook = ruleBook.value();
 	m_hasCurrentRules = true;
 }
 

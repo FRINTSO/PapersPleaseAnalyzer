@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\base\documents\booth.cpp" />
+    <ClCompile Include="src\base\documents\booth_2.cpp" />
     <ClCompile Include="src\base\documents\access_permit.cpp" />
     <ClCompile Include="src\base\documents\certificate_of_vaccination.cpp" />
     <ClCompile Include="src\base\documents\diplomatic_authorization.cpp" />
@@ -10,7 +10,7 @@
     <ClCompile Include="src\base\documents\grant_of_asylum.cpp" />
     <ClCompile Include="src\base\documents\identity_card.cpp" />
     <ClCompile Include="src\base\documents\identity_supplement.cpp" />
-    <ClCompile Include="src\base\documents\seal.cpp" />
+    <ClCompile Include="src\base\documents\seal_2.cpp" />
     <ClCompile Include="src\base\documents\work_pass.cpp" />
     <ClCompile Include="src\base\screencap.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -22,23 +22,25 @@
     <ClCompile Include="src\test\documents\test_document_preprocessing.cpp" />
     <ClCompile Include="src\test\documents\test_document_boxing.cpp" />
     <ClCompile Include="src\test\documents\test_hsv.cpp" />
-    <ClCompile Include="src\base\analyzer\analyzer.cpp" />
+    <ClCompile Include="src\base\game_state\components\analyzer.cpp" />
     <ClCompile Include="src\base\game_view.cpp" />
     <ClCompile Include="src\base\documents_v2\doc_class.cpp" />
     <ClCompile Include="src\base\document_data\date.cpp" />
     <ClCompile Include="src\base\documents_v2\doc_data.cpp" />
     <ClCompile Include="src\base\documents_v2\doc_extractor.cpp" />
-    <ClCompile Include="src\base\game_state\mediators\context.cpp" />
-    <ClCompile Include="src\base\game_state\states\game_state.cpp" />
-    <ClCompile Include="src\base\game_state\states\inspection_state.cpp" />
-    <ClCompile Include="src\base\game_state\states\booth_state.cpp" />
+    <ClCompile Include="src\base\game_state\mediators\gamer_controller.cpp" />
+    <ClCompile Include="src\base\game_state\components\game_state.cpp" />
+    <ClCompile Include="src\base\game_state\components\inspection.cpp" />
+    <ClCompile Include="src\base\game_state\components\booth.cpp" />
     <ClCompile Include="src\base\documents_v2\doc_appearance.cpp" />
     <ClCompile Include="src\base\documents_v2\doc_layout.cpp" />
     <ClCompile Include="src\base\game_state\rules.cpp" />
     <ClCompile Include="src\base\game_state\criminals.cpp" />
     <ClCompile Include="src\base\game_state\transcript.cpp" />
-    <ClCompile Include="src\base\game_state\states\profiler_state.cpp" />
+    <ClCompile Include="src\base\game_state\components\profiler_state.cpp" />
     <ClCompile Include="src\base\utils\log.cpp" />
+    <ClCompile Include="src\base\documents_v2\seal.cpp" />
+    <ClCompile Include="src\base\game_state\document_state.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\documents\booth.h" />
@@ -69,8 +71,8 @@
     <ClInclude Include="src\test\documents\test_document_preprocessing.h" />
     <ClInclude Include="src\test\documents\test_document_boxing.h" />
     <ClInclude Include="src\test\documents\test_hsv.h" />
-    <ClInclude Include="src\base\game_state\mediators\context.h" />
-    <ClInclude Include="src\base\analyzer\analyzer.h" />
+    <ClInclude Include="src\base\game_state\mediators\game_controller.h" />
+    <ClInclude Include="src\base\game_state\components\analyzer.h" />
     <ClInclude Include="src\base\analyzer\profile.h" />
     <ClInclude Include="src\base\documents_v2\doc_class.h" />
     <ClInclude Include="src\base\documents_v2\doc_appearance.h" />
@@ -83,17 +85,19 @@
     <ClInclude Include="src\base\document_data\field_data.h" />
     <ClInclude Include="src\base\documents_v2\data\arstotzka_data.h" />
     <ClInclude Include="src\base\documents_v2\doc_extractor.h" />
-    <ClInclude Include="src\base\game_state\states\game_state.h" />
-    <ClInclude Include="src\base\game_state\states\inspection_state.h" />
+    <ClInclude Include="src\base\game_state\components\game_state.h" />
+    <ClInclude Include="src\base\game_state\components\inspection.h" />
     <ClInclude Include="src\base\game_state\rules.h" />
     <ClInclude Include="src\base\game_state\criminals.h" />
     <ClInclude Include="src\base\document_data\photo.h" />
     <ClInclude Include="src\base\game_state\transcript.h" />
-    <ClInclude Include="src\base\game_state\states\booth_state.h" />
+    <ClInclude Include="src\base\game_state\components\booth.h" />
     <ClInclude Include="src\base\game_state\mediators\analysis_mediator.h" />
-    <ClInclude Include="src\base\game_state\states\state.h" />
-    <ClInclude Include="src\base\game_state\states\profiler_state.h" />
+    <ClInclude Include="src\base\game_state\components\component.h" />
+    <ClInclude Include="src\base\game_state\components\profiler_state.h" />
     <ClInclude Include="src\base\utils\log.h" />
+    <ClInclude Include="src\base\documents_v2\seal.h" />
+    <ClInclude Include="src\base\game_state\document_state.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\base\documents_v2\bounding_box_finder.inc" />

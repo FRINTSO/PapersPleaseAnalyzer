@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <optional>
 #include <string>
 
 #include "base/documents_v2/doc_class.h"
@@ -7,22 +8,26 @@
 enum class ERule
 {
 	Invalid = 0,
-	RequirePassport,
-	RequireArstotzkaPassport,
-	RequireCurrentDocuments,
+
+	RequireCurrentDocuments, // If this flag is set, mediator should know what functions to call
+
+	RequirePassport, // Search for passport, if inspection can't locate it, and booth can't either, then ask where it is
+		RequireArstotzkaPassport,	// Require that a passport is arstotzkan
+		RequireIdentityCardFromCitizens,
 	RequireEntryTicketFromForeigners,
-	RequireIdentityCardFromCitizens,
 	RequireWorkPassFromWorkers,
-	ProhibitWeaponsAndContraband,
-	RequireSearchOfKolechians,
 	RequireDiplomaticAuthorizationFromDiplomats,
 	RequireIdentitySupplementFromForeigners,
-	ProhibitEntryFromImpor,
 	RequireGrantFromAsylumSeekers,
-	ConfiscateArstotzkanPassportsFromAltanRegion,
-	ProhibitEntryFromUnitedFederation,
 	RequirePolioVaccination,
 	RequireAccessPermitFromForeigners,
+
+	RequireSearchOfKolechians,
+	ProhibitEntryFromImpor,
+
+	ProhibitWeaponsAndContraband,
+	ConfiscateArstotzkanPassportsFromAltanRegion,
+	ProhibitEntryFromUnitedFederation,
 	ConfiscateArstotzkanPassports,
 };
 
@@ -30,6 +35,9 @@ class Rule
 {
 public:
 	Rule() = default;
+
+public:
+	void ApplyRule() const;
 private:
 	std::string m_description;
 	void* m_implication;
@@ -42,12 +50,15 @@ class RuleBook
 public:
 	RuleBook() = default;
 
-	friend RuleBook CreateRuleBook(const Documents::V2::Doc& document);
+	friend std::optional<RuleBook> CreateRuleBook(const Documents::V2::Doc& document);
+public:
+	void ApplyRules() const;
 private:
 	static constexpr size_t RuleCapacity = 10;
 private:
-	std::array<Rule, RuleBook::RuleCapacity> m_rules;
+	std::array<Rule, RuleBook::RuleCapacity> m_activeRules;
 	size_t m_ruleCount;
 };
 
-RuleBook CreateRuleBook(const Documents::V2::Doc& document);
+std::optional<RuleBook> CreateRuleBook(const Documents::V2::Doc& document);
+

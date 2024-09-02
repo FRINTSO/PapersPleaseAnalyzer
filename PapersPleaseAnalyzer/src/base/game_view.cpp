@@ -5,6 +5,7 @@
 
 #include "base/common.h"
 #include "base/image_process.h"
+#include "base/utils/log.h"
 
 GameView::GameView(const std::string& filename)
 {
@@ -50,7 +51,7 @@ bool GetNextGameSimView(const std::string& num, GameView& view)
 
 	if (count < fileCount)
 	{
-		std::cout << "Game view: " << count << "\n";
+		LOG_RAW("[Game view: {}]", count);
 		auto filePath = path + "/game_" + std::to_string(count) + ".png";
 
 		view = GameView(filePath);

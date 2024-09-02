@@ -2,10 +2,10 @@
 #include "pch.h"
 #include "base/documents_v2/doc_class.h"
 
-#include "base/documents_v2/doc_extractor.h"
 #include "base/color.h"
 #include "base/common.h"
-
+#include "base/documents_v2/doc_extractor.h"
+#include "base/documents_v2/seal.h"
 #include "base/image_process.h"
 
 #include "base/documents_v2/bounding_box_finder.inc"
@@ -28,7 +28,7 @@ namespace Documents::V2 {
 
 #pragma endregion
 
-#pragma region Rule Of Three
+#pragma region Rule Of Five
 
 	Doc::~Doc()
 	{
@@ -39,6 +39,14 @@ namespace Documents::V2 {
 		: Doc{other.m_mat.clone(), other.m_documentType, other.m_passportType}
 	{}
 
+
+	Doc::Doc(Doc&& other) noexcept
+		: m_mat{std::move(other.m_mat) }, m_documentType{other.m_documentType}, m_passportType{other.m_passportType}
+	{
+		other.m_documentType = DocType::Invalid;
+		other.m_passportType = PassportType::Invalid;
+	}
+
 	Doc& Doc::operator=(const Doc& other)
 	{
 		if (this == &other) return *this;
@@ -47,6 +55,19 @@ namespace Documents::V2 {
 		m_documentType = other.m_documentType;
 		m_passportType = other.m_passportType;
 
+		return *this;
+	}
+
+	Doc& Doc::operator=(Doc&& other) noexcept
+	{
+		if (this != &other)
+		{
+			m_mat = std::move(other.m_mat);
+			m_documentType = other.m_documentType;
+			m_passportType = other.m_passportType;
+			other.m_documentType = DocType::Invalid;
+			other.m_passportType = PassportType::Invalid;
+		}
 		return *this;
 	}
 
@@ -108,11 +129,32 @@ namespace Documents::V2 {
 		return true;
 	}
 
+	bool Doc::HasSeal() const
+	{
+		switch (m_documentType)
+		{
+			case Documents::V2::DocType::AccessPermit:
+			case Documents::V2::DocType::DiplomaticAuthorization:
+			case Documents::V2::DocType::EntryPermit:
+			case Documents::V2::DocType::GrantOfAsylum:
+			case Documents::V2::DocType::WorkPass:
+				return true;
+			default:
+				return false;
+		}
+	}
+	
+	bool Doc::IsAuthentic() const
+	{
+		if (!this->HasSeal()) return true;
+		return IsDocumentValidlySealed(m_mat, m_documentType);
+	}
+
 #pragma endregion
 
 #pragma region Data Extraction
 
-	static inline int TryFindBlackPixel(const cv::Mat& mat, int row)
+	static inline constexpr int TryFindBlackPixel(const cv::Mat& mat, int row)
 	{
 		for (int col = 0; col < mat.cols; col++)
 		{
@@ -124,7 +166,7 @@ namespace Documents::V2 {
 		return -1;
 	}
 
-	static inline int CountContinuousBlackPixelsCol(const cv::Mat& mat, int row, int left)
+	static inline constexpr int CountContinuousBlackPixelsCol(const cv::Mat& mat, int row, int left)
 	{
 		int count = 0;
 		for (size_t col = left; col < mat.cols; col++)
@@ -141,7 +183,7 @@ namespace Documents::V2 {
 		return count;
 	}
 
-	static inline int CountContinuousBlackPixelsRow(const cv::Mat& mat, int top, int col)
+	static inline constexpr int CountContinuousBlackPixelsRow(const cv::Mat& mat, int top, int col)
 	{
 		int count = 0;
 		for (size_t row = top; row < mat.rows; row++)
@@ -158,10 +200,26 @@ namespace Documents::V2 {
 		return count;
 	}
 
+	static inline constexpr int FindValidRightEdge(const cv::Mat& transcript, int row, int left, int minColLimit)
+	{
+		int colCount = CountContinuousBlackPixelsCol(transcript, row, left);
+		return (colCount >= minColLimit) ? left + colCount - 1 : -1;
+	}
+
+	static inline constexpr int FindValidBottomEdge(const cv::Mat& transcript, int top, int right, int minRowLimit)
+	{
+		int rowCount = CountContinuousBlackPixelsRow(transcript, top, right);
+		return (rowCount >= minRowLimit) ? top + rowCount - 1 : -1;
+	}
+
+	static void InvertRegion(cv::Mat& transcript, int left, int top, int right, int bottom)
+	{
+		cv::Mat cutout(transcript, cv::Rect(left, top, right - left + 1, bottom - top + 1));
+		cv::bitwise_not(cutout, cutout);
+	}
+
 	static inline cv::Mat AdjustBinaryTextColorOfTranscript(const cv::Mat& transcript_bin)
 	{
-		// Find black box of certain min size, and flip it
-
 		constexpr auto layout = DocLayout::GetInstant(AppearanceType::Transcript);
 		constexpr auto box = layout.GetLayout(DataFieldCategory::TranscriptPage).GetBox();
 
@@ -172,48 +230,22 @@ namespace Documents::V2 {
 
 		for (size_t row = 0; row < transcript.rows; row++)
 		{
-			int top = row;
 			int left = TryFindBlackPixel(transcript, row);
-			if (left != -1)
-			{
-				int colCount = CountContinuousBlackPixelsCol(transcript, row, left);
-				if (colCount >= minColLimit)
-				{
-					int right = left + colCount - 1;
-					int rowCount = CountContinuousBlackPixelsRow(transcript, top, right);
-					if (rowCount >= minRowLimit)
-					{
-						int bottom = top + rowCount - 1;
-						cv::Mat cutout(transcript, cv::Rect(left, top, right - left + 1, bottom - top + 1));
-						cv::bitwise_not(cutout, cutout);
-						
-						row += bottom - top + 1;
-					}
-				}
-			}
+			if (left == -1) continue;
 
-			// success = TryFindBlackPixel (x, y)
-			// if (success)
-			// {
-			//   int colCount = CountContinuousBlackPixelsCol(x, y);
-			//   if (colCount >= LIMIT)
-			//   {
-			//     right = x + colCount - 1
-			//     int rowCount = CountContinuousBlackPixelsRow(x, y)
-			//     if (rowCount >= LIMIT)
-			//     {
-			//       bottom = x + rowCount - 1
-			//       cv::Mat(transcript, cv::Rect(left, top, right - left + 1, bottom - top + 1));
-			//     }
-			//   }
-			//   else
-			//     print(we found bad pixels)
-			// }
+			int right = FindValidRightEdge(transcript, row, left, minColLimit);
+			if (right == -1) continue;
+
+			int bottom = FindValidBottomEdge(transcript, row, right, minRowLimit);
+			if (bottom == -1) continue;
+
+			InvertRegion(transcript, left, row, right, bottom);
+
+			row = bottom;
 		}
 
 		return transcript_bin;
 	}
-
 	cv::Mat Doc::PreprocessDocument() const
 	{
 		// if (m_documentType == DocType::Invalid || !this->IsValid()) return {};
@@ -269,10 +301,7 @@ namespace Documents::V2 {
 			case AppearanceType::RuleBook:
 				return applyThreshold(157);
 			case AppearanceType::Transcript:
-			{
 				return AdjustBinaryTextColorOfTranscript(applyThreshold(127));
-
-			}
 			default:
 			{
 				std::cerr << "AppearanceType not implemented in Doc::PreprocessDocument()!\n";
@@ -289,8 +318,10 @@ namespace Documents::V2 {
 
 		DocDataBuilder builder{};
 
-		for (size_t i = 0; i < layout.GetLayoutCount(); i++) {
-			switch (layouts[i].GetType()) {
+		for (size_t i = 0; i < layout.GetLayoutCount(); i++)
+		{
+			switch (layouts[i].GetType())
+			{
 				case FieldType::Text:
 				{
 					auto raw_text_data = GetFieldString(ExtractDocumentField(binary, layouts[i].GetBox()), m_documentType);
@@ -301,16 +332,20 @@ namespace Documents::V2 {
 				case FieldType::Invalid:
 				default:
 				{
-					
-					builder.AddFieldData(layouts[i].GetCategory(), FieldData{ Data{} , layouts[i].GetType(), layouts[i].GetCategory()});
+
+					builder.AddFieldData(layouts[i].GetCategory(), FieldData{ Data{} , layouts[i].GetType(), layouts[i].GetCategory() });
 					break;
 				}
 			}
 		}
-		
+
 		auto data = builder.GetDocData();
-		assert(data.has_value());
-		return { data.value()};
+		// assert(data.has_value());
+		if (!data.has_value())
+		{
+			return { };
+		}
+		return { data.value() };
 	}
 
 	DocData Doc::GetDocumentData() const

@@ -3,12 +3,13 @@
 
 #include "base/documents/document.h"
 
-namespace Documents::V1 {
+namespace Documents::V1
+{
 
 	class ISealed
 	{
 	public:
-		virtual ~ISealed() { }
+		virtual ~ISealed() {}
 		virtual bool HasValidSeal() = 0;
 	};
 
@@ -18,3 +19,4 @@ namespace Documents::V1 {
 	bool IsDocumentValidlySealed(const cv::Mat& mat, DocumentType documentType);
 
 }
+

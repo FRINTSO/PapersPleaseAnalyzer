@@ -4,11 +4,11 @@
 
 #include <opencv2/core/utils/logger.hpp>
 
-#include "base/game_state/mediators/context.h"
+#include "base/game_state/mediators/game_controller.h"
 
 #include "test/documents/test_document_boxing.h"
 #include "test/documents/test_document_preprocessing.h"
-#include "test/documents/test_hsv.h"
+//#include "test/documents/test_hsv.h"
 
 #include "base/utils/log.h"
 
@@ -19,7 +19,6 @@ int main()
 {
 	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
 	Utils::Log::Init();
-	Utils::Log::GetLogger()->trace("Hello");
 
 	// GameView view = GetGameView("4");
 	// auto doc = FindDocument(view.inspection, DocType::Passport);
@@ -33,7 +32,8 @@ int main()
 
 	//Test::test_document_character_boxing("54", DocType::RuleBook);
 	// Test::test_document_field_boxing("54", DocType::RuleBook);
-	// Test::test_text_field_character_boxing("54", DocType::RuleBook, DataFieldCategory::Rule1);
+	//Test::test_document_preprocessing("54", DocType::RuleBook);
+	//Test::test_document_character_boxing("54", DocType::RuleBook);
 	// Test::test_document_character_boxing("4", DocType::IdentityCard);
 
 	//Documents::Test::test_hsv(GetGameView("57").inspection);
@@ -41,9 +41,9 @@ int main()
 
 	// Test::test_document_character_boxing("35", DocType::Transcript);
 
-	AnalysisContext context{false};
+	GameAnalysisController context{false};
 	GameView view;
-	while (GetNextGameSimView("2", view))
+	while (GetNextGameSimView("3", view))
 	{
 		context.Update(view);
 	}

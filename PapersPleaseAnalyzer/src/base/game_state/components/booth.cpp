@@ -1,68 +1,16 @@
 #include "pch.h"
-#include "base/game_state/states/booth_state.h"
-
-#include <iostream>
+#include "base/game_state/components/booth.h"
 
 #include <opencv2/opencv.hpp>
 
-#include "base/image_process.h"
 #include "base/documents/document.h"
 #include "base/documents_v2/doc_data.h"
 #include "base/documents_v2/doc_layout.h"
+#include "base/image_process.h"
 #include "base/utils/log.h"
 
 using namespace Documents::Data;
 using namespace Documents::V2;
-
-void BoothState::Update(const GameView& gameView)
-{
-	BeginLOG("BoothState::Update()");
-
-	if (!this->LoadBoothData(gameView.booth))
-	{
-		LOG_ERR("FAILED TO LOAD BOOTH DATA!");
-		return;
-	}
-
-	// If new date, then game needs to update state of rules, criminals
-	if (m_data.m_date != m_previousData.m_date)
-	{
-		m_mediator->Notify(Sender::BoothState, Event::NewGameDate);
-		m_isNewDate = true;
-		//LOG("New Date : ", m_data.m_date);
-	}
-	else
-	{
-		m_isNewDate = false;
-	}
-
-	if (m_data.m_applicantNumber != m_previousData.m_applicantNumber)
-	{
-		m_mediator->Notify(Sender::BoothState, Event::NewApplicant);
-		m_isNewApplicant = true;
-		LOG("New Applicant : ", m_data.m_applicantNumber);
-	}
-	else
-	{
-		m_isNewApplicant = false;
-	}
-
-	EndLOG("BoothState::Update()");
-}
-
-#pragma region State
-
-bool BoothState::IsNewDate() const
-{
-	return m_isNewDate;
-}
-
-bool BoothState::IsNewApplicant() const
-{
-	return m_isNewApplicant;
-}
-
-#pragma endregion
 
 #pragma region Extract Data
 
@@ -126,19 +74,19 @@ static std::optional<DocData> ExtractBoothData(const cv::Mat& booth)
 	return { data.value()};
 }
 
-bool BoothState::LoadBoothData(const cv::Mat& booth)
+std::optional<BoothData> BoothComponent::Scan(const cv::Mat& booth) const
 {
-	m_previousData = m_data;
 	auto loadedData = ExtractBoothData(booth);
 	if (!loadedData)
 	{
 		LOG_ERR("Booth data couldn't be loaded!");
-		return false;
+		return std::nullopt;
 	}
-	m_data.m_date = loadedData->Get(DataFieldCategory::BoothDate).GetData().Get<Date>();
-	m_data.m_weight = loadedData->Get(DataFieldCategory::Weight).GetData().Get<SIUnitValue>();
-	m_data.m_applicantNumber = loadedData->Get(DataFieldCategory::BoothCounter).GetData().Get<long long>();
-	return true;
+	return BoothData{
+		loadedData->Get(DataFieldCategory::BoothDate).GetData().Get<Date>(),
+		loadedData->Get(DataFieldCategory::Weight).GetData().Get<SIUnitValue>(),
+		loadedData->Get(DataFieldCategory::BoothCounter).GetData().Get<int>()
+	};
 }
 
 #pragma endregion

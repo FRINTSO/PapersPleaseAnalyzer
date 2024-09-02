@@ -132,6 +132,14 @@ namespace Documents::Data {
 		*this = PreviousDate(*this);
 		return *this;
 	};
+
+	std::string Date::ToString() const
+	{
+		std::ostringstream oss;
+		oss << this->GetDay() << "." << this->GetMonth() << "." << this->GetYear();
+		return oss.str();
+	}
+
 	inline long LongDate(const Date& d)
 	{
 		if (d.IsValid()) { return d.GetYear() * 10000 + d.GetMonth() * 100 + d.GetDay(); };

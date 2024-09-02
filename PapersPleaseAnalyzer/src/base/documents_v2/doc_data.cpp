@@ -2,6 +2,7 @@
 #include "base/documents_v2/doc_data.h"
 
 #include "base/document_data/date.h"
+#include "base/utils/log.h"
 
 #include <array>
 #include <cassert>
@@ -10,6 +11,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <unordered_set>
 
 namespace Documents::V2 {
 
@@ -125,13 +127,6 @@ namespace Documents::V2 {
                 return (size_t)(m_current - m_start);
             }
 
-            inline long long MatchToNumber()
-            {
-                const char* start = m_start;
-                m_start = m_current;
-                return std::atoll(start);
-            }
-
             inline std::string MatchToStr()
             {
                 const char* start = m_start;
@@ -193,7 +188,22 @@ namespace Documents::V2 {
                 return result;
             }
 
-            
+            static constexpr inline std::string ToLower(const std::string& str)
+            {
+                if (str.empty())
+                {
+                    return str;
+                }
+
+                std::string result = str;
+
+                for (size_t i = 0; i < result.size(); i++)
+                {
+                    result[i] = std::tolower(static_cast<char>(result[i]));
+                }
+
+                return result;
+            }
         }
 
         namespace DataProcessing
@@ -229,6 +239,11 @@ namespace Documents::V2 {
                 static inline Data FailedVaccineProcess()
                 {
                     return FailedProcess("INVALID VACCINE");
+                }
+
+                static inline Data FailedRuleProcess()
+                {
+                    return FailedProcess("INVALID RULE");
                 }
             }
 
@@ -304,7 +319,7 @@ namespace Documents::V2 {
                 // dateData \s*\d{2}\.\d{2}\.\d{4}\s* // this or
                 // // dateData \s*\d{2}\.\d{2}\.\d{2}\s* // this
                 // day.month.year
-                // yead is either 2 or 4 digits
+                // year is either 2 or 4 digits
 
                 Documents::Data::Date date;
 
@@ -424,6 +439,44 @@ namespace Documents::V2 {
                     return Err::FailedProcess("INVALID SEX");
                 }
             }
+
+            static inline Data ProcessRule(StrScanner& scanner)
+            {
+                static const std::unordered_set<std::string> rules{
+                    "all documents must be current",
+                    "all kolechians must be searched",
+                    "arstotzkan citizens must have an id card",
+                    "arstotzkan citizens only",
+                    "asylum seekers must have a grant",
+                    "citizens must have an id card",
+                    "confiscate all arstotzkan passports",
+                    "confiscate arstotzkan passports belonging to altan residents",
+                    "diplomats require authorization",
+                    "entrant must have a passport",
+                    "entrant must have polio vaccine cert",
+                    "foreigners require an access permit",
+                    "foreigners require an entry permit",
+                    "foreigners require an entry ticket",
+                    "foreigners require an id supplement",
+                    "no entry from United Federation",
+                    "no entry from impor",
+                    "no weapons or contraband",
+                    "workers must have a work pass",
+                    ""
+                };
+
+
+                auto data = ProcessGenericString(scanner);
+                const auto& text = StringFunctions::ToLower(data.Get<std::string>());
+
+                if (rules.find(text) == rules.end())
+                {
+                    LOG_ERR("Failed Rule: {}", text);
+                    return Err::FailedRuleProcess();
+                }
+                
+                return data;
+            }
         }
 
         static inline Data ProcessTextData(const Data& data, const DataFieldCategory category)
@@ -484,6 +537,17 @@ namespace Documents::V2 {
                 }
                 case DataFieldCategory::BoothCounter:
                     return DataProcessing::ProcessGenericInt(scanner);
+                case DataFieldCategory::Rule1:
+                case DataFieldCategory::Rule2:
+                case DataFieldCategory::Rule3:
+                case DataFieldCategory::Rule4:
+                case DataFieldCategory::Rule5:
+                case DataFieldCategory::Rule6:
+                case DataFieldCategory::Rule7:
+                case DataFieldCategory::Rule8:
+                case DataFieldCategory::Rule9:
+                case DataFieldCategory::Rule10:
+                    return DataProcessing::ProcessRule(scanner);
                 default:
                     return { data };
             }
@@ -522,7 +586,7 @@ namespace Documents::V2 {
         : Data{data, DataType::GenericString}
     {}
 
-    Data::Data(const long long data)
+    Data::Data(const int data)
         : Data{data, DataType::GenericNumber}
     {}
 
@@ -556,7 +620,7 @@ namespace Documents::V2 {
             case DataType::GenericString:
                 return this->Get<std::string>();
             case DataType::GenericNumber:
-                return std::to_string(this->Get<long long>());
+                return std::to_string(this->Get<int>());
             case DataType::Date:
             {
                 const Documents::Data::Date& date = this->Get<Documents::Data::Date>();

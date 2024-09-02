@@ -7,15 +7,27 @@
 #include <cstring>
 
 static int FindTopLine(const cv::Mat& mat) {
+#if 1
+	for (int row = 0; row < mat.rows; row++)
+	{
+		for (int col = 0; col < mat.cols; col++)
+		{
+			if (mat.at<uchar>(row, col)) continue;
+			return row;
+		}
+	}
+	return -1;
+#else
 	int top = -1;
-	for (int y = 0; y < mat.rows; y++) {
-		for (int x = 0; x < mat.cols; x++) {
-			if (mat.at<uchar>(y, x)) continue;
-			if (top == -1) top = y;
+	for (int row = 0; row < mat.rows; row++) {
+		for (int col = 0; col < mat.cols; col++) {
+			if (mat.at<uchar>(row, col)) continue;
+			if (top == -1) top = row;
 		}
 		if (top != -1) break;
 	}
 	return top;
+#endif
 }
 
 static int FindNextTopLine(const cv::Mat& mat, int previousLine, int fontSize) {
@@ -35,25 +47,73 @@ static std::vector<Rectangle> ImageToBoxesMultiline(const cv::Mat& mat, const Fo
 	
 	cv::Mat remainMat = mat;
 
+	const int whitespaceSize = fontInfo.whitespaceSize; // depends on font
+	constexpr int maxAllowedWhitespace = 10;
+	const int maxStepsFromLastCharacter = whitespaceSize * maxAllowedWhitespace;
+
 	int lineTop = FindTopLine(mat);
 	while (lineTop != -1) {
+#if 1
+
+		int lastBoxX = INT_MAX;
+
+		int left = -1;
+		int top = -1;
+		int width = -1;
+		int height = -1;
+		int bottom = -1;
+		for (int x = 0; x < mat.cols; x++)
+		{
+			// check last character x position, if it's greater than max, cut scanner short
+			if (x - lastBoxX > maxStepsFromLastCharacter) break;
+
+			bool columnHasBlackPixel = false;
+			const int bottomScan = std::min(lineTop + fontInfo.size, mat.rows);
+			for (int y = lineTop; y < bottomScan; y++)
+			{
+				if (mat.at<uchar>(y, x)) continue;
+				// We found a black pixel
+				columnHasBlackPixel = true;
+				if (left == -1) left = x;
+				if (top == -1 || y < top) top = y;
+
+				if (y > bottom && y < top + fontInfo.size) bottom = y;
+			}
+
+			if (!columnHasBlackPixel && left != -1 && top != -1)
+			{
+				lastBoxX = x;
+
+				width = x - left;
+				height = bottom - top + 1;
+				// std::cout << "Width * Height: " << width * height << "\n";
+				boxes.emplace_back(Rectangle{ left, top, width, height });
+				left = -1;
+				top = -1;
+				width = -1;
+				bottom = -1;
+			}
+		}
+		lineTop = FindNextTopLine(mat, lineTop, fontInfo.size);
+#else
 		int top = -1;
 		int left = -1;
 		int width = -1;
 		int bottom = -1;
 		for (int col = 0; col < mat.cols; col++) {
-			bool columnHasBlackPixel = false;
-			for (int row = lineTop; row < lineTop + fontInfo.size && row < mat.rows; row++) {
+			bool rowContainsBlackPixel = false;
+			const int bottomScan = std::min(lineTop + fontInfo.size, mat.rows);
+			for (int row = lineTop; row < bottomScan; row++) {
 				if (mat.at<uchar>(row, col)) continue;
 				// We found a black pixel
-				columnHasBlackPixel = true;
+				rowContainsBlackPixel = true;
 				if (left == -1) left = col;
 				if (top == -1 || row < top) top = row;
 
 				if (row > bottom) bottom = row;
 			}
 
-			if (!columnHasBlackPixel && left != -1 && top != -1) {
+			if (!rowContainsBlackPixel && left != -1 && top != -1) {
 				width = col - left;
 
 				boxes.emplace_back(Rectangle{ left, top, width, bottom - top + 1 });
@@ -65,6 +125,7 @@ static std::vector<Rectangle> ImageToBoxesMultiline(const cv::Mat& mat, const Fo
 		}
 
 		lineTop = FindNextTopLine(mat, lineTop, fontInfo.size);
+#endif
 	}
 
 	return boxes;
@@ -243,7 +304,7 @@ static std::unordered_map<int, char> load_all_chars(const FontInfo& fontInfo) {
 		{
 			continue;
 		}
-#if DOWN_SCALE_OPTIMIZATION
+#if DOWNSCALE_OPTIMIZATION
 		auto character = cv::imread(entry.path().string(), cv::IMREAD_REDUCED_GRAYSCALE_2);
 		// character = ScaleImage(character, 1.0f / 2.0f);
 #else
@@ -309,7 +370,7 @@ std::string ImageToString(const cv::Mat& mat, const FontInfo& fontInfo) {
 
 		char ch = chars[number];
 
-#if DOWN_SCALE_OPTIMIZATION
+#if DOWNSCALE_OPTIMIZATION
 		constexpr int sizeFactor = 1;
 #else
 		constexpr int sizeFactor = 2;

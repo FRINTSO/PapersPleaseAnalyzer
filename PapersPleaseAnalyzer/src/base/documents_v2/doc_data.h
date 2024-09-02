@@ -87,8 +87,6 @@ namespace Documents::V2 {
 	class Data
 	{
 	public:
-
-	public:
 		Data() = default;
 		template<typename T>
 		Data(const T& data, DataType type);
@@ -96,7 +94,7 @@ namespace Documents::V2 {
 		Data(const T& data, DataType type, bool isBroken);
 
 		Data(const std::string& data);
-		Data(const long long data);
+		Data(const int data);
 		Data(const Documents::Data::Date& data);
 		Data(const Documents::Data::SIUnitValue& data);
 		Data(const Documents::Data::Vaccine& data);
@@ -115,7 +113,7 @@ namespace Documents::V2 {
 
 	private:
 		std::variant<
-			long long,
+			int,
 			std::string,
 			Documents::Data::Date,
 			Documents::Data::SIUnitValue,
