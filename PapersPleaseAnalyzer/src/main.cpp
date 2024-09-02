@@ -13,12 +13,14 @@
 #include "base/utils/log.h"
 
 
-using namespace Documents::V2;
+using namespace paplease::documents::v2;
+
+
 
 int main()
 {
 	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
-	Utils::Log::Init();
+	paplease::utils::Log::Init();
 
 	// GameView view = GetGameView("4");
 	// auto doc = FindDocument(view.inspection, DocType::Passport);
@@ -41,8 +43,8 @@ int main()
 
 	// Test::test_document_character_boxing("35", DocType::Transcript);
 
-	GameAnalysisController context{false};
-	GameView view;
+	paplease::analysis::mediators::GameAnalysisController context{false};
+	paplease::GameView view;
 	while (GetNextGameSimView("3", view))
 	{
 		context.Update(view);

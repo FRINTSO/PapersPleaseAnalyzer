@@ -10,49 +10,52 @@
 #include "base/documents_v2/doc_type.h"
 #include "base/game_view.h"
 
+namespace paplease {
+	namespace documents {
+		namespace v2 {
 
-namespace Documents::V2 {
+			class Doc
+			{
+			public: // Constructors
+				Doc();
+				~Doc();
+				Doc(const Doc& other);
+				Doc(Doc&& other) noexcept;
+				Doc& operator=(const Doc& other);
+				Doc& operator=(Doc&& other) noexcept;
 
-	class Doc
-	{
-	public:
-		Doc(); // default initialization
+			public: // Public Methods
+				DocData GetDocumentData() const;
 
-		~Doc();
-		Doc(const Doc& other);
-		Doc(Doc&& other) noexcept;
-		Doc& operator=(const Doc& other);
-		Doc& operator=(Doc&& other) noexcept;
+				const DocType GetDocumentType() const;
+				const PassportType GetPassportType() const;
+				bool IsValid() const;
 
-		DocData GetDocumentData() const;
+				bool HasSeal() const;
+				bool IsAuthentic() const;
 
-		const DocType GetDocumentType() const;
-		const PassportType GetPassportType() const;
-		bool IsValid() const;
+				friend std::optional<Doc> FindDocument(const GameView& gameView, DocType documentType);
 
-		bool HasSeal() const;
-		bool IsAuthentic() const;
+			public: // Methods used for testing
+				cv::Mat PreprocessDocument() const;
+				const DocLayout& GetLayout() const noexcept;
 
-		friend std::optional<Doc> FindDocument(const GameView& gameView, DocType documentType);
-	public: // Used for testing
+			private: // Private Constructors and Methods
+				Doc(cv::Mat&& mat, const DocType documentType, const PassportType passportType);
 
-		cv::Mat PreprocessDocument() const;
-		const DocLayout& GetLayout() const noexcept;
+				DocData ExtractDocData() const;
 
-	private:
-		Doc(const cv::Mat& mat, const DocType documentType, const PassportType passportType);
+				AppearanceType GetAppearanceType() const noexcept;
+				const DocAppearance& GetAppearance() const noexcept;
 
-		DocData ExtractDocData() const;
+			private: // Private members
+				cv::Mat m_mat;
+				DocType m_documentType;
+				PassportType m_passportType;
+			};
 
-		AppearanceType GetAppearanceType() const noexcept;
-		const DocAppearance& GetAppearance() const noexcept;
-	private:
-		cv::Mat m_mat;
-		DocType m_documentType; // Needs to come before, since we need to be able to compute appearance type
-		PassportType m_passportType;
-	};
+			std::optional<Doc> FindDocument(const GameView& gameView, DocType documentType);
 
-	std::optional<Doc> FindDocument(const GameView& gameView, DocType documentType);
-	std::vector<Doc> FindAllDocuments(const GameView& gameView);
-
-} // namespace Documents::V2
+		}  // namespace v2
+	}  // namespace documents
+}  // namespace paplease

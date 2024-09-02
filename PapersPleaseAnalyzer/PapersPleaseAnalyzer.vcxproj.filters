@@ -1,22 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\base\documents\booth_2.cpp" />
-    <ClCompile Include="src\base\documents\access_permit.cpp" />
-    <ClCompile Include="src\base\documents\certificate_of_vaccination.cpp" />
-    <ClCompile Include="src\base\documents\diplomatic_authorization.cpp" />
-    <ClCompile Include="src\base\documents\entry_permit.cpp" />
-    <ClCompile Include="src\base\documents\entry_ticket.cpp" />
-    <ClCompile Include="src\base\documents\grant_of_asylum.cpp" />
-    <ClCompile Include="src\base\documents\identity_card.cpp" />
-    <ClCompile Include="src\base\documents\identity_supplement.cpp" />
-    <ClCompile Include="src\base\documents\seal_2.cpp" />
-    <ClCompile Include="src\base\documents\work_pass.cpp" />
     <ClCompile Include="src\base\screencap.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\base\ocr\font.cpp" />
     <ClCompile Include="src\base\ocr\ocr.cpp" />
-    <ClCompile Include="src\base\documents\passport.cpp" />
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\test\documents\test_document_data_extraction.cpp" />
     <ClCompile Include="src\test\documents\test_document_preprocessing.cpp" />
@@ -40,30 +28,15 @@
     <ClCompile Include="src\base\game_state\components\profiler_state.cpp" />
     <ClCompile Include="src\base\utils\log.cpp" />
     <ClCompile Include="src\base\documents_v2\seal.cpp" />
-    <ClCompile Include="src\base\game_state\document_state.cpp" />
+    <ClCompile Include="src\base\game_state\components\document_state.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\base\documents\booth.h" />
     <ClInclude Include="src\base\color.h" />
     <ClInclude Include="src\base\common.h" />
-    <ClInclude Include="src\base\documents\access_permit.h" />
-    <ClInclude Include="src\base\documents\bounding_box_finder.inc" />
-    <ClInclude Include="src\base\documents\certificate_of_vaccination.h" />
-    <ClInclude Include="src\base\documents\diplomatic_authorization.h" />
-    <ClInclude Include="src\base\documents\document.h" />
-    <ClInclude Include="src\base\documents\entry_permit.h" />
-    <ClInclude Include="src\base\documents\entry_ticket.h" />
-    <ClInclude Include="src\base\documents\grant_of_asylum.h" />
-    <ClInclude Include="src\base\documents\identity_card.h" />
-    <ClInclude Include="src\base\documents\identity_supplement.h" />
-    <ClInclude Include="src\base\documents\seal.h" />
-    <ClInclude Include="src\base\documents\work_pass.h" />
     <ClInclude Include="src\base\game_view.h" />
     <ClInclude Include="src\base\image_process.h" />
     <ClInclude Include="src\base\ocr\font.h" />
-    <ClInclude Include="src\base\documents\layout.h" />
     <ClInclude Include="src\base\ocr\ocr.h" />
-    <ClInclude Include="src\base\documents\passport.h" />
     <ClInclude Include="src\base\screencap.h" />
     <ClInclude Include="src\base\shape.h" />
     <ClInclude Include="src\pch.h" />
@@ -83,7 +56,6 @@
     <ClInclude Include="src\base\documents_v2\doc_appearance.inl.h" />
     <ClInclude Include="src\base\documents_v2\doc_layout.inl.h" />
     <ClInclude Include="src\base\document_data\field_data.h" />
-    <ClInclude Include="src\base\documents_v2\data\arstotzka_data.h" />
     <ClInclude Include="src\base\documents_v2\doc_extractor.h" />
     <ClInclude Include="src\base\game_state\components\game_state.h" />
     <ClInclude Include="src\base\game_state\components\inspection.h" />
@@ -97,7 +69,10 @@
     <ClInclude Include="src\base\game_state\components\profiler_state.h" />
     <ClInclude Include="src\base\utils\log.h" />
     <ClInclude Include="src\base\documents_v2\seal.h" />
-    <ClInclude Include="src\base\game_state\document_state.h" />
+    <ClInclude Include="src\base\game_state\components\document_state.h" />
+    <ClInclude Include="src\base\documents_v2\doc_data_type.h" />
+    <ClInclude Include="src\base\documents_v2\doc_type.inl.h" />
+    <ClInclude Include="src\base\documents_v2\utils\str_scanner.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\base\documents_v2\bounding_box_finder.inc" />

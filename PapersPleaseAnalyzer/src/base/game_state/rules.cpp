@@ -3,41 +3,49 @@
 
 #include "base/utils/log.h"
 
-using namespace Documents::V2;
 
-static inline constexpr const Rule& FetchRule(ERule rule)
-{
-	return {};
-}
+namespace paplease {
+	namespace analysis {
 
-std::optional<RuleBook> CreateRuleBook(const Documents::V2::Doc& document)
-{
-	auto ruleData = document.GetDocumentData();
+		using namespace documents::v2;
 
-	if (!document.IsValid())
-	{
-		LOG_ERR("Tried to create rule book from invalid document");
-		return std::nullopt;
-	}
+		static inline constexpr const Rule& FetchRule(ERule rule)
+		{
+			return {};
+		}
 
-	// for (int i = (int)DataFieldCategory::Rule1; i <= (int)DataFieldCategory::Rule10; i++)
-	for (DataFieldCategory category = DataFieldCategory::Rule1; category <= DataFieldCategory::Rule10; ((int&)category)++)
-	{
-		ruleData.Get(category);
-	}
+		std::optional<RuleBook> CreateRuleBook(const Doc& document)
+		{
+			auto ruleData = document.GetDocumentData();
 
-	return RuleBook{};
-}
+			if (!document.IsValid())
+			{
+				LOG_ERR("Tried to create rule book from invalid document");
+				return std::nullopt;
+			}
 
-void Rule::ApplyRule() const
-{
+			// for (int i = (int)DataFieldCategory::Rule1; i <= (int)DataFieldCategory::Rule10; i++)
+			for (DataFieldCategory category = DataFieldCategory::Rule1; category <= DataFieldCategory::Rule10; ((int&)category)++)
+			{
+				ruleData.Get(category);
+			}
 
-}
+			return RuleBook{};
+		}
 
-void RuleBook::ApplyRules() const
-{
-	for (const auto& rule : m_activeRules)
-	{
-		rule.ApplyRule();
-	}
-}
+		void Rule::ApplyRule() const
+		{
+
+		}
+
+		void RuleBook::ApplyRules() const
+		{
+			for (const auto& rule : m_activeRules)
+			{
+				rule.ApplyRule();
+			}
+		}
+
+
+	}  // namespace analysis
+}  // namespace paplease

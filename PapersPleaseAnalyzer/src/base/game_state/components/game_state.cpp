@@ -5,8 +5,14 @@
 
 #include "base/utils/log.h"
 
+namespace paplease {
+	namespace analysis {
+		namespace components {
+			
+			using namespace mediators;
+
 #pragma region State Functions
-bool GameState::IsNewDate(Documents::Data::Date date)
+bool GameState::IsNewDate(documents::data::Date date)
 {
 	if (date != m_currentDate)
 	{
@@ -69,7 +75,7 @@ void GameState::OnNewApplicant()
 	m_mediator->Notify(Sender::GameState, Event::FindTranscript);
 }
 
-void GameState::ReceiveRuleBookDocument(const Documents::V2::Doc& document)
+void GameState::ReceiveRuleBookDocument(const documents::v2::Doc& document)
 {
 	
 	auto ruleBook = CreateRuleBook(document);
@@ -83,14 +89,14 @@ void GameState::ReceiveRuleBookDocument(const Documents::V2::Doc& document)
 	m_hasCurrentRules = true;
 }
 
-void GameState::ReceiveBulletinDocument(const Documents::V2::Doc& document)
+void GameState::ReceiveBulletinDocument(const documents::v2::Doc& document)
 {
 	LOG("Criminal data has been loaded!");
 	m_criminalData = CreateCriminalData(document);
 	m_hasCurrentCriminals = true;
 }
 
-void GameState::ReceiveTranscriptDocument(const Documents::V2::Doc& document)
+void GameState::ReceiveTranscriptDocument(const documents::v2::Doc& document)
 {
 	LOG("Transcript has been loaded!");
 	m_transcript = CreateTranscript(document);
@@ -99,3 +105,7 @@ void GameState::ReceiveTranscriptDocument(const Documents::V2::Doc& document)
 
 
 #pragma endregion
+
+		}  // namespace components
+	}  // namespace analysis
+}  // namespace paplease

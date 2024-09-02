@@ -1,7 +1,13 @@
 #include "pch.h"
 #include "base/game_state/transcript.h"
 
-Transcript CreateTranscript(const Documents::V2::Doc& document)
-{
-	return {};
-}
+namespace paplease {
+	namespace analysis {
+
+		Transcript CreateTranscript(const documents::v2::Doc& document)
+		{
+			return {};
+		}
+
+	}  // namespace analysis
+}  // namespace paplease

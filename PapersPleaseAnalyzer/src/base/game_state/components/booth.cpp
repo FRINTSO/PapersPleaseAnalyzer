@@ -3,14 +3,17 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "base/documents/document.h"
 #include "base/documents_v2/doc_data.h"
 #include "base/documents_v2/doc_layout.h"
 #include "base/image_process.h"
 #include "base/utils/log.h"
 
-using namespace Documents::Data;
-using namespace Documents::V2;
+namespace paplease {
+	namespace analysis {
+		namespace components {
+
+using namespace documents::data;
+using namespace documents::v2;
 
 #pragma region Extract Data
 
@@ -41,26 +44,26 @@ static cv::Mat PreprocessBooth(const cv::Mat& booth)
 static std::optional<DocData> ExtractBoothData(const cv::Mat& booth)
 {
 	auto binary = PreprocessBooth(booth);
-	static constexpr auto boothLayout = Documents::V2::DocLayout::GetBooth();
+	static constexpr auto boothLayout = documents::v2::DocLayout::GetBooth();
 	auto layouts = boothLayout.GetAllLayouts();
 
-	Documents::V2::DocDataBuilder builder{};
+	documents::v2::DocDataBuilder builder{};
 
 	for (size_t i = 0; i < boothLayout.GetLayoutCount(); i++)
 	{
 		switch (layouts[i].GetType())
 		{
-			case Documents::V2::FieldType::Text:
+			case documents::v2::FieldType::Text:
 			{
-				auto raw_data = GetFieldString(ExtractDocumentField(binary, layouts[i].GetBox()), Documents::V1::DocumentType::Booth);
-				builder.AddFieldData(layouts[i].GetCategory(), Documents::V2::FieldData{ Documents::V2::Data{ raw_data }, layouts[i].GetType(), layouts[i].GetCategory() });
+				auto raw_data = GetBoothString(ExtractDocumentField(binary, layouts[i].GetBox()));
+				builder.AddFieldData(layouts[i].GetCategory(), documents::v2::FieldData{ documents::v2::Data{ raw_data }, layouts[i].GetType(), layouts[i].GetCategory() });
 				break;
 			}
-			case Documents::V2::FieldType::Image:
-			case Documents::V2::FieldType::Invalid:
+			case documents::v2::FieldType::Image:
+			case documents::v2::FieldType::Invalid:
 			default:
 			{
-				builder.AddFieldData(layouts[i].GetCategory(), Documents::V2::FieldData{ Documents::V2::Data{}, layouts[i].GetType(), layouts[i].GetCategory() });
+				builder.AddFieldData(layouts[i].GetCategory(), documents::v2::FieldData{ documents::v2::Data{}, layouts[i].GetType(), layouts[i].GetCategory() });
 				break;
 			}
 		}
@@ -90,3 +93,7 @@ std::optional<BoothData> BoothComponent::Scan(const cv::Mat& booth) const
 }
 
 #pragma endregion
+
+		}  // namespace components
+	}  // namespace analysis
+}  // namespace paplease

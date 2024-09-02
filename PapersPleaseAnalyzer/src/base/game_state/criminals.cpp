@@ -1,15 +1,21 @@
 #include "pch.h"
 #include "base/game_state/criminals.h"
 
-using namespace Documents::V2;
+namespace paplease {
+	namespace analysis {
 
-CriminalData CreateCriminalData(const Doc& document)
-{
-	if (!document.IsValid())
-	{
-		std::cerr << "Tried creating criminal data from invalid document\n";
-		return {};
-	}
+		using namespace documents::v2;
 
-	return {};
-}
+		CriminalData CreateCriminalData(const Doc& document)
+		{
+			if (!document.IsValid())
+			{
+				std::cerr << "Tried creating criminal data from invalid document\n";
+				return {};
+			}
+
+			return {};
+		}
+
+	}  // namespace analysis
+} // namespace paplease

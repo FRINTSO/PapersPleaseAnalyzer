@@ -2,31 +2,39 @@
 #include "base/documents_v2/doc_class.h"
 #include "base/document_data/date.h"
 
-enum class Sender
-{
-	GameState,
-	BoothState,
-	InspectionState
-};
+namespace paplease {
+	namespace analysis {
+		namespace mediators {
 
-enum class Event
-{
-	NewGameDate,
-	NewApplicant,
-	FindRuleBook,
-	RuleBookFound,
-	FindBulletin,
-	BulletinFound,
-	FindTranscript,
-	TranscriptFound,
-};
+			enum class Sender
+			{
+				GameState,
+				BoothState,
+				InspectionState
+			};
 
-class AnalysisMediator
-{
-public:
-	~AnalysisMediator() {}
-	virtual void Notify(const Sender sender, const Event event) = 0;
-	virtual void NotifyDocumentFound(const Documents::V2::Doc& document) = 0;
+			enum class Event
+			{
+				NewGameDate,
+				NewApplicant,
+				FindRuleBook,
+				RuleBookFound,
+				FindBulletin,
+				BulletinFound,
+				FindTranscript,
+				TranscriptFound,
+			};
 
-	virtual const Documents::Data::Date& RequestCurrentDate() = 0;
-};
+			class AnalysisMediator
+			{
+			public:
+				~AnalysisMediator() {}
+				virtual void Notify(const Sender sender, const Event event) = 0;
+				virtual void NotifyDocumentFound(const documents::v2::Doc& document) = 0;
+
+				virtual const documents::data::Date& RequestCurrentDate() = 0;
+			};
+
+		}  // namespace mediators
+	}  // namespace analysis
+}  // namespace paplease

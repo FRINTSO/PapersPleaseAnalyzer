@@ -4,16 +4,22 @@
 #include "base/documents_v2/doc_class.h"
 #include "base/document_data/photo.h"
 
-class CriminalData
-{
-public:
-	CriminalData() = default;
+namespace paplease {
+	namespace analysis {
 
-	friend CriminalData CreateCriminalData(const Documents::V2::Doc& document);
-private:
-	static constexpr size_t CriminalCapacity = 3;
-private:
-	std::array<Documents::Data::Photo, CriminalData::CriminalCapacity> m_photos;
-};
+		class CriminalData
+		{
+		public:
+			CriminalData() = default;
 
-CriminalData CreateCriminalData(const Documents::V2::Doc& document);
+			friend CriminalData CreateCriminalData(const documents::v2::Doc& document);
+		private:
+			static constexpr size_t CriminalCapacity = 3;
+		private:
+			std::array<documents::data::Photo, CriminalData::CriminalCapacity> m_photos;
+		};
+
+		CriminalData CreateCriminalData(const documents::v2::Doc& document);
+
+	}  // namespace analysis
+}  // namespace paplease

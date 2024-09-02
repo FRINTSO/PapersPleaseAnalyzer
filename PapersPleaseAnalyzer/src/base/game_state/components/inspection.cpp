@@ -6,7 +6,11 @@
 
 #include "base/utils/log.h"
 
-using namespace Documents::V2;
+namespace paplease {
+	namespace analysis {
+		namespace components {
+
+using namespace documents::v2;
 
 
 std::array<Doc, InspectionComponent::DocumentScanCapacity> InspectionComponent::Scan(const GameView& gameView) const
@@ -72,21 +76,21 @@ void InspectionComponent::TryRemoveDocumentFromLookout(DocType documentType)
 	}
 }
 
-void InspectionComponent::NotifyLookoutDocumentFound(Documents::V2::DocType documentType) const
+void InspectionComponent::NotifyLookoutDocumentFound(documents::v2::DocType documentType) const
 {
 	switch (documentType)
 	{
-		case Documents::V2::DocType::RuleBook:
+		case documents::v2::DocType::RuleBook:
 		{
 			m_mediator->Notify(Sender::InspectionState, Event::RuleBookFound);
 			break;
 		}
-		case Documents::V2::DocType::Bulletin:
+		case documents::v2::DocType::Bulletin:
 		{
 			m_mediator->Notify(Sender::InspectionState, Event::RuleBookFound);
 			break;
 		}
-		case Documents::V2::DocType::Transcript:
+		case documents::v2::DocType::Transcript:
 		{
 			m_mediator->Notify(Sender::InspectionState, Event::TranscriptFound);
 			break;
@@ -196,3 +200,7 @@ void InspectionComponent::TrackDocuments(const GameView& gameView)
 }
 
 #endif
+
+		}  // namespace components
+	}  // namespace analysis
+}  // namespace paplease

@@ -7,12 +7,16 @@
 //#include "base/document_data/photo.h"
 //#include "base/documents_v2/doc_data.h"
 
+namespace paplease {
+	namespace analysis {
+		namespace components {
+
 struct BoothData
 {
-	const Documents::Data::Date date;
-	const Documents::Data::SIUnitValue weight;
-	// Documents::Data::SIUnitValue m_approximateHeight;
-	// Documents::Data::Photo m_applicantHeadshot;
+	const documents::data::Date date;
+	const documents::data::SIUnitValue weight;
+	// documents::data::SIUnitValue m_approximateHeight;
+	// documents::data::Photo m_applicantHeadshot;
 	const int applicantNumber;
 };
 
@@ -24,3 +28,7 @@ public:
 
 	std::optional<BoothData> Scan(const cv::Mat& booth) const;
 };
+
+		}  // namespace components
+	}  // namespace analysis
+}  // namespace paplease

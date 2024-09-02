@@ -4,42 +4,50 @@
 #include "base/documents_v2/seal.h"
 #include "base/utils/log.h"
 
-using namespace Documents::V2;
+namespace paplease {
+	namespace analysis {
+		namespace components {
 
-bool Analyzer::DocumentHasCurrentDate(const Doc& document) const
-{
-	const auto& gameDate = m_mediator->RequestCurrentDate();
-	// Date found do this:
+			using namespace documents::v2;
 
-	// Get Date
-	auto data = document.GetDocumentData();
-	auto expirationFieldData = data.Get(DataFieldCategory::ExpirationDate);
-	const auto& dateData = expirationFieldData.GetData();
-	if (dateData.Broken())
-	{
-		LOG_ERR("Document has broken data!");
-		return false;
-	}
+			bool Analyzer::DocumentHasCurrentDate(const Doc& document) const
+			{
+				const auto& gameDate = m_mediator->RequestCurrentDate();
+				// Date found do this:
 
-	const auto& date = dateData.Get<Documents::Data::Date>();
+				// Get Date
+				auto data = document.GetDocumentData();
+				auto expirationFieldData = data.Get(DataFieldCategory::ExpirationDate);
+				const auto& dateData = expirationFieldData.GetData();
+				if (dateData.Broken())
+				{
+					LOG_ERR("Document has broken data!");
+					return false;
+				}
 
-	// Compare dates
+				const auto& date = dateData.Get<documents::data::Date>();
 
-	return gameDate <= date;
-}
+				// Compare dates
 
-Analysis Analyzer::AnalyzeDocumentValidity(const Documents::V2::Doc& document) const
-{
-	bool hasValidSeal = document.IsAuthentic();
-	if (!hasValidSeal)
-	{
-		LOG("Document has invalid seal");
-	}
+				return gameDate <= date;
+			}
 
-	bool hasCurrentDate = this->DocumentHasCurrentDate(document);
-	if (!hasCurrentDate)
-	{
-		LOG("Document date has expired");
-	}
-	return {};
-}
+			Analysis Analyzer::AnalyzeDocumentValidity(const documents::v2::Doc& document) const
+			{
+				bool hasValidSeal = document.IsAuthentic();
+				if (!hasValidSeal)
+				{
+					LOG("Document has invalid seal");
+				}
+
+				bool hasCurrentDate = this->DocumentHasCurrentDate(document);
+				if (!hasCurrentDate)
+				{
+					LOG("Document date has expired");
+				}
+				return {};
+			}
+
+		}  // namespace components
+	}  // namespace analysis
+}  // namespace paplease

@@ -1,7 +1,7 @@
 #pragma once
 #include <opencv2/opencv.hpp>
 
-
+namespace paplease {
 
 #pragma region Options
 
@@ -9,7 +9,6 @@
 #define STRICT_DOCUMENT_SCANNING 1
 #define USE_CONST_REF 0
 #define USE_EXPERIMENTAL 1
-#
 
 #pragma endregion
 
@@ -17,6 +16,7 @@
 #define MATCH_ONE_COLOR 0
 #define MATCH_BORDER_COLOR 0 // NOT IMPLEMENTED
 #define USE_ENUM_FUNCS 1
+#define USE_NAMESPACE_ENUMS 1
 #endif
 
 #if DO_OPTIMIZATIONS
@@ -25,9 +25,6 @@
 #define DOWNSCALE_OPTIMIZATION 1
 #define EFFECTIVE_SCANNING_OPTIMIZATION 1
 #define OCR_CHAR_CHECKSUM_OPTIMIZATION 1
-
-
-
 #else
 #define COLOR_OPTIMIZATION 0
 #define CHEEKY_OPTIMIZATION 0
@@ -38,16 +35,22 @@
 #undef DO_OPTIMIZATIONS
 
 #define IS_DOWNSCALED DOWNSCALE_OPTIMIZATION
-constexpr float SCALE = 0.5f;
+	constexpr float SCALE = 0.5f;
 
-consteval int Scale(int x) {
-	if constexpr (IS_DOWNSCALED) {
-		return static_cast<int>(x / (1.0f / SCALE));
-	} else {
-		return x;
+	constexpr int Scale(int x)
+	{
+		if constexpr (IS_DOWNSCALED)
+		{
+			return static_cast<int>(x * SCALE);
+		}
+		else
+		{
+			return x;
+		}
 	}
-}
 
 #define DOWNSCALE(x) Scale(x)
 
 #undef PREFER_MACRO
+
+}  // namespace paplease

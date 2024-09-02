@@ -1,20 +1,26 @@
 #include "pch.h"
 #include "base/utils/log.h"
 
+#include <memory>
+
+#include <spdlog/common.h>
+#include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include <spdlog/tweakme.h>
+#include <spdlog/spdlog.h>
 
-namespace Utils {
+namespace paplease {
+	namespace utils {
 
-	std::shared_ptr<spdlog::logger> Log::s_Logger;
-	int Log::s_IndentLevel;
+		std::shared_ptr<spdlog::logger> Log::s_Logger;
+		int Log::s_IndentLevel;
 
-	void Log::Init()
-	{
-		spdlog::set_pattern("%^%v%$");
-		s_Logger = spdlog::stdout_color_mt("LOGGER");
-		s_Logger->set_level(spdlog::level::level_enum::trace);
+		void Log::Init()
+		{
+			spdlog::set_pattern("%^%v%$");
+			s_Logger = spdlog::stdout_color_mt("LOGGER");
+			s_Logger->set_level(spdlog::level::level_enum::trace);
 
-		s_IndentLevel = 0;
-	}
-}
+			s_IndentLevel = 0;
+		}
+	}  // namespace utils
+}  // namespace paplease

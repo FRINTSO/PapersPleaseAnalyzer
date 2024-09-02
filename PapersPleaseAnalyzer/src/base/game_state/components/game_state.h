@@ -13,6 +13,10 @@
 // Includes game rules for chosen day
 //
 
+namespace paplease {
+	namespace analysis {
+		namespace components {
+
 class BoothDoc;
 
 
@@ -24,7 +28,7 @@ public:
 	// void Update(const GameView& gameView);
 
 public: // State functions
-	bool IsNewDate(Documents::Data::Date date);
+	bool IsNewDate(documents::data::Date date);
 	bool IsNewApplicant(int applicantNumber);
 
 
@@ -35,12 +39,12 @@ public: // Mediator functions
 	void OnNewGameDate();
 	void OnNewApplicant();
 
-	void ReceiveRuleBookDocument(const Documents::V2::Doc& document);
-	void ReceiveBulletinDocument(const Documents::V2::Doc& document);
-	void ReceiveTranscriptDocument(const Documents::V2::Doc& document);
+	void ReceiveRuleBookDocument(const documents::v2::Doc& document);
+	void ReceiveBulletinDocument(const documents::v2::Doc& document);
+	void ReceiveTranscriptDocument(const documents::v2::Doc& document);
 private:
 	// State
-	Documents::Data::Date m_currentDate;
+	documents::data::Date m_currentDate;
 	int m_applicantNumber;
 
 	bool m_hasCurrentRules;
@@ -50,3 +54,7 @@ private:
 	CriminalData m_criminalData;
 	Transcript m_transcript;
 };
+
+		}  // namespace components
+	}  // namespace analysis
+}  // namespace paplease

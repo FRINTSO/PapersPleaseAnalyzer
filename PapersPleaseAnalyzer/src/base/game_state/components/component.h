@@ -1,13 +1,21 @@
 #pragma once
 #include "base/game_state/mediators/analysis_mediator.h"
 
-class Component
-{
-public:
-	Component(AnalysisMediator* mediator)
-		: m_mediator{ mediator }
-	{}
+namespace paplease {
+	namespace analysis {
+		namespace components {
 
-protected:
-	AnalysisMediator* m_mediator;
-};
+			class Component
+			{
+			public:
+				Component(mediators::AnalysisMediator* mediator)
+					: m_mediator{ mediator }
+				{}
+
+			protected:
+				mediators::AnalysisMediator* m_mediator;
+			};
+
+		}  // namespace components
+	}  // namespace analysis
+}  // namespace paplease

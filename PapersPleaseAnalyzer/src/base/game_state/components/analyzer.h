@@ -7,6 +7,9 @@
 // Analyze can compare a document against itself and available gameData
 // It can also compare it against the profile
 
+namespace paplease {
+	namespace analysis {
+		namespace components {
 
 class Analysis {
 private:
@@ -19,7 +22,11 @@ public:
 	using Component::Component;
 
 public: // Mediator functions
-	Analysis AnalyzeDocumentValidity(const Documents::V2::Doc& document) const;
+	Analysis AnalyzeDocumentValidity(const documents::v2::Doc& document) const;
 private:
-	bool DocumentHasCurrentDate(const Documents::V2::Doc& document) const;
+	bool DocumentHasCurrentDate(const documents::v2::Doc& document) const;
 };
+
+		}  // namespace components
+	}  // namespace analysis
+}  // namespace paplease

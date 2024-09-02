@@ -3,7 +3,11 @@
 
 #include "base/utils/log.h"
 
-using namespace Documents::V2;
+namespace paplease {
+	namespace analysis {
+		namespace components {
+
+using namespace documents::v2;
 
 void ProfilerState::Update()
 {
@@ -18,7 +22,7 @@ void ProfilerState::Update()
 	// Do comparison and build profile
 }
 
-void ProfilerState::ReceiveApplicantDocument(const Documents::V2::Doc& document)
+void ProfilerState::ReceiveApplicantDocument(const documents::v2::Doc& document)
 {
 	// Check document authenticity
 	document.IsAuthentic();
@@ -26,7 +30,7 @@ void ProfilerState::ReceiveApplicantDocument(const Documents::V2::Doc& document)
 	this->RegisterDocument(document);
 }
 
-void ProfilerState::RegisterDocument(const Documents::V2::Doc& document)
+void ProfilerState::RegisterDocument(const documents::v2::Doc& document)
 {
 	assert(m_documentCount + 1 < ProfilerState::DocumentCapacity);
 
@@ -55,7 +59,7 @@ std::array<DataFieldCategory, Profile::FieldsCapacity> Profile::ProfileFields()
 	};
 }
 
-int Profile::GetFieldIndexByCategoryType(Documents::V2::DataFieldCategory category)
+int Profile::GetFieldIndexByCategoryType(documents::v2::DataFieldCategory category)
 {
 	switch (category)
 	{
@@ -87,3 +91,7 @@ int Profile::GetFieldIndexByCategoryType(Documents::V2::DataFieldCategory catego
 			return -1;
 	}
 }
+
+		}  // namespace components
+	}  // namespace analysis
+}  // namespace paplease
