@@ -16,6 +16,7 @@
 #include <opencv2/imgcodecs.hpp>
 
 #include "base/common.h"
+#include "base/image_process.h"
 #include "base/ocr/font.h"
 #include "base/shape.h"
 
@@ -25,31 +26,28 @@ namespace paplease {
 		static inline int CharacterChecksum(const cv::Mat& character)
 		{
 #if IS_DOWNSCALED
-#if !OCR_CHAR_CHECKSUM_OPTIMIZATION
-			cv::Mat ch = (character & 1) ^ 1;
-#endif
-#else
-#if !OCR_CHAR_CHECKSUM_OPTIMIZATION
-			cv::Mat ch = (ScaleImage(character, 1.0f / 2.0f) & 1) ^ 1;
-#endif
-#endif
-
-#if OCR_CHAR_CHECKSUM_OPTIMIZATION
+	#if not OCR_CHAR_CHECKSUM_OPTIMIZATION
+			cv::Mat ch = (character & 1) ^1;
+	#else
 			const cv::Mat& ch = character;
+	#endif
+#else
+			cv::Mat ch = ScaleImage(character, SCALE);
+	#if not OCR_CHAR_CHECKSUM_OPTIMIZATION
+			ch = (ch & 1) ^ 1;
+	#endif
 #endif
 
 #if 1
 			if (ch.rows * ch.cols >= 32)
 			{
-				std::cout << "ERROR CHARACTER TOO BIG \n";
+				LOG_ERR("CHARACTER TOO BIG");
 				//cv::imshow("Char", character);
 				//cv::waitKey();
 				return -1;
 			}
 #else
-#if _DEBUG
-			// assert(ch.rows * ch.cols < 32);
-#endif
+			assert(ch.rows * ch.cols < 32);
 #endif
 
 			int num = 0;
@@ -110,13 +108,10 @@ namespace paplease {
 				{
 					continue;
 				}
-#if DOWNSCALE_OPTIMIZATION
-				auto character = cv::imread(entry.path().string(), cv::IMREAD_REDUCED_GRAYSCALE_2);
-				// character = ScaleImage(character, 1.0f / 2.0f);
-#else
 				auto character = cv::imread(entry.path().string(), cv::IMREAD_UNCHANGED);
+#if DOWNSCALE_OPTIMIZATION
+				character = ScaleImage(character, 1.0f / 2.0f);
 #endif
-
 				int checksum = CharacterChecksum(character);
 				chars[checksum] = GetCharacterFromFilename(entry.path().filename().stem().string());
 			}
@@ -197,43 +192,46 @@ namespace paplease {
 			{
 				int lastBoxX = INT_MAX;
 
-				int left = -1;
-				int top = -1;
-				int width = -1;
-				int height = -1;
-				int bottom = -1;
-				for (int col = 0; col < mat.cols; col++)
+				int left = INT_MAX;
+				int top = INT_MAX;
+				int right = 0;
+				int bottom = 0;
+				for (int x = 0; x < mat.cols; x++)
 				{
 					// check last character x position, if it's greater than max, cut scanner short
-					if (col - lastBoxX > maxStepsFromLastCharacter) break;
+					if (x - lastBoxX > maxStepsFromLastCharacter) break;
 
 					bool columnHasBlackPixel = false;
-					const int bottomScan = std::min(lineTop + fontInfo.size, mat.rows);
-					for (int row = lineTop; row < bottomScan; row++)
+					const int bottomOfLine = std::min(lineTop + fontInfo.size, mat.rows);
+					for (int y = lineTop; y < bottomOfLine; y++)
 					{
-						if (mat.at<uchar>(row, col)) continue;
+						if (mat.at<uchar>(y, x)) continue;
 						// We found a black pixel
 						columnHasBlackPixel = true;
-						if (left == -1) left = col;
-						if (top == -1 || row < top) top = row;
 
-						if (row > bottom && row < top + fontInfo.size) bottom = row;
+						top = std::min(top, y);
+						bottom = std::max(bottom, y);
 					}
 
-					if (!columnHasBlackPixel && left != -1 && top != -1)
+					if (columnHasBlackPixel)
 					{
-						lastBoxX = col;
+						left = std::min(left, x);
+						right = std::max(right, x);
+					}
+					else if (left != INT_MAX)
+					{
+						lastBoxX = x;
 
-						width = col - left;
-						height = bottom - top + 1;
-						// std::cout << "Width * Height: " << width * height << "\n";
+						int width = right - left + 1;
+						int height = bottom - top + 1;
 						boxes.emplace_back(Rectangle{ left, top, width, height });
-						left = -1;
-						top = -1;
-						width = -1;
-						bottom = -1;
+						left = INT_MAX;
+						top = INT_MAX;
+						width = 0;
+						bottom = 0;
 					}
 				}
+
 				lineTop = FindNextTopLine(mat, lineTop, fontInfo.size);
 			}
 
@@ -247,7 +245,6 @@ namespace paplease {
 			// Find complete bounding box of that
 
 			// Add max whitespace after last character as a cut-off?
-
 			if (mat.rows / fontInfo.size > 1)
 			{
 				return ImageToBoxesMultiline(mat, fontInfo);
@@ -260,11 +257,10 @@ namespace paplease {
 			constexpr int maxAllowedWhitespace = 10;
 			const int maxStepsFromLastCharacter = whitespaceSize * maxAllowedWhitespace;
 
-			int left = -1;
-			int top = -1;
-			int width = -1;
-			int height = -1;
-			int bottom = -1;
+			int left = INT_MAX;
+			int top = INT_MAX;
+			int right = 0;
+			int bottom = 0;
 			for (int x = 0; x < mat.cols; x++)
 			{
 				// check last character x position, if it's greater than max, cut scanner short
@@ -276,24 +272,27 @@ namespace paplease {
 					if (mat.at<uchar>(y, x)) continue;
 					// We found a black pixel
 					columnHasBlackPixel = true;
-					if (left == -1) left = x;
-					if (top == -1 || y < top) top = y;
 
-					if (y > bottom && y < top + fontInfo.size) bottom = y;
+					top = std::min(top, y);
+					bottom = std::max(bottom, y);
 				}
 
-				if (!columnHasBlackPixel && left != -1 && top != -1)
+				if (columnHasBlackPixel)
+				{
+					left = std::min(left, x);
+					right = std::max(right, x);
+				}
+				else if (left != INT_MAX)
 				{
 					lastBoxX = x;
 
-					width = x - left;
-					height = bottom - top + 1;
-					// std::cout << "Width * Height: " << width * height << "\n";
+					int width = right - left + 1;
+					int height = bottom - top + 1;
 					boxes.emplace_back(Rectangle{ left, top, width, height });
-					left = -1;
-					top = -1;
-					width = -1;
-					bottom = -1;
+					left = INT_MAX;
+					top = INT_MAX;
+					width = 0;
+					bottom = 0;
 				}
 			}
 
@@ -305,7 +304,6 @@ namespace paplease {
 		std::string ImageToString(const cv::Mat& mat, const FontInfo& fontInfo)
 		{
 			std::vector<Rectangle> boxes = ImageToBoxes(mat, fontInfo);
-
 			auto chars = GetLoadedFontCharacters(fontInfo); // temp fix
 
 			const Rectangle* previousRectangle = nullptr;
@@ -315,33 +313,25 @@ namespace paplease {
 			for (const auto& box : boxes)
 			{
 				cv::Mat character = mat(cv::Rect(box.x, box.y, box.width, box.height));
+
 				int number = CharacterChecksum(character);
 
 				// unrecognizable character
 				if (number <= 0 || chars.find(number) == chars.end())
 				{
 					std::cerr << "Unrecognized character\n";
-#if 0
-					cv::imshow("Char", mat);
-					cv::waitKey(500);
-#endif
 					continue;
 				}
 
 				char ch = chars[number];
 
-#if DOWNSCALE_OPTIMIZATION
-				constexpr int sizeFactor = 1;
-#else
-				constexpr int sizeFactor = 2;
-#endif
+
 
 				if (previousRectangle)
 				{ // add spaces
-#if 1
 					int horizontalSpaceFromLastBox = box.x - (previousRectangle->x + previousRectangle->width);
-					const int letterSpaceSize = fontInfo.letterSpacingHorizontal * sizeFactor;
-					const int whitespaceSize = fontInfo.whitespaceSize * sizeFactor;
+					const int letterSpaceSize = fontInfo.letterSpacingHorizontal;
+					const int whitespaceSize = fontInfo.whitespaceSize;
 
 					int whitespaces = ((horizontalSpaceFromLastBox - letterSpaceSize) / whitespaceSize);
 
@@ -349,25 +339,13 @@ namespace paplease {
 					{
 						field.push_back(' ');
 					}
-#else 
-					int spaceSize = box.x - (previousRectangle->x + previousRectangle->width);
-
-					if ((unsigned int)spaceSize >= (3 * sizeFactor) && previousChar != '1' && ch != '1')
-					{ // space between two ones is same as a regular space
-						int spaces = spaceSize < 0 ? 1 : spaceSize / (3 * sizeFactor);
-						for (int i = 0; i < spaces; i++)
-						{
-							field.push_back(' ');
-						}
-					}
-#endif
 				}
 
 				if (previousRectangle)
 				{ // add newlines
 					int verticalSpaceFromLastBox = box.y - (previousRectangle->y + previousRectangle->height);
-					const int wrapSize = fontInfo.letterSpacingVertical * sizeFactor;
-					const int newLineSize = fontInfo.newlineSize * sizeFactor;
+					const int wrapSize = fontInfo.letterSpacingVertical;
+					const int newLineSize = fontInfo.newlineSize;
 					int newLines = ((verticalSpaceFromLastBox - wrapSize) / newLineSize);
 
 					if (verticalSpaceFromLastBox - wrapSize >= 0)

@@ -10,37 +10,47 @@ namespace paplease {
                 Invalid = 0,
                 Nationality,
                 CountryList,
-                DateOfBirth,
                 Description,
                 District,
                 Duration,
                 DurationOfStay,
-                EndDate,
-                ExpirationDate,
-                Field,
+                Field, // Refers to job position
                 FingerPrints,
-                HasValidSeal,
-                Height,
                 IssuingCity,
                 IssuingCountry,
+                Purpose,
+                PhysicalAppearance,
+
+                // Are these used?
+                //HasValidSeal,
+                //PassportType,
+
+                ValidDate,
+                EndDate,
+                ExpirationDate,
+
+                DateOfBirth,
                 Name,
                 PassportNumber,
-                PassportType,
-                Photo,
-                PhysicalAppearance,
-                Purpose,
                 Sex,
+
+                Photo,
                 ThumbPrint,
+
                 Vaccination1,
                 Vaccination2,
                 Vaccination3,
-                ValidDate,
+
+                Height,
                 Weight,
+
                 BoothDate,
                 BoothCounter,
+
                 Rule1, Rule2, Rule3, Rule4, Rule5, Rule6, Rule7, Rule8, Rule9, Rule10,
                 CriminalPhoto1, CriminalPhoto2, CriminalPhoto3,
                 TranscriptPage,
+
                 DATA_FIELD_CATEGORY_LENGTH
             };
 
@@ -103,8 +113,6 @@ namespace paplease {
                         return "Field";
                     case DataFieldCategory::FingerPrints:
                         return "FingerPrints";
-                    case DataFieldCategory::HasValidSeal:
-                        return "HasValidSeal";
                     case DataFieldCategory::Height:
                         return "Height";
                     case DataFieldCategory::IssuingCity:
@@ -115,8 +123,6 @@ namespace paplease {
                         return "Name";
                     case DataFieldCategory::PassportNumber:
                         return "PassportNumber";
-                    case DataFieldCategory::PassportType:
-                        return "PassportType";
                     case DataFieldCategory::Photo:
                         return "Photo";
                     case DataFieldCategory::PhysicalAppearance:

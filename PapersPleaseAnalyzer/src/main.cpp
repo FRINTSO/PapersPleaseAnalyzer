@@ -1,55 +1,25 @@
 #include "pch.h"
 
-#include <chrono>
-
 #include <opencv2/core/utils/logger.hpp>
 
-#include "base/game_state/mediators/game_controller.h"
-
-#include "test/documents/test_document_boxing.h"
-#include "test/documents/test_document_preprocessing.h"
-//#include "test/documents/test_hsv.h"
+#include "base/game_state/game_controller.h"
 
 #include "base/utils/log.h"
 
 
-using namespace paplease::documents::v2;
-
-
-
-int main()
+void main()
 {
 	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
 	paplease::utils::Log::Init();
 
-	// GameView view = GetGameView("4");
-	// auto doc = FindDocument(view.inspection, DocType::Passport);
-	// auto data = doc.GetDocumentData();
-	// data.Print();
-	
-	// Test::test_text_field_character_boxing("28", DocType::DiplomaticAuthorization, DataFieldCategory::CountryList);
-
-	//Test::test_document_field_boxing("51", DocType::EntryPermit);
-	//cv::waitKey();
-
-	//Test::test_document_character_boxing("54", DocType::RuleBook);
-	// Test::test_document_field_boxing("54", DocType::RuleBook);
-	//Test::test_document_preprocessing("54", DocType::RuleBook);
-	//Test::test_document_character_boxing("54", DocType::RuleBook);
-	// Test::test_document_character_boxing("4", DocType::IdentityCard);
-
-	//Documents::Test::test_hsv(GetGameView("57").inspection);
-	// Test::test_document_preprocessing("35", DocType::Transcript);
-
-	// Test::test_document_character_boxing("35", DocType::Transcript);
-
-	paplease::analysis::mediators::GameAnalysisController context{false};
+	paplease::analysis::GameAnalysisController analyzer{};
 	paplease::GameView view;
-	while (GetNextGameSimView("3", view))
+	while (paplease::GetNextGameSimView("1", view))
 	{
-		context.Update(view);
+		analyzer.Update(view);
 	}
 
 	// Don't scan transcript until finished?
 	cv::waitKey();
+	std::cin.get();
 }

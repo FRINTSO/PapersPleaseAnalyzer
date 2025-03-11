@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "base/game_state/components/profiler_state.h"
+#include "base/game_state/components/profiler.h"
 
 #include "base/utils/log.h"
 
@@ -9,7 +9,7 @@ namespace paplease {
 
 using namespace documents::v2;
 
-void ProfilerState::Update()
+void ApplicantProfiler::Update()
 {
 	 BeginLOG("ProfilerState::Update()");
 
@@ -22,7 +22,7 @@ void ProfilerState::Update()
 	// Do comparison and build profile
 }
 
-void ProfilerState::ReceiveApplicantDocument(const documents::v2::Doc& document)
+void ApplicantProfiler::AddDocumentToProfile(const documents::v2::Doc& document)
 {
 	// Check document authenticity
 	document.IsAuthentic();
@@ -30,9 +30,18 @@ void ProfilerState::ReceiveApplicantDocument(const documents::v2::Doc& document)
 	this->RegisterDocument(document);
 }
 
-void ProfilerState::RegisterDocument(const documents::v2::Doc& document)
+void ApplicantProfiler::ClearAll()
 {
-	assert(m_documentCount + 1 < ProfilerState::DocumentCapacity);
+	for (auto& document : m_comparableDocuments)
+	{
+		document = {};
+	}
+	m_documentCount = 0;
+}
+
+void ApplicantProfiler::RegisterDocument(const documents::v2::Doc& document)
+{
+	assert(m_documentCount + 1 < ApplicantProfiler::DocumentCapacity);
 
 	LOG("Registered a document to Profiler!");
 

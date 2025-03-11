@@ -21,8 +21,8 @@ namespace paplease {
 				constexpr int satMax = 110;
 				constexpr int valMin = 0;
 				constexpr int valMax = 255;
-				cv::Mat lower{ hueMin, satMin, valMin };
-				cv::Mat upper{ hueMax, satMax, valMax };
+				static const cv::Scalar lower{ hueMin, satMin, valMin };
+				static const cv::Scalar upper{ hueMax, satMax, valMax };
 
 				cv::Mat mask;
 				cv::inRange(imgHsv, lower, upper, mask);
@@ -30,7 +30,7 @@ namespace paplease {
 				return mask;
 			}
 
-			static inline cv::Mat ExtractSeal(const cv::Mat& binaryDocument)
+			static inline std::optional<cv::Mat> ExtractSeal(const cv::Mat& binaryDocument)
 			{
 				int leftMostPixel = INT_MAX;
 				int rightMostBlackPixel = -1;
@@ -61,6 +61,11 @@ namespace paplease {
 
 				int regionWidth = rightMostBlackPixel - leftMostPixel + 1;
 				int regionHeight = bottomMostPixel - topMostPixel + 1;
+
+				if (bottomMostPixel == -1)
+				{
+					return std::nullopt;
+				}
 
 				return binaryDocument(cv::Rect(leftMostPixel, topMostPixel, regionWidth, regionHeight));
 			}
@@ -145,12 +150,24 @@ namespace paplease {
 				return false;
 			}
 
+#pragma region Exposed Functions
+
 			bool IsDocumentValidlySealed(const cv::Mat& mat, DocType documentType)
 			{
+				if (mat.empty()) return false;
+				if (documentType == DocType::Invalid) return false;
+
 				auto binary = PreprocessSealedDocument(mat);
 				auto seal = ExtractSeal(binary);
-				return IsValidSeal(seal, documentType);
+				if (!seal)
+				{
+					LOG_ERR("Invalid seal of document type: {}", ToStringView(documentType));
+					return false;
+				}
+				return IsValidSeal(seal.value(), documentType);
 			}
+
+#pragma endregion
 
 		}  // namespace v2
 	}  // namespace documents

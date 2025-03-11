@@ -32,7 +32,8 @@ namespace paplease {
 				virtual void Notify(const Sender sender, const Event event) = 0;
 				virtual void NotifyDocumentFound(const documents::v2::Doc& document) = 0;
 
-				virtual const documents::data::Date& RequestCurrentDate() = 0;
+				virtual const documents::v2::Data& RequestData(const documents::v2::DataType dataType) const = 0;
+				virtual const documents::data::Date& RequestCurrentDate() const = 0;
 			};
 
 		}  // namespace mediators

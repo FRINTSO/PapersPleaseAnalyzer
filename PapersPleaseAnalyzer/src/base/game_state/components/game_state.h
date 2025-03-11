@@ -2,10 +2,10 @@
 #include "base/documents_v2/doc_class.h"
 #include "base/document_data/date.h"
 #include "base/document_data/field_data.h"
-#include "base/game_state/criminals.h"
-#include "base/game_state/rules.h"
+#include "base/game_state/data/criminals.h"
+#include "base/game_state/data/rules.h"
+#include "base/game_state/data/transcript.h"
 #include "base/game_state/components/component.h"
-#include "base/game_state/transcript.h"
 #include "base/game_view.h"
 
 // Tracks the games state
@@ -17,43 +17,44 @@ namespace paplease {
 	namespace analysis {
 		namespace components {
 
-class BoothDoc;
+			class BoothDoc;
 
 
-class GameState final : public Component
-{
-public:
-	using Component::Component;
+			class GameState final : public Component
+			{
+			public:
+				using Component::Component;
 
-	// void Update(const GameView& gameView);
+				// void Update(const GameView& gameView);
 
-public: // State functions
-	bool IsNewDate(documents::data::Date date);
-	bool IsNewApplicant(int applicantNumber);
+			public: // State functions
+				bool IsNewDate(documents::data::Date date);
+				bool IsNewApplicant(int applicantNumber);
 
+				const documents::data::Date& GetCurrentDate() const;
 
-	bool HasCurrentRuleBook();
-	bool HasCurrentCriminals();
-public: // Mediator functions
+				bool HasCurrentRuleBook();
+				bool HasCurrentCriminals();
+			public: // Mediator functions
 
-	void OnNewGameDate();
-	void OnNewApplicant();
+				void OnNewGameDate();
+				void OnNewApplicant();
 
-	void ReceiveRuleBookDocument(const documents::v2::Doc& document);
-	void ReceiveBulletinDocument(const documents::v2::Doc& document);
-	void ReceiveTranscriptDocument(const documents::v2::Doc& document);
-private:
-	// State
-	documents::data::Date m_currentDate;
-	int m_applicantNumber;
+				void ReceiveRuleBookDocument(const documents::v2::Doc& document);
+				void ReceiveBulletinDocument(const documents::v2::Doc& document);
+				void ReceiveTranscriptDocument(const documents::v2::Doc& document);
+			private:
+				// State
+				documents::data::Date m_currentDate;
+				int m_applicantNumber;
 
-	bool m_hasCurrentRules;
-	bool m_hasCurrentCriminals;
+				bool m_hasCurrentRules;
+				bool m_hasCurrentCriminals;
 
-	RuleBook m_ruleBook;
-	CriminalData m_criminalData;
-	Transcript m_transcript;
-};
+				data::RuleBook m_ruleBook;
+				data::CriminalData m_criminalData;
+				data::Transcript m_transcript;
+			};
 
 		}  // namespace components
 	}  // namespace analysis

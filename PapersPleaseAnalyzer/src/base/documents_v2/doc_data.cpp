@@ -375,8 +375,6 @@ namespace paplease {
                         case DataFieldCategory::EndDate:
                         case DataFieldCategory::Field:
                         case DataFieldCategory::FingerPrints:
-                        case DataFieldCategory::HasValidSeal:
-                        case DataFieldCategory::PassportType:
                         case DataFieldCategory::PhysicalAppearance:
                             break;
                         case DataFieldCategory::Name:
@@ -610,6 +608,7 @@ namespace paplease {
 
                 if (m_data[index].Broken())
                 {
+                    paplease::LOG_ERR("Broken data");
                     __debugbreak();
                     return {};
                 }

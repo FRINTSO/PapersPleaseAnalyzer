@@ -369,7 +369,6 @@ namespace paplease {
 
 			DocData Doc::GetDocumentData() const
 			{
-				//if (!this->IsValid()) return {};
 				assert(this->IsValid());
 				return this->ExtractDocData();
 			}

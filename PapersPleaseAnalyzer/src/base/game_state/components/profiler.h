@@ -21,20 +21,21 @@ namespace paplease {
 				size_t m_fieldCount;
 			};
 
-			class ProfilerState : public Component
+			class ApplicantProfiler : public Component
 			{
 			public:
 				using Component::Component;
 
 				void Update();
 			public: // Mediator functions
-				void ReceiveApplicantDocument(const documents::v2::Doc& document);
+				void AddDocumentToProfile(const documents::v2::Doc& document);
+				void ClearAll();
 			private:
 				void RegisterDocument(const documents::v2::Doc& document);
 			private:
 				static constexpr size_t DocumentCapacity = 10;
 			private:
-				std::array<documents::v2::Doc, ProfilerState::DocumentCapacity> m_comparableDocuments;
+				std::array<documents::v2::Doc, ApplicantProfiler::DocumentCapacity> m_comparableDocuments;
 				size_t m_documentCount;
 
 				Profile m_currentProfile;

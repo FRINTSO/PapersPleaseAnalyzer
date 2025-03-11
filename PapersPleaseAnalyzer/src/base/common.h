@@ -1,5 +1,4 @@
 #pragma once
-#include <opencv2/opencv.hpp>
 
 namespace paplease {
 
@@ -22,7 +21,7 @@ namespace paplease {
 #if DO_OPTIMIZATIONS
 #define COLOR_OPTIMIZATION 1
 #define CHEEKY_OPTIMIZATION 1
-#define DOWNSCALE_OPTIMIZATION 1
+#define DOWNSCALE_OPTIMIZATION 0
 #define EFFECTIVE_SCANNING_OPTIMIZATION 1
 #define OCR_CHAR_CHECKSUM_OPTIMIZATION 1
 #else

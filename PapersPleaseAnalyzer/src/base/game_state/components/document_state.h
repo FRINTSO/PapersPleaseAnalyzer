@@ -13,8 +13,14 @@ namespace paplease {
 			class DocumentState
 			{
 			public:
+				using DocRef = std::reference_wrapper<const documents::v2::Doc>;
+			private:
+				static constexpr size_t DocumentCapacity = 10;
+			public:
 				void RegisterIfNewDocument(documents::v2::Doc&& document);
-				std::optional<std::reference_wrapper<const documents::v2::Doc>> GetDocumentByType(const documents::v2::DocType documentType) const;
+				std::optional<DocRef> GetDocumentByType(const documents::v2::DocType documentType) const;
+				const std::array<documents::v2::DocType, DocumentState::DocumentCapacity>& GetNewlyRegisteredTypes() const;
+				void ClearNewlyRegistered();
 
 				bool HasRuleBook() const;
 				bool HasCriminals() const;
@@ -25,12 +31,14 @@ namespace paplease {
 				bool IsNewDocument(const documents::v2::Doc& document) const;
 				void RegisterDocument(documents::v2::Doc&& document);
 				bool HasDocumentOfType(const documents::v2::DocType documentType) const;
-			private:
-				static constexpr size_t DocumentCapacity = 15;
+				void AddToNewlyRegistered();
 			private:
 
 				std::array<documents::v2::Doc, DocumentState::DocumentCapacity> m_documents;
-				size_t m_documentCount = 9;
+				size_t m_documentCount;
+
+				std::array<documents::v2::DocType, DocumentState::DocumentCapacity> m_newRegistered;
+				size_t m_newlyRegisteredCount;
 			};
 
 		}  // namespace components

@@ -36,13 +36,36 @@ namespace paplease {
 			{
 				if (!this->IsNewDocument(document)) return;
 
-				LOG("WOW, new document registered");
+				LOG("WOW, new {} registered", ToStringView(document.GetDocumentType()));
 
 				// Add
 				this->RegisterDocument(std::move(document));
+				this->AddToNewlyRegistered();
+
 			}
 
-			std::optional<std::reference_wrapper<const documents::v2::Doc>> DocumentState::GetDocumentByType(const documents::v2::DocType documentType) const
+			const std::array<DocType, DocumentState::DocumentCapacity>& DocumentState::GetNewlyRegisteredTypes() const
+			{
+				return m_newRegistered;
+			}
+
+			void DocumentState::AddToNewlyRegistered()
+			{
+				// Add most recent document to array
+				m_newRegistered[m_newlyRegisteredCount] = m_documents[m_documentCount - 1].GetDocumentType();
+				m_newlyRegisteredCount++;
+			}
+
+			void DocumentState::ClearNewlyRegistered()
+			{
+				for (auto& newDocument : m_newRegistered)
+				{
+					newDocument = DocType::Invalid;
+				}
+				m_newlyRegisteredCount = 0;
+			}
+
+			std::optional<DocumentState::DocRef> DocumentState::GetDocumentByType(const documents::v2::DocType documentType) const
 			{
 				for (size_t i = 0; i < m_documentCount; i++)
 				{
@@ -74,7 +97,7 @@ namespace paplease {
 			}
 
 			void DocumentState::ClearApplicantSession()
-			{
+			{  // This code should be tested
 				for (size_t i = 0; i < m_documentCount; i++)
 				{
 					if (components::IsApplicantDocument(m_documents[i].GetDocumentType()))
@@ -97,6 +120,16 @@ namespace paplease {
 							m_documents[openSlot] = std::move(m_documents[i]);
 							openSlot = -1;
 						}
+					}
+				}
+
+				// Scuffed
+				m_documentCount = 0;
+				for (const auto& document : m_documents)
+				{
+					if (document.GetDocumentType() != DocType::Invalid)
+					{
+						m_documentCount++;
 					}
 				}
 			}

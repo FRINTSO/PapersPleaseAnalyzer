@@ -8,3 +8,5 @@
 #include <vector>
 
 #include <opencv2/opencv.hpp>
+
+#include "base/utils/log.h"

@@ -10,14 +10,18 @@ namespace paplease {
 
 			using namespace documents::v2;
 
-			bool Analyzer::DocumentHasCurrentDate(const Doc& document) const
+			bool DocumentAnalyzer::DocumentHasCurrentDate(const Doc& document) const
 			{
-				const auto& gameDate = m_mediator->RequestCurrentDate();
-				// Date found do this:
+				auto gameDate = m_mediator->RequestCurrentDate(); // Should never fail, since this will only run if UpdateBooth is successful
 
-				// Get Date
+				// Get document expiration date
 				auto data = document.GetDocumentData();
 				auto expirationFieldData = data.Get(DataFieldCategory::ExpirationDate);
+				if (expirationFieldData.Type() == documents::v2::FieldType::Invalid)
+				{
+					return true; // Maybe?
+				}
+
 				const auto& dateData = expirationFieldData.GetData();
 				if (dateData.Broken())
 				{
@@ -28,25 +32,40 @@ namespace paplease {
 				const auto& date = dateData.Get<documents::data::Date>();
 
 				// Compare dates
-
 				return gameDate <= date;
 			}
 
-			Analysis Analyzer::AnalyzeDocumentValidity(const documents::v2::Doc& document) const
+			Analysis DocumentAnalyzer::AnalyzeDocumentValidity(const documents::v2::Doc& document) const
+			{
+				bool isInvalid = false;
+				isInvalid |= !this->ValidateSeal(document);
+				isInvalid |= !this->ValidateDate(document);
+
+				return { isInvalid };
+			}
+
+			bool DocumentAnalyzer::ValidateSeal(const documents::v2::Doc& document) const
 			{
 				bool hasValidSeal = document.IsAuthentic();
 				if (!hasValidSeal)
 				{
 					LOG("Document has invalid seal");
+					return false;
 				}
+				return true;
+			}
 
+			bool DocumentAnalyzer::ValidateDate(const documents::v2::Doc& document) const
+			{
 				bool hasCurrentDate = this->DocumentHasCurrentDate(document);
 				if (!hasCurrentDate)
 				{
 					LOG("Document date has expired");
+					return false;
 				}
-				return {};
+				return true;
 			}
+
 
 		}  // namespace components
 	}  // namespace analysis

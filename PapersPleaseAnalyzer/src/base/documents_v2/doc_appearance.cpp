@@ -16,7 +16,7 @@ namespace paplease {
 					}
 					case AppearanceType::AccessPermit:
 					{
-						static const auto appearance = DocAppearance::GetInstant(AppearanceType::Invalid);
+						static const auto appearance = DocAppearance::GetInstant(AppearanceType::AccessPermit);
 						return appearance;
 					}
 					case AppearanceType::CertificateOfVaccination:
@@ -101,7 +101,7 @@ namespace paplease {
 					}
 					case AppearanceType::Bulletin:
 					{
-						static const auto layout = DocAppearance::GetInstant(AppearanceType::RuleBook);
+						static const auto layout = DocAppearance::GetInstant(AppearanceType::Bulletin);
 						return layout;
 					}
 					case AppearanceType::Transcript:
