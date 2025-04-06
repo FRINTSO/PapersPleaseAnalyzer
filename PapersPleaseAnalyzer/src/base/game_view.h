@@ -3,27 +3,18 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "base/booth.h"
+namespace paplease {
 
-struct GameView {
-	Booth booth;
-	cv::Mat inspection;
+	struct GameView
+	{
+		GameView() = default;
+		GameView(const std::string& filename);
 
-	GameView(const std::string& filename) {
-		auto gameView = cv::imread(filename);
+		cv::Mat booth;
+		cv::Mat inspection;
+	};
 
-#if IS_DOWNSCALED
-		cv::Mat boothMat = DownScale(gameView(cv::Rect(1, 237, 356, 434)), SCALE);
-		inspection = DownScale(gameView(cv::Rect(357, 237, 784, 434)), SCALE);
-#else
-		cv::Mat boothMat = gameView(cv::Rect(1, 237, 356, 434));
-		inspection = gameView(cv::Rect(357, 237, 784, 434));
-#endif
-		booth = Booth{ boothMat };
-	}
-};
+	GameView GetGameView(const std::string& number);
+	bool GetNextGameSimView(const std::string& num, GameView& view);
 
-inline GameView GetGameView(const std::string& number) {
-	auto path = "c:/dev/PapersPleaseAnalyzer/PapersPleaseAnalyzer/images/game_" + number + ".png";
-	return GameView(path);
-}
+}  // namespace paplease

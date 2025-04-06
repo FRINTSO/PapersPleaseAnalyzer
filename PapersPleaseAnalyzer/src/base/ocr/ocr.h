@@ -2,10 +2,16 @@
 #include <string>
 #include <vector>
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/mat.hpp>
 
 #include "base/ocr/font.h"
 #include "base/shape.h"
 
-std::vector<Rectangle> ImageToBoxes(const cv::Mat& mat, const FontInfo& fontInfo);
-std::string ImageToString(const cv::Mat& mat, const FontInfo& fontInfo);
+namespace paplease {
+	namespace ocr {
+
+		std::vector<Rectangle> ImageToBoxes(const cv::Mat& mat, const FontInfo& fontInfo);
+		std::string ImageToString(const cv::Mat& mat, const FontInfo& fontInfo);
+
+	}  // namespace ocr
+}  // namespace paplease
