@@ -34,6 +34,10 @@ namespace paplease {
 				{
 					s_Logger->log(level, "*Error: ");
 				}
+				else if (level == spdlog::level::warn)
+				{
+					s_Logger->log(level, "** Discrepancy: ");
+				}
 
 				s_Logger->log(level, fmt, std::forward<Args>(args)...);
 				s_Logger->log(level, "\n");
@@ -58,6 +62,12 @@ namespace paplease {
 			static inline void LogError(spdlog::format_string_t<Args...> fmt, Args &&...args)
 			{
 				LogState(spdlog::level::err, fmt, std::forward<Args>(args)...);
+			}
+
+			template<typename... Args>
+			static inline void LogDiscrepancy(spdlog::format_string_t<Args...> fmt, Args&&...args)
+			{
+				LogState(spdlog::level::warn, fmt, std::forward<Args>(args)...);
 			}
 
 			template <typename... Args>
@@ -98,6 +108,7 @@ namespace paplease {
 #define LOG(...) utils::Log::LogIt(__VA_ARGS__)
 #define LOG_RAW(...) utils::Log::LogRaw(__VA_ARGS__)
 #define LOG_ERR(...) utils::Log::LogError(__VA_ARGS__)
+#define LOG_DISCREPANCY(...) utils::Log::LogDiscrepancy(__VA_ARGS__)
 #define BeginLOG(...) utils::Log::LogBegin(__VA_ARGS__)
 #define EndLOG(...) utils::Log::LogEnd(__VA_ARGS__)
 #else

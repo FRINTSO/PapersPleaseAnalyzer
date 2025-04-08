@@ -6,7 +6,7 @@
 #include "base/analysis/document_analyzer.h"
 #include "base/analysis/mediators/analysis_mediator.h"
 #include "base/documents/doc_class.h"
-#include "base/document_data/date.h"
+#include "base/documents/data/date.h"
 #include "base/game_view.h"
 
 // Context of current analysis

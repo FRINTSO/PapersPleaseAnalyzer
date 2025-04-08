@@ -12,67 +12,16 @@
 #include <string>
 #include <unordered_set>
 
-#include "base/document_data/date.h"
-#include "base/document_data/field_data.h"
+#include "base/documents/data/date.h"
+#include "base/documents/data/field_data.h"
 #include "base/documents/doc_data_type.h"
 #include "base/documents/utils/str_scanner.h"
 #include "base/utils/log.h"
+#include "base/utils/strfuncs.h"
 
 namespace paplease {
     namespace documents {
         namespace utils {
-            namespace strfuncs {
-
-                static constexpr inline std::string Trim(const std::string& str)
-                {
-                    size_t start = str.find_first_not_of(" \t\n\r\f\v");
-                    size_t end = str.find_last_not_of(" \t\n\r\f\v");
-
-                    if (start == std::string::npos)
-                    {
-                        return ""; // String is all whitespace
-                    }
-
-                    return str.substr(start, end - start + 1);
-                }
-
-                static constexpr inline std::string Capitalize(const std::string& str)
-                {
-                    if (str.empty())
-                    {
-                        return str;
-                    }
-
-                    std::string result = str;
-
-                    result[0] = static_cast<char>(std::toupper(static_cast<char>(result[0])));
-
-                    for (size_t i = 1; i < result.size(); i++)
-                    {
-                        result[i] = static_cast<char>(std::tolower(static_cast<char>(result[i])));
-                    }
-
-                    return result;
-                }
-
-                static constexpr inline std::string ToLower(const std::string& str)
-                {
-                    if (str.empty())
-                    {
-                        return str;
-                    }
-
-                    std::string result = str;
-
-                    for (size_t i = 0; i < result.size(); i++)
-                    {
-                        result[i] = static_cast<char>(std::tolower(static_cast<char>(result[i])));
-                    }
-
-                    return result;
-                }
-
-            }  // namespace strfuncs
 
             namespace processing {
                 namespace err {
@@ -134,6 +83,17 @@ namespace paplease {
                     return Data{ oss.str() };
                 }
 
+                static inline Data ProcessCountry(StrScanner& scanner)
+                {
+                    auto data = ProcessGenericString(scanner);
+                    auto str = data.ToText();
+                    if (str == "UNITEDFED")
+                    {
+                        return Data{ "United Federation" };
+                    }
+                    return data;
+                }
+
                 static inline Data ProcessGenericInt(StrScanner& scanner)
                 {
                     scanner.SkipWhitespace();
@@ -150,8 +110,6 @@ namespace paplease {
 
                 static inline Data ProcessName(StrScanner& scanner)
                 {
-                    using namespace strfuncs;
-
                     // LASTNAME , FIRSTNAME or FIRSTNAME ' ' LASTNAME
 
                     scanner.SkipWhitespace();
@@ -166,7 +124,7 @@ namespace paplease {
                         scanner.StartMatch();
                         if (!scanner.MatchAlnumSequence()) return err::FailedNameProcess();
                         std::string name2 = scanner.MatchToStr();
-                        return Data{ Capitalize(name2) + " " + Capitalize(name1) };
+                        return Data{ paplease::utils::strfuncs::Capitalize(name2) + " " + paplease::utils::strfuncs::Capitalize(name1) };
                     }
                     else if (scanner.Match(' '))
                     {
@@ -174,7 +132,7 @@ namespace paplease {
                         scanner.StartMatch();
                         if (!scanner.MatchAlnumSequence()) return err::FailedNameProcess();
                         std::string name2 = scanner.MatchToStr();
-                        return Data{ Capitalize(name1) + " " + Capitalize(name2) };
+                        return Data{ paplease::utils::strfuncs::Capitalize(name1) + " " + paplease::utils::strfuncs::Capitalize(name2) };
                     }
                     else
                     {
@@ -343,7 +301,7 @@ namespace paplease {
 
 
                     auto data = ProcessGenericString(scanner);
-                    const auto& text = strfuncs::ToLower(data.Get<std::string>());
+                    const auto& text = paplease::utils::strfuncs::ToLower(data.Get<std::string>());
 
                     if (rules.find(text) == rules.end())
                     {
@@ -383,9 +341,8 @@ namespace paplease {
                     {
                         return processing::ProcessDate(scanner);
                     }
-                    case DataFieldCategory::Duration:
+                    //case DataFieldCategory::Duration:
                     case DataFieldCategory::FingerPrints:
-                    case DataFieldCategory::PhysicalAppearance:
                         break;
                     case DataFieldCategory::Name:
                     {
@@ -393,15 +350,19 @@ namespace paplease {
                     }
                     case DataFieldCategory::Field:
                     case DataFieldCategory::IssuingCity:
-                    case DataFieldCategory::Description:
+                    // case DataFieldCategory::Description:
+                    case DataFieldCategory::PhysicalAppearance:
                     case DataFieldCategory::District:
-                    case DataFieldCategory::IssuingCountry:
-                    case DataFieldCategory::Nationality:
+                    //case DataFieldCategory::Nationality:
                     case DataFieldCategory::DurationOfStay:
                     case DataFieldCategory::Purpose:
                     case DataFieldCategory::PassportNumber:
                     {
                         return processing::ProcessGenericString(scanner);
+                    }
+                    case DataFieldCategory::IssuingCountry:
+                    {
+                        return processing::ProcessCountry(scanner);
                     }
                     case DataFieldCategory::Vaccination1:
                     case DataFieldCategory::Vaccination2:
@@ -612,7 +573,7 @@ namespace paplease {
 
 #pragma region DocData
 
-        FieldData DocData::Get(DataFieldCategory category) const
+        const FieldData& DocData::GetField(DataFieldCategory category) const
         {
             if (category == DataFieldCategory::Invalid) return {};
             size_t index = static_cast<size_t>(category) - 1;

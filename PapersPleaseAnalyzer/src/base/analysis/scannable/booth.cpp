@@ -92,9 +92,9 @@ namespace paplease {
 
 				EndLOG("ScanBooth()");
 				return BoothData{
-					loadedData->Get(DataFieldCategory::BoothDate).GetData().Get<Date>(),
-					loadedData->Get(DataFieldCategory::Weight).GetData().Get<SIUnitValue>(),
-					loadedData->Get(DataFieldCategory::BoothCounter).GetData().Get<int>()
+					loadedData->GetField(DataFieldCategory::BoothDate).GetData().Get<Date>(),
+					loadedData->GetField(DataFieldCategory::Weight).GetData().Get<SIUnitValue>(),
+					loadedData->GetField(DataFieldCategory::BoothCounter).GetData().Get<int>()
 				};
 			}
 

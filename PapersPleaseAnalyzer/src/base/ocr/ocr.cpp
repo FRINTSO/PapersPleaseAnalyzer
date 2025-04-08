@@ -319,7 +319,7 @@ namespace paplease {
 				// unrecognizable character
 				if (number <= 0 || chars.find(number) == chars.end())
 				{
-					std::cerr << "Unrecognized character\n";
+					LOG_ERR("Unrecognized character");
 					continue;
 				}
 

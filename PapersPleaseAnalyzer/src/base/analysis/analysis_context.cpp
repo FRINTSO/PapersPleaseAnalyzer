@@ -2,9 +2,12 @@
 #include "base/analysis/analysis_context.h"
 
 #include "base/analysis/document_analyzer.h"
-#include "base/document_data/date.h"
+#include "base/documents/data/date.h"
+#include "base/documents/data/field_data.h"
 #include "base/documents/doc_type.h"
 #include "base/utils/log.h"
+#include "base/utils/strfuncs.h"
+#include "base/utils/enum_range.h"
 
 #include <cassert>
 #include <utility>
@@ -13,6 +16,7 @@ namespace paplease {
 	namespace analysis {
 
 		using namespace documents;
+		using namespace documents::data;
 		using namespace scannable;
 
 #pragma region DocRegistry
@@ -134,6 +138,63 @@ namespace paplease {
 
 #pragma endregion
 
+#pragma region LocationBank
+		
+		bool LocationBank::IsValidCountry(const std::string_view& countryName) const
+		{
+			for (auto passportType : utils::enum_range(PassportType::Antegria, PassportType::UnitedFederation))
+			{
+				if (this->IsValidCountry(countryName, passportType))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		bool LocationBank::IsValidCountry(const std::string_view& countryName, documents::PassportType passportType) const
+		{
+			return utils::strfuncs::ToLower(this->GetCountry(passportType)) == utils::strfuncs::ToLower(countryName);
+		}
+
+		bool LocationBank::IsValidDistrict(const std::string_view& districtName) const
+		{
+			for (const auto& district : m_districtListLookUp)
+			{
+				if (utils::strfuncs::ToLower(district) == utils::strfuncs::ToLower(districtName))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		bool LocationBank::IsValidCity(const std::string_view& cityName) const
+		{
+			for (auto passportType : utils::enum_range(PassportType::Antegria, PassportType::UnitedFederation))
+			{
+				if (this->IsValidCity(cityName, passportType))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		bool LocationBank::IsValidCity(const std::string_view& cityName, documents::PassportType passportType) const
+		{
+			for (const auto& city : this->GetCityList(passportType))
+			{
+				if (utils::strfuncs::ToLower(city) == utils::strfuncs::ToLower(cityName))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+#pragma endregion
+
 #pragma region Profile
 
 		void Profile::OnNewDate()
@@ -173,6 +234,7 @@ namespace paplease {
 			else if (this->SetIfNewApplicant(scanContext.boothData->applicantNumber))
 			{
 				LOG("New Applicant!");
+				m_currentWeight = scanContext.boothData->weight;
 			}
 
 			if (scanContext.inspectionData)
@@ -321,76 +383,11 @@ namespace paplease {
 		{
 			BeginLOG("AnalysisContext::ValidateDocument({})", ToStringView(document.GetDocumentType()));
 
-			auto validator = DocumentValidator(document);
-			std::cout << validator.Validate() << "\n";
-
-			auto docData = document.GetDocumentData();
-			auto fields = docData.GetAllValidFields();
-
-			for (const auto& field : fields)
-			{
-				this->ValidateField(field.value());
-			}
+			auto validator = DocumentValidator(document, *this);
+			bool result = validator.Validate();
+			std::cout << "Is valid: " << result << "\n";
+			
 			EndLOG("AnalysisContext::ValidateDocument()");
-		}
-
-		void AnalysisContext::ValidateField(const documents::FieldData& field)
-		{
-			switch (field.Category())
-			{
-				case documents::DataFieldCategory::Nationality:
-					LOG("Nationality");
-					break;
-
-				case documents::DataFieldCategory::DateOfBirth:
-					LOG("DateOfBirth");
-					break;
-
-				case documents::DataFieldCategory::Height:
-					LOG("Height");
-					break;
-
-				case documents::DataFieldCategory::IssuingCity:
-					LOG("IssuingCity");
-					break;
-
-				case documents::DataFieldCategory::IssuingCountry:
-					LOG("IssuingCountry");
-					break;
-
-				case documents::DataFieldCategory::Name:
-					LOG("Name");
-					break;
-
-				case documents::DataFieldCategory::PassportNumber:
-					LOG("PassportNumber");
-					break;
-
-				case documents::DataFieldCategory::Sex:
-					LOG("Sex");
-					break;
-
-				case documents::DataFieldCategory::Vaccination1:
-					LOG("Vaccination1");
-					break;
-
-				case documents::DataFieldCategory::Vaccination2:
-					LOG("Vaccination2");
-					break;
-
-				case documents::DataFieldCategory::Vaccination3:
-					LOG("Vaccination3");
-					break;
-
-				case documents::DataFieldCategory::Weight:
-					LOG("Weight");
-					break;
-
-				default:
-					LOG("Unknown category");
-					break;
-
-			}
 		}
 
 #pragma endregion
@@ -399,53 +396,363 @@ namespace paplease {
 
 #pragma region DocumentValidator
 
-		DocumentValidator::DocumentValidator(const documents::Doc& document)
-			: m_document{ document }, m_documentData{ document.GetDocumentData() }
-		{
-			
-		}
+		DocumentValidator::DocumentValidator(const documents::Doc& document, const AnalysisContext& analysisContext)
+			: m_analysisContext{ analysisContext }, m_document { document}, m_documentData{ document.GetDocumentData() }
+		{}
 
 		bool DocumentValidator::Validate()
 		{
-			return this->ValidateAuthenticity() && this->ValidateExpiryDate();
-		}
-
-		bool DocumentValidator::ValidateAuthenticity() const
-		{
-			return m_document.IsAuthentic();
-		}
-
-
-		bool DocumentValidator::ValidateExpiryDate() const
-		{
-			BeginLOG("DocumentValidator::ValidateExpiryDate()");
-			std::cout << "Duration: " << m_documentData.Get(DataFieldCategory::Duration).ToText() << "\n";
-			std::cout << "EndDate: " << m_documentData.Get(DataFieldCategory::EndDate).ToText() << "\n";
-			std::cout << "ExpirationDate: " << m_documentData.Get(DataFieldCategory::ExpirationDate).ToText() << "\n";
-			std::cout << "ValidDate: " << m_documentData.Get(DataFieldCategory::ValidDate).ToText() << "\n";
-			EndLOG("DocumentValidator::ValidateExpiryDate()");
+			bool valid = true;
+			
+			switch (m_document.GetDocumentType())
+			{
+				case DocType::AccessPermit:
+				{
+					valid &= ValidateName();
+					valid &= ValidatePassportNumber();
+					valid &= ValidateExpirationDate();
+					valid &= ValidateForgedOrMissingSeal();
+					//valid &= ValidateNationality();
+					valid &= ValidateIssuingCountry();
+					valid &= ValidateHeight();
+					valid &= ValidateWeight();
+					valid &= ValidatePhysicalAppearance();
+					valid &= ValidateAgainstTranscript();
+					return valid;
+				}
+				case DocType::CertificateOfVaccination:
+				{
+					valid &= ValidateName();
+					valid &= ValidatePassportNumber();
+					valid &= ValidateVaccineExpirationDate();
+					valid &= ValidateMissingVaccine();
+					return valid;
+				}
+				case DocType::DiplomaticAuthorization:
+				{
+					valid &= ValidateName();
+					valid &= ValidateForgedOrMissingSeal();
+					valid &= ValidateAccessToAristotzka();
+					valid &= ValidateIssuingCountry();
+					valid &= ValidatePassportNumber();
+					return valid;
+				}
+				case DocType::EntryPermit:
+				{
+					valid &= ValidateName();
+					valid &= ValidatePassportNumber();
+					valid &= ValidateExpirationDate();
+					valid &= ValidateForgedOrMissingSeal();
+					valid &= ValidateAgainstTranscript();
+					return valid;
+				}
+				case DocType::EntryTicket:
+				{
+					valid &= ValidateEntryTicketValidOnDate();
+					return valid;
+				}
+				case DocType::GrantOfAsylum:
+				{
+					valid &= ValidateForgedOrMissingSeal();
+					valid &= ValidateName();
+					valid &= ValidateIssuingCountry();
+					valid &= ValidatePassportNumber();
+					valid &= ValidateDateOfBirth();
+					valid &= ValidateHeight();
+					valid &= ValidateWeight();
+					valid &= ValidatePhoto();
+					valid &= ValidateFingerprints();
+					valid &= ValidateExpirationDate();
+					return valid;
+				}
+				case DocType::IdentityCard:
+				{
+					valid &= ValidateName();
+					valid &= ValidateDateOfBirth();
+					valid &= ValidatePhoto();
+					valid &= ValidateDistrict();
+					valid &= ValidateHeight();
+					valid &= ValidateWeight();
+					return valid;
+				}
+				case DocType::IdentitySupplement:
+				{
+					valid &= ValidateHeight();
+					valid &= ValidateWeight();
+					valid &= ValidatePhysicalAppearance();
+					valid &= ValidateThumbprint();
+					valid &= ValidateExpirationDate();
+					return valid;
+				}
+				case DocType::WorkPass:
+				{
+					valid &= ValidateName();
+					valid &= ValidateForgedOrMissingSeal();
+					valid &= ValidateWorkEndDate();
+					return valid;
+				}
+				case DocType::Passport:
+				{
+					valid &= ValidateAgainstRulebook();
+					valid &= ValidateExpirationDate();
+					valid &= ValidateIssuingCity();
+					valid &= ValidateName();
+					valid &= ValidateDateOfBirth();
+					valid &= ValidatePhoto();
+					valid &= ValidateSex();
+					valid &= ValidatePassportNumber();
+					return valid;
+				}
+				case DocType::RuleBook:
+				case DocType::Bulletin:
+				case DocType::Transcript:
+					break;
+				case DocType::Invalid:
+					return false;
+				default:
+					std::cerr << "DocType not implemented in DocumentValidator::Validate()!\n";
+					return false;
+			}
 			return false;
 		}
 
-		bool DocumentValidator::ValidateNationality() const
+		// Against static information, ex. Issuing city, or current date
+		bool DocumentValidator::ValidateExpirationDate() const
 		{
-			return false;
+			const auto expirationDateData = m_documentData.GetFieldData<DataFieldCategory::ExpirationDate>();
+			assert(expirationDateData.has_value());
+			const auto& expirationDate = expirationDateData->get();
+			bool accepted = m_analysisContext.m_currentDate <= expirationDate;
+			if (!accepted)
+			{
+				LOG_DISCREPANCY("Invalid Expiration Date! '{}'", ToStringView(m_document.GetDocumentType()));
+			}
+			return accepted;
+		}
+
+		bool DocumentValidator::ValidateIssuingCity() const
+		{
+			bool accepted = m_analysisContext.m_locationBank.IsValidCity(m_documentData.GetFieldData<DataFieldCategory::IssuingCity>()->get());
+			if (!accepted)
+			{
+				LOG_DISCREPANCY(
+					"{} is not a valid city. {}", 
+					m_documentData.GetFieldData<DataFieldCategory::IssuingCity>()->get(),
+					ToStringView(m_document.GetDocumentType())
+				);
+			}
+			return true;
+		}
+
+		bool DocumentValidator::ValidateDistrict() const
+		{
+			bool accepted = m_analysisContext.m_locationBank.IsValidDistrict(m_documentData.GetFieldData<DataFieldCategory::District>()->get());
+			if (!accepted)
+			{
+				LOG_DISCREPANCY(
+					"{} is not a valid district. {}",
+					m_documentData.GetFieldData<DataFieldCategory::District>()->get(),
+					ToStringView(m_document.GetDocumentType())
+				);
+			}
+			return true;
+		}
+
+		bool DocumentValidator::ValidateForgedOrMissingSeal() const
+		{
+			bool accepted = m_document.IsAuthentic();
+			if (!accepted)
+			{
+				LOG_DISCREPANCY("Seal missing or forged. '{}'", ToStringView(m_document.GetDocumentType()));
+			}
+			return accepted;
+		}
+
+		//bool DocumentValidator::ValidateNationality() const
+		//{
+		//	bool accepted = m_analysisContext.m_locationBank.IsValidCountry(m_documentData.GetFieldData<DataFieldCategory::Nationality>()->get());
+		//	if (!accepted)
+		//	{
+		//		LOG_DISCREPANCY(
+		//			"{} is not a valid country. {}",
+		//			m_documentData.GetFieldData<DataFieldCategory::IssuingCountry>()->get(),
+		//			ToStringView(m_document.GetDocumentType())
+		//		);
+		//	}
+		//	return true;
+		//}
+
+		bool DocumentValidator::ValidateEntryTicketValidOnDate() const
+		{
+			const auto expirationDateData = m_documentData.GetFieldData<DataFieldCategory::ValidDate>();
+			assert(expirationDateData.has_value());
+			const auto& expirationDate = expirationDateData->get();
+			bool accepted = m_analysisContext.m_currentDate == expirationDate;
+			if (!accepted)
+			{
+				LOG_DISCREPANCY("Invalid Enter On Date! '{}'", ToStringView(m_document.GetDocumentType()));
+			}
+			return accepted;
+		}
+
+		bool DocumentValidator::ValidateIssuingCountry() const
+		{
+			bool accepted = m_analysisContext.m_locationBank.IsValidCountry(m_documentData.GetFieldData<DataFieldCategory::IssuingCountry>()->get());
+			if (!accepted)
+			{
+				LOG_DISCREPANCY(
+					"{} is not a valid country. {}",
+					m_documentData.GetFieldData<DataFieldCategory::IssuingCountry>()->get(),
+					ToStringView(m_document.GetDocumentType())
+				);
+			}
+			return true;
+		}
+
+		bool DocumentValidator::ValidateAccessToAristotzka() const
+		{
+			auto& countryList = m_documentData.GetFieldData<DataFieldCategory::CountryList>()->get();
+			for (auto& countryName : countryList.strs)
+			{
+				std::cout << countryName << "\n";
+			}
+			__debugbreak();
+			return true;  // Placeholder, assuming valid for now
+		}
+
+		bool DocumentValidator::ValidateMissingVaccine() const
+		{
+			bool accepted = utils::strfuncs::ToLower(m_documentData.GetFieldData<DataFieldCategory::Vaccination1>().value().get().name) == "polio"
+				|| utils::strfuncs::ToLower(m_documentData.GetFieldData<DataFieldCategory::Vaccination2>().value().get().name) == "polio"
+				|| utils::strfuncs::ToLower(m_documentData.GetFieldData<DataFieldCategory::Vaccination3>().value().get().name) == "polio";
+			if (!accepted)
+			{
+				LOG_DISCREPANCY("Missing polio vaccine. '{}'", ToStringView(m_document.GetDocumentType()));
+			}
+			return accepted;
+		}
+
+		bool DocumentValidator::ValidateVaccineExpirationDate() const
+		{
+			DocData::FieldDataType<DataFieldCategory::Vaccination1> vaccine = std::nullopt;
+
+			bool accepted = 
+				utils::strfuncs::ToLower(
+					(vaccine = m_documentData.GetFieldData<DataFieldCategory::Vaccination1>())->get().name
+				) == "polio" ||
+				
+				utils::strfuncs::ToLower(
+					(vaccine = m_documentData.GetFieldData<DataFieldCategory::Vaccination2>())->get().name
+				) == "polio" ||
+				
+				utils::strfuncs::ToLower(
+					(vaccine = m_documentData.GetFieldData<DataFieldCategory::Vaccination3>())->get().name
+				) == "polio";
+
+			if (accepted && vaccine != std::nullopt)
+			{
+				Date polioExpiryDate{ vaccine->get().date.GetDay(), vaccine->get().date.GetMonth(), vaccine->get().date.GetYear() + 3};
+				accepted = m_analysisContext.m_currentDate <= polioExpiryDate;
+			}
+			else
+			{
+				LOG_ERR("Something went wrong!");
+			}
+			
+			if (!accepted)
+			{
+				LOG_DISCREPANCY("Missing polio vaccine. '{}'", ToStringView(m_document.GetDocumentType()));
+			}
+			return accepted;
+		}
+
+
+		// Against booth
+		bool DocumentValidator::ValidateWeight() const
+		{
+			bool accepted = m_analysisContext.m_currentWeight.value == m_documentData.GetFieldData<DataFieldCategory::Weight>().value().get().value;
+			if (!accepted)
+			{
+				LOG_DISCREPANCY("Invalid weight. '{}'", ToStringView(m_document.GetDocumentType()));
+			}
+			return accepted;
+		}
+
+		// Against images - not supported yet
+		bool DocumentValidator::ValidateSex() const
+		{
+			LOG_ERR("DocumentValidator::ValidateSex() Not Implemented!");
+			return true;  // Placeholder, assuming valid for now
+		}
+
+		bool DocumentValidator::ValidatePhoto() const
+		{
+			LOG_ERR("DocumentValidator::ValidatePhoto() Not Implemented!");
+			return true;  // Placeholder, assuming valid for now
+		}
+
+		bool DocumentValidator::ValidateHeight() const
+		{
+			LOG_ERR("DocumentValidator::ValidateHeight() Not Implemented!");
+			return true;  // Placeholder, assuming valid for now
+		}
+
+		bool DocumentValidator::ValidatePhysicalAppearance() const
+		{
+			LOG_ERR("DocumentValidator::ValidatePhysicalAppearance() Not Implemented!");
+			return true;  // Placeholder, assuming valid for now
+		}
+
+		bool DocumentValidator::ValidateThumbprint() const
+		{
+			LOG_ERR("DocumentValidator::ValidateThumbprint() Not Implemented!");
+			return true;  // Placeholder, assuming valid for now
+		}
+
+		bool DocumentValidator::ValidateFingerprints() const
+		{
+			LOG_ERR("DocumentValidator::ValidateFingerprints() Not Implemented!");
+			return true;  // Placeholder, assuming valid for now
+		}
+
+		// Against rulebook, transcript, bulletin
+		bool DocumentValidator::ValidateAgainstRulebook() const
+		{
+			LOG_ERR("DocumentValidator::ValidateAgainstRulebook() Not Implemented!");
+			return true;  // Placeholder, assuming valid for now
+		}
+
+		bool DocumentValidator::ValidateAgainstTranscript() const
+		{
+			LOG_ERR("DocumentValidator::ValidateAgainstTranscript() Not Implemented!");
+			return true;  // Placeholder, assuming valid for now
+		}
+
+		// Against other applicant documents
+		bool DocumentValidator::ValidateName() const
+		{
+			LOG_ERR("DocumentValidator::ValidateName() Not Implemented!");
+			return true;  // Placeholder, assuming valid for now
 		}
 
 		bool DocumentValidator::ValidateDateOfBirth() const
 		{
-			return false;
+			LOG_ERR("DocumentValidator::ValidateDateOfBirth() Not Implemented!");
+			return true;  // Placeholder, assuming valid for now
 		}
 
-		bool DocumentValidator::ValidateVaccineData() const
+		bool DocumentValidator::ValidatePassportNumber() const
 		{
-			return false;
+			LOG_ERR("DocumentValidator::ValidatePassportNumber() Not Implemented!");
+			return true;  // Placeholder, assuming valid for now
 		}
 
-		bool DocumentValidator::ValidateField(const documents::FieldData& field) const
+		bool DocumentValidator::ValidateWorkEndDate() const
 		{
-			return false;
+			LOG_ERR("DocumentValidator::ValidateWorkEndDate() Not Implemented!");
+			return true;  // Placeholder, assuming valid for now
 		}
+
 
 #pragma endregion
 

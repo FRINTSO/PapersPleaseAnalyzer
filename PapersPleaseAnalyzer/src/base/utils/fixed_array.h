@@ -60,42 +60,13 @@ namespace paplease {
 		};
 
 		template<typename T, size_t Size>
+		using FixedOptionalArray = FixedArray<std::optional<T>, Size>;
+
+		template<typename T, size_t Size>
 		using FixedRefArray = FixedArray<std::optional<std::reference_wrapper<const T>>, Size>;
 
 		template<typename T, size_t Size>
 		using FixedPtrArray = FixedArray<const T*, Size>;
-
-		//template<typename T, size_t Size>
-		//class FixedRefArray
-		//{
-		//public:
-		//	//using Ref = std::reference_wrapper<const T>;
-		//	using Ref = const T*;
-
-		//	FixedRefArray() : m_count(0) {}
-
-		//	void Add(const T& value)
-		//	{
-		//		assert(m_count < Size);
-		//		m_array[m_count++] = &value;
-		//	}
-
-		//	const Ref* operator[](size_t index) const
-		//	{
-		//		assert(index < m_count);
-		//		return m_array[index];
-		//	}
-
-		//	size_t Count() const { return m_count; }
-
-		//	// Range support
-		//	auto begin() const { return m_array.begin(); }
-		//	auto end() const { return m_array.begin() + m_count; }
-
-		//private:
-		//	std::array<Ref, Size> m_array;
-		//	size_t m_count;
-		//};
 
 	}  // namespace utils
 }  // namespace paplease

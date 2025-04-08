@@ -48,7 +48,7 @@ namespace paplease {
 			const DocAppearance& GetAppearance() const noexcept;
 
 		private: // Private members
-			cv::Mat m_mat;
+			cv::Mat m_mat;  // Idea is to save this in some MatStore, so the Doc class can be flyweight, with about 16 bytes compared to 104, plus image access should be done once, and should not remain after, since we will do lots of scanning
 			DocType m_documentType;
 			PassportType m_passportType;
 		};

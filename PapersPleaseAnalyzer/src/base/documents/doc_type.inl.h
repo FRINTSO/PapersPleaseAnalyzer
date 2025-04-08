@@ -35,18 +35,18 @@ namespace paplease {
         {
             return std::array<DocType, static_cast<size_t>(DocType::Passport)>{
                 DocType::AccessPermit,
-                    DocType::CertificateOfVaccination,
-                    DocType::DiplomaticAuthorization,
-                    DocType::EntryPermit,
-                    DocType::EntryTicket,
-                    DocType::GrantOfAsylum,
-                    DocType::IdentityCard,
-                    DocType::IdentitySupplement,
-                    DocType::WorkPass,
-                    DocType::RuleBook,
-                    DocType::Bulletin,
-                    DocType::Transcript,
-                    DocType::Passport,
+                DocType::CertificateOfVaccination,
+                DocType::DiplomaticAuthorization,
+                DocType::EntryPermit,
+                DocType::EntryTicket,
+                DocType::GrantOfAsylum,
+                DocType::IdentityCard,
+                DocType::IdentitySupplement,
+                DocType::WorkPass,
+                DocType::RuleBook,
+                DocType::Bulletin,
+                DocType::Transcript,
+                DocType::Passport,
             };
         }
 

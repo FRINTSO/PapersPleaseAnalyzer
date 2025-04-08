@@ -43,7 +43,7 @@ namespace paplease {
 			{
 				// Choose what fields should be used
 				return {
-					DataFieldCategory::Nationality,
+					//DataFieldCategory::Nationality,
 					DataFieldCategory::DateOfBirth,
 					DataFieldCategory::Height,
 					DataFieldCategory::IssuingCity,
@@ -62,30 +62,30 @@ namespace paplease {
 			{
 				switch (category)
 				{
-					case DataFieldCategory::Nationality:
-						return 0;
+					//case DataFieldCategory::Nationality:
+					//	return 0;
 					case DataFieldCategory::DateOfBirth:
-						return 1;
+						return 0;
 					case DataFieldCategory::Height:
-						return 2;
+						return 1;
 					case DataFieldCategory::IssuingCity:
-						return 3;
+						return 2;
 					case DataFieldCategory::IssuingCountry:
-						return 4;
+						return 3;
 					case DataFieldCategory::Name:
-						return 5;
+						return 4;
 					case DataFieldCategory::PassportNumber:
-						return 6;
+						return 5;
 					case DataFieldCategory::Sex:
-						return 7;
+						return 6;
 					case DataFieldCategory::Vaccination1:
-						return 8;
+						return 7;
 					case DataFieldCategory::Vaccination2:
-						return 9;
+						return 8;
 					case DataFieldCategory::Vaccination3:
-						return 10;
+						return 9;
 					case DataFieldCategory::Weight:
-						return 11;
+						return 10;
 					default:
 						return -1;
 				}

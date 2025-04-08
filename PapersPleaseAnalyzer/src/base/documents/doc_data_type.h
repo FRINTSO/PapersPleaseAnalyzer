@@ -7,44 +7,44 @@ namespace paplease {
         enum class DataFieldCategory
         {
             Invalid = 0,
-            Nationality,
-            CountryList,
-            Description,
-            District,
-            Duration,
-            DurationOfStay,  // Ex. 3 MONTHS
-            Field, // Refers to job position
-            FingerPrints,
-            IssuingCity,
-            IssuingCountry,
-            Purpose,
-            PhysicalAppearance,
+            // Nationality,            // Ex. OBRISTAN
+            CountryList,            // Ex. REPUBLIA, ARSTOTZKA, OBRISTAN, ANTEGRIA
+            // Description,            // Ex. 
+            District,               // Ex. BURNTON
+            // Duration,               //
+            DurationOfStay,         // Ex. 3 MONTHS; FOREVER; 2 DAYS
+            Field,                  // Refers to job position: FISHING; CONSTRUCTION
+            FingerPrints,           // <PHOTO>
+            IssuingCity,            // Ex. Lesrenadi; West Grestin
+            IssuingCountry,         // Ex. KOLECHIA
+            Purpose,                // Ex. VISIT; WORK; TRANSIT; IMMIGRATE
+            PhysicalAppearance,     // Ex. WIDOW'S PEAK; SHORT STRAIGHT HAIR
+            
+            // Are these used?      //
+            //HasValidSeal,         //
+            //PassportType,         //
+            
+            ValidDate,              // Ex. 25.11.1982
+            EndDate,                // Ex. 01.05.1983
+            ExpirationDate,         // Ex. 20.12.1982
 
-            // Are these used?
-            //HasValidSeal,
-            //PassportType,
+            DateOfBirth,            // Ex. 06.02.1953
+            Name,                   // Ex. STEPHANI HODGOVSKA
+            PassportNumber,         // Ex. D79CA-XTGXX
+            Sex,                    // Ex. F
 
-            ValidDate,
-            EndDate,
-            ExpirationDate,
+            Photo,                  // <PHOTO>
+            ThumbPrint,             // <PHOTO>
 
-            DateOfBirth,
-            Name,
-            PassportNumber,
-            Sex,
+            Vaccination1,           // Ex. 15.12.81  TUBERC.
+            Vaccination2,           // Ex. 17.12.81  POLIO
+            Vaccination3,           // Ex. <EMPTY>
 
-            Photo,
-            ThumbPrint,
+            Height,                 // Ex. 176cm
+            Weight,                 // Ex. 97kg
 
-            Vaccination1,
-            Vaccination2,
-            Vaccination3,
-
-            Height,
-            Weight,
-
-            BoothDate,
-            BoothCounter,
+            BoothDate,              // Ex. 03.01.83
+            BoothCounter,           // Ex. 01
 
             Rule1, Rule2, Rule3, Rule4, Rule5, Rule6, Rule7, Rule8, Rule9, Rule10,
             CriminalPhoto1, CriminalPhoto2, CriminalPhoto3,
@@ -90,18 +90,18 @@ namespace paplease {
             {
                 case DataFieldCategory::Invalid:
                     return "Invalid";
-                case DataFieldCategory::Nationality:
-                    return "Nationality";
+                //case DataFieldCategory::Nationality:
+                //    return "Nationality";
                 case DataFieldCategory::CountryList:
                     return "CountryList";
                 case DataFieldCategory::DateOfBirth:
                     return "DateOfBirth";
-                case DataFieldCategory::Description:
-                    return "Description";
+                //case DataFieldCategory::Description:
+                //    return "Description";
                 case DataFieldCategory::District:
                     return "District";
-                case DataFieldCategory::Duration:
-                    return "Duration";
+                //case DataFieldCategory::Duration:
+                //    return "Duration";
                 case DataFieldCategory::DurationOfStay:
                     return "DurationOfStay";
                 case DataFieldCategory::EndDate:

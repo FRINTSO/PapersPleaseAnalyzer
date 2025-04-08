@@ -13,10 +13,10 @@
     <ClCompile Include="src\base\analysis\document_analyzer.cpp" />
     <ClCompile Include="src\base\game_view.cpp" />
     <ClCompile Include="src\base\documents\doc_class.cpp" />
-    <ClCompile Include="src\base\document_data\date.cpp" />
+    <ClCompile Include="src\base\documents\data\date.cpp" />
     <ClCompile Include="src\base\documents\doc_data.cpp" />
     <ClCompile Include="src\base\documents\doc_extractor.cpp" />
-    <ClCompile Include="src\base\analysis\gamer_controller.cpp" />
+    <ClCompile Include="src\base\analysis\game_controller.cpp" />
     <ClCompile Include="src\base\analysis\components\game_state.cpp" />
     <ClCompile Include="src\base\analysis\scannable\inspection.cpp" />
     <ClCompile Include="src\base\analysis\scannable\booth.cpp" />
@@ -52,17 +52,17 @@
     <ClInclude Include="src\base\documents\doc_appearance.h" />
     <ClInclude Include="src\base\documents\doc_type.h" />
     <ClInclude Include="src\base\documents\doc_data.h" />
-    <ClInclude Include="src\base\document_data\date.h" />
+    <ClInclude Include="src\base\documents\data\date.h" />
     <ClInclude Include="src\base\documents\doc_layout.h" />
     <ClInclude Include="src\base\documents\doc_appearance.inl.h" />
     <ClInclude Include="src\base\documents\doc_layout.inl.h" />
-    <ClInclude Include="src\base\document_data\field_data.h" />
+    <ClInclude Include="src\base\documents\data\field_data.h" />
     <ClInclude Include="src\base\documents\doc_extractor.h" />
     <ClInclude Include="src\base\analysis\components\game_state.h" />
     <ClInclude Include="src\base\analysis\scannable\inspection.h" />
     <ClInclude Include="src\base\analysis\data\rules.h" />
     <ClInclude Include="src\base\analysis\data\criminals.h" />
-    <ClInclude Include="src\base\document_data\photo.h" />
+    <ClInclude Include="src\base\documents\data\photo.h" />
     <ClInclude Include="src\base\analysis\data\transcript.h" />
     <ClInclude Include="src\base\analysis\scannable\booth.h" />
     <ClInclude Include="src\base\analysis\mediators\analysis_mediator.h" />
@@ -78,6 +78,9 @@
     <ClInclude Include="src\base\analysis\analysis_context.h" />
     <ClInclude Include="src\base\analysis\analysis_context.inl.h" />
     <ClInclude Include="src\base\utils\fixed_array.h" />
+    <ClInclude Include="src\base\documents\doc_data.inl.h" />
+    <ClInclude Include="src\base\utils\strfuncs.h" />
+    <ClInclude Include="src\base\utils\enum_range.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\base\documents\bounding_box_finder.inc" />

@@ -1,6 +1,6 @@
 #pragma once
-#include "base/document_data/date.h"
-#include "base/document_data/field_data.h"
+#include "base/documents/data/date.h"
+#include "base/documents/data/field_data.h"
 #include "base/documents/doc_data_type.h"
 #include "base/utils/fixed_array.h"
 
@@ -87,7 +87,20 @@ namespace paplease {
 		public:
 			DocData() = default;
 
-			FieldData Get(DataFieldCategory category) const;
+			const FieldData& GetField(DataFieldCategory category) const;
+
+			template<DataFieldCategory Category, typename Enable = void>
+			struct data_field_type
+			{
+				using type = void;
+			};
+
+			template<DataFieldCategory Category>
+			using FieldDataType = std::optional<std::reference_wrapper<const typename data_field_type<Category>::type>>;
+
+			template<DataFieldCategory Category>
+			constexpr FieldDataType<Category> GetFieldData() const;
+
 			paplease::utils::FixedRefArray<FieldData, DocData::ArrayLength> GetAllValidFields() const;
 
 			void PrintAllFields() const // temporary for ease of development
@@ -128,3 +141,5 @@ namespace paplease {
 
 	}  // namespace documents
 }  // namespace paplease
+
+#include "base/documents/doc_data.inl.h"

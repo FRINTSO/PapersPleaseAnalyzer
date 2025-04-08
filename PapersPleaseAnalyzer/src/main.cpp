@@ -24,7 +24,7 @@ void Run()
 {
 	paplease::analysis::GameAnalysisController analyzer{ false };
 	paplease::GameView view;
-	while (paplease::GetNextGameSimView("1", view))
+	while (paplease::GetNextGameSimView("2", view))
 	{
 		analyzer.Update(view);
 	}

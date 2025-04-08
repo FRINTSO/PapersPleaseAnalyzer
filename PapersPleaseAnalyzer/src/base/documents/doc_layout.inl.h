@@ -111,7 +111,8 @@ namespace paplease {
 								},
 								DataLayout{
 									Rectangle{ DOWNSCALE(30), DOWNSCALE(152), DOWNSCALE(112), DOWNSCALE(16) },
-									DataFieldCategory::Nationality,
+									//DataFieldCategory::Nationality,
+									DataFieldCategory::IssuingCountry,
 									FieldType::Text
 								},
 								DataLayout{
@@ -142,7 +143,7 @@ namespace paplease {
 								DataLayout{
 									Rectangle{ DOWNSCALE(30), DOWNSCALE(284), DOWNSCALE(234), DOWNSCALE(16) },
 									DataFieldCategory::PhysicalAppearance,
-									FieldType::Image
+									FieldType::Text
 								},
 								DataLayout{
 									Rectangle{ DOWNSCALE(156), DOWNSCALE(328), DOWNSCALE(108), DOWNSCALE(16) },
@@ -271,7 +272,8 @@ namespace paplease {
 								},
 								DataLayout{
 									Rectangle{ DOWNSCALE(182), DOWNSCALE(156), DOWNSCALE(116), DOWNSCALE(16) },
-									DataFieldCategory::Nationality,
+									//DataFieldCategory::Nationality,
+									DataFieldCategory::IssuingCountry,
 									FieldType::Text
 								},
 								DataLayout{
@@ -360,7 +362,8 @@ namespace paplease {
 								},
 								DataLayout{
 									Rectangle{ DOWNSCALE(20), DOWNSCALE(132), DOWNSCALE(142), DOWNSCALE(48) },
-									DataFieldCategory::Description,
+									// DataFieldCategory::Description,
+									DataFieldCategory::PhysicalAppearance,
 									FieldType::Text
 								},
 								DataLayout{
@@ -623,7 +626,7 @@ namespace paplease {
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(54), DOWNSCALE(228), DOWNSCALE(106), DOWNSCALE(16) },
+									Rectangle{ DOWNSCALE(54), DOWNSCALE(228), DOWNSCALE(114), DOWNSCALE(16) },
 									DataFieldCategory::IssuingCity,
 									FieldType::Text
 								},

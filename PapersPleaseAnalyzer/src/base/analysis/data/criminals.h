@@ -2,7 +2,7 @@
 #include <array>
 
 #include "base/documents/doc_class.h"
-#include "base/document_data/photo.h"
+#include "base/documents/data/photo.h"
 
 namespace paplease {
 	namespace analysis {

@@ -1,6 +1,6 @@
 #pragma once
-#include "base/document_data/date.h"
-#include "base/document_data/field_data.h"
+#include "base/documents/data/date.h"
+#include "base/documents/data/field_data.h"
 #include "base/documents/doc_class.h"
 #include "base/analysis/components/component.h"
 #include "base/analysis/data/criminals.h"
