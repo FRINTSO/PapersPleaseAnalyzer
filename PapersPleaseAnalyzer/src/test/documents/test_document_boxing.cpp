@@ -7,12 +7,12 @@
 #include "base/ocr/ocr.h"
 #include "base/shape.h"
 
-#include "base/documents_v2/doc_class.h"
-#include "base/documents_v2/doc_layout.h"
+#include "base/documents/doc_class.h"
+#include "base/documents/doc_layout.h"
 
 namespace paplease {
 	namespace documents {
-		namespace v2::test {
+		namespace test {
 			namespace utils {
 
 				static void display_text_field_character_boxing(const cv::Mat& document, DocType documentType, const Rectangle& boundingBox, std::string&& partName)

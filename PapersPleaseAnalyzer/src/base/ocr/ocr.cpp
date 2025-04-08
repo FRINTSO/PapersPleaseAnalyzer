@@ -325,8 +325,6 @@ namespace paplease {
 
 				char ch = chars[number];
 
-
-
 				if (previousRectangle)
 				{ // add spaces
 					int horizontalSpaceFromLastBox = box.x - (previousRectangle->x + previousRectangle->width);
@@ -335,9 +333,10 @@ namespace paplease {
 
 					int whitespaces = ((horizontalSpaceFromLastBox - letterSpaceSize) / whitespaceSize);
 
-					for (int i = 0; i < whitespaces; i++)
+					if (!(whitespaces >= 1 && ch == '1' && field.back() == '1'))
 					{
-						field.push_back(' ');
+						if (whitespaces > 0)
+							field.append(whitespaces, ' ');
 					}
 				}
 
@@ -353,10 +352,8 @@ namespace paplease {
 						field.push_back(' ');
 					}
 
-					for (int i = 0; i < newLines; i++)
-					{
-						field.push_back('\n');
-					}
+					if (newLines > 0)
+						field.append(newLines, '\n');
 				}
 
 				previousRectangle = &box;

@@ -3,17 +3,17 @@
 
 #include "base/game_view.h"
 
-#include "base/documents_v2/doc_class.h"
+#include "base/documents/doc_class.h"
 
 namespace paplease {
 	namespace documents {
-		namespace v2::Test {
+		namespace Test {
 
-			void test_document_preprocessing(const std::string& number, documents::v2::DocType docType)
+			void test_document_preprocessing(const std::string& number, documents::DocType docType)
 			{
 				GameView game = GetGameView(number);
 
-				auto doc = documents::v2::FindDocument(game, docType);
+				auto doc = documents::FindDocument(game, docType);
 				if (!doc.has_value())
 				{
 					std::cerr << "Failed test_document_preprocessing\n";

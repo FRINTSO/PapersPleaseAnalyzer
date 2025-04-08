@@ -1,5 +1,5 @@
 #pragma once
-#include "base/documents_v2/doc_type.h"
+#include "base/documents/doc_type.h"
 
 namespace paplease {
 	namespace ocr {
@@ -24,7 +24,7 @@ namespace paplease {
 			const int newlineSize;
 		};
 
-		const FontInfo& GetFontInfo(documents::v2::DocType documentType);
+		const FontInfo& GetFontInfo(documents::DocType documentType);
 		const FontInfo& GetBoothFontInfo();
 
 	}  // namespace ocr

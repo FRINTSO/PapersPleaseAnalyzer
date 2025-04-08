@@ -3,31 +3,13 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "base/documents_v2/doc_type.h"
+#include "base/documents/doc_type.h"
 
 namespace paplease {
-
 	namespace documents {
+		namespace Test {
 
-		namespace V1::Test {
-
-			void test_access_permit_preprocessing(const std::string& number);
-			void test_booth_preprocessing(const std::string& number);
-			void test_certificate_of_vaccination_preprocessing(const std::string& number);
-			void test_diplomatic_authorization_preprocessing(const std::string& number);
-			void test_entry_permit_preprocessing(const std::string& number);
-			void test_entry_ticket_preprocessing(const std::string& number);
-			void test_grant_of_asylum_preprocessing(const std::string& number);
-			void test_identity_card_preprocessing(const std::string& number);
-			void test_identity_supplement_preprocessing(const std::string& number);
-			void test_passport_preprocessing(const std::string& number);
-			void test_work_pass_preprocessing(const std::string& number);
-
-		}
-
-		namespace v2::Test {
-
-			void test_document_preprocessing(const std::string& number, documents::v2::DocType docType);
+			void test_document_preprocessing(const std::string& number, documents::DocType docType);
 
 		}
 	}

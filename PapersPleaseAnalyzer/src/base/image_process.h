@@ -4,7 +4,7 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "base/documents_v2/doc_type.h"
+#include "base/documents/doc_type.h"
 #include "base/ocr/font.h"
 #include "base/ocr/ocr.h"
 #include "base/shape.h"
@@ -30,7 +30,7 @@ namespace paplease {
 		return document(cv::Rect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height));
 	}
 
-	static inline std::string GetFieldString(const cv::Mat& field, documents::v2::DocType documentType)
+	static inline std::string GetFieldString(const cv::Mat& field, documents::DocType documentType)
 	{
 		const ocr::FontInfo& fontInfo = ocr::GetFontInfo(documentType);
 		return ocr::ImageToString(field, fontInfo);

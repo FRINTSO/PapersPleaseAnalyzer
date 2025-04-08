@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "base/common.h"
-#include "base/documents_v2/doc_type.h"
+#include "base/documents/doc_type.h"
 
 namespace paplease {
 	namespace ocr {
@@ -16,33 +16,33 @@ namespace paplease {
 		static inline constinit FontInfo g_MiniKylie{ Typeface::MiniKylie, DOWNSCALE(12), DOWNSCALE(4), DOWNSCALE(6), DOWNSCALE(8), DOWNSCALE(4) };
 		static inline constinit FontInfo g_BoothNumber{ Typeface::BoothNumber, DOWNSCALE(12), DOWNSCALE(4), DOWNSCALE(6) /* Guess 3 */, DOWNSCALE(8), DOWNSCALE(4) };
 
-		static constexpr Typeface GetTypefaceByDocumentType(const documents::v2::DocType documentType)
+		static constexpr Typeface GetTypefaceByDocumentType(const documents::DocType documentType)
 		{
 			switch (documentType)
 			{
-				case documents::v2::DocType::Passport:
+				case documents::DocType::Passport:
 					return Typeface::BM_Mini;
-				case documents::v2::DocType::IdentityCard:
+				case documents::DocType::IdentityCard:
 					return Typeface::MiniKylie;
-				case documents::v2::DocType::DiplomaticAuthorization:
+				case documents::DocType::DiplomaticAuthorization:
 					return Typeface::BM_Mini;
-				case documents::v2::DocType::EntryTicket:
+				case documents::DocType::EntryTicket:
 					return Typeface::BM_Mini;
-				case documents::v2::DocType::EntryPermit:
+				case documents::DocType::EntryPermit:
 					return Typeface::BM_Mini;
-				case documents::v2::DocType::AccessPermit:
+				case documents::DocType::AccessPermit:
 					return Typeface::BM_Mini;
-				case documents::v2::DocType::WorkPass:
+				case documents::DocType::WorkPass:
 					return Typeface::BM_Mini;
-				case documents::v2::DocType::GrantOfAsylum:
+				case documents::DocType::GrantOfAsylum:
 					return Typeface::BM_Mini;
-				case documents::v2::DocType::IdentitySupplement:
+				case documents::DocType::IdentitySupplement:
 					return Typeface::BM_Mini;
-				case documents::v2::DocType::CertificateOfVaccination:
+				case documents::DocType::CertificateOfVaccination:
 					return Typeface::BM_Mini;
-				case documents::v2::DocType::RuleBook:
+				case documents::DocType::RuleBook:
 					return Typeface::BM_Mini;
-				case documents::v2::DocType::Transcript:
+				case documents::DocType::Transcript:
 					return Typeface::_04b03;
 				default:
 				{
@@ -71,7 +71,7 @@ namespace paplease {
 			}
 		}
 
-		const FontInfo& GetFontInfo(const documents::v2::DocType documentType)
+		const FontInfo& GetFontInfo(const documents::DocType documentType)
 		{
 			Typeface type = GetTypefaceByDocumentType(documentType);
 			return GetFontInfoByTypeface(type);
