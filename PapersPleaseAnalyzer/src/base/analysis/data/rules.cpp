@@ -31,7 +31,7 @@ namespace paplease {
 				}
 
 				// for (int i = (int)DataFieldCategory::Rule1; i <= (int)DataFieldCategory::Rule10; i++)
-				for (DataFieldCategory category = DataFieldCategory::Rule1; category <= DataFieldCategory::Rule10; ((int&)category)++)
+				for (FieldCategory category = FieldCategory::Rule1; category <= FieldCategory::Rule10; ((int&)category)++)
 				{
 					auto rule = ruleData.GetField(category);
 					auto eRule = GetERuleFromDescription(rule.ToText());

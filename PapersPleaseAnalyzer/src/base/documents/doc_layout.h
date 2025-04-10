@@ -21,24 +21,24 @@ namespace paplease {
 			{
 			public:
 				constexpr DataLayout() noexcept;
-				constexpr DataLayout(Rectangle dataBox, DataFieldCategory dataFieldCategory, FieldType dataFieldType) noexcept;
+				constexpr DataLayout(Rectangle dataBox, FieldCategory dataFieldCategory, FieldType dataFieldType) noexcept;
 
 				[[nodiscard]] constexpr const Rectangle GetBox() const noexcept;
-				[[nodiscard]] constexpr const DataFieldCategory GetCategory() const noexcept;
+				[[nodiscard]] constexpr const FieldCategory GetCategory() const noexcept;
 				[[nodiscard]] constexpr const FieldType GetType() const noexcept;
 			private:
 				const Rectangle m_dataBox;
-				const DataFieldCategory m_dataFieldCategory;
+				const FieldCategory m_dataFieldCategory;
 				const FieldType m_dataFieldType;
 			};
 
 		public:
 			static constexpr size_t MaxLayouts = 10;
 		public:
-			constexpr Rectangle GetFieldBox(DataFieldCategory type);
+			constexpr Rectangle GetFieldBox(FieldCategory type);
 			constexpr const std::array<Rectangle, DocLayout::MaxLayouts> GetAllFieldBoxes();
 
-			constexpr const DataLayout GetLayout(DataFieldCategory type) const noexcept;
+			constexpr const DataLayout GetLayout(FieldCategory type) const noexcept;
 			constexpr const DataLayout* GetAllLayouts() const noexcept;
 			constexpr const size_t GetLayoutCount() const noexcept;
 		private:

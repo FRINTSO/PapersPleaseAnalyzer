@@ -231,6 +231,7 @@
     <ClInclude Include="src\base\ocr\ocr.h" />
     <ClInclude Include="src\base\screencap.h" />
     <ClInclude Include="src\base\shape.h" />
+    <ClInclude Include="src\base\utils\metaprogramming.h" />
     <ClInclude Include="src\base\utils\strfuncs.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\test\documents\test_document_data_extraction.h" />

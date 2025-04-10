@@ -12,10 +12,10 @@ void test()
 {
 	using namespace paplease::documents;
 
-	auto path = "C:\\dev\\PapersPleaseAnalyzer\\PapersPleaseAnalyzer\\images\\game_sim\\3\\game_14.png";
+	auto path = "C:\\dev\\PapersPleaseAnalyzer\\PapersPleaseAnalyzer\\images\\game_sim\\3\\game_110.png";
 	paplease::GameView game(path);
 
-	auto doc = FindDocument(game, DocType::CertificateOfVaccination);
+	auto doc = FindDocument(game, DocType::IdentityCard);
 	auto data = doc->GetDocumentData();
 	data.PrintAllFields();
 }
@@ -24,7 +24,7 @@ void Run()
 {
 	paplease::analysis::GameAnalysisController analyzer{ false };
 	paplease::GameView view;
-	while (paplease::GetNextGameSimView("2", view))
+	while (paplease::GetNextGameSimView("3", view))
 	{
 		analyzer.Update(view);
 	}
@@ -37,9 +37,8 @@ void main()
 {
 	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
 	paplease::utils::Log::Init();
-
 	
-	// test();
+	//test();
 	Run();
 
 	std::cin.get();

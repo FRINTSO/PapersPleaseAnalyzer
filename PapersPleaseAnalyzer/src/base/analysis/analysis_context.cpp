@@ -10,6 +10,7 @@
 #include "base/utils/enum_range.h"
 
 #include <cassert>
+#include <ios>
 #include <utility>
 
 namespace paplease {
@@ -207,6 +208,28 @@ namespace paplease {
 			Clear();
 		}
 
+		bool Profile::RegisterData(const documents::Field& fieldData)
+		{
+			int index = this->GetFieldIndexByCategoryType(fieldData.Category());
+			return this->CompareData(fieldData) != MismatchingData;
+		}
+
+		int Profile::CompareData(const documents::Field& fieldData) const
+		{
+			size_t index = this->GetFieldIndexByCategoryType(fieldData.Category());
+
+			if (!this->m_fields[index].has_value())
+			{
+				return NoData;
+			}
+
+			const auto& storedData = this->m_fields[index].value();
+
+			bool isIdenticalData = storedData.GetData() == fieldData.GetData();
+
+			return isIdenticalData ? MatchingData : MismatchingData;
+		}
+
 		void Profile::Clear()
 		{
 			for (auto& document : m_fields)
@@ -385,7 +408,7 @@ namespace paplease {
 
 			auto validator = DocumentValidator(document, *this);
 			bool result = validator.Validate();
-			std::cout << "Is valid: " << result << "\n";
+			LOG("Is valid: {}", result);
 			
 			EndLOG("AnalysisContext::ValidateDocument()");
 		}
@@ -396,7 +419,7 @@ namespace paplease {
 
 #pragma region DocumentValidator
 
-		DocumentValidator::DocumentValidator(const documents::Doc& document, const AnalysisContext& analysisContext)
+		DocumentValidator::DocumentValidator(const documents::Doc& document, AnalysisContext& analysisContext)
 			: m_analysisContext{ analysisContext }, m_document { document}, m_documentData{ document.GetDocumentData() }
 		{}
 
@@ -412,7 +435,6 @@ namespace paplease {
 					valid &= ValidatePassportNumber();
 					valid &= ValidateExpirationDate();
 					valid &= ValidateForgedOrMissingSeal();
-					//valid &= ValidateNationality();
 					valid &= ValidateIssuingCountry();
 					valid &= ValidateHeight();
 					valid &= ValidateWeight();
@@ -519,7 +541,7 @@ namespace paplease {
 		// Against static information, ex. Issuing city, or current date
 		bool DocumentValidator::ValidateExpirationDate() const
 		{
-			const auto expirationDateData = m_documentData.GetFieldData<DataFieldCategory::ExpirationDate>();
+			const auto expirationDateData = m_documentData.GetFieldData<FieldCategory::ExpirationDate>();
 			assert(expirationDateData.has_value());
 			const auto& expirationDate = expirationDateData->get();
 			bool accepted = m_analysisContext.m_currentDate <= expirationDate;
@@ -532,12 +554,12 @@ namespace paplease {
 
 		bool DocumentValidator::ValidateIssuingCity() const
 		{
-			bool accepted = m_analysisContext.m_locationBank.IsValidCity(m_documentData.GetFieldData<DataFieldCategory::IssuingCity>()->get());
+			bool accepted = m_analysisContext.m_locationBank.IsValidCity(m_documentData.GetFieldData<FieldCategory::IssuingCity>()->get());
 			if (!accepted)
 			{
 				LOG_DISCREPANCY(
 					"{} is not a valid city. {}", 
-					m_documentData.GetFieldData<DataFieldCategory::IssuingCity>()->get(),
+					m_documentData.GetFieldData<FieldCategory::IssuingCity>()->get(),
 					ToStringView(m_document.GetDocumentType())
 				);
 			}
@@ -546,12 +568,12 @@ namespace paplease {
 
 		bool DocumentValidator::ValidateDistrict() const
 		{
-			bool accepted = m_analysisContext.m_locationBank.IsValidDistrict(m_documentData.GetFieldData<DataFieldCategory::District>()->get());
+			bool accepted = m_analysisContext.m_locationBank.IsValidDistrict(m_documentData.GetFieldData<FieldCategory::District>()->get());
 			if (!accepted)
 			{
 				LOG_DISCREPANCY(
 					"{} is not a valid district. {}",
-					m_documentData.GetFieldData<DataFieldCategory::District>()->get(),
+					m_documentData.GetFieldData<FieldCategory::District>()->get(),
 					ToStringView(m_document.GetDocumentType())
 				);
 			}
@@ -584,7 +606,7 @@ namespace paplease {
 
 		bool DocumentValidator::ValidateEntryTicketValidOnDate() const
 		{
-			const auto expirationDateData = m_documentData.GetFieldData<DataFieldCategory::ValidDate>();
+			const auto expirationDateData = m_documentData.GetFieldData<FieldCategory::ValidDate>();
 			assert(expirationDateData.has_value());
 			const auto& expirationDate = expirationDateData->get();
 			bool accepted = m_analysisContext.m_currentDate == expirationDate;
@@ -597,12 +619,12 @@ namespace paplease {
 
 		bool DocumentValidator::ValidateIssuingCountry() const
 		{
-			bool accepted = m_analysisContext.m_locationBank.IsValidCountry(m_documentData.GetFieldData<DataFieldCategory::IssuingCountry>()->get());
+			bool accepted = m_analysisContext.m_locationBank.IsValidCountry(m_documentData.GetFieldData<FieldCategory::IssuingCountry>()->get());
 			if (!accepted)
 			{
 				LOG_DISCREPANCY(
 					"{} is not a valid country. {}",
-					m_documentData.GetFieldData<DataFieldCategory::IssuingCountry>()->get(),
+					m_documentData.GetFieldData<FieldCategory::IssuingCountry>()->get(),
 					ToStringView(m_document.GetDocumentType())
 				);
 			}
@@ -611,7 +633,7 @@ namespace paplease {
 
 		bool DocumentValidator::ValidateAccessToAristotzka() const
 		{
-			auto& countryList = m_documentData.GetFieldData<DataFieldCategory::CountryList>()->get();
+			auto& countryList = m_documentData.GetFieldData<FieldCategory::CountryList>()->get();
 			for (auto& countryName : countryList.strs)
 			{
 				std::cout << countryName << "\n";
@@ -622,9 +644,9 @@ namespace paplease {
 
 		bool DocumentValidator::ValidateMissingVaccine() const
 		{
-			bool accepted = utils::strfuncs::ToLower(m_documentData.GetFieldData<DataFieldCategory::Vaccination1>().value().get().name) == "polio"
-				|| utils::strfuncs::ToLower(m_documentData.GetFieldData<DataFieldCategory::Vaccination2>().value().get().name) == "polio"
-				|| utils::strfuncs::ToLower(m_documentData.GetFieldData<DataFieldCategory::Vaccination3>().value().get().name) == "polio";
+			bool accepted = utils::strfuncs::ToLower(m_documentData.GetFieldData<FieldCategory::Vaccination1>().value().get().name) == "polio"
+				|| utils::strfuncs::ToLower(m_documentData.GetFieldData<FieldCategory::Vaccination2>().value().get().name) == "polio"
+				|| utils::strfuncs::ToLower(m_documentData.GetFieldData<FieldCategory::Vaccination3>().value().get().name) == "polio";
 			if (!accepted)
 			{
 				LOG_DISCREPANCY("Missing polio vaccine. '{}'", ToStringView(m_document.GetDocumentType()));
@@ -634,19 +656,19 @@ namespace paplease {
 
 		bool DocumentValidator::ValidateVaccineExpirationDate() const
 		{
-			DocData::FieldDataType<DataFieldCategory::Vaccination1> vaccine = std::nullopt;
+			detail::FieldDataType<FieldCategory::Vaccination1> vaccine = std::nullopt;
 
 			bool accepted = 
 				utils::strfuncs::ToLower(
-					(vaccine = m_documentData.GetFieldData<DataFieldCategory::Vaccination1>())->get().name
+					(vaccine = m_documentData.GetFieldData<FieldCategory::Vaccination1>())->get().name
 				) == "polio" ||
 				
 				utils::strfuncs::ToLower(
-					(vaccine = m_documentData.GetFieldData<DataFieldCategory::Vaccination2>())->get().name
+					(vaccine = m_documentData.GetFieldData<FieldCategory::Vaccination2>())->get().name
 				) == "polio" ||
 				
 				utils::strfuncs::ToLower(
-					(vaccine = m_documentData.GetFieldData<DataFieldCategory::Vaccination3>())->get().name
+					(vaccine = m_documentData.GetFieldData<FieldCategory::Vaccination3>())->get().name
 				) == "polio";
 
 			if (accepted && vaccine != std::nullopt)
@@ -670,7 +692,7 @@ namespace paplease {
 		// Against booth
 		bool DocumentValidator::ValidateWeight() const
 		{
-			bool accepted = m_analysisContext.m_currentWeight.value == m_documentData.GetFieldData<DataFieldCategory::Weight>().value().get().value;
+			bool accepted = m_analysisContext.m_currentWeight.value == m_documentData.GetFieldData<FieldCategory::Weight>().value().get().value;
 			if (!accepted)
 			{
 				LOG_DISCREPANCY("Invalid weight. '{}'", ToStringView(m_document.GetDocumentType()));
@@ -731,20 +753,32 @@ namespace paplease {
 		// Against other applicant documents
 		bool DocumentValidator::ValidateName() const
 		{
-			LOG_ERR("DocumentValidator::ValidateName() Not Implemented!");
-			return true;  // Placeholder, assuming valid for now
+			bool accepted = m_analysisContext.m_profile.RegisterData(m_documentData.GetField(FieldCategory::Name));
+			if (!accepted)
+			{
+				LOG_DISCREPANCY("Mismatching names! '{}'", ToStringView(m_document.GetDocumentType()));
+			}
+			return accepted;
 		}
 
 		bool DocumentValidator::ValidateDateOfBirth() const
 		{
-			LOG_ERR("DocumentValidator::ValidateDateOfBirth() Not Implemented!");
-			return true;  // Placeholder, assuming valid for now
+			bool accepted = m_analysisContext.m_profile.RegisterData(m_documentData.GetField(FieldCategory::DateOfBirth));
+			if (!accepted)
+			{
+				LOG_DISCREPANCY("Mismatching date of birth! '{}'", ToStringView(m_document.GetDocumentType()));
+			}
+			return accepted;
 		}
 
 		bool DocumentValidator::ValidatePassportNumber() const
 		{
-			LOG_ERR("DocumentValidator::ValidatePassportNumber() Not Implemented!");
-			return true;  // Placeholder, assuming valid for now
+			bool accepted = m_analysisContext.m_profile.RegisterData(m_documentData.GetField(FieldCategory::PassportNumber));
+			if (!accepted)
+			{
+				LOG_DISCREPANCY("Mismatching passport number! '{}'", ToStringView(m_document.GetDocumentType()));
+			}
+			return accepted;
 		}
 
 		bool DocumentValidator::ValidateWorkEndDate() const

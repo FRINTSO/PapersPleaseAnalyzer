@@ -81,6 +81,7 @@
     <ClInclude Include="src\base\documents\doc_data.inl.h" />
     <ClInclude Include="src\base\utils\strfuncs.h" />
     <ClInclude Include="src\base\utils\enum_range.h" />
+    <ClInclude Include="src\base\utils\metaprogramming.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\base\documents\bounding_box_finder.inc" />

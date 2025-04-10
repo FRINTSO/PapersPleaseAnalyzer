@@ -1,133 +1,124 @@
 #pragma once
+#include <type_traits>
 
 #include "base/documents/data/date.h"
-
-#include <type_traits>
+#include "base/utils/metaprogramming.h"
 
 namespace paplease {
 	namespace documents {
-        namespace details {
-            static consteval bool is_integer_type(DataFieldCategory category)
+        namespace detail {
+            static consteval bool is_integer_type(FieldCategory category)
             {
-                return category == DataFieldCategory::BoothCounter;
+                return category == FieldCategory::BoothCounter;
             }
 
-            static consteval bool is_string_type(DataFieldCategory category)
+            static consteval bool is_string_type(FieldCategory category)
             {
                 switch (category)
                 {
-                    case DataFieldCategory::Field:
-                    case DataFieldCategory::IssuingCity:
-                    case DataFieldCategory::PhysicalAppearance:
-                    case DataFieldCategory::District:
-                    case DataFieldCategory::IssuingCountry:
-                    //case DataFieldCategory::Nationality:
-                    case DataFieldCategory::DurationOfStay:
-                    case DataFieldCategory::Purpose:
-                    case DataFieldCategory::PassportNumber:
+                    case FieldCategory::Field:
+                    case FieldCategory::IssuingCity:
+                    case FieldCategory::PhysicalAppearance:
+                    case FieldCategory::District:
+                    case FieldCategory::IssuingCountry:
+                    case FieldCategory::Name:
+                    case FieldCategory::DurationOfStay:
+                    case FieldCategory::Purpose:
+                    case FieldCategory::PassportNumber:
                         return true;
                     default:
                         return false;
                 }
             }
 
-            static consteval bool is_date_type(DataFieldCategory category)
+            static consteval bool is_date_type(FieldCategory category)
             {
                 switch (category)
                 {
-                    case DataFieldCategory::ValidDate:
-                    case DataFieldCategory::EndDate:
-                    case DataFieldCategory::ExpirationDate:
-                    case DataFieldCategory::DateOfBirth:
-                    case DataFieldCategory::BoothDate:
+                    case FieldCategory::ValidDate:
+                    case FieldCategory::EndDate:
+                    case FieldCategory::ExpirationDate:
+                    case FieldCategory::DateOfBirth:
+                    case FieldCategory::BoothDate:
                         return true;
                     default:
                         return false;
                 }
             }
 
-            static consteval bool is_siunit_type(DataFieldCategory category)
+            static consteval bool is_siunit_type(FieldCategory category)
             {
                 switch (category)
                 {
-                    case DataFieldCategory::Height:
-                    case DataFieldCategory::Weight:
+                    case FieldCategory::Height:
+                    case FieldCategory::Weight:
                         return true;
                     default:
                         return false;
                 }
             }
 
-            static consteval bool is_vaccine_type(DataFieldCategory category)
+            static consteval bool is_vaccine_type(FieldCategory category)
             {
                 switch (category)
                 {
-                    case DataFieldCategory::Vaccination1:
-                    case DataFieldCategory::Vaccination2:
-                    case DataFieldCategory::Vaccination3:
+                    case FieldCategory::Vaccination1:
+                    case FieldCategory::Vaccination2:
+                    case FieldCategory::Vaccination3:
                         return true;
                     default:
                         return false;
                 }
             }
 
-            static consteval bool is_strlist_type(DataFieldCategory category)
+            static consteval bool is_strlist_type(FieldCategory category)
             {
-                return category == DataFieldCategory::CountryList;
+                return category == FieldCategory::CountryList;
             }
 
-            static consteval bool is_sex_type(DataFieldCategory category)
+            static consteval bool is_sex_type(FieldCategory category)
             {
-                return category == DataFieldCategory::Sex;
+                return category == FieldCategory::Sex;
             }
 
-        } // namespace details
+        } // namespace detail
 
-        template<DataFieldCategory Category>
-        struct DocData::data_field_type<Category, typename std::enable_if<details::is_integer_type(Category)>::type>
+        template<FieldCategory Category>
+        struct detail::field_data_type<Category, std::enable_if_t<detail::is_integer_type(Category)>> : utils::has_type<int>{};
+
+        template<FieldCategory Category>
+        struct detail::field_data_type<Category, std::enable_if_t<detail::is_string_type(Category)>> : utils::has_type<std::string>{};
+
+        template<FieldCategory Category>
+        struct detail::field_data_type<Category, std::enable_if_t<detail::is_date_type(Category)>> : utils::has_type<data::Date>{};
+
+        template<FieldCategory Category>
+        struct detail::field_data_type<Category, std::enable_if_t<detail::is_siunit_type(Category)>> : utils::has_type<data::SIUnitValue>{};
+
+        template<FieldCategory Category>
+        struct detail::field_data_type<Category, std::enable_if_t<detail::is_vaccine_type(Category)>> : utils::has_type<data::Vaccine>{};
+
+        template<FieldCategory Category>
+        struct detail::field_data_type<Category, std::enable_if_t<detail::is_strlist_type(Category)>> : utils::has_type<data::StrList>{};
+
+        template<FieldCategory Category>
+        struct detail::field_data_type<Category, std::enable_if_t<detail::is_sex_type(Category)>> : utils::has_type<data::Sex>{};
+
+
+        template<FieldCategory Category>
+        constexpr detail::FieldDataType<Category> Field::GetFieldData() const
         {
-            using type = int;
-        };
+            if (this->Type() == FieldType::Invalid)
+            {
+                return std::nullopt;
+            }
 
-        template<DataFieldCategory Category>
-        struct DocData::data_field_type<Category, typename std::enable_if<details::is_string_type(Category)>::type>
-        {
-            using type = std::string;
-        };
+            const auto& innerData = this->GetData();
+            return innerData.Get<detail::field_data_type_t<Category>>();
+        }
 
-        template<DataFieldCategory Category>
-        struct DocData::data_field_type<Category, typename std::enable_if<details::is_date_type(Category)>::type>
-        {
-            using type = data::Date;
-        };
-
-        template<DataFieldCategory Category>
-        struct DocData::data_field_type<Category, typename std::enable_if<details::is_siunit_type(Category)>::type>
-        {
-            using type = data::SIUnitValue;
-        };
-
-        template<DataFieldCategory Category>
-        struct DocData::data_field_type<Category, typename std::enable_if<details::is_vaccine_type(Category)>::type>
-        {
-            using type = data::Vaccine;
-        };
-
-        template<DataFieldCategory Category>
-        struct DocData::data_field_type<Category, typename std::enable_if<details::is_strlist_type(Category)>::type>
-        {
-            using type = data::StrList;
-        };
-
-        template<DataFieldCategory Category>
-        struct DocData::data_field_type<Category, typename std::enable_if<details::is_sex_type(Category)>::type>
-        {
-            using type = data::Sex;
-        };
-
-
-        template<DataFieldCategory Category>
-        constexpr std::optional<std::reference_wrapper<const typename DocData::data_field_type<Category>::type>> DocData::GetFieldData() const
+        template<FieldCategory Category>
+        constexpr detail::FieldDataType<Category> DocData::GetFieldData() const
         {
             const auto& fieldData = this->GetField(Category);
 
@@ -137,7 +128,7 @@ namespace paplease {
             }
 
             const auto& innerData = fieldData.GetData();
-            return innerData.Get<typename DocData::data_field_type<Category>::type>();
+            return innerData.Get<detail::field_data_type_t<Category>>();
         }
 
 	}  // namespace documents

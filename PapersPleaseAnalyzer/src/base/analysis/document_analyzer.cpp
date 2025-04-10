@@ -18,7 +18,7 @@ namespace paplease {
 
 			// Get document expiration date
 			auto data = document.GetDocumentData();
-			auto& expirationFieldData = data.GetField(DataFieldCategory::ExpirationDate);
+			auto& expirationFieldData = data.GetField(FieldCategory::ExpirationDate);
 			if (expirationFieldData.Type() == documents::FieldType::Invalid)
 			{
 				return true; // Maybe?

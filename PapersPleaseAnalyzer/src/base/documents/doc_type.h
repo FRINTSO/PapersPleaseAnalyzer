@@ -7,9 +7,9 @@
 namespace paplease {
     namespace documents {
             
-        enum class DocType
+        enum class DocType : unsigned int
         {
-            Invalid = 0,
+            Invalid = -1,
             AccessPermit,
             CertificateOfVaccination,
             DiplomaticAuthorization,
@@ -21,13 +21,14 @@ namespace paplease {
             WorkPass,
             RuleBook,
             Bulletin,
-            Transcript = 12,
+            Transcript,
             Passport,
+            Count,
         };
 
-        enum class PassportType
+        enum class PassportType : unsigned int
         {
-            Invalid = 0,
+            Invalid = -1,
             Antegria = static_cast<int>(DocType::Passport),
             Arstotzka,
             Impor,
@@ -35,11 +36,12 @@ namespace paplease {
             Obristan,
             Republia,
             UnitedFederation,
+            Count = 7,
         };
 
-        enum class AppearanceType
+        enum class AppearanceType : unsigned int
         {
-            Invalid = 0,
+            Invalid = -1,
             AccessPermit,
             CertificateOfVaccination,
             DiplomaticAuthorization,
@@ -59,6 +61,7 @@ namespace paplease {
             Passport_Obristan,
             Passport_Republia,
             Passport_UnitedFederation,
+            Count,
         };
 
 #if USE_ENUM_FUNCS
@@ -81,7 +84,6 @@ namespace paplease {
 #if !defined(DOC_TYPE_NAMES)
 #define DOC_TYPE_NAMES                                \
     {                                             \
-        DOC_TYPE_NAME_INVALID,                    \
         DOC_TYPE_NAME_ACCESS_PERMIT,              \
         DOC_TYPE_NAME_CERTIFICATE_OF_VACCINATION, \
         DOC_TYPE_NAME_DIPLOMATIC_AUTHORIZATION,   \
@@ -95,12 +97,13 @@ namespace paplease {
         DOC_TYPE_NAME_BULLETIN,                   \
         DOC_TYPE_NAME_TRANSCRIPT,                 \
         DOC_TYPE_NAME_PASSPORT,                   \
+        DOC_TYPE_NAME_INVALID,                    \
     }
 #endif
 
         static constexpr std::string_view& ToStringView(DocType documentType);
         static constexpr bool IsApplicantDocument(DocType documentType);
-        static consteval std::array<DocType, static_cast<size_t>(DocType::Passport)> GetDocTypeIterator();
+        static consteval std::array<DocType, static_cast<size_t>(DocType::Count)> GetDocTypeIterator();
 #endif
 
     }  // namespace documents

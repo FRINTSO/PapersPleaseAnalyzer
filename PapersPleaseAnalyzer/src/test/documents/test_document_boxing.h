@@ -11,7 +11,7 @@ namespace paplease {
 
 			void test_document_character_boxing(const std::string& number, DocType docType);
 			void test_document_field_boxing(const std::string& number, DocType docType);
-			void test_text_field_character_boxing(const std::string& number, DocType docType, DataFieldCategory dataField);
+			void test_text_field_character_boxing(const std::string& number, DocType docType, FieldCategory dataField);
 
 		}
 	}

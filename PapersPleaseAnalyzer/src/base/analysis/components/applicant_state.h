@@ -16,11 +16,11 @@ namespace paplease {
 				static constexpr size_t FieldsCapacity = 20;
 
 			private:
-				static std::array<documents::DataFieldCategory, Profile::FieldsCapacity> ProfileFields();
-				static int GetFieldIndexByCategoryType(documents::DataFieldCategory category);
+				static std::array<documents::FieldCategory, Profile::FieldsCapacity> ProfileFields();
+				static int GetFieldIndexByCategoryType(documents::FieldCategory category);
 
 			private:
-				std::array<documents::FieldData, Profile::FieldsCapacity> m_fields;
+				std::array<documents::Field, Profile::FieldsCapacity> m_fields;
 				size_t m_fieldCount;
 			};
 

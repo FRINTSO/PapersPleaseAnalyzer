@@ -239,7 +239,7 @@ namespace paplease {
 		static inline cv::Mat AdjustBinaryTextColorOfTranscript(const cv::Mat& transcript_bin)
 		{
 			constexpr auto layout = DocLayout::GetInstant(AppearanceType::Transcript);
-			constexpr auto box = layout.GetLayout(DataFieldCategory::TranscriptPage).GetBox();
+			constexpr auto box = layout.GetLayout(FieldCategory::TranscriptPage).GetBox();
 
 			cv::Mat transcript(transcript_bin, cv::Rect(box.x, box.y, box.width, box.height));
 
@@ -343,7 +343,7 @@ namespace paplease {
 					case FieldType::Text:
 					{
 						auto raw_text_data = GetFieldString(ExtractDocumentField(binary, layouts[i].GetBox()), m_documentType);
-						builder.AddFieldData(layouts[i].GetCategory(), FieldData{ Data{raw_text_data}, layouts[i].GetType(), layouts[i].GetCategory() });
+						builder.AddFieldData(layouts[i].GetCategory(), Field{ Data{raw_text_data}, layouts[i].GetType(), layouts[i].GetCategory() });
 						break;
 					}
 					case FieldType::Image:
@@ -351,7 +351,7 @@ namespace paplease {
 					default:
 					{
 
-						builder.AddFieldData(layouts[i].GetCategory(), FieldData{ Data{} , layouts[i].GetType(), layouts[i].GetCategory() });
+						builder.AddFieldData(layouts[i].GetCategory(), Field{ Data{} , layouts[i].GetType(), layouts[i].GetCategory() });
 						break;
 					}
 				}

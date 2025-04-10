@@ -39,52 +39,49 @@ namespace paplease {
 				m_documentCount++;
 			}
 
-			std::array<DataFieldCategory, Profile::FieldsCapacity> Profile::ProfileFields()
+			std::array<FieldCategory, Profile::FieldsCapacity> Profile::ProfileFields()
 			{
 				// Choose what fields should be used
 				return {
-					//DataFieldCategory::Nationality,
-					DataFieldCategory::DateOfBirth,
-					DataFieldCategory::Height,
-					DataFieldCategory::IssuingCity,
-					DataFieldCategory::IssuingCountry,
-					DataFieldCategory::Name,
-					DataFieldCategory::PassportNumber,
-					DataFieldCategory::Sex,
-					DataFieldCategory::Vaccination1,
-					DataFieldCategory::Vaccination2,
-					DataFieldCategory::Vaccination3,
-					DataFieldCategory::Weight,
+					FieldCategory::DateOfBirth,
+					FieldCategory::Height,
+					FieldCategory::IssuingCity,
+					FieldCategory::IssuingCountry,
+					FieldCategory::Name,
+					FieldCategory::PassportNumber,
+					FieldCategory::Sex,
+					FieldCategory::Vaccination1,
+					FieldCategory::Vaccination2,
+					FieldCategory::Vaccination3,
+					FieldCategory::Weight,
 				};
 			}
 
-			int Profile::GetFieldIndexByCategoryType(documents::DataFieldCategory category)
+			int Profile::GetFieldIndexByCategoryType(documents::FieldCategory category)
 			{
 				switch (category)
 				{
-					//case DataFieldCategory::Nationality:
-					//	return 0;
-					case DataFieldCategory::DateOfBirth:
+					case FieldCategory::DateOfBirth:
 						return 0;
-					case DataFieldCategory::Height:
+					case FieldCategory::Height:
 						return 1;
-					case DataFieldCategory::IssuingCity:
+					case FieldCategory::IssuingCity:
 						return 2;
-					case DataFieldCategory::IssuingCountry:
+					case FieldCategory::IssuingCountry:
 						return 3;
-					case DataFieldCategory::Name:
+					case FieldCategory::Name:
 						return 4;
-					case DataFieldCategory::PassportNumber:
+					case FieldCategory::PassportNumber:
 						return 5;
-					case DataFieldCategory::Sex:
+					case FieldCategory::Sex:
 						return 6;
-					case DataFieldCategory::Vaccination1:
+					case FieldCategory::Vaccination1:
 						return 7;
-					case DataFieldCategory::Vaccination2:
+					case FieldCategory::Vaccination2:
 						return 8;
-					case DataFieldCategory::Vaccination3:
+					case FieldCategory::Vaccination3:
 						return 9;
-					case DataFieldCategory::Weight:
+					case FieldCategory::Weight:
 						return 10;
 					default:
 						return -1;

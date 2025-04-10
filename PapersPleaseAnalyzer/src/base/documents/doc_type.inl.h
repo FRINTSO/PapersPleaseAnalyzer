@@ -7,6 +7,10 @@ namespace paplease {
 
 		constexpr std::string_view& ToStringView(DocType documentType)
 		{
+            if (static_cast<int>(documentType) < 0)
+            {
+                return doc_type_string_views[static_cast<int>(DocType::Count)];
+            }
 			return doc_type_string_views[static_cast<int>(documentType)];
 		}
 
@@ -31,9 +35,9 @@ namespace paplease {
             }
 		}
 
-        consteval std::array<DocType, static_cast<size_t>(DocType::Passport)> GetDocTypeIterator()
+        consteval std::array<DocType, static_cast<size_t>(DocType::Count)> GetDocTypeIterator()
         {
-            return std::array<DocType, static_cast<size_t>(DocType::Passport)>{
+            return std::array<DocType, static_cast<size_t>(DocType::Count)>{
                 DocType::AccessPermit,
                 DocType::CertificateOfVaccination,
                 DocType::DiplomaticAuthorization,

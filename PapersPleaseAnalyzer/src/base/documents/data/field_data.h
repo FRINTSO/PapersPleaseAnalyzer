@@ -8,12 +8,6 @@ namespace paplease {
 	namespace documents {
 		namespace data {
 
-			struct Name
-			{
-				std::string firstName;
-				std::string lastName;
-			};
-
 			enum class Country
 			{
 				Invalid = 0,
@@ -42,18 +36,24 @@ namespace paplease {
 			{
 				int value;
 				SIUnit unit;
+
+				bool operator==(const SIUnitValue&) const = default;
 			};
 
 			struct Vaccine
 			{
 				Date date;
 				std::string name;
+
+				bool operator==(const Vaccine&) const = default;
 			};
 
 
 			struct StrList
 			{
 				std::vector<std::string> strs;
+
+				bool operator==(const StrList&) const = default;
 			};
 
 		}  // namespace data

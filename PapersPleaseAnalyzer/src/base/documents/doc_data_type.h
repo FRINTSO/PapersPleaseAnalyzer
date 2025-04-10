@@ -4,14 +4,11 @@
 namespace paplease {
     namespace documents {
 
-        enum class DataFieldCategory
+        enum class FieldCategory : unsigned int
         {
-            Invalid = 0,
-            // Nationality,            // Ex. OBRISTAN
+            Invalid = -1,
             CountryList,            // Ex. REPUBLIA, ARSTOTZKA, OBRISTAN, ANTEGRIA
-            // Description,            // Ex. 
             District,               // Ex. BURNTON
-            // Duration,               //
             DurationOfStay,         // Ex. 3 MONTHS; FOREVER; 2 DAYS
             Field,                  // Refers to job position: FISHING; CONSTRUCTION
             FingerPrints,           // <PHOTO>
@@ -19,10 +16,6 @@ namespace paplease {
             IssuingCountry,         // Ex. KOLECHIA
             Purpose,                // Ex. VISIT; WORK; TRANSIT; IMMIGRATE
             PhysicalAppearance,     // Ex. WIDOW'S PEAK; SHORT STRAIGHT HAIR
-            
-            // Are these used?      //
-            //HasValidSeal,         //
-            //PassportType,         //
             
             ValidDate,              // Ex. 25.11.1982
             EndDate,                // Ex. 01.05.1983
@@ -76,7 +69,7 @@ namespace paplease {
         };
 
         // Enumeration to represent the state of a data field
-        enum class DataFieldState
+        enum class FieldState
         {
             Empty = 0,
             Initialized,
@@ -84,63 +77,57 @@ namespace paplease {
         };
 
 #if USE_ENUM_FUNCS
-        constexpr const std::string DataFieldCategoryAsString(DataFieldCategory dataFieldCategory)
+        constexpr const std::string FieldCategoryAsString(FieldCategory fieldCategory)
         {
-            switch (dataFieldCategory)
+            switch (fieldCategory)
             {
-                case DataFieldCategory::Invalid:
+                case FieldCategory::Invalid:
                     return "Invalid";
-                //case DataFieldCategory::Nationality:
-                //    return "Nationality";
-                case DataFieldCategory::CountryList:
+                case FieldCategory::CountryList:
                     return "CountryList";
-                case DataFieldCategory::DateOfBirth:
+                case FieldCategory::DateOfBirth:
                     return "DateOfBirth";
-                //case DataFieldCategory::Description:
-                //    return "Description";
-                case DataFieldCategory::District:
+                case FieldCategory::District:
                     return "District";
-                //case DataFieldCategory::Duration:
-                //    return "Duration";
-                case DataFieldCategory::DurationOfStay:
+                case FieldCategory::DurationOfStay:
                     return "DurationOfStay";
-                case DataFieldCategory::EndDate:
+                case FieldCategory::EndDate:
                     return "EndDate";
-                case DataFieldCategory::ExpirationDate:
+                case FieldCategory::ExpirationDate:
                     return "ExpirationDate";
-                case DataFieldCategory::Field:
+                case FieldCategory::Field:
                     return "Field";
-                case DataFieldCategory::FingerPrints:
+                case FieldCategory::FingerPrints:
                     return "FingerPrints";
-                case DataFieldCategory::Height:
+                case FieldCategory::Height:
                     return "Height";
-                case DataFieldCategory::IssuingCity:
+                case FieldCategory::IssuingCity:
                     return "IssuingCity";
-                case DataFieldCategory::IssuingCountry:
+                case FieldCategory::IssuingCountry:
                     return "IssuingCountry";
-                case DataFieldCategory::Name:
+                case FieldCategory::Name:
                     return "Name";
-                case DataFieldCategory::PassportNumber:
+                case FieldCategory::PassportNumber:
                     return "PassportNumber";
-                case DataFieldCategory::Photo:
+                case FieldCategory::Photo:
                     return "Photo";
-                case DataFieldCategory::PhysicalAppearance:
+                case FieldCategory::PhysicalAppearance:
                     return "PhysicalAppearance";
-                case DataFieldCategory::Purpose:
+                case FieldCategory::Purpose:
                     return "Purpose";
-                case DataFieldCategory::Sex:
+                case FieldCategory::Sex:
                     return "Sex";
-                case DataFieldCategory::ThumbPrint:
+                case FieldCategory::ThumbPrint:
                     return "ThumbPrint";
-                case DataFieldCategory::Vaccination1:
+                case FieldCategory::Vaccination1:
                     return "Vaccination1";
-                case DataFieldCategory::Vaccination2:
+                case FieldCategory::Vaccination2:
                     return "Vaccination2";
-                case DataFieldCategory::Vaccination3:
+                case FieldCategory::Vaccination3:
                     return "Vaccination3";
-                case DataFieldCategory::ValidDate:
+                case FieldCategory::ValidDate:
                     return "ValidDate";
-                case DataFieldCategory::Weight:
+                case FieldCategory::Weight:
                     return "Weight";
                 default:
                     return "";

@@ -10,11 +10,11 @@
 namespace paplease {
 	namespace ocr {
 
-		static inline constinit FontInfo g_Invalid{ Typeface::Invalid, 0, -1, -1 };
-		static inline constinit FontInfo g_04b04{ Typeface::_04b03, DOWNSCALE(14), DOWNSCALE(2), DOWNSCALE(4) /* Guess 3*/, DOWNSCALE(8), DOWNSCALE(4) };
+		static inline constinit FontInfo g_Invalid{ Typeface::Invalid, 0, -1, -1, -1, -1 };
+		static inline constinit FontInfo g_04b04{ Typeface::_04b03, DOWNSCALE(14), DOWNSCALE(2), DOWNSCALE(4), DOWNSCALE(8), DOWNSCALE(4) };
 		static inline constinit FontInfo g_BM_MiniInfo{ Typeface::BM_Mini, DOWNSCALE(16), DOWNSCALE(2), DOWNSCALE(4), DOWNSCALE(4), DOWNSCALE(8) };
-		static inline constinit FontInfo g_MiniKylie{ Typeface::MiniKylie, DOWNSCALE(12), DOWNSCALE(4), DOWNSCALE(6), DOWNSCALE(8), DOWNSCALE(4) };
-		static inline constinit FontInfo g_BoothNumber{ Typeface::BoothNumber, DOWNSCALE(12), DOWNSCALE(4), DOWNSCALE(6) /* Guess 3 */, DOWNSCALE(8), DOWNSCALE(4) };
+		static inline constinit FontInfo g_MiniKylie{ Typeface::MiniKylie, DOWNSCALE(12), DOWNSCALE(2), DOWNSCALE(4), DOWNSCALE(4), DOWNSCALE(4) };
+		static inline constinit FontInfo g_BoothNumber{ Typeface::BoothNumber, DOWNSCALE(12), DOWNSCALE(4), DOWNSCALE(6), DOWNSCALE(8), DOWNSCALE(4) };
 
 		static constexpr Typeface GetTypefaceByDocumentType(const documents::DocType documentType)
 		{

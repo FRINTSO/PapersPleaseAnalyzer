@@ -12,6 +12,19 @@ namespace paplease {
 
 #pragma region Data
 
+		namespace detail {
+
+			template<FieldCategory Category, typename Enable = void>
+			struct field_data_type;
+
+			template <FieldCategory Category>
+			using field_data_type_t = typename field_data_type<Category>::type;
+
+			template<FieldCategory Category>
+			using FieldDataType = std::optional<std::reference_wrapper<const detail::field_data_type_t<Category>>>;
+
+		}  // namespace detail
+
 		class Data
 		{
 		public:
@@ -38,6 +51,8 @@ namespace paplease {
 			DataType Type() const;
 			bool IsBroken() const;
 
+			bool operator==(const Data&) const;
+
 		private:
 			std::variant<
 				int,
@@ -55,25 +70,28 @@ namespace paplease {
 
 #pragma region FieldData
 
-		class FieldData
+		class Field
 		{  // Represents the data of any field
 		public:
-			FieldData() = default;
-			FieldData(const Data& data, const FieldType type, const DataFieldCategory category);
+			Field() = default;
+			Field(const Data& data, const FieldType type, const FieldCategory category);
 
 			const Data& GetData() const;
+			template<FieldCategory Category>
+			constexpr detail::FieldDataType<Category> GetFieldData() const;
+
 			std::string ToText() const;
 
 			FieldType Type() const;
-			DataFieldCategory Category() const;
+			FieldCategory Category() const;
 			bool IsBroken() const;
 		private:
 			friend class DocDataBuilder;
 		private:
 			Data m_data; // temporary
 			FieldType m_fieldType = FieldType::Invalid;
-			DataFieldCategory m_fieldCategory = DataFieldCategory::Invalid; // index in DocData array
-			DataFieldState m_fieldState = DataFieldState::Empty;
+			FieldCategory m_fieldCategory = FieldCategory::Invalid; // index in DocData array
+			FieldState m_fieldState = FieldState::Empty;
 		};
 
 #pragma endregion
@@ -83,25 +101,15 @@ namespace paplease {
 		class DocData
 		{  // Represents the data of any document
 		public:
-			static constexpr size_t ArrayLength = static_cast<size_t>(DataFieldCategory::DATA_FIELD_CATEGORY_LENGTH) - 1;
+			static constexpr size_t ArrayLength = static_cast<size_t>(FieldCategory::DATA_FIELD_CATEGORY_LENGTH) - 1;
 		public:
 			DocData() = default;
 
-			const FieldData& GetField(DataFieldCategory category) const;
+			const Field& GetField(FieldCategory category) const;
+			template<FieldCategory Category>
+			constexpr detail::FieldDataType<Category> GetFieldData() const;
 
-			template<DataFieldCategory Category, typename Enable = void>
-			struct data_field_type
-			{
-				using type = void;
-			};
-
-			template<DataFieldCategory Category>
-			using FieldDataType = std::optional<std::reference_wrapper<const typename data_field_type<Category>::type>>;
-
-			template<DataFieldCategory Category>
-			constexpr FieldDataType<Category> GetFieldData() const;
-
-			paplease::utils::FixedRefArray<FieldData, DocData::ArrayLength> GetAllValidFields() const;
+			paplease::utils::FixedRefArray<Field, DocData::ArrayLength> GetAllValidFields() const;
 
 			void PrintAllFields() const // temporary for ease of development
 			{
@@ -112,11 +120,11 @@ namespace paplease {
 				}
 			}
 		private:
-			explicit DocData(const std::array<FieldData, ArrayLength>& data);
+			explicit DocData(const std::array<Field, ArrayLength>& data);
 		private:
 			friend class DocDataBuilder;
 
-			std::array<FieldData, ArrayLength> m_data;
+			std::array<Field, ArrayLength> m_data;
 		};
 
 #pragma endregion
@@ -126,15 +134,15 @@ namespace paplease {
 		class DocDataBuilder
 		{  // Builds a document data instance
 		public:
-			static const size_t ArrayLength = static_cast<size_t>(DataFieldCategory::DATA_FIELD_CATEGORY_LENGTH) - 1;
+			static const size_t ArrayLength = static_cast<size_t>(FieldCategory::DATA_FIELD_CATEGORY_LENGTH) - 1;
 		public:
 			DocDataBuilder() = default;
 
-			bool AddFieldData(const DataFieldCategory category, FieldData&& data);
+			bool AddFieldData(const FieldCategory category, Field&& data);
 			std::optional<DocData> GetDocData();
 			void Clear();
 		private:
-			std::array<FieldData, ArrayLength> m_data;
+			std::array<Field, ArrayLength> m_data;
 		};
 
 #pragma endregion

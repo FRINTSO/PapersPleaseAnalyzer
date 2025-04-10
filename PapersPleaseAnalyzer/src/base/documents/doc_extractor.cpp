@@ -170,7 +170,7 @@ namespace paplease {
 			{
 				utils::IsExactSizeMatched,
 	#if !STRICT_DOCUMENT_SCANNING
-				Utils::IsCornerMatched
+				utils::IsCornerMatched
 	#endif
 			};
 

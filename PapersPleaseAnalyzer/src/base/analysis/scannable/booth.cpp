@@ -56,14 +56,14 @@ namespace paplease {
 						case documents::FieldType::Text:
 						{
 							auto raw_data = GetBoothString(ExtractDocumentField(binary, layouts[i].GetBox()));
-							builder.AddFieldData(layouts[i].GetCategory(), documents::FieldData{ documents::Data{ raw_data }, layouts[i].GetType(), layouts[i].GetCategory() });
+							builder.AddFieldData(layouts[i].GetCategory(), documents::Field{ documents::Data{ raw_data }, layouts[i].GetType(), layouts[i].GetCategory() });
 							break;
 						}
 						case documents::FieldType::Image:
 						case documents::FieldType::Invalid:
 						default:
 						{
-							builder.AddFieldData(layouts[i].GetCategory(), documents::FieldData{ documents::Data{}, layouts[i].GetType(), layouts[i].GetCategory() });
+							builder.AddFieldData(layouts[i].GetCategory(), documents::Field{ documents::Data{}, layouts[i].GetType(), layouts[i].GetCategory() });
 							break;
 						}
 					}
@@ -92,9 +92,9 @@ namespace paplease {
 
 				EndLOG("ScanBooth()");
 				return BoothData{
-					loadedData->GetField(DataFieldCategory::BoothDate).GetData().Get<Date>(),
-					loadedData->GetField(DataFieldCategory::Weight).GetData().Get<SIUnitValue>(),
-					loadedData->GetField(DataFieldCategory::BoothCounter).GetData().Get<int>()
+					loadedData->GetField(FieldCategory::BoothDate).GetData().Get<Date>(),
+					loadedData->GetField(FieldCategory::Weight).GetData().Get<SIUnitValue>(),
+					loadedData->GetField(FieldCategory::BoothCounter).GetData().Get<int>()
 				};
 			}
 

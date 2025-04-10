@@ -314,85 +314,85 @@ namespace paplease {
 
             }  // namespace processing
 
-            static inline Data ProcessTextData(const Data& data, const DataFieldCategory category)
+            static inline Data ProcessTextData(const Data& data, const FieldCategory category)
             {
                 StrScanner scanner{ data.Get<std::string>() };
 
                 switch (category)
                 { // sort by more clear type first to more vague types last
-                    case DataFieldCategory::Height:
-                    case DataFieldCategory::Weight:
+                    case FieldCategory::Height:
+                    case FieldCategory::Weight:
                     {
                         return processing::ProcessSIUnit(scanner);
                     }
-                    case DataFieldCategory::Sex:
+                    case FieldCategory::Sex:
                     {
                         return processing::ProcessSex(scanner);
                     }
-                    case DataFieldCategory::CountryList:
+                    case FieldCategory::CountryList:
                     {
                         return processing::ProcessStrList(scanner);
                     }
-                    case DataFieldCategory::BoothDate:
-                    case DataFieldCategory::ValidDate:
-                    case DataFieldCategory::ExpirationDate:
-                    case DataFieldCategory::DateOfBirth:
-                    case DataFieldCategory::EndDate:
+                    case FieldCategory::BoothDate:
+                    case FieldCategory::ValidDate:
+                    case FieldCategory::ExpirationDate:
+                    case FieldCategory::DateOfBirth:
+                    case FieldCategory::EndDate:
                     {
                         return processing::ProcessDate(scanner);
                     }
                     //case DataFieldCategory::Duration:
-                    case DataFieldCategory::FingerPrints:
+                    case FieldCategory::FingerPrints:
                         break;
-                    case DataFieldCategory::Name:
+                    case FieldCategory::Name:
                     {
                         return processing::ProcessName(scanner);
                     }
-                    case DataFieldCategory::Field:
-                    case DataFieldCategory::IssuingCity:
+                    case FieldCategory::Field:
+                    case FieldCategory::IssuingCity:
                     // case DataFieldCategory::Description:
-                    case DataFieldCategory::PhysicalAppearance:
-                    case DataFieldCategory::District:
+                    case FieldCategory::PhysicalAppearance:
+                    case FieldCategory::District:
                     //case DataFieldCategory::Nationality:
-                    case DataFieldCategory::DurationOfStay:
-                    case DataFieldCategory::Purpose:
-                    case DataFieldCategory::PassportNumber:
+                    case FieldCategory::DurationOfStay:
+                    case FieldCategory::Purpose:
+                    case FieldCategory::PassportNumber:
                     {
                         return processing::ProcessGenericString(scanner);
                     }
-                    case DataFieldCategory::IssuingCountry:
+                    case FieldCategory::IssuingCountry:
                     {
                         return processing::ProcessCountry(scanner);
                     }
-                    case DataFieldCategory::Vaccination1:
-                    case DataFieldCategory::Vaccination2:
-                    case DataFieldCategory::Vaccination3:
+                    case FieldCategory::Vaccination1:
+                    case FieldCategory::Vaccination2:
+                    case FieldCategory::Vaccination3:
                     {
                         return processing::ProcessVaccine(scanner);
                     }
-                    case DataFieldCategory::BoothCounter:
+                    case FieldCategory::BoothCounter:
                         return processing::ProcessGenericInt(scanner);
-                    case DataFieldCategory::Rule1:
-                    case DataFieldCategory::Rule2:
-                    case DataFieldCategory::Rule3:
-                    case DataFieldCategory::Rule4:
-                    case DataFieldCategory::Rule5:
-                    case DataFieldCategory::Rule6:
-                    case DataFieldCategory::Rule7:
-                    case DataFieldCategory::Rule8:
-                    case DataFieldCategory::Rule9:
-                    case DataFieldCategory::Rule10:
+                    case FieldCategory::Rule1:
+                    case FieldCategory::Rule2:
+                    case FieldCategory::Rule3:
+                    case FieldCategory::Rule4:
+                    case FieldCategory::Rule5:
+                    case FieldCategory::Rule6:
+                    case FieldCategory::Rule7:
+                    case FieldCategory::Rule8:
+                    case FieldCategory::Rule9:
+                    case FieldCategory::Rule10:
                         return processing::ProcessRule(scanner);
                     default:
                         return { data };
                 }
 
-                std::cout << "IMPLEMENT ME!!! " << DataFieldCategoryAsString(category) << " : " << scanner.Start() << "\n";
+                std::cout << "IMPLEMENT ME!!! " << FieldCategoryAsString(category) << " : " << scanner.Start() << "\n";
 
                 return processing::ProcessGenericString(scanner);
             }
 
-            static inline Data ProcessFieldData(const Data& data, const FieldType type, const DataFieldCategory category)
+            static inline Data ProcessFieldData(const Data& data, const FieldType type, const FieldCategory category)
             {
                 switch (type)
                 {
@@ -536,35 +536,64 @@ namespace paplease {
             return m_isBroken;
         }
 
+        bool Data::operator==(const Data& other) const
+        {
+            if (m_type != other.m_type || m_isBroken != other.m_isBroken)
+            {
+                return false;  // Early exit if types or broken flag don't match
+            }
+
+            // Compare the variant data based on its type
+            switch (m_type)
+            {
+                case paplease::documents::DataType::GenericString:
+                    return std::get<std::string>(m_data) == std::get<std::string>(other.m_data);
+                case paplease::documents::DataType::GenericNumber:
+                    return std::get<int>(m_data) == std::get<int>(other.m_data);
+                case paplease::documents::DataType::StrList:
+                    return std::get<data::StrList>(m_data) == std::get<data::StrList>(other.m_data);
+                case paplease::documents::DataType::Date:
+                    return std::get<data::Date>(m_data) == std::get<data::Date>(other.m_data);
+                case paplease::documents::DataType::SIUnit:
+                    return std::get<data::SIUnitValue>(m_data) == std::get<data::SIUnitValue>(other.m_data);
+                case paplease::documents::DataType::Vaccine:
+                    return std::get<data::Vaccine>(m_data) == std::get<data::Vaccine>(other.m_data);
+                case paplease::documents::DataType::Sex:
+                    return std::get<data::Sex>(m_data) == std::get<data::Sex>(other.m_data);
+                default:
+                    return false;
+            }
+        }
+
 #pragma endregion
 
 #pragma region FieldData
 
-        FieldData::FieldData(const Data& data, const FieldType type, const DataFieldCategory category)
-            : m_data{ data }, m_fieldType{ type }, m_fieldCategory{ category }, m_fieldState{ DataFieldState::Initialized }
+        Field::Field(const Data& data, const FieldType type, const FieldCategory category)
+            : m_data{ data }, m_fieldType{ type }, m_fieldCategory{ category }, m_fieldState{ FieldState::Initialized }
         {}
 
-        const Data& FieldData::GetData() const
+        const Data& Field::GetData() const
         {
             return m_data;
         }
 
-        std::string FieldData::ToText() const
+        std::string Field::ToText() const
         {
             return m_data.ToText();
         }
 
-        FieldType FieldData::Type() const
+        FieldType Field::Type() const
         {
             return m_fieldType;
         }
 
-        DataFieldCategory FieldData::Category() const
+        FieldCategory Field::Category() const
         {
             return m_fieldCategory;
         }
 
-        bool FieldData::IsBroken() const
+        bool Field::IsBroken() const
         {
             return m_data.IsBroken();
         }
@@ -573,9 +602,9 @@ namespace paplease {
 
 #pragma region DocData
 
-        const FieldData& DocData::GetField(DataFieldCategory category) const
+        const Field& DocData::GetField(FieldCategory category) const
         {
-            if (category == DataFieldCategory::Invalid) return {};
+            if (category == FieldCategory::Invalid) return {};
             size_t index = static_cast<size_t>(category) - 1;
 
             if (m_data[index].IsBroken())
@@ -588,9 +617,9 @@ namespace paplease {
             return m_data[index];
         }
 
-        paplease::utils::FixedRefArray<FieldData, DocData::ArrayLength> DocData::GetAllValidFields() const
+        paplease::utils::FixedRefArray<Field, DocData::ArrayLength> DocData::GetAllValidFields() const
         {
-            paplease::utils::FixedRefArray<FieldData, DocData::ArrayLength> fieldsArray{};
+            paplease::utils::FixedRefArray<Field, DocData::ArrayLength> fieldsArray{};
             
             for (const auto& data : m_data)
             {
@@ -603,7 +632,7 @@ namespace paplease {
             return fieldsArray;
         }
 
-        DocData::DocData(const std::array<FieldData, ArrayLength>& data)
+        DocData::DocData(const std::array<Field, ArrayLength>& data)
             : m_data{ data }
         {}
 
@@ -611,13 +640,13 @@ namespace paplease {
 
 #pragma region DocDataBuilder
 
-        bool DocDataBuilder::AddFieldData(const DataFieldCategory category, FieldData&& data)
+        bool DocDataBuilder::AddFieldData(const FieldCategory category, Field&& data)
         {
-            if (category == DataFieldCategory::Invalid) return false;
+            if (category == FieldCategory::Invalid) return false;
 
             size_t index = static_cast<size_t>(category) - 1; // DataFieldCategory::Invalid is not a field
 
-            if (m_data[index].m_fieldState == DataFieldState::Empty)
+            if (m_data[index].m_fieldState == FieldState::Empty)
             {
                 m_data[index] = data;
                 return true;
@@ -630,10 +659,10 @@ namespace paplease {
         {
             for (auto& fieldData : m_data)
             {
-                if (fieldData.m_fieldState != DataFieldState::Empty)
+                if (fieldData.m_fieldState != FieldState::Empty)
                 {
                     fieldData.m_data = utils::ProcessFieldData(fieldData.m_data, fieldData.m_fieldType, fieldData.m_fieldCategory);
-                    fieldData.m_fieldState = DataFieldState::ProcessedData;
+                    fieldData.m_fieldState = FieldState::ProcessedData;
 
                     if (fieldData.IsBroken())
                     {
@@ -651,7 +680,7 @@ namespace paplease {
         {
             for (size_t i = 0; i < m_data.size(); i++)
             {
-                m_data[i] = FieldData{};
+                m_data[i] = Field{};
             }
         }
 

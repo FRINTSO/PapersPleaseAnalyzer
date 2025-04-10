@@ -102,17 +102,23 @@ namespace paplease {
 		class Profile
 		{
 		public:
+			static constexpr int MatchingData = 1;
+			static constexpr int NoData = 0;
+			static constexpr int MismatchingData = -1;
+
 			void OnNewDate();
 			void OnNewApplicant();
+
+			bool RegisterData(const documents::Field& fieldData);
 		private:
 			void Clear();
+			int CompareData(const documents::Field& fieldData) const;
 
 			static constexpr size_t FieldsCapacity = 20;
-			static constexpr std::array<documents::DataFieldCategory, FieldsCapacity> ProfileFields();
-			static constexpr int GetFieldIndexByCategoryType(documents::DataFieldCategory category);
-
+			static constexpr std::array<documents::FieldCategory, FieldsCapacity> ProfileFields();
+			static constexpr int GetFieldIndexByCategoryType(documents::FieldCategory category);
 		private:
-			std::array<documents::FieldData, Profile::FieldsCapacity> m_fields;
+			std::array<std::optional<documents::Field>, Profile::FieldsCapacity> m_fields;
 			size_t m_fieldCount;
 		};
 
@@ -163,7 +169,7 @@ namespace paplease {
 		class DocumentValidator
 		{
 		public:
-			DocumentValidator(const documents::Doc& document, const AnalysisContext& analysisContext);
+			DocumentValidator(const documents::Doc& document, AnalysisContext& analysisContext);
 
 			bool Validate();
 
@@ -201,7 +207,7 @@ namespace paplease {
 			bool ValidateWorkEndDate() const;
 
 		private:
-			const AnalysisContext& m_analysisContext;
+			AnalysisContext& m_analysisContext;
 			const documents::Doc& m_document;  // The document being validated
 			documents::DocData m_documentData;
 		};

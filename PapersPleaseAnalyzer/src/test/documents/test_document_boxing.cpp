@@ -95,7 +95,7 @@ namespace paplease {
 				cv::waitKey();
 			}
 
-			void test_text_field_character_boxing(const std::string& number, DocType docType, DataFieldCategory dataField)
+			void test_text_field_character_boxing(const std::string& number, DocType docType, FieldCategory dataField)
 			{
 				// Setup
 				GameView game = GetGameView(number);
