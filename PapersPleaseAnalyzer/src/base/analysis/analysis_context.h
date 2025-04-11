@@ -131,8 +131,8 @@ namespace paplease {
 			bool SetIfNewDate(documents::data::Date date);
 			bool SetIfNewApplicant(int applicantNumber);
 
-			void OnNewDate();
-			void OnNewApplicant();
+			void OnNewDate(documents::data::Date date);
+			void OnNewApplicant(int applicantNumber);
 
 		private: // DocRegistry:
 			void HandleInspectionData(scannable::InspectionData& inspectionData);
@@ -151,7 +151,8 @@ namespace paplease {
 		private:
 			// Plain data
 			documents::data::Date m_currentDate;
-			documents::data::SIUnitValue m_currentWeight;
+			std::optional<documents::data::SIUnitValue> m_currentWeight;
+			std::optional<documents::data::SIUnitValue> m_approximateHeight;
 			int m_applicantNumber;
 
 			std::optional<data::RuleBook> m_ruleBook;

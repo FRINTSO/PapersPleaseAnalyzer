@@ -43,7 +43,7 @@ namespace paplease {
             CriminalPhoto1, CriminalPhoto2, CriminalPhoto3,
             TranscriptPage,
 
-            DATA_FIELD_CATEGORY_LENGTH
+            Count
         };
 
         // Enumeration to specify the type of data being handled

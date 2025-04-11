@@ -802,12 +802,17 @@ namespace paplease {
 							FieldType::Text
 						},
 						DataLayout{
+							Rectangle{ DOWNSCALE(0), DOWNSCALE(0), DOWNSCALE(356), DOWNSCALE(214) },
+							FieldCategory::Photo,
+							FieldType::Image
+						},
+						DataLayout{
 							Rectangle{ DOWNSCALE(302), DOWNSCALE(390), DOWNSCALE(44), DOWNSCALE(12) },
 							FieldCategory::Weight,
 							FieldType::Text
 						},
 					},
-					3
+					4
 				};
 			}
 

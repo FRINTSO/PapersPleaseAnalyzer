@@ -137,7 +137,7 @@ namespace paplease {
 			return Rectangle{ left, top, right - left + 1, bottom - top + 1 };
 		}
 
-		static Rectangle FindBoundingBox(const cv::Mat& mat, const std::function<bool(int, int)>& pixelCondition)
+		static Rectangle FindBoundingBox(const cv::Mat& mat, const std::function<bool(int, int)>& whatPixelShouldMatch)
 		{
 			int left = INT_MAX, top = INT_MAX, right = 0, bottom = 0;
 
@@ -147,7 +147,7 @@ namespace paplease {
 				bool rowContainsMatchingPixel = false;
 				for (int col = 0; col < mat.cols; col++)
 				{
-					if (pixelCondition(row, col))
+					if (whatPixelShouldMatch(row, col))
 					{
 						rowContainsMatchingPixel = true;
 						minCol = std::min(minCol, col);

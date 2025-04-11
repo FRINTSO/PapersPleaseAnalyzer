@@ -1,7 +1,6 @@
 #pragma once
 #include <type_traits>
 
-#include "base/documents/data/date.h"
 #include "base/utils/metaprogramming.h"
 
 namespace paplease {
@@ -81,6 +80,11 @@ namespace paplease {
                 return category == FieldCategory::Sex;
             }
 
+            static consteval bool is_photo_type(FieldCategory category)
+            {
+                return category == FieldCategory::Photo;
+            }
+
         } // namespace detail
 
         template<FieldCategory Category>
@@ -104,6 +108,8 @@ namespace paplease {
         template<FieldCategory Category>
         struct detail::field_data_type<Category, std::enable_if_t<detail::is_sex_type(Category)>> : utils::has_type<data::Sex>{};
 
+        template<FieldCategory Category>
+        struct detail::field_data_type<Category, std::enable_if_t<detail::is_photo_type(Category)>> : utils::has_type<data::Photo>{};
 
         template<FieldCategory Category>
         constexpr detail::FieldDataType<Category> Field::GetFieldData() const

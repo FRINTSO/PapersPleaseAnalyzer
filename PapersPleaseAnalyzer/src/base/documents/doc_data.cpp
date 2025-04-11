@@ -178,8 +178,7 @@ namespace paplease {
                         year += 1900;
                     }
 
-                    data::Date dateData{ day, month, year };
-                    return Data{ dateData };
+                    return Data{ data::Date{day, month, year}};
                 }
 
                 static inline Data ProcessSIUnit(StrScanner& scanner)
@@ -209,8 +208,7 @@ namespace paplease {
                         return err::FailedSIUnitProcess();
                     }
 
-                    data::SIUnitValue siUnitData{ value, unit };
-                    return Data{ siUnitData };
+                    return Data{ data::SIUnitValue{ value, unit } };
 
                 }
 
@@ -235,9 +233,7 @@ namespace paplease {
 
                     auto name = scanner.MatchToStr();
 
-                    data::Vaccine vaccineData{ date_data.Get<data::Date>(), name };
-
-                    return Data{ vaccineData };
+                    return Data{ data::Vaccine{ date_data.Get<data::Date>(), name } };
                 }
 
                 static inline Data ProcessStrList(StrScanner& scanner)
@@ -252,7 +248,7 @@ namespace paplease {
                         strList.strs.push_back(scanner.MatchToStr());
 
                     } while (scanner.Match(','));
-                    return Data{ strList };
+                    return Data{ std::move(strList) };
                 }
 
                 static inline Data ProcessSex(StrScanner& scanner)
@@ -341,7 +337,6 @@ namespace paplease {
                     {
                         return processing::ProcessDate(scanner);
                     }
-                    //case DataFieldCategory::Duration:
                     case FieldCategory::FingerPrints:
                         break;
                     case FieldCategory::Name:
@@ -350,10 +345,8 @@ namespace paplease {
                     }
                     case FieldCategory::Field:
                     case FieldCategory::IssuingCity:
-                    // case DataFieldCategory::Description:
                     case FieldCategory::PhysicalAppearance:
                     case FieldCategory::District:
-                    //case DataFieldCategory::Nationality:
                     case FieldCategory::DurationOfStay:
                     case FieldCategory::Purpose:
                     case FieldCategory::PassportNumber:
@@ -392,6 +385,11 @@ namespace paplease {
                 return processing::ProcessGenericString(scanner);
             }
 
+            static inline Data ProcessImageData(const Data& data, const FieldCategory category)
+            {
+                return std::move(data);
+            }
+
             static inline Data ProcessFieldData(const Data& data, const FieldType type, const FieldCategory category)
             {
                 switch (type)
@@ -399,7 +397,7 @@ namespace paplease {
                     case FieldType::Text:
                         return ProcessTextData(data, category);
                     case FieldType::Image:
-                        // Not implemented
+                        return ProcessImageData(data, category);
                     case FieldType::Invalid:
                     default:
                         return {};
@@ -412,35 +410,39 @@ namespace paplease {
 
 #pragma region Constructors
         template<typename T>
-        Data::Data(const T& data, DataType type, bool isBroken)
-            : m_data{ data }, m_type{ type }, m_isBroken{ isBroken }
+        Data::Data(T&& data, DataType type, bool isBroken)
+            : m_data{ std::forward<T>(data) }, m_type{ type }, m_isBroken{ isBroken }
         {}
 
-        Data::Data(const std::string& data)
-            : Data{ data, DataType::GenericString }
+        Data::Data(std::string&& data)
+            : Data{ std::move(data), DataType::GenericString }
         {}
 
         Data::Data(int data)
             : Data{ data, DataType::GenericNumber }
         {}
 
-        Data::Data(const data::Date& data) : Data{ data, DataType::Date }
+        Data::Data(data::Date&& data) : Data{ std::move(data), DataType::Date }
         {}
 
-        Data::Data(const data::SIUnitValue& data)
-            : Data{ data, DataType::SIUnit }
+        Data::Data(data::SIUnitValue&& data)
+            : Data{ std::move(data), DataType::SIUnit }
         {}
 
-        Data::Data(const data::Vaccine& data)
-            : Data{ data, DataType::Vaccine }
+        Data::Data(data::Vaccine&& data)
+            : Data{ std::move(data), DataType::Vaccine }
         {}
 
-        Data::Data(const data::StrList& data)
-            : Data{ data, DataType::StrList }
+        Data::Data(data::StrList&& data)
+            : Data{ std::move(data), DataType::StrList }
         {}
 
         Data::Data(data::Sex data)
             : Data{ data, DataType::Sex }
+        {}
+
+        Data::Data(data::Photo&& data)
+            : Data{ std::move(data), DataType::Image}
         {}
 
 #pragma endregion
@@ -644,7 +646,7 @@ namespace paplease {
         {
             if (category == FieldCategory::Invalid) return false;
 
-            size_t index = static_cast<size_t>(category) - 1; // DataFieldCategory::Invalid is not a field
+            size_t index = static_cast<size_t>(category) - 1;
 
             if (m_data[index].m_fieldState == FieldState::Empty)
             {

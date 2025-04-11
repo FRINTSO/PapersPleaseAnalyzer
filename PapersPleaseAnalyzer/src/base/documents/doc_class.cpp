@@ -343,10 +343,21 @@ namespace paplease {
 					case FieldType::Text:
 					{
 						auto raw_text_data = GetFieldString(ExtractDocumentField(binary, layouts[i].GetBox()), m_documentType);
-						builder.AddFieldData(layouts[i].GetCategory(), Field{ Data{raw_text_data}, layouts[i].GetType(), layouts[i].GetCategory() });
+						builder.AddFieldData(
+							layouts[i].GetCategory(),
+							Field{
+								Data{ std::move(raw_text_data) },
+								layouts[i].GetType(),
+								layouts[i].GetCategory()
+							}
+						);
 						break;
 					}
 					case FieldType::Image:
+					{
+						//__debugbreak();
+						break;
+					}
 					case FieldType::Invalid:
 					default:
 					{

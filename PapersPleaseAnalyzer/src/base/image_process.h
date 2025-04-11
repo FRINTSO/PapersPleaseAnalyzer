@@ -18,11 +18,47 @@ namespace paplease {
 		return grayscale;
 	}
 
+	struct HSVConfig
+	{
+		int hueMin = 0;
+		int hueMax = 179;
+		int satMin = 0;
+		int satMax = 255;
+		int valMin = 0;
+		int valMax = 255;
+	};
+
+	static inline cv::Mat ApplyHSV(const cv::Mat& mat, const HSVConfig& hsvConfig)
+	{
+		cv::Mat imgHsv;
+		cv::cvtColor(mat, imgHsv, cv::COLOR_BGR2HSV);
+		cv::Mat lower{ hsvConfig.hueMin, hsvConfig.satMin, hsvConfig.valMin };
+		cv::Mat upper{ hsvConfig.hueMax, hsvConfig.satMax, hsvConfig.valMax };
+		cv::Mat mask;
+		cv::inRange(imgHsv, lower, upper, mask);
+		return mask;
+	}
+
+	static inline cv::Mat ScaleImage(cv::Mat&& in, float scale)
+	{
+		cv::resize(in, in, cv::Size((int)((float)in.cols * scale), (int)((float)in.rows * scale)), 0, 0, cv::INTER_NEAREST);
+		return in;
+	}
+
 	static inline cv::Mat ScaleImage(const cv::Mat& in, float scale)
 	{
 		cv::Mat result;
 		cv::resize(in, result, cv::Size((int)((float)in.cols * scale), (int)((float)in.rows * scale)), 0, 0, cv::INTER_NEAREST);
 		return result;
+	}
+
+	static inline cv::Mat ReadImage(const std::string& path)
+	{
+		auto mat = cv::imread(path, cv::IMREAD_UNCHANGED);
+#if DOWNSCALE_OPTIMIZATION
+		mat = ScaleImage(std::move(mat), 1.0f / 2.0f);
+#endif
+		return mat;
 	}
 
 	static inline cv::Mat ExtractDocumentField(const cv::Mat& document, const Rectangle& boundingBox)

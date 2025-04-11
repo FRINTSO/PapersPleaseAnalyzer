@@ -5,9 +5,8 @@ namespace paplease {
 	namespace documents {
 		namespace data {
 
-			class Photo
+			struct Photo
 			{
-			private:
 				cv::Mat m_mat;
 			};
 

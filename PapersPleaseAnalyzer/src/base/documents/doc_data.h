@@ -1,6 +1,7 @@
 #pragma once
 #include "base/documents/data/date.h"
 #include "base/documents/data/field_data.h"
+#include "base/documents/data/photo.h"
 #include "base/documents/doc_data_type.h"
 #include "base/utils/fixed_array.h"
 
@@ -31,15 +32,16 @@ namespace paplease {
 			Data() = default;
 
 			template<typename T>
-			explicit Data(const T& data, DataType type, bool isBroken = false);
+			explicit Data(T&& data, DataType type, bool isBroken = false);
 
-			explicit Data(const std::string& data);
+			explicit Data(std::string&& data);
 			explicit Data(int data);
-			explicit Data(const data::Date& data);
-			explicit Data(const data::SIUnitValue& data);
-			explicit Data(const data::Vaccine& data);
-			explicit Data(const data::StrList& data);
+			explicit Data(data::Date&& data);
+			explicit Data(data::SIUnitValue&& data);
+			explicit Data(data::Vaccine&& data);
+			explicit Data(data::StrList&& data);
 			explicit Data(data::Sex data);
+			explicit Data(data::Photo&& data);
 
 			template<typename T>
 			constexpr const T& Get() const
@@ -61,7 +63,8 @@ namespace paplease {
 				data::SIUnitValue,
 				data::Vaccine,
 				data::StrList,
-				data::Sex> m_data;
+				data::Sex,
+				data::Photo> m_data;
 			DataType m_type = DataType::Invalid;
 			bool m_isBroken = false;
 		};
@@ -101,7 +104,7 @@ namespace paplease {
 		class DocData
 		{  // Represents the data of any document
 		public:
-			static constexpr size_t ArrayLength = static_cast<size_t>(FieldCategory::DATA_FIELD_CATEGORY_LENGTH) - 1;
+			static constexpr size_t ArrayLength = static_cast<size_t>(FieldCategory::Count);
 		public:
 			DocData() = default;
 
@@ -134,7 +137,7 @@ namespace paplease {
 		class DocDataBuilder
 		{  // Builds a document data instance
 		public:
-			static const size_t ArrayLength = static_cast<size_t>(FieldCategory::DATA_FIELD_CATEGORY_LENGTH) - 1;
+			static const size_t ArrayLength = static_cast<size_t>(FieldCategory::Count);
 		public:
 			DocDataBuilder() = default;
 

@@ -258,6 +258,10 @@ namespace paplease {
 			{
 				LOG("New Applicant!");
 				m_currentWeight = scanContext.boothData->weight;
+				if (scanContext.boothData->m_approximateHeight)
+				{
+					m_approximateHeight = scanContext.boothData->m_approximateHeight.value();
+				}
 			}
 
 			if (scanContext.inspectionData)
@@ -351,8 +355,7 @@ namespace paplease {
 		{
 			if (date != m_currentDate)
 			{
-				m_currentDate = date;
-				this->OnNewDate();
+				this->OnNewDate(date);
 				return true;
 			}
 			return false;
@@ -362,15 +365,17 @@ namespace paplease {
 		{
 			if (applicantNumber != m_applicantNumber)
 			{
-				m_applicantNumber = applicantNumber;
-				this->OnNewApplicant();
+				this->OnNewApplicant(applicantNumber);
 				return true;
 			}
 			return false;
 		}
 
-		void AnalysisContext::OnNewDate()
+		void AnalysisContext::OnNewDate(documents::data::Date date)
 		{
+			m_currentDate = date;
+			m_currentWeight = std::nullopt;
+			m_approximateHeight = std::nullopt;
 			m_applicantNumber = 0;
 
 			m_ruleBook = std::nullopt;
@@ -381,8 +386,12 @@ namespace paplease {
 			m_profile.OnNewDate();
 		}
 
-		void AnalysisContext::OnNewApplicant()
+		void AnalysisContext::OnNewApplicant(int applicantNumber)
 		{
+			m_currentWeight = std::nullopt;
+			m_approximateHeight = std::nullopt;
+			m_applicantNumber = applicantNumber;
+
 			m_transcript = std::nullopt;
 
 			m_docRegistry.OnNewApplicant();
@@ -692,7 +701,12 @@ namespace paplease {
 		// Against booth
 		bool DocumentValidator::ValidateWeight() const
 		{
-			bool accepted = m_analysisContext.m_currentWeight.value == m_documentData.GetFieldData<FieldCategory::Weight>().value().get().value;
+			if (!m_analysisContext.m_currentWeight.has_value())
+			{
+				// register reanalysis later, when height is not nullopt
+				return false;
+			}
+			bool accepted = m_analysisContext.m_currentWeight->value == m_documentData.GetFieldData<FieldCategory::Weight>().value().get().value;
 			if (!accepted)
 			{
 				LOG_DISCREPANCY("Invalid weight. '{}'", ToStringView(m_document.GetDocumentType()));
@@ -715,8 +729,25 @@ namespace paplease {
 
 		bool DocumentValidator::ValidateHeight() const
 		{
-			LOG_ERR("DocumentValidator::ValidateHeight() Not Implemented!");
-			return true;  // Placeholder, assuming valid for now
+			if (!m_analysisContext.m_approximateHeight.has_value())
+			{
+				// register reanalysis later, when height is not nullopt
+				return false;
+			}
+			int approximateHeight = m_analysisContext.m_approximateHeight->value;
+			int exactHeight = m_documentData.GetFieldData<FieldCategory::Height>().value().get().value;
+
+			bool accepted = exactHeight - 5 < approximateHeight && approximateHeight < exactHeight + 5;
+			if (!accepted)
+			{
+				LOG_DISCREPANCY(
+					"Invalid height. Expected '{}', but received '{}'.  '{}'",
+					m_documentData.GetFieldData<FieldCategory::Height>().value().get().value,
+					m_analysisContext.m_approximateHeight->value,
+					ToStringView(m_document.GetDocumentType())
+				);
+			}
+			return accepted;
 		}
 
 		bool DocumentValidator::ValidatePhysicalAppearance() const

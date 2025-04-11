@@ -3,6 +3,7 @@
 
 #include "base/documents/data/date.h"
 #include "base/documents/data/field_data.h"
+#include "base/documents/data/photo.h"
 #include "base/game_view.h"
 
 namespace paplease {
@@ -13,8 +14,8 @@ namespace paplease {
 			{
 				const documents::data::Date date;
 				const documents::data::SIUnitValue weight;
-				// documents::data::SIUnitValue m_approximateHeight;
-				// documents::data::Photo m_applicantHeadshot;
+				const std::optional<documents::data::SIUnitValue> m_approximateHeight;
+				const documents::data::Photo m_applicantHeadshot;
 				const int applicantNumber;
 			};
 

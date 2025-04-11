@@ -7,13 +7,16 @@
 #include "base/documents/doc_layout.h"
 #include "base/image_process.h"
 #include "base/utils/log.h"
+#include "test/documents/test_hsv.h"
+
+#include "base/documents/bounding_box_finder.inc"
 
 namespace paplease {
 	namespace analysis {
 		namespace scannable {
 
-			using namespace documents::data;
 			using namespace documents;
+			using namespace documents::data;
 
 #pragma region Extract Data
 
@@ -56,10 +59,25 @@ namespace paplease {
 						case documents::FieldType::Text:
 						{
 							auto raw_data = GetBoothString(ExtractDocumentField(binary, layouts[i].GetBox()));
-							builder.AddFieldData(layouts[i].GetCategory(), documents::Field{ documents::Data{ raw_data }, layouts[i].GetType(), layouts[i].GetCategory() });
+							builder.AddFieldData(layouts[i].GetCategory(), documents::Field{ documents::Data{ std::move(raw_data) }, layouts[i].GetType(), layouts[i].GetCategory() });
 							break;
 						}
 						case documents::FieldType::Image:
+						{
+							auto&& image_data = ExtractDocumentField(booth, layouts[i].GetBox());
+
+							builder.AddFieldData(
+								layouts[i].GetCategory(),
+								documents::Field{
+									documents::Data{
+										Photo{ std::move(image_data) }
+									},
+									layouts[i].GetType(),
+									layouts[i].GetCategory()
+								}
+							);
+							break;
+						}
 						case documents::FieldType::Invalid:
 						default:
 						{
@@ -79,6 +97,101 @@ namespace paplease {
 
 #pragma endregion
 
+			static cv::Mat LoadHeadshotMask()
+			{
+				return ReadImage("C:\\dev\\PapersPleaseAnalyzer\\PapersPleaseAnalyzer\\images\\booth\\headshot_mask.png") ^ 255;
+				//return cv::imread(, cv::IMREAD_UNCHANGED) ^ 255;
+			}
+
+			static cv::Mat LoadHeightChart()
+			{
+				return ReadImage("C:\\dev\\PapersPleaseAnalyzer\\PapersPleaseAnalyzer\\images\\booth\\headshot_height_chart.png");
+				//return cv::imread(, cv::IMREAD_UNCHANGED);
+			}
+
+			static std::optional<cv::Mat> PreprocessApplicantHeadshot(const cv::Mat& applicantInBooth)
+			{
+				// White text
+				//constexpr HSVConfig exactTextColorToWhite{ 117, 117, 45, 45, 63, 63};
+				constexpr HSVConfig isHeadshotScanReadyConfig{ 10, 179, 0, 60, 53, 100 };
+				bool isHeadshotReady = cv::countNonZero(ApplyHSV(applicantInBooth, isHeadshotScanReadyConfig)) == 0;
+				if (!isHeadshotReady)
+				{
+					return std::nullopt;
+				}
+
+				// Extract headshot black silhouette + height measurements + black text
+				//constexpr HSVConfig headshotHsvConfig{ 0, 23, 1, 70, 0, 255 };
+				constexpr HSVConfig headshotHsvConfig{ 0, 23, 1, 71, 0, 255 };
+				auto binaryHeadshot = ApplyHSV(applicantInBooth, headshotHsvConfig);
+
+				static const cv::Mat headshotMask = LoadHeadshotMask();
+
+				binaryHeadshot ^= headshotMask;
+
+				if (cv::countNonZero(binaryHeadshot ^ 255) == 0)
+				{
+					return std::nullopt;
+				}
+				return binaryHeadshot;
+			}
+
+			static cv::Mat CutoutHeadshot(const cv::Mat& headshot)
+			{
+				// Start at bottom and make a pivot in the middle
+				// Widest is in the shoulders
+
+				Rectangle headshotBoundingBox = documents::FindBoundingBox(headshot, [&](int row, int col)
+				{
+					return headshot.at<uchar>(row, col) == 0;
+				});
+
+				// adjust bounding box height to include next height line
+				constexpr int heightToTopLine = DOWNSCALE(198);
+				constexpr int spaceBetweenLines = DOWNSCALE(22); // Include one line in this number, whitespace between is 18
+
+				int newHeight = std::min((headshotBoundingBox.height / spaceBetweenLines + 1) * spaceBetweenLines, headshot.rows);
+				int approximateHeight = 100 + (headshotBoundingBox.height * 10 / spaceBetweenLines) + ((headshotBoundingBox.height % spaceBetweenLines) * 10 / spaceBetweenLines);
+				std::cout << "Height: " << approximateHeight << "\n";
+
+				headshotBoundingBox.y = headshot.rows - newHeight;
+				headshotBoundingBox.height = newHeight;
+
+				static const cv::Mat heightChart = LoadHeightChart();
+
+				cv::Mat inset(headshot & heightChart, cv::Rect(headshotBoundingBox.x, headshotBoundingBox.y, headshotBoundingBox.width, headshotBoundingBox.height));
+				//cv::imshow("inset", inset);
+				//cv::waitKey();
+
+				return cv::Mat{};
+			}
+
+			static std::optional<SIUnitValue> FindApplicantHeight(const documents::data::Photo& applicantInBooth)
+			{
+				auto mat = PreprocessApplicantHeadshot(applicantInBooth.m_mat);
+				if (!mat) return std::nullopt;
+				//cv::imshow("Applicant height, headshot", mat.value());
+				//cv::waitKey();
+
+				// Make a smaller cutout
+				// CutoutHeadshot(mat.value());
+
+				// Calculate approximate height
+				Rectangle headshotBoundingBox = documents::FindBoundingBox(mat.value(), [&](int row, int col)
+				{
+					return mat->at<uchar>(row, col) == 0;
+				});
+
+				// adjust bounding box height to include next height line
+				constexpr int heightToTopLine = DOWNSCALE(198);
+				constexpr int spaceBetweenLines = DOWNSCALE(22); // Include one line in this number, whitespace between is 18
+				int approximateHeight = 100
+					+ (headshotBoundingBox.height * 10 / spaceBetweenLines)
+					+ ((headshotBoundingBox.height % spaceBetweenLines) * 10 / spaceBetweenLines);
+				
+				return SIUnitValue(approximateHeight, SIUnit::CM);
+			}
+
 			std::optional<BoothData> ScanBooth(const GameView& gameView)
 			{
 				BeginLOG("ScanBooth()");
@@ -92,9 +205,11 @@ namespace paplease {
 
 				EndLOG("ScanBooth()");
 				return BoothData{
-					loadedData->GetField(FieldCategory::BoothDate).GetData().Get<Date>(),
-					loadedData->GetField(FieldCategory::Weight).GetData().Get<SIUnitValue>(),
-					loadedData->GetField(FieldCategory::BoothCounter).GetData().Get<int>()
+					loadedData->GetFieldData<FieldCategory::BoothDate>()->get(),
+					loadedData->GetFieldData<FieldCategory::Weight>()->get(),
+					FindApplicantHeight(loadedData->GetFieldData<FieldCategory::Photo>()->get()),
+					loadedData->GetFieldData<FieldCategory::Photo>()->get(),
+					loadedData->GetFieldData<FieldCategory::BoothCounter>()->get()
 				};
 			}
 
