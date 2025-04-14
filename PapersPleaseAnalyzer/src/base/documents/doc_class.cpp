@@ -355,7 +355,18 @@ namespace paplease {
 					}
 					case FieldType::Image:
 					{
-						//__debugbreak();
+						auto&& image_data = ExtractDocumentField(binary, layouts[i].GetBox());
+
+						builder.AddFieldData(
+							layouts[i].GetCategory(),
+							documents::Field{
+								documents::Data{
+									data::Photo{ std::move(image_data) }
+								},
+								layouts[i].GetType(),
+								layouts[i].GetCategory()
+							}
+						);
 						break;
 					}
 					case FieldType::Invalid:

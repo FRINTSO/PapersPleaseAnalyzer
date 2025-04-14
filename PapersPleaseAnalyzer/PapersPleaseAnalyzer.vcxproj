@@ -154,7 +154,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\base\analysis\analysis_context.cpp" />
-    <ClCompile Include="src\base\analysis\photo_analysis\applicant_analysis.cpp" />
+    <ClCompile Include="src\base\analysis\photo_analysis\photo_analyzer.cpp" />
     <ClCompile Include="src\base\documents\seal.cpp" />
     <ClCompile Include="src\base\analysis\components\document_state.cpp" />
     <ClCompile Include="src\base\analysis\scannable\scan_context.cpp" />
@@ -192,7 +192,7 @@
   <ItemGroup>
     <ClInclude Include="src\base\analysis\analysis_context.h" />
     <ClInclude Include="src\base\analysis\analysis_context.inl.h" />
-    <ClInclude Include="src\base\analysis\photo_analysis\applicant_analysis.h" />
+    <ClInclude Include="src\base\analysis\photo_analysis\photo_analyzer.h" />
     <ClInclude Include="src\base\documents\doc_data.inl.h" />
     <ClInclude Include="src\base\documents\doc_data_type.h" />
     <ClInclude Include="src\base\documents\seal.h" />

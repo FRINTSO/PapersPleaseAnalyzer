@@ -387,7 +387,7 @@ namespace paplease {
 
             static inline Data ProcessImageData(const Data& data, const FieldCategory category)
             {
-                return std::move(data);
+                return data;
             }
 
             static inline Data ProcessFieldData(const Data& data, const FieldType type, const FieldCategory category)
@@ -668,6 +668,8 @@ namespace paplease {
 
                     if (fieldData.IsBroken())
                     {
+                        //fieldData.m_fieldState = FieldState::BrokenData;
+                        // THIS CODE UNDER, IF TOGGLED WILL DISABLE BROKEN DATA FROM BEING ACCEPTED. SO DOCUMENTS WITH MISSING BROKEN DATA WILL BE SKIPPED
                         this->Clear();
                         return std::nullopt;
                     }

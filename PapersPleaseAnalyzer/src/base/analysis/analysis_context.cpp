@@ -258,9 +258,9 @@ namespace paplease {
 			{
 				LOG("New Applicant!");
 				m_currentWeight = scanContext.boothData->weight;
-				if (scanContext.boothData->m_approximateHeight)
+				if (scanContext.boothData->approximateHeight)
 				{
-					m_approximateHeight = scanContext.boothData->m_approximateHeight.value();
+					m_approximateHeight = scanContext.boothData->approximateHeight.value();
 				}
 			}
 

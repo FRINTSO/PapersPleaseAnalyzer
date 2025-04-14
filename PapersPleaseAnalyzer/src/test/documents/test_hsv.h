@@ -1,24 +1,24 @@
 #pragma once
 #include <opencv2/opencv.hpp>
 
-#include "base/image_process.h"
+#include "base/color.h"
 
 namespace tests::documents
 {
 
 	void test_hsv(
 		const cv::Mat& image,
-		int hueMin = 0,
-		int hueMax = 179,
-		int satMin = 0,
-		int satMax = 127,
-		int valMin = 0,
-		int valMax = 255
+		paplease::HSVConfig* hsvConfig = nullptr
 	);
 
 	cv::Mat find_hsv(
 		const cv::Mat& image,
 		paplease::HSVConfig& hsvConfig
+	);
+
+	cv::Mat find_hsl(
+		const cv::Mat& image,
+		paplease::HSLConfig& hslConfig
 	);
 
 }

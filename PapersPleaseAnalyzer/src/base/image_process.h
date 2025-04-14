@@ -4,6 +4,7 @@
 
 #include <opencv2/opencv.hpp>
 
+#include "base/color.h"
 #include "base/documents/doc_type.h"
 #include "base/ocr/font.h"
 #include "base/ocr/ocr.h"
@@ -17,16 +18,6 @@ namespace paplease {
 		cv::cvtColor(mat, grayscale, cv::COLOR_BGR2GRAY);
 		return grayscale;
 	}
-
-	struct HSVConfig
-	{
-		int hueMin = 0;
-		int hueMax = 179;
-		int satMin = 0;
-		int satMax = 255;
-		int valMin = 0;
-		int valMax = 255;
-	};
 
 	static inline cv::Mat ApplyHSV(const cv::Mat& mat, const HSVConfig& hsvConfig)
 	{

@@ -2,6 +2,7 @@
 #include "base/common.h"
 
 #include <cstdint>
+#include <type_traits>
 
 namespace paplease {
 
@@ -43,6 +44,12 @@ namespace paplease {
 
 	struct BgrColor
 	{
+		constexpr BgrColor(unsigned char blue, unsigned char green, unsigned char red)
+			: blue(blue), green(green), red(red)
+		{
+
+		}
+
 		unsigned char blue;
 		unsigned char green;
 		unsigned char red;
@@ -97,5 +104,39 @@ namespace paplease {
 #define BGR_VAL(color) ToRgbValue(color)
 
 #endif
+
+	struct HSVConfig
+	{
+		int hueMin = 0;
+		int hueMax = 179;
+		int satMin = 0;
+		int satMax = 255;
+		int valMin = 0;
+		int valMax = 255;
+
+		bool IsEmpty() const
+		{
+			return (hueMin | satMin | valMin) == 0
+				&& (satMax & valMax) == 255
+				&& (hueMax == 179);
+		}
+	};
+
+	struct HSLConfig
+	{
+		int hueMin = 0;
+		int hueMax = 179;
+		int satMin = 0;
+		int satMax = 255;
+		int litMin = 0;
+		int litMax = 255;
+	};
+
+
+	template<int RED, int GREEN, int BLUE>
+	struct rgb_color : std::integral_constant<int, (RED << 16) | (GREEN << 8) | BLUE>{};
+
+	template<int RED, int GREEN, int BLUE>
+	static constexpr int rgb_color_v = rgb_color<RED, GREEN, BLUE>::value;
 
 }  // namespace paplease

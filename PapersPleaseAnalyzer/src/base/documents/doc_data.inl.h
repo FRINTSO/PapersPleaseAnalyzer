@@ -128,7 +128,7 @@ namespace paplease {
         {
             const auto& fieldData = this->GetField(Category);
 
-            if (fieldData.Type() == FieldType::Invalid)
+            if (fieldData.Type() == FieldType::Invalid || fieldData.IsBroken())
             {
                 return std::nullopt;
             }

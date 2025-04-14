@@ -31,7 +31,7 @@
     <ClCompile Include="src\base\analysis\components\document_state.cpp" />
     <ClCompile Include="src\base\analysis\scannable\scan_context.cpp" />
     <ClCompile Include="src\base\analysis\analysis_context.cpp" />
-    <ClCompile Include="src\base\analysis\photo_analysis\applicant_analysis.cpp" />
+    <ClCompile Include="src\base\analysis\photo_analysis\photo_analyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\color.h" />
@@ -83,7 +83,7 @@
     <ClInclude Include="src\base\utils\strfuncs.h" />
     <ClInclude Include="src\base\utils\enum_range.h" />
     <ClInclude Include="src\base\utils\metaprogramming.h" />
-    <ClInclude Include="src\base\analysis\photo_analysis\applicant_analysis.h" />
+    <ClInclude Include="src\base\analysis\photo_analysis\photo_analyzer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\base\documents\bounding_box_finder.inc" />

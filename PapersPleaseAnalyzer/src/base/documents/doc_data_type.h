@@ -73,7 +73,8 @@ namespace paplease {
         {
             Empty = 0,
             Initialized,
-            ProcessedData
+            ProcessedData,
+            BrokenData,
         };
 
 #if USE_ENUM_FUNCS
