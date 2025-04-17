@@ -11,11 +11,11 @@ namespace paplease {
 			
 			struct ScanContext
 			{
-				std::optional<scannable::BoothData> boothData;
-				std::optional<scannable::InspectionData> inspectionData;
+				scannable::BoothData boothData;
+				scannable::InspectionData inspectionData;
 			};
 
-			std::optional<scannable::ScanContext> Scan(const GameView& gameView);
+			scannable::ScanContext Scan(const GameView& gameView);
 
 		}  // namespace scannable
 	}  // namespace analysis

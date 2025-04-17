@@ -1,5 +1,6 @@
 #pragma once
 #include "base/documents/doc_type.h"
+#include "base/scaled.h"
 
 namespace paplease {
 	namespace ocr {
@@ -16,12 +17,12 @@ namespace paplease {
 		struct FontInfo
 		{
 			const Typeface typeface;
-			const int size;
+			const scaled<int> size;
 
-			const int letterSpacingHorizontal;
-			const int whitespaceSize;
-			const int letterSpacingVertical;
-			const int newlineSize;
+			const scaled<int> letterSpacingHorizontal;
+			const scaled<int> whitespaceSize;
+			const scaled<int> letterSpacingVertical;
+			const scaled<int> newlineSize;
 		};
 
 		const FontInfo& GetFontInfo(documents::DocType documentType);

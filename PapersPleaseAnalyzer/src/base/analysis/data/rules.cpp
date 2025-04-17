@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "base/analysis/data/rules.h"
 
+#include "base/utils/enum_range.h"
 #include "base/utils/log.h"
 
 
@@ -31,10 +32,11 @@ namespace paplease {
 				}
 
 				// for (int i = (int)DataFieldCategory::Rule1; i <= (int)DataFieldCategory::Rule10; i++)
-				for (FieldCategory category = FieldCategory::Rule1; category <= FieldCategory::Rule10; ((int&)category)++)
+				// for (FieldCategory category = FieldCategory::Rule1; category <= FieldCategory::Rule10; ((int&)category)++)
+				for (auto category : utils::enum_range(FieldCategory::Rule1, FieldCategory::Rule10))
 				{
 					auto rule = ruleData.GetField(category);
-					auto eRule = GetERuleFromDescription(rule.ToText());
+					auto eRule = GetERuleFromDescription(rule->get().ToString());
 					auto fetchedRule = FetchRule(eRule);
 				}
 

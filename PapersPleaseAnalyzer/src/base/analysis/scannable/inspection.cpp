@@ -3,19 +3,20 @@
 
 #include <utility>
 
+#include "base/utils/enum_range.h"
+
 namespace paplease {
 	namespace analysis {
 		namespace scannable {	
 
 			using namespace documents;
 
-			std::optional<InspectionData> ScanInspection(const GameView& gameView)
+			InspectionData ScanInspection(const GameView& gameView)
 			{
-				BeginLOG("ScanInspection()");
 				std::array<Doc, InspectionData::DocumentScanCapacity> foundDocuments;
 				size_t count = 0;
 
-				for (auto documentType : GetDocTypeIterator())
+				for (auto documentType : utils::enum_range(DocType::AccessPermit, DocType::Passport))
 				{
 					auto document = FindDocument(gameView, documentType);
 					if (!document) continue;
@@ -25,11 +26,6 @@ namespace paplease {
 					count++;
 				}
 
-				EndLOG("ScanInspection()");
-				if (count == 0)
-				{
-					return std::nullopt;
-				}
 				return InspectionData{
 					foundDocuments
 				};

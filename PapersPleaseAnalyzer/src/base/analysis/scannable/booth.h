@@ -14,19 +14,21 @@ namespace paplease {
 
 			struct BoothData
 			{
-				const documents::data::Date date;
-				const documents::data::SIUnitValue weight;
+				const std::optional<documents::data::Date> date;
+				const std::optional<documents::data::SIUnitValue> weight;
 				const std::optional<documents::data::SIUnitValue> approximateHeight;
-				const documents::data::Photo applicantHeadshot;
-				const int applicantNumber;
+				const std::optional<documents::data::Photo> applicantHeadshot;
+				const std::optional<int> applicantNumber;
 
-				cv::Mat ToSilhouette() const;
-				cv::Mat ExtractHead() const;
-				cv::Mat ExtractFace() const;
+				std::optional<cv::Mat> ExtractSilhouette() const;
+				std::optional<cv::Mat> ExtractHead() const;
+				std::optional<cv::Mat> ExtractFace() const;
+				std::optional<cv::Mat> ExtractBinaryHeadshot() const;
+
 				documents::data::Photo PhotoToBinaryHeadshotPhoto() const;
 			};
 
-			std::optional<BoothData> ScanBooth(const GameView& gameView);
+			BoothData ScanBooth(const GameView& gameView);
 
 		}  // namespace scannable
 	}  // namespace analysis

@@ -14,7 +14,7 @@ namespace paplease {
 				std::array<documents::Doc, DocumentScanCapacity> documents;
 			};
 
-			std::optional<InspectionData> ScanInspection(const GameView& gameView);
+			InspectionData ScanInspection(const GameView& gameView);
 
 		}  // namespace scannable
 	}  // namespace analysis

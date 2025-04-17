@@ -54,7 +54,9 @@ namespace paplease {
 
 		if (count < fileCount)
 		{
-			LOG_RAW("[Game view: {}]", count);
+			//LOG_RAW("[Game view: {}]", count);
+			LOG_RAW("..scanning {}", count);
+			//LOG_RAW("scanning game view {}...", count);
 			auto filePath = path + "/game_" + std::to_string(count) + ".png";
 
 			view = GameView(filePath);

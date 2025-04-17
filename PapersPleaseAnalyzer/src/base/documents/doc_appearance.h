@@ -26,7 +26,7 @@ namespace paplease {
 		private:
 			static constexpr size_t MaxBorderColors = 4;
 		private:
-			constexpr DocAppearance(const std::array<RgbColor, MaxBorderColors>& borderColors, const size_t colorCount, const Shape shape, const AppearanceType appearanceType) noexcept;
+			constexpr DocAppearance(const std::array<RgbColor, MaxBorderColors>& borderColors, const size_t colorCount, const ScaledShape shape, const AppearanceType appearanceType) noexcept;
 		private:
 			const std::array<RgbColor, MaxBorderColors> m_borderColors;
 			const size_t m_colorCount;

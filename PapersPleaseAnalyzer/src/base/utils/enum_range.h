@@ -4,6 +4,7 @@
 
 namespace paplease {
     namespace utils {
+
         // Helper function to convert enum values to their underlying integer type
         template <typename E>
         constexpr auto to_underlying(E e) noexcept

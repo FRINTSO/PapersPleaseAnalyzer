@@ -10,8 +10,8 @@ namespace paplease {
 				: m_dataBox{}, m_dataFieldCategory{}, m_dataFieldType{}
 			{}
 
-			constexpr DocLayout::DataLayout::DataLayout(Rectangle dataBox, FieldCategory dataFieldCategory, FieldType dataFieldType) noexcept
-				: m_dataBox{ dataBox }, m_dataFieldCategory{ dataFieldCategory }, m_dataFieldType{ dataFieldType }
+			constexpr DocLayout::DataLayout::DataLayout(ScaledRectangle dataBox, FieldCategory dataFieldCategory, FieldType dataFieldType) noexcept
+				: m_dataBox{ static_cast<Rectangle>(dataBox) }, m_dataFieldCategory{ dataFieldCategory }, m_dataFieldType{ dataFieldType }
 			{}
 
 #pragma endregion
@@ -106,47 +106,47 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(30), DOWNSCALE(108), DOWNSCALE(234), DOWNSCALE(16) },
+									ScaledRectangle{ 30, 108, 234, 16 },
 									FieldCategory::Name,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(30), DOWNSCALE(152), DOWNSCALE(112), DOWNSCALE(16) },
+									ScaledRectangle{ 30, 152, 112, 16 },
 									FieldCategory::IssuingCountry,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(156), DOWNSCALE(152), DOWNSCALE(112), DOWNSCALE(16) },
+									ScaledRectangle{ 156, 152, 112, 16 },
 									FieldCategory::PassportNumber,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(30), DOWNSCALE(196), DOWNSCALE(112), DOWNSCALE(16) },
+									ScaledRectangle{ 30, 196, 112, 16 },
 									FieldCategory::Purpose,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(156), DOWNSCALE(196), DOWNSCALE(112), DOWNSCALE(16) },
+									ScaledRectangle{ 156, 196, 112, 16 },
 									FieldCategory::DurationOfStay,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(30), DOWNSCALE(240), DOWNSCALE(112), DOWNSCALE(16) },
+									ScaledRectangle{ 30, 240, 112, 16 },
 									FieldCategory::Height,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(156), DOWNSCALE(240), DOWNSCALE(112), DOWNSCALE(16) },
+									ScaledRectangle{ 156, 240, 112, 16 },
 									FieldCategory::Weight,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(30), DOWNSCALE(284), DOWNSCALE(234), DOWNSCALE(16) },
+									ScaledRectangle{ 30, 284, 234, 16 },
 									FieldCategory::PhysicalAppearance,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(156), DOWNSCALE(328), DOWNSCALE(108), DOWNSCALE(16) },
+									ScaledRectangle{ 156, 328, 108, 16 },
 									FieldCategory::ExpirationDate,
 									FieldType::Text
 								},
@@ -157,27 +157,27 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(32), DOWNSCALE(102), DOWNSCALE(206), DOWNSCALE(12) },
+									ScaledRectangle{ 32, 102, 206, 12 },
 									FieldCategory::Name,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(54), DOWNSCALE(128), DOWNSCALE(184), DOWNSCALE(12) },
+									ScaledRectangle{ 54, 128, 184, 12 },
 									FieldCategory::PassportNumber,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(34), DOWNSCALE(190), DOWNSCALE(200), DOWNSCALE(12) },
+									ScaledRectangle{ 34, 190, 200, 12 },
 									FieldCategory::Vaccination1,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(34), DOWNSCALE(214), DOWNSCALE(200), DOWNSCALE(12) },
+									ScaledRectangle{ 34, 214, 200, 12 },
 									FieldCategory::Vaccination2,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(34), DOWNSCALE(238), DOWNSCALE(200), DOWNSCALE(12) },
+									ScaledRectangle{ 34, 238, 200, 12 },
 									FieldCategory::Vaccination3,
 									FieldType::Text
 								}
@@ -188,22 +188,22 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(74), DOWNSCALE(182), DOWNSCALE(214), DOWNSCALE(12) },
+									ScaledRectangle{ 74, 182, 214, 12 },
 									FieldCategory::Name,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(98), DOWNSCALE(206), DOWNSCALE(190), DOWNSCALE(12) },
+									ScaledRectangle{ 98, 206, 190, 12 },
 									FieldCategory::PassportNumber,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(68), DOWNSCALE(8), DOWNSCALE(140), DOWNSCALE(12) },
+									ScaledRectangle{ 68, 8, 140, 12 },
 									FieldCategory::IssuingCountry,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(42), DOWNSCALE(304), DOWNSCALE(240), DOWNSCALE(56) },
+									ScaledRectangle{ 42, 304, 240, 56 },
 									FieldCategory::CountryList,
 									FieldType::Text
 								}
@@ -214,27 +214,27 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(30), DOWNSCALE(182), DOWNSCALE(238), DOWNSCALE(12) },
+									ScaledRectangle{ 30, 182, 238, 12 },
 									FieldCategory::Name,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(30), DOWNSCALE(248), DOWNSCALE(238), DOWNSCALE(12) },
+									ScaledRectangle{ 30, 248, 238, 12 },
 									FieldCategory::PassportNumber,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(102), DOWNSCALE(280), DOWNSCALE(166), DOWNSCALE(12) },
+									ScaledRectangle{ 102, 280, 166, 12 },
 									FieldCategory::Purpose,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(102), DOWNSCALE(310), DOWNSCALE(166), DOWNSCALE(12) },
+									ScaledRectangle{ 102, 310, 166, 12 },
 									FieldCategory::DurationOfStay,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(102), DOWNSCALE(340), DOWNSCALE(166), DOWNSCALE(12) },
+									ScaledRectangle{ 102, 340, 166, 12 },
 									FieldCategory::ExpirationDate,
 									FieldType::Text
 								}
@@ -245,7 +245,7 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(176), DOWNSCALE(64), DOWNSCALE(90), DOWNSCALE(16) },
+									ScaledRectangle{ 176, 64, 90, 16 },
 									FieldCategory::ValidDate,
 									FieldType::Text
 								},
@@ -256,47 +256,47 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(144), DOWNSCALE(108), DOWNSCALE(154), DOWNSCALE(34) },
+									ScaledRectangle{ 144, 108, 154, 34 },
 									FieldCategory::Name,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(20), DOWNSCALE(100), DOWNSCALE(120), DOWNSCALE(144) },
+									ScaledRectangle{ 20, 100, 120, 144 },
 									FieldCategory::Photo,
 									FieldType::Image
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(182), DOWNSCALE(156), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 182, 156, 116, 16 },
 									FieldCategory::IssuingCountry,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(182), DOWNSCALE(174), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 182, 174, 116, 16 },
 									FieldCategory::PassportNumber,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(182), DOWNSCALE(192), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 182, 192, 116, 16 },
 									FieldCategory::DateOfBirth,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(182), DOWNSCALE(210), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 182, 210, 116, 16 },
 									FieldCategory::Height,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(182), DOWNSCALE(228), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 182, 228, 116, 16 },
 									FieldCategory::Weight,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(22), DOWNSCALE(250), DOWNSCALE(278), DOWNSCALE(66) },
+									ScaledRectangle{ 22, 250, 278, 66 },
 									FieldCategory::FingerPrints,
 									FieldType::Image
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(156), DOWNSCALE(326), DOWNSCALE(100), DOWNSCALE(16) },
+									ScaledRectangle{ 156, 326, 100, 16 },
 									FieldCategory::ExpirationDate,
 									FieldType::Text
 								},
@@ -307,32 +307,32 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(12), DOWNSCALE(22), DOWNSCALE(232), DOWNSCALE(12) },
+									ScaledRectangle{ 12, 22, 232, 12 },
 									FieldCategory::District,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(100), DOWNSCALE(40), DOWNSCALE(144), DOWNSCALE(30) },
+									ScaledRectangle{ 100, 40, 144, 30 },
 									FieldCategory::Name,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(130), DOWNSCALE(80), DOWNSCALE(114), DOWNSCALE(12) },
+									ScaledRectangle{ 130, 80, 114, 12 },
 									FieldCategory::DateOfBirth,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(130), DOWNSCALE(100), DOWNSCALE(114), DOWNSCALE(12) },
+									ScaledRectangle{ 130, 100, 114, 12 },
 									FieldCategory::Height,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(130), DOWNSCALE(120), DOWNSCALE(114), DOWNSCALE(12) },
+									ScaledRectangle{ 130, 120, 114, 12 },
 									FieldCategory::Weight,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(12), DOWNSCALE(34), DOWNSCALE(78), DOWNSCALE(96) },
+									ScaledRectangle{ 12, 34, 78, 96 },
 									FieldCategory::Photo,
 									FieldType::Image
 								},
@@ -343,27 +343,27 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(46), DOWNSCALE(64), DOWNSCALE(114), DOWNSCALE(16) },
+									ScaledRectangle{ 46, 64, 114, 16 },
 									FieldCategory::Height,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(46), DOWNSCALE(86), DOWNSCALE(114), DOWNSCALE(16) },
+									ScaledRectangle{ 46, 86, 114, 16 },
 									FieldCategory::Weight,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(20), DOWNSCALE(132), DOWNSCALE(142), DOWNSCALE(48) },
+									ScaledRectangle{ 20, 132, 142, 48 },
 									FieldCategory::PhysicalAppearance,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(52), DOWNSCALE(278), DOWNSCALE(108), DOWNSCALE(16) },
+									ScaledRectangle{ 52, 278, 108, 16 },
 									FieldCategory::ExpirationDate,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(74), DOWNSCALE(182), DOWNSCALE(88), DOWNSCALE(70) },
+									ScaledRectangle{ 74, 182, 88, 70 },
 									FieldCategory::ThumbPrint,
 									FieldType::Image
 								},
@@ -374,17 +374,17 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(74), DOWNSCALE(134), DOWNSCALE(204), DOWNSCALE(12) },
+									ScaledRectangle{ 74, 134, 204, 12 },
 									FieldCategory::Name,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(74), DOWNSCALE(164), DOWNSCALE(204), DOWNSCALE(12) },
+									ScaledRectangle{ 74, 164, 204, 12 },
 									FieldCategory::Field,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(74), DOWNSCALE(194), DOWNSCALE(204), DOWNSCALE(12) },
+									ScaledRectangle{ 74, 194, 204, 12 },
 									FieldCategory::EndDate,
 									FieldType::Text
 								},
@@ -395,37 +395,37 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(50), DOWNSCALE(220), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 50, 220, 116, 16 },
 									FieldCategory::Sex,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(50), DOWNSCALE(238), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 50, 238, 116, 16 },
 									FieldCategory::IssuingCity,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(16), DOWNSCALE(278), DOWNSCALE(230), DOWNSCALE(16) },
+									ScaledRectangle{ 16, 278, 230, 16 },
 									FieldCategory::Name,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(50), DOWNSCALE(202), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 50, 202, 116, 16 },
 									FieldCategory::DateOfBirth,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(50), DOWNSCALE(256), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 50, 256, 116, 16 },
 									FieldCategory::ExpirationDate,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(16), DOWNSCALE(298), DOWNSCALE(230), DOWNSCALE(16) },
+									ScaledRectangle{ 16, 298, 230, 16 },
 									FieldCategory::PassportNumber,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(166), DOWNSCALE(176), DOWNSCALE(80), DOWNSCALE(96) },
+									ScaledRectangle{ 166, 176, 80, 96 },
 									FieldCategory::Photo,
 									FieldType::Image
 								},
@@ -437,37 +437,37 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(136), DOWNSCALE(212), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 136, 212, 116, 16 },
 									FieldCategory::Sex,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(136), DOWNSCALE(228), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 136, 228, 116, 16 },
 									FieldCategory::IssuingCity,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(16), DOWNSCALE(176), DOWNSCALE(230), DOWNSCALE(16) },
+									ScaledRectangle{ 16, 176, 230, 16 },
 									FieldCategory::Name,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(136), DOWNSCALE(196), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 136, 196, 116, 16 },
 									FieldCategory::DateOfBirth,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(136), DOWNSCALE(244), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 136, 244, 116, 16 },
 									FieldCategory::ExpirationDate,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(16), DOWNSCALE(296), DOWNSCALE(124), DOWNSCALE(16) },
+									ScaledRectangle{ 16, 296, 124, 16 },
 									FieldCategory::PassportNumber,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(16), DOWNSCALE(196), DOWNSCALE(80), DOWNSCALE(96) },
+									ScaledRectangle{ 16, 196, 80, 96 },
 									FieldCategory::Photo,
 									FieldType::Image
 								},
@@ -479,37 +479,37 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(140), DOWNSCALE(210), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 140, 210, 116, 16 },
 									FieldCategory::Sex,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(140), DOWNSCALE(226), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 140, 226, 116, 16 },
 									FieldCategory::IssuingCity,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(16), DOWNSCALE(172), DOWNSCALE(230), DOWNSCALE(16) },
+									ScaledRectangle{ 16, 172, 230, 16 },
 									FieldCategory::Name,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(140), DOWNSCALE(194), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 140, 194, 116, 16 },
 									FieldCategory::DateOfBirth,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(140), DOWNSCALE(242), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 140, 242, 116, 16 },
 									FieldCategory::ExpirationDate,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(128), DOWNSCALE(292), DOWNSCALE(118), DOWNSCALE(16) },
+									ScaledRectangle{ 128, 292, 118, 16 },
 									FieldCategory::PassportNumber,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(18), DOWNSCALE(192), DOWNSCALE(80), DOWNSCALE(96) },
+									ScaledRectangle{ 18, 192, 80, 96 },
 									FieldCategory::Photo,
 									FieldType::Image
 								},
@@ -521,37 +521,37 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(138), DOWNSCALE(230), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 138, 230, 116, 16 },
 									FieldCategory::Sex,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(138), DOWNSCALE(246), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 138, 246, 116, 16 },
 									FieldCategory::IssuingCity,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(16), DOWNSCALE(196), DOWNSCALE(230), DOWNSCALE(16) },
+									ScaledRectangle{ 16, 196, 230, 16 },
 									FieldCategory::Name,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(138), DOWNSCALE(214), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 138, 214, 116, 16 },
 									FieldCategory::DateOfBirth,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(136), DOWNSCALE(262), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 136, 262, 116, 16 },
 									FieldCategory::ExpirationDate,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(134), DOWNSCALE(296), DOWNSCALE(118), DOWNSCALE(16) },
+									ScaledRectangle{ 134, 296, 118, 16 },
 									FieldCategory::PassportNumber,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(16), DOWNSCALE(214), DOWNSCALE(80), DOWNSCALE(96) },
+									ScaledRectangle{ 16, 214, 80, 96 },
 									FieldCategory::Photo,
 									FieldType::Image
 								},
@@ -563,37 +563,37 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(54), DOWNSCALE(238), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 54, 238, 116, 16 },
 									FieldCategory::Sex,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(54), DOWNSCALE(254), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 54, 254, 116, 16 },
 									FieldCategory::IssuingCity,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(16), DOWNSCALE(196), DOWNSCALE(230), DOWNSCALE(16) },
+									ScaledRectangle{ 16, 196, 230, 16 },
 									FieldCategory::Name,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(54), DOWNSCALE(222), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 54, 222, 116, 16 },
 									FieldCategory::DateOfBirth,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(54), DOWNSCALE(270), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 54, 270, 116, 16 },
 									FieldCategory::ExpirationDate,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(20), DOWNSCALE(296), DOWNSCALE(118), DOWNSCALE(16) },
+									ScaledRectangle{ 20, 296, 118, 16 },
 									FieldCategory::PassportNumber,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(168), DOWNSCALE(214), DOWNSCALE(80), DOWNSCALE(96) },
+									ScaledRectangle{ 168, 214, 80, 96 },
 									FieldCategory::Photo,
 									FieldType::Image
 								},
@@ -604,37 +604,37 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(54), DOWNSCALE(212), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 54, 212, 116, 16 },
 									FieldCategory::Sex,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(54), DOWNSCALE(228), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 54, 228, 116, 16 },
 									FieldCategory::IssuingCity,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(16), DOWNSCALE(174), DOWNSCALE(230), DOWNSCALE(16) },
+									ScaledRectangle{ 16, 174, 230, 16 },
 									FieldCategory::Name,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(54), DOWNSCALE(196), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 54, 196, 116, 16 },
 									FieldCategory::DateOfBirth,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(54), DOWNSCALE(244), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 54, 244, 116, 16 },
 									FieldCategory::ExpirationDate,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(136), DOWNSCALE(296), DOWNSCALE(118), DOWNSCALE(16) },
+									ScaledRectangle{ 136, 296, 118, 16 },
 									FieldCategory::PassportNumber,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(170), DOWNSCALE(192), DOWNSCALE(80), DOWNSCALE(96) },
+									ScaledRectangle{ 170, 192, 80, 96 },
 									FieldCategory::Photo,
 									FieldType::Image
 								},
@@ -646,37 +646,37 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(138), DOWNSCALE(228), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 138, 228, 116, 16 },
 									FieldCategory::Sex,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(138), DOWNSCALE(244), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 138, 244, 116, 16 },
 									FieldCategory::IssuingCity,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(16), DOWNSCALE(196), DOWNSCALE(230), DOWNSCALE(16) },
+									ScaledRectangle{ 16, 196, 230, 16 },
 									FieldCategory::Name,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(138), DOWNSCALE(212), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 138, 212, 116, 16 },
 									FieldCategory::DateOfBirth,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(138), DOWNSCALE(260), DOWNSCALE(116), DOWNSCALE(16) },
+									ScaledRectangle{ 138, 260, 116, 16 },
 									FieldCategory::ExpirationDate,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(134), DOWNSCALE(296), DOWNSCALE(118), DOWNSCALE(16) },
+									ScaledRectangle{ 134, 296, 118, 16 },
 									FieldCategory::PassportNumber,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(16), DOWNSCALE(212), DOWNSCALE(80), DOWNSCALE(96) },
+									ScaledRectangle{ 16, 212, 80, 96 },
 									FieldCategory::Photo,
 									FieldType::Image
 								},
@@ -688,52 +688,52 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(32), DOWNSCALE(50), DOWNSCALE(188), DOWNSCALE(38) },
+									ScaledRectangle{ 32, 50, 188, 38 },
 									FieldCategory::Rule1,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(32), DOWNSCALE(98), DOWNSCALE(188), DOWNSCALE(38) },
+									ScaledRectangle{ 32, 98, 188, 38 },
 									FieldCategory::Rule2,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(32), DOWNSCALE(146), DOWNSCALE(188), DOWNSCALE(38) },
+									ScaledRectangle{ 32, 146, 188, 38 },
 									FieldCategory::Rule3,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(32), DOWNSCALE(194), DOWNSCALE(188), DOWNSCALE(38) },
+									ScaledRectangle{ 32, 194, 188, 38 },
 									FieldCategory::Rule4,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(32), DOWNSCALE(242), DOWNSCALE(188), DOWNSCALE(38) },
+									ScaledRectangle{ 32, 242, 188, 38 },
 									FieldCategory::Rule5,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(274), DOWNSCALE(50), DOWNSCALE(188), DOWNSCALE(38) },
+									ScaledRectangle{ 274, 50, 188, 38 },
 									FieldCategory::Rule6,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(274), DOWNSCALE(98), DOWNSCALE(188), DOWNSCALE(38) },
+									ScaledRectangle{ 274, 98, 188, 38 },
 									FieldCategory::Rule7,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(274), DOWNSCALE(146), DOWNSCALE(188), DOWNSCALE(38) },
+									ScaledRectangle{ 274, 146, 188, 38 },
 									FieldCategory::Rule8,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(274), DOWNSCALE(194), DOWNSCALE(188), DOWNSCALE(38) },
+									ScaledRectangle{ 274, 194, 188, 38 },
 									FieldCategory::Rule9,
 									FieldType::Text
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(274), DOWNSCALE(242), DOWNSCALE(188), DOWNSCALE(38) },
+									ScaledRectangle{ 274, 242, 188, 38 },
 									FieldCategory::Rule10,
 									FieldType::Text
 								}
@@ -744,17 +744,17 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(38), DOWNSCALE(92), DOWNSCALE(64), DOWNSCALE(78) },
+									ScaledRectangle{ 38, 92, 64, 78 },
 									FieldCategory::CriminalPhoto1,
 									FieldType::Image
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(38), DOWNSCALE(190), DOWNSCALE(64), DOWNSCALE(78) },
+									ScaledRectangle{ 38, 190, 64, 78 },
 									FieldCategory::CriminalPhoto2,
 									FieldType::Image
 								},
 								DataLayout{
-									Rectangle{ DOWNSCALE(38), DOWNSCALE(288), DOWNSCALE(64), DOWNSCALE(78) },
+									ScaledRectangle{ 38, 288, 64, 78 },
 									FieldCategory::CriminalPhoto3,
 									FieldType::Image
 								}
@@ -765,7 +765,7 @@ namespace paplease {
 						return DocLayout{
 							{
 								DataLayout{
-									Rectangle{ DOWNSCALE(14), DOWNSCALE(32), DOWNSCALE(272), DOWNSCALE(362) },
+									ScaledRectangle{ 14, 32, 272, 362 },
 									FieldCategory::TranscriptPage,
 									FieldType::Text
 								}
@@ -792,22 +792,22 @@ namespace paplease {
 				return DocLayout{
 					{
 						DataLayout{
-							Rectangle{ DOWNSCALE(8), DOWNSCALE(418), DOWNSCALE(56), DOWNSCALE(12) },
+							ScaledRectangle{ 8, 418, 56, 12 },
 							FieldCategory::BoothDate,
 							FieldType::Text
 						},
 						DataLayout{
-							Rectangle{ DOWNSCALE(168), DOWNSCALE(416), DOWNSCALE(22), DOWNSCALE(12) },
+							ScaledRectangle{ 168, 416, 22, 12 },
 							FieldCategory::BoothCounter,
 							FieldType::Text
 						},
 						DataLayout{
-							Rectangle{ DOWNSCALE(0), DOWNSCALE(0), DOWNSCALE(356), DOWNSCALE(214) },
+							ScaledRectangle{ 0, 0, 356, 214 },
 							FieldCategory::Photo,
 							FieldType::Image
 						},
 						DataLayout{
-							Rectangle{ DOWNSCALE(302), DOWNSCALE(390), DOWNSCALE(44), DOWNSCALE(12) },
+							ScaledRectangle{ 302, 390, 44, 12 },
 							FieldCategory::Weight,
 							FieldType::Text
 						},

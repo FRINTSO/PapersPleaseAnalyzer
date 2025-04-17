@@ -305,13 +305,13 @@ namespace paplease {
 				case AppearanceType::IdentityCard:
 				{
 					cv::Mat thresh = applyThreshold(127);
-					cv::Mat insetImage(thresh, cv::Rect(DOWNSCALE(6), DOWNSCALE(20), DOWNSCALE(238), DOWNSCALE(14)));
+					cv::Mat insetImage(thresh, ScaledRectangle(6, 20, 238, 14));
 					cv::bitwise_not(insetImage, insetImage);
 					return thresh;
 				}
 				case AppearanceType::Passport_Obristan:
 				{
-					cv::Mat insetImage(grayscale, cv::Rect(DOWNSCALE(16), DOWNSCALE(214), DOWNSCALE(140), DOWNSCALE((96))));
+					cv::Mat insetImage(grayscale, ScaledRectangle(16, 214, 140, 96));
 					cv::bitwise_not(insetImage, insetImage);
 					cv::Mat thresh = applyThreshold(90);
 					return thresh;
@@ -381,11 +381,7 @@ namespace paplease {
 
 			auto data = builder.GetDocData();
 			// assert(data.has_value());
-			if (!data.has_value())
-			{
-				return { };
-			}
-			return { data.value() };
+			return { data };
 		}
 
 		DocData Doc::GetDocumentData() const

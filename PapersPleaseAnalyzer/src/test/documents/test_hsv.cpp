@@ -5,7 +5,7 @@
 
 #include "base/image_process.h"
 
-namespace tests::documents {
+namespace test::documents {
 
 	namespace utils
 	{
@@ -26,12 +26,12 @@ namespace tests::documents {
 		}
 		cv::namedWindow("TrackBars");
 		cv::resizeWindow("TrackBars", cv::Size(640, 240));
-		cv::createTrackbar("Hue Min", "TrackBars", &hsvConfig->hueMin, 179, utils::on_trackbar);
-		cv::createTrackbar("Hue Max", "TrackBars", &hsvConfig->hueMax, 179, utils::on_trackbar);
-		cv::createTrackbar("Sat Min", "TrackBars", &hsvConfig->satMin, 255, utils::on_trackbar);
-		cv::createTrackbar("Sat Max", "TrackBars", &hsvConfig->satMax, 255, utils::on_trackbar);
-		cv::createTrackbar("Val Min", "TrackBars", &hsvConfig->valMin, 255, utils::on_trackbar);
-		cv::createTrackbar("Val Max", "TrackBars", &hsvConfig->valMax, 255, utils::on_trackbar);
+		cv::createTrackbar("Hue Min", "TrackBars", (int*)&hsvConfig->hueMin, 179, utils::on_trackbar);
+		cv::createTrackbar("Hue Max", "TrackBars", (int*)&hsvConfig->hueMax, 179, utils::on_trackbar);
+		cv::createTrackbar("Sat Min", "TrackBars", (int*)&hsvConfig->satMin, 255, utils::on_trackbar);
+		cv::createTrackbar("Sat Max", "TrackBars", (int*)&hsvConfig->satMax, 255, utils::on_trackbar);
+		cv::createTrackbar("Val Min", "TrackBars", (int*)&hsvConfig->valMin, 255, utils::on_trackbar);
+		cv::createTrackbar("Val Max", "TrackBars", (int*)&hsvConfig->valMax, 255, utils::on_trackbar);
 
 		while (true) {
 			cv::Mat imgHsv;
@@ -101,12 +101,12 @@ namespace tests::documents {
 
 		cv::namedWindow("TrackBars");
 		cv::resizeWindow("TrackBars", cv::Size(640, 240));
-		cv::createTrackbar("Hue Min", "TrackBars", &hsvConfig.hueMin, 179, utils::on_trackbar);
-		cv::createTrackbar("Hue Max", "TrackBars", &hsvConfig.hueMax, 179, utils::on_trackbar);
-		cv::createTrackbar("Sat Min", "TrackBars", &hsvConfig.satMin, 255, utils::on_trackbar);
-		cv::createTrackbar("Sat Max", "TrackBars", &hsvConfig.satMax, 255, utils::on_trackbar);
-		cv::createTrackbar("Val Min", "TrackBars", &hsvConfig.valMin, 255, utils::on_trackbar);
-		cv::createTrackbar("Val Max", "TrackBars", &hsvConfig.valMax, 255, utils::on_trackbar);
+		cv::createTrackbar("Hue Min", "TrackBars", (int*)&hsvConfig.hueMin, 179, utils::on_trackbar);
+		cv::createTrackbar("Hue Max", "TrackBars", (int*)&hsvConfig.hueMax, 179, utils::on_trackbar);
+		cv::createTrackbar("Sat Min", "TrackBars", (int*)&hsvConfig.satMin, 255, utils::on_trackbar);
+		cv::createTrackbar("Sat Max", "TrackBars", (int*)&hsvConfig.satMax, 255, utils::on_trackbar);
+		cv::createTrackbar("Val Min", "TrackBars", (int*)&hsvConfig.valMin, 255, utils::on_trackbar);
+		cv::createTrackbar("Val Max", "TrackBars", (int*)&hsvConfig.valMax, 255, utils::on_trackbar);
 
 		
 		while (true)
@@ -184,12 +184,12 @@ namespace tests::documents {
 
 		cv::namedWindow("TrackBars");
 		cv::resizeWindow("TrackBars", cv::Size(640, 240));
-		cv::createTrackbar("Hue Min", "TrackBars", &hslConfig.hueMin, 179, utils::on_trackbar);
-		cv::createTrackbar("Hue Max", "TrackBars", &hslConfig.hueMax, 179, utils::on_trackbar);
-		cv::createTrackbar("Sat Min", "TrackBars", &hslConfig.satMin, 255, utils::on_trackbar);
-		cv::createTrackbar("Sat Max", "TrackBars", &hslConfig.satMax, 255, utils::on_trackbar);
-		cv::createTrackbar("Lit Min", "TrackBars", &hslConfig.litMin, 255, utils::on_trackbar);
-		cv::createTrackbar("Lit Max", "TrackBars", &hslConfig.litMax, 255, utils::on_trackbar);
+		cv::createTrackbar("Hue Min", "TrackBars", (int*)&hslConfig.hueMin, 179, utils::on_trackbar);
+		cv::createTrackbar("Hue Max", "TrackBars", (int*)&hslConfig.hueMax, 179, utils::on_trackbar);
+		cv::createTrackbar("Sat Min", "TrackBars", (int*)&hslConfig.satMin, 255, utils::on_trackbar);
+		cv::createTrackbar("Sat Max", "TrackBars", (int*)&hslConfig.satMax, 255, utils::on_trackbar);
+		cv::createTrackbar("Lit Min", "TrackBars", (int*)&hslConfig.litMin, 255, utils::on_trackbar);
+		cv::createTrackbar("Lit Max", "TrackBars", (int*)&hslConfig.litMax, 255, utils::on_trackbar);
 
 
 		while (true)

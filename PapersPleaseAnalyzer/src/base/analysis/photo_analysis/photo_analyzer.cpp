@@ -18,7 +18,7 @@ namespace paplease {
 			Rectangle box = documents::FindBoundingBox(headshot, [&](int row, int col)
 			{
 				return headshot.at<uchar>(row, col) == 0;
-			});
+			}).value();
 
 			return cv::Mat(headshot, cv::Rect(box.x, box.y, box.width, box.height));
 		}
@@ -130,7 +130,7 @@ namespace paplease {
             return ratio;
         }
 
-        HeadshotScore ScoreHeadshot(const cv::Mat& A, const cv::Mat& B)
+        static HeadshotScore ScoreHeadshot(const cv::Mat& A, const cv::Mat& B)
         {
             auto errorScore = TopPixelInColumnScoring(A, B);
             std::cout << "Error score: " << errorScore << "\n";
@@ -144,7 +144,7 @@ namespace paplease {
             return HeadshotScore();
         }
 
-        void pasteToCanvas(const cv::Mat& src, cv::Mat& canvas, int x, int y)
+        static void pasteToCanvas(const cv::Mat& src, cv::Mat& canvas, int x, int y)
         {
             // Define the target ROI on the canvas
             cv::Rect roi(x, y, src.cols, src.rows);
@@ -158,42 +158,51 @@ namespace paplease {
             src.copyTo(canvas(roi));
         }
 
-        void preprocess(const cv::Mat& img1, const cv::Mat& img2, cv::Mat& img1Out, cv::Mat& img2Out)
+        static void preprocess(const cv::Mat& img, cv::Mat& imgOut)
         {
-            size_t targetHeight = 100;
+            constexpr int targetSize = 100;
+            constexpr int interpolation = cv::INTER_NEAREST;
+            imgOut = cv::Mat(targetSize, targetSize, img.type(), cv::Scalar(255));
 
-            img1Out = cv::Mat(targetHeight, targetHeight, img1.type(), cv::Scalar(255));
-            img2Out = cv::Mat(targetHeight, targetHeight, img2.type(), cv::Scalar(255));
+            const int width = img.cols;
+            const int height = img.rows;
+            
+            if (height >= width)
+            {
+                double scale = static_cast<double>(targetSize) / height;
 
-            double scale1 = static_cast<double>(targetHeight) / img1.rows;
-            double scale2 = static_cast<double>(targetHeight) / img2.rows;
+                int newWidth = static_cast<int>(width * scale);
 
-            int width1 = static_cast<int>(img1.cols * scale1);
-            int width2 = static_cast<int>(img2.cols * scale2);
+                cv::Mat resized;
+                cv::resize(img, resized, cv::Size(newWidth, targetSize), 0, 0, interpolation);
 
-            cv::Mat resized1, resized2;
-            cv::resize(img1, resized1, cv::Size(width1, targetHeight), 0, 0, cv::INTER_AREA);
-            cv::resize(img2, resized2, cv::Size(width2, targetHeight), 0, 0, cv::INTER_AREA);
+                pasteToCanvas(resized, imgOut, (targetSize - resized.cols) / 2, 0);
+            }
+            else
+            {
+                double scale = static_cast<double>(targetSize) / width;
 
-            pasteToCanvas(resized1, img1Out, (targetHeight - resized1.cols) / 2, 0);
-            pasteToCanvas(resized2, img2Out, (targetHeight - resized2.cols) / 2, 0);
+                int newHeight = static_cast<int>(height * scale);
 
-            cv::imshow("img1", img1);
-            cv::imshow("img2", img2);
-            cv::imshow("img1Out", img1Out);
-            cv::imshow("img2Out", img2Out);
-            cv::waitKey();
+                cv::Mat resized;
+                cv::resize(img, resized, cv::Size(targetSize, newHeight), 0, 0, interpolation);
+
+                //pasteToCanvas(resized, imgOut, 0, (targetSize - resized.rows) / 2);
+                pasteToCanvas(resized, imgOut, 0, targetSize - resized.rows);
+            }
         }
 
-        cv::Mat adjust_scale(const cv::Mat& face)
+        static cv::Mat adjust_scale(const cv::Mat& face)
         {
+            constexpr int interpolation = cv::INTER_AREA;
+
             cv::Mat resized, resized2;
-            cv::resize(face, resized, cv::Size(40, 40), 0, 0, cv::INTER_AREA); // Normalize size
-            cv::resize(resized, resized2, cv::Size(400, 400), 0, 0, cv::INTER_AREA); // Normalize size
+            cv::resize(face, resized, cv::Size(40, 40), 0, 0, interpolation); // Normalize size
+            cv::resize(resized, resized2, cv::Size(400, 400), 0, 0, interpolation); // Normalize size
             return resized2;
         }
 
-        double computeMSE(const cv::Mat& img1, const cv::Mat& img2)
+        static double computeMSE(const cv::Mat& img1, const cv::Mat& img2)
         {
             cv::Mat diff;
             cv::absdiff(img1, img2, diff);
@@ -202,7 +211,7 @@ namespace paplease {
             return cv::sum(diff)[0] / (img1.total());
         }
 
-        double computeSSIM(const cv::Mat& img1, const cv::Mat& img2)
+        static double computeSSIM(const cv::Mat& img1, const cv::Mat& img2)
         {
             const double C1 = 6.5025, C2 = 58.5225;
 
@@ -246,19 +255,55 @@ namespace paplease {
             return cv::mean(ssim_map)[0];
         }
 
-        void Test(const cv::Mat& face1, const cv::Mat& face2)
+        static void calculate_humoments(const cv::Mat& img, bool isBinary = true)
         {
-            cv::imshow("face1", face1);
-            cv::imshow("face2", face2);
-            cv::waitKey();
+            cv::Moments moments = cv::moments(img, isBinary);
+
+            double huMoments[7];
+            cv::HuMoments(moments, huMoments);
+
+            // Log scale hu moments 
+            for (int i = 0; i < 7; i++)
+            {
+                std::cout << "h[" << i << "] = " << huMoments[i] << "\n";
+                huMoments[i] = -1 * copysign(1.0, huMoments[i]) * log10(abs(huMoments[i]));
+            }
+
+            std::cout << "\n";
+            // Log scale hu moments 
+            for (int i = 0; i < 7; i++)
+            {
+                std::cout << "H[" << i << "] = " << huMoments[i] << "\n";
+            }
+
+            std::cout << "--------------------\n\n\n";
+
+        }
+
+        static void Test(const cv::Mat& face1, const cv::Mat& face2)
+        {
+            std::cout << "Test(images are scaled):\n";
+            //cv::imshow("face1", face1);
+            //cv::imshow("face2", face2);
+            //cv::waitKey();
             cv::Mat img1, img2;
-            preprocess(face1, face2, img1, img2);
+            preprocess(face1, img1);
+            preprocess(face2, img2);
             img1 = adjust_scale(img1);
             img2 = adjust_scale(img2);
 
-            cv::imshow("img1", img1);
-            cv::imshow("img2", img2);
-            cv::waitKey();
+            double d1 = cv::matchShapes(img1, img2, cv::CONTOURS_MATCH_I1, 0);
+            double d2 = cv::matchShapes(img1, img2, cv::CONTOURS_MATCH_I2, 0);
+            double d3 = cv::matchShapes(img1, img2, cv::CONTOURS_MATCH_I3, 0);
+
+            std::cout << "d1=" << d1 << "\n";
+            std::cout << "d2=" << d2 << "\n";
+            std::cout << "d3=" << d3 << "\n";
+
+            calculate_humoments(img1, false);
+            calculate_humoments(img2, false);
+            
+
             double mse = computeMSE(img1, img2);
             double ssim = computeSSIM(img1, img2);
 
@@ -274,7 +319,26 @@ namespace paplease {
                 std::cout << "Faces match.\n";
             }
 
+            cv::imshow("img1", img1);
+            cv::imshow("img2", img2);
+            cv::waitKey();
             cv::destroyAllWindows();
+        }
+
+        
+
+        static void TestHuMoments(const cv::Mat& face1, const cv::Mat& face2)
+        {
+            std::cout << "TestHuMoments(images are not scaled):\n";
+            double d1 = cv::matchShapes(face1, face2, cv::CONTOURS_MATCH_I1, 0);
+            double d2 = cv::matchShapes(face1, face2, cv::CONTOURS_MATCH_I2, 0);
+            double d3 = cv::matchShapes(face1, face2, cv::CONTOURS_MATCH_I3, 0);
+
+            std::cout << "d1=" << d1 << "\n";
+            std::cout << "d2=" << d2 << "\n";
+            std::cout << "d3=" << d3 << "\n";
+            calculate_humoments(face1);
+            calculate_humoments(face2);
         }
 
         bool IsSamePerson(const documents::data::Photo& headshot1, const documents::data::Photo& headshot2)
@@ -287,6 +351,7 @@ namespace paplease {
             const auto ref1 = CutoutHeadshot(headshot1.m_mat);
             const auto ref2 = CutoutHeadshot(headshot2.m_mat);
 
+            TestHuMoments(ref1, ref2);
             Test(ref1, ref2);
 
             auto score1 = ScoreHeadshot(ref1, ref2);
@@ -296,6 +361,7 @@ namespace paplease {
 
             //cv::waitKey();
             //cv::destroyAllWindows();
+            std::cout << "====================\n\n";
             return false;
         }
 

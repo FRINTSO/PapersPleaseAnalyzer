@@ -1,97 +1,42 @@
 #include "pch.h"
 #include "base/documents/seal.h"
 
-#include <climits>
+#include <optional>
+#include <string>
 
-#include "base/common.h"
 #include "base/image_process.h"
+
+#include "base/documents/bounding_box_finder.inc"
 
 namespace paplease {
 	namespace documents {
 
-		static inline cv::Mat PreprocessSealedDocument(const cv::Mat& mat)
-		{
-			cv::Mat imgHsv;
-			cv::cvtColor(mat, imgHsv, cv::COLOR_BGR2HSV);
-
-			constexpr int hueMin = 0;
-			constexpr int hueMax = 179;
-			constexpr int satMin = 0;
-			constexpr int satMax = 110;
-			constexpr int valMin = 0;
-			constexpr int valMax = 255;
-			static const cv::Scalar lower{ hueMin, satMin, valMin };
-			static const cv::Scalar upper{ hueMax, satMax, valMax };
-
-			cv::Mat mask;
-			cv::inRange(imgHsv, lower, upper, mask);
-
-			return mask;
-		}
-
 		static inline std::optional<cv::Mat> ExtractSeal(const cv::Mat& binaryDocument)
 		{
-			int leftMostPixel = INT_MAX;
-			int rightMostBlackPixel = -1;
-			int topMostPixel = -1;
-			int bottomMostPixel = -1;
-			for (int row = 0; row < binaryDocument.rows; row++)
+			auto boundingBoxOpt = FindBoundingBox(binaryDocument, [&](int row, int col)
 			{
-				bool rowContainsBlackPixel = false;
-				for (int col = 0; col < binaryDocument.cols; col++)
-				{
-					if (binaryDocument.at<uchar>(row, col)) continue;
-					rowContainsBlackPixel = true;
-
-					if (col < leftMostPixel) leftMostPixel = col;
-					if (col > rightMostBlackPixel) rightMostBlackPixel = col;
-				}
-
-				if (rowContainsBlackPixel)
-				{
-					if (topMostPixel == -1) topMostPixel = row;
-					bottomMostPixel = row;
-				}
-				else if (topMostPixel != -1)
-				{
-					break;
-				}
-			}
-
-			int regionWidth = rightMostBlackPixel - leftMostPixel + 1;
-			int regionHeight = bottomMostPixel - topMostPixel + 1;
-
-			if (bottomMostPixel == -1)
+				return binaryDocument.at<uchar>(row, col) == 255;
+			});
+			if (!boundingBoxOpt)
 			{
 				return std::nullopt;
 			}
 
-			return binaryDocument(cv::Rect(leftMostPixel, topMostPixel, regionWidth, regionHeight));
+			return binaryDocument(*boundingBoxOpt);
 		}
 
-		static std::vector<cv::Mat> LoadDocumentSealsByPath(const std::string& path)
+		static std::vector<cv::Mat> LoadDocumentSealsByPath(const std::string_view& path)
 		{
-			std::vector<cv::Mat> seals{};
-			for (const auto& entry : std::filesystem::directory_iterator(path))
+			std::vector<cv::Mat> seals;
+			for (const auto& entry : std::filesystem::recursive_directory_iterator(path))
 			{
-				if (entry.is_directory())
+				if (entry.is_regular_file())
 				{
-					for (const auto& entry1 : std::filesystem::directory_iterator(entry.path()))
-					{
-						auto seal = cv::imread(entry1.path().generic_string(), cv::IMREAD_UNCHANGED);
-#if DOWNSCALE_OPTIMIZATION
-						seal = ScaleImage(seal, SCALE);
-#endif
-						seals.push_back(seal);
-					}
-					continue;
+					const auto& filePath = entry.path();
+					auto image = LoadImageFile(filePath.generic_string());
+					if (!image.empty())
+						seals.emplace_back(std::move(image));
 				}
-
-				auto seal = cv::imread(entry.path().generic_string(), cv::IMREAD_UNCHANGED);
-#if DOWNSCALE_OPTIMIZATION
-				seal = ScaleImage(seal, SCALE);
-#endif
-				seals.push_back(seal);
 			}
 			return seals;
 		}
@@ -127,7 +72,7 @@ namespace paplease {
 				}
 			}
 
-			return std::vector<cv::Mat>{};
+			assert(false, "Tried to load a document seal of a document that never gets sealed.");
 		}
 
 		static bool CompareSeals(const cv::Mat& seal1, const cv::Mat& seal2)
@@ -138,8 +83,7 @@ namespace paplease {
 
 		static bool IsValidSeal(const cv::Mat& mat, DocType documentType)
 		{
-			const auto& seals = LoadDocumentSeals(documentType);
-			for (const auto& seal : seals)
+			for (const auto& seal : LoadDocumentSeals(documentType))
 			{
 				if (CompareSeals(mat, seal))
 				{
@@ -154,9 +98,9 @@ namespace paplease {
 		bool IsDocumentValidlySealed(const cv::Mat& mat, DocType documentType)
 		{
 			if (mat.empty()) return false;
-			if (documentType == DocType::Invalid) return false;
 
-			auto binary = PreprocessSealedDocument(mat);
+			static constinit HSVConfig config{ 0, 179, 128, 216, 182, 255 };
+			auto binary = ToHSVBinary(mat, config);
 			auto seal = ExtractSeal(binary);
 			if (!seal)
 			{

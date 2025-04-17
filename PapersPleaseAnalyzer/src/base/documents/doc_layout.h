@@ -21,7 +21,7 @@ namespace paplease {
 			{
 			public:
 				constexpr DataLayout() noexcept;
-				constexpr DataLayout(Rectangle dataBox, FieldCategory dataFieldCategory, FieldType dataFieldType) noexcept;
+				constexpr DataLayout(ScaledRectangle dataBox, FieldCategory dataFieldCategory, FieldType dataFieldType) noexcept;
 
 				[[nodiscard]] constexpr const Rectangle GetBox() const noexcept;
 				[[nodiscard]] constexpr const FieldCategory GetCategory() const noexcept;

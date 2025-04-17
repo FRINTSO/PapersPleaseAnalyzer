@@ -4,7 +4,6 @@
 #include <array>
 #include <cctype>
 #include <climits>
-#include <intrin.h>
 #include <iosfwd>
 #include <iostream>
 #include <optional>
@@ -218,7 +217,7 @@ namespace paplease {
                     scanner.SkipWhitespace();
                     if (scanner.IsAtEnd())
                     {
-                        return Data{ "" };
+                        return Data{ data::Vaccine(), DataType::Vaccine, true };
                     }
 
                     // Normal case
@@ -580,7 +579,7 @@ namespace paplease {
             return m_data;
         }
 
-        std::string Field::ToText() const
+        std::string Field::ToString() const
         {
             return m_data.ToText();
         }
@@ -604,27 +603,43 @@ namespace paplease {
 
 #pragma region DocData
 
-        const Field& DocData::GetField(FieldCategory category) const
+        std::optional<std::reference_wrapper<const Field>> DocData::GetField(FieldCategory category, bool returnBroken) const
         {
-            if (category == FieldCategory::Invalid) return {};
-            size_t index = static_cast<size_t>(category) - 1;
+            if (category == FieldCategory::Invalid || category == FieldCategory::Count)
+                return std::nullopt;
 
-            if (m_data[index].IsBroken())
+            size_t index = static_cast<size_t>(category);
+            
+            const auto& fieldOpt = m_data[index];
+            if (!fieldOpt)
             {
-                paplease::LOG_ERR("Broken data");
-                __debugbreak();
-                return {};
+                paplease::LOG_ERR("Field missing for category '{}'. Document may be incomplete or corrupted.", FieldCategoryAsString(category));
+                return std::nullopt;
             }
 
-            return m_data[index];
+            const auto& field = fieldOpt.value();
+            if (field.IsBroken())
+            {
+                paplease::LOG_ERR("Broken data in field '{}'. Document may be corrupted or have invalid values.", FieldCategoryAsString(category));
+
+                if (!returnBroken)
+                    return std::nullopt;
+            }
+
+            return std::cref(field);
         }
 
         paplease::utils::FixedRefArray<Field, DocData::ArrayLength> DocData::GetAllValidFields() const
         {
             paplease::utils::FixedRefArray<Field, DocData::ArrayLength> fieldsArray{};
             
-            for (const auto& data : m_data)
+            for (const auto& dataOpt : m_data)
             {
+                if (!dataOpt)
+                    continue;
+
+                const auto& data = dataOpt.value();
+
                 if (data.Type() != FieldType::Invalid)
                 {
                     fieldsArray.Add(data);
@@ -634,9 +649,24 @@ namespace paplease {
             return fieldsArray;
         }
 
+        void DocData::PrintAllFields() const // temporary for ease of development
+        {
+            for (const auto& dataOpt : m_data)
+            {
+                if (!dataOpt)
+                    continue;
+
+                const auto& data = dataOpt.value();
+                if (data.Type() != FieldType::Text) continue;
+                std::cout << data.ToString() << "\n";
+            }
+        }
+
         DocData::DocData(const std::array<Field, ArrayLength>& data)
-            : m_data{ data }
-        {}
+        {
+            for(size_t i = 0; i < ArrayLength; ++i)
+                m_data[i] = std::move(data[i]);
+        }
 
 #pragma endregion
 
@@ -644,9 +674,10 @@ namespace paplease {
 
         bool DocDataBuilder::AddFieldData(const FieldCategory category, Field&& data)
         {
-            if (category == FieldCategory::Invalid) return false;
+            if (category == FieldCategory::Invalid || category == FieldCategory::Count) return false;
 
-            size_t index = static_cast<size_t>(category) - 1;
+            //size_t index = static_cast<size_t>(category) - 1;
+            size_t index = static_cast<size_t>(category);
 
             if (m_data[index].m_fieldState == FieldState::Empty)
             {
@@ -657,7 +688,7 @@ namespace paplease {
             return false;
         }
 
-        std::optional<DocData> DocDataBuilder::GetDocData()
+        DocData DocDataBuilder::GetDocData()
         {
             for (auto& fieldData : m_data)
             {
@@ -668,10 +699,10 @@ namespace paplease {
 
                     if (fieldData.IsBroken())
                     {
-                        //fieldData.m_fieldState = FieldState::BrokenData;
+                        fieldData.m_fieldState = FieldState::BrokenData;
                         // THIS CODE UNDER, IF TOGGLED WILL DISABLE BROKEN DATA FROM BEING ACCEPTED. SO DOCUMENTS WITH MISSING BROKEN DATA WILL BE SKIPPED
-                        this->Clear();
-                        return std::nullopt;
+                        //this->Clear();
+                        //return std::nullopt;
                     }
                 }
             }

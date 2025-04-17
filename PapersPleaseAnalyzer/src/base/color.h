@@ -107,12 +107,12 @@ namespace paplease {
 
 	struct HSVConfig
 	{
-		int hueMin = 0;
-		int hueMax = 179;
-		int satMin = 0;
-		int satMax = 255;
-		int valMin = 0;
-		int valMax = 255;
+		uchar hueMin = 0;
+		uchar hueMax = 179;
+		uchar satMin = 0;
+		uchar satMax = 255;
+		uchar valMin = 0;
+		uchar valMax = 255;
 
 		bool IsEmpty() const
 		{
@@ -124,12 +124,12 @@ namespace paplease {
 
 	struct HSLConfig
 	{
-		int hueMin = 0;
-		int hueMax = 179;
-		int satMin = 0;
-		int satMax = 255;
-		int litMin = 0;
-		int litMax = 255;
+		uchar hueMin = 0;
+		uchar hueMax = 179;
+		uchar satMin = 0;
+		uchar satMax = 255;
+		uchar litMin = 0;
+		uchar litMax = 255;
 	};
 
 

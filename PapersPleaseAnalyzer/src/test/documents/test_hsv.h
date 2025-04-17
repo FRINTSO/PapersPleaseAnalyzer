@@ -3,7 +3,7 @@
 
 #include "base/color.h"
 
-namespace tests::documents
+namespace test::documents
 {
 
 	void test_hsv(

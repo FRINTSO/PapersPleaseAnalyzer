@@ -12,17 +12,17 @@
 
 namespace paplease {
 
-	static inline cv::Mat ToGrayscale(const cv::Mat& mat)
+	static inline cv::Mat ToGrayscale(const cv::Mat& bgrMat)
 	{
 		cv::Mat grayscale;
-		cv::cvtColor(mat, grayscale, cv::COLOR_BGR2GRAY);
+		cv::cvtColor(bgrMat, grayscale, cv::COLOR_BGR2GRAY);
 		return grayscale;
 	}
 
-	static inline cv::Mat ApplyHSV(const cv::Mat& mat, const HSVConfig& hsvConfig)
+	static inline cv::Mat ToHSVBinary(const cv::Mat& bgrMat, const HSVConfig& hsvConfig)
 	{
 		cv::Mat imgHsv;
-		cv::cvtColor(mat, imgHsv, cv::COLOR_BGR2HSV);
+		cv::cvtColor(bgrMat, imgHsv, cv::COLOR_BGR2HSV);
 		cv::Mat lower{ hsvConfig.hueMin, hsvConfig.satMin, hsvConfig.valMin };
 		cv::Mat upper{ hsvConfig.hueMax, hsvConfig.satMax, hsvConfig.valMax };
 		cv::Mat mask;
@@ -43,7 +43,7 @@ namespace paplease {
 		return result;
 	}
 
-	static inline cv::Mat ReadImage(const std::string& path)
+	static inline cv::Mat LoadImageFile(const std::string& path)
 	{
 		auto mat = cv::imread(path, cv::IMREAD_UNCHANGED);
 #if DOWNSCALE_OPTIMIZATION
@@ -54,7 +54,7 @@ namespace paplease {
 
 	static inline cv::Mat ExtractDocumentField(const cv::Mat& document, const Rectangle& boundingBox)
 	{
-		return document(cv::Rect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height));
+		return document(boundingBox);
 	}
 
 	static inline std::string GetFieldString(const cv::Mat& field, documents::DocType documentType)

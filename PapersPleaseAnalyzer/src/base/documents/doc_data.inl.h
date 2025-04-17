@@ -126,7 +126,11 @@ namespace paplease {
         template<FieldCategory Category>
         constexpr detail::FieldDataType<Category> DocData::GetFieldData() const
         {
-            const auto& fieldData = this->GetField(Category);
+            auto fieldDataOpt = this->GetField(Category);
+            if (!fieldDataOpt)
+                return std::nullopt;
+
+            const auto& fieldData = fieldDataOpt.value().get();
 
             if (fieldData.Type() == FieldType::Invalid || fieldData.IsBroken())
             {

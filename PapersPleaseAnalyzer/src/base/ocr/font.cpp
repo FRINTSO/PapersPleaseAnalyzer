@@ -11,37 +11,28 @@ namespace paplease {
 	namespace ocr {
 
 		static inline constinit FontInfo g_Invalid{ Typeface::Invalid, 0, -1, -1, -1, -1 };
-		static inline constinit FontInfo g_04b04{ Typeface::_04b03, DOWNSCALE(14), DOWNSCALE(2), DOWNSCALE(4), DOWNSCALE(8), DOWNSCALE(4) };
-		static inline constinit FontInfo g_BM_MiniInfo{ Typeface::BM_Mini, DOWNSCALE(16), DOWNSCALE(2), DOWNSCALE(4), DOWNSCALE(4), DOWNSCALE(8) };
-		static inline constinit FontInfo g_MiniKylie{ Typeface::MiniKylie, DOWNSCALE(12), DOWNSCALE(2), DOWNSCALE(4), DOWNSCALE(4), DOWNSCALE(4) };
-		static inline constinit FontInfo g_BoothNumber{ Typeface::BoothNumber, DOWNSCALE(12), DOWNSCALE(4), DOWNSCALE(6), DOWNSCALE(8), DOWNSCALE(4) };
+		static inline constinit FontInfo g_04b04{ Typeface::_04b03, 14, 2, 4, 8, 4 };
+		static inline constinit FontInfo g_BM_MiniInfo{ Typeface::BM_Mini, 16, 2, 4, 4, 8 };
+		static inline constinit FontInfo g_MiniKylie{ Typeface::MiniKylie, 12, 2, 4, 4, 4 };
+		static inline constinit FontInfo g_BoothNumber{ Typeface::BoothNumber, 12, 4, 6, 8, 4 };
 
 		static constexpr Typeface GetTypefaceByDocumentType(const documents::DocType documentType)
 		{
 			switch (documentType)
 			{
+				case documents::DocType::AccessPermit:
+				case documents::DocType::CertificateOfVaccination:
+				case documents::DocType::DiplomaticAuthorization:
+				case documents::DocType::EntryPermit:
+				case documents::DocType::EntryTicket:
+				case documents::DocType::GrantOfAsylum:
+				case documents::DocType::IdentitySupplement:
 				case documents::DocType::Passport:
+				case documents::DocType::RuleBook:
+				case documents::DocType::WorkPass:
 					return Typeface::BM_Mini;
 				case documents::DocType::IdentityCard:
 					return Typeface::MiniKylie;
-				case documents::DocType::DiplomaticAuthorization:
-					return Typeface::BM_Mini;
-				case documents::DocType::EntryTicket:
-					return Typeface::BM_Mini;
-				case documents::DocType::EntryPermit:
-					return Typeface::BM_Mini;
-				case documents::DocType::AccessPermit:
-					return Typeface::BM_Mini;
-				case documents::DocType::WorkPass:
-					return Typeface::BM_Mini;
-				case documents::DocType::GrantOfAsylum:
-					return Typeface::BM_Mini;
-				case documents::DocType::IdentitySupplement:
-					return Typeface::BM_Mini;
-				case documents::DocType::CertificateOfVaccination:
-					return Typeface::BM_Mini;
-				case documents::DocType::RuleBook:
-					return Typeface::BM_Mini;
 				case documents::DocType::Transcript:
 					return Typeface::_04b03;
 				default:

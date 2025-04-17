@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "base/analysis/analysis_context.h"
 
-#include "base/analysis/document_analyzer.h"
+#include "base/analysis/analysis_writer.h"
 #include "base/documents/data/date.h"
 #include "base/documents/data/field_data.h"
 #include "base/documents/doc_type.h"
@@ -22,33 +22,9 @@ namespace paplease {
 
 #pragma region DocRegistry
 
-		static inline constexpr bool IsApplicantOrTranscriptDocument(const DocType documentType)
-		{
-			switch (documentType)
-			{
-				case DocType::AccessPermit:
-				case DocType::CertificateOfVaccination:
-				case DocType::DiplomaticAuthorization:
-				case DocType::EntryPermit:
-				case DocType::EntryTicket:
-				case DocType::GrantOfAsylum:
-				case DocType::IdentityCard:
-				case DocType::IdentitySupplement:
-				case DocType::WorkPass:
-				case DocType::Passport:
-				case DocType::Transcript:
-					return true;
-				default:
-					return false;
-			}
-		}
-
 		bool DocRegistry::AcquireIfNewDocument(documents::Doc&& document)
 		{
 			if (!this->IsNewDocument(document)) return false;
-			
-			LOG("WOW, new {} registered", ToStringView(document.GetDocumentType()));
-			
 			this->AcquireDocument(std::move(document));
 			return true;
 		}
@@ -103,7 +79,7 @@ namespace paplease {
 		{  // This code should be tested
 			for (size_t i = 0; i < m_documentCount; i++)
 			{
-				if (IsApplicantOrTranscriptDocument(m_documents[i].GetDocumentType()))
+				if (IsApplicantRelatedDocument(m_documents[i].GetDocumentType()))
 				{
 					m_documents[i] = {};
 				}
@@ -245,34 +221,41 @@ namespace paplease {
 
 		void AnalysisContext::Update(ScanContext& scanContext)
 		{
-			BeginLOG("AnalysisContext::Update()");
-			// Booth data
-			assert(scanContext.boothData.has_value());
-
-			if (this->SetIfNewDate(scanContext.boothData->date))
+			if (scanContext.boothData.date)
 			{
-				LOG("New Date!");
+				if (this->SetIfNewDate(scanContext.boothData.date.value()))
+					LOG_RAW("====================[ New Date ]====================");
+			}
+			else
+			{
+				// Log an error if date is missing
+				LOG_ERR("Missing boothData.date! Cannot update the date.");
 			}
 
-			else if (this->SetIfNewApplicant(scanContext.boothData->applicantNumber))
+			if (scanContext.boothData.applicantNumber)
 			{
-				LOG("New Applicant!");
-				m_currentWeight = scanContext.boothData->weight;
-				if (scanContext.boothData->approximateHeight)
+				if (this->SetIfNewApplicant(scanContext.boothData.applicantNumber.value()))
 				{
-					m_approximateHeight = scanContext.boothData->approximateHeight.value();
+					LOG_RAW("-----------------[ New Applicant ]-----------------");
+					std::cin.get();
+					m_currentWeight = scanContext.boothData.weight;
+
+					if (scanContext.boothData.approximateHeight)
+					{
+						m_approximateHeight = scanContext.boothData.approximateHeight.value();
+					}
 				}
 			}
-
-			if (scanContext.inspectionData)
+			else
 			{
-				this->HandleInspectionData(*scanContext.inspectionData);
+				// Log an error if applicantNumber is missing
+				LOG_ERR("Missing boothData.applicantNumber! Cannot update the applicant.");
 			}
 
-			EndLOG("AnalysisContext::Update()");
+			this->SaveAndAnalyzeScannedDocuments(scanContext.inspectionData);
 		}
 
-		void AnalysisContext::HandleInspectionData(InspectionData& inspectionData)
+		void AnalysisContext::SaveAndAnalyzeScannedDocuments(InspectionData& inspectionData)
 		{
 			for (auto& document : inspectionData.documents)
 			{
@@ -551,13 +534,24 @@ namespace paplease {
 		bool DocumentValidator::ValidateExpirationDate() const
 		{
 			const auto expirationDateData = m_documentData.GetFieldData<FieldCategory::ExpirationDate>();
-			assert(expirationDateData.has_value());
+
+			// If expiration date data is missing, log the error and return false
+			if (!expirationDateData)
+			{
+				LOG_ERR("Missing expiration date for document '{}'", ToStringView(m_document.GetDocumentType()));
+				return false;  // Early exit if expiration date is missing
+			}
+
 			const auto& expirationDate = expirationDateData->get();
+
+			// Compare expiration date with current date
 			bool accepted = m_analysisContext.m_currentDate <= expirationDate;
+
 			if (!accepted)
 			{
-				LOG_DISCREPANCY("Invalid Expiration Date! '{}'", ToStringView(m_document.GetDocumentType()));
+				LOG_DISCREPANCY("Invalid Expiration Date! Document type: '{}'", ToStringView(m_document.GetDocumentType()));
 			}
+
 			return accepted;
 		}
 
@@ -653,64 +647,103 @@ namespace paplease {
 
 		bool DocumentValidator::ValidateMissingVaccine() const
 		{
-			bool accepted = utils::strfuncs::ToLower(m_documentData.GetFieldData<FieldCategory::Vaccination1>().value().get().name) == "polio"
-				|| utils::strfuncs::ToLower(m_documentData.GetFieldData<FieldCategory::Vaccination2>().value().get().name) == "polio"
-				|| utils::strfuncs::ToLower(m_documentData.GetFieldData<FieldCategory::Vaccination3>().value().get().name) == "polio";
+			bool accepted = false;
+
+			// Check if any of the vaccination fields contains "polio"
+			const auto vaccine1Opt = m_documentData.GetFieldData<FieldCategory::Vaccination1>();
+			const auto vaccine2Opt = m_documentData.GetFieldData<FieldCategory::Vaccination2>();
+			const auto vaccine3Opt = m_documentData.GetFieldData<FieldCategory::Vaccination3>();
+
+			if (vaccine1Opt && utils::strfuncs::ToLower(vaccine1Opt->get().name) == "polio")
+			{
+				accepted = true;
+			}
+			else if (vaccine2Opt && utils::strfuncs::ToLower(vaccine2Opt->get().name) == "polio")
+			{
+				accepted = true;
+			}
+			else if (vaccine3Opt && utils::strfuncs::ToLower(vaccine3Opt->get().name) == "polio")
+			{
+				accepted = true;
+			}
+
+			// If not accepted, log the discrepancy
 			if (!accepted)
 			{
 				LOG_DISCREPANCY("Missing polio vaccine. '{}'", ToStringView(m_document.GetDocumentType()));
 			}
+
 			return accepted;
 		}
 
 		bool DocumentValidator::ValidateVaccineExpirationDate() const
 		{
-			detail::FieldDataType<FieldCategory::Vaccination1> vaccine = std::nullopt;
+			bool accepted = false;
+			Date polioExpiryDate;
 
-			bool accepted = 
-				utils::strfuncs::ToLower(
-					(vaccine = m_documentData.GetFieldData<FieldCategory::Vaccination1>())->get().name
-				) == "polio" ||
-				
-				utils::strfuncs::ToLower(
-					(vaccine = m_documentData.GetFieldData<FieldCategory::Vaccination2>())->get().name
-				) == "polio" ||
-				
-				utils::strfuncs::ToLower(
-					(vaccine = m_documentData.GetFieldData<FieldCategory::Vaccination3>())->get().name
-				) == "polio";
+			// Check each vaccine field explicitly
+			const auto vaccine1Opt = m_documentData.GetFieldData<FieldCategory::Vaccination1>();
+			const auto vaccine2Opt = m_documentData.GetFieldData<FieldCategory::Vaccination2>();
+			const auto vaccine3Opt = m_documentData.GetFieldData<FieldCategory::Vaccination3>();
 
-			if (accepted && vaccine != std::nullopt)
+			// Check if any vaccine data is available and is "polio"
+			if (vaccine1Opt && utils::strfuncs::ToLower(vaccine1Opt->get().name) == "polio")
 			{
-				Date polioExpiryDate{ vaccine->get().date.GetDay(), vaccine->get().date.GetMonth(), vaccine->get().date.GetYear() + 3};
+				const auto& vaccineData = vaccine1Opt->get();
+				polioExpiryDate = Date(vaccineData.date.GetDay(), vaccineData.date.GetMonth(), vaccineData.date.GetYear() + 3);
 				accepted = m_analysisContext.m_currentDate <= polioExpiryDate;
 			}
-			else
+			else if (vaccine2Opt && utils::strfuncs::ToLower(vaccine2Opt->get().name) == "polio")
 			{
-				LOG_ERR("Something went wrong!");
+				const auto& vaccineData = vaccine2Opt->get();
+				polioExpiryDate = Date(vaccineData.date.GetDay(), vaccineData.date.GetMonth(), vaccineData.date.GetYear() + 3);
+				accepted = m_analysisContext.m_currentDate <= polioExpiryDate;
 			}
-			
+			else if (vaccine3Opt && utils::strfuncs::ToLower(vaccine3Opt->get().name) == "polio")
+			{
+				const auto& vaccineData = vaccine3Opt->get();
+				polioExpiryDate = Date(vaccineData.date.GetDay(), vaccineData.date.GetMonth(), vaccineData.date.GetYear() + 3);
+				accepted = m_analysisContext.m_currentDate <= polioExpiryDate;
+			}
+
 			if (!accepted)
 			{
-				LOG_DISCREPANCY("Missing polio vaccine. '{}'", ToStringView(m_document.GetDocumentType()));
+				LOG_ERR("Missing or expired polio vaccine. Document type: '{}'", ToStringView(m_document.GetDocumentType()));
+				LOG_DISCREPANCY("Polio vaccine issue. '{}'", ToStringView(m_document.GetDocumentType()));
 			}
+
 			return accepted;
 		}
-
-
 		// Against booth
 		bool DocumentValidator::ValidateWeight() const
 		{
+			// Check if current weight is available
 			if (!m_analysisContext.m_currentWeight.has_value())
 			{
-				// register reanalysis later, when height is not nullopt
+				// Register reanalysis later, when height is not nullopt
 				return false;
 			}
-			bool accepted = m_analysisContext.m_currentWeight->value == m_documentData.GetFieldData<FieldCategory::Weight>().value().get().value;
+
+			// Get the weight data from the document
+			const auto weightDataOpt = m_documentData.GetFieldData<FieldCategory::Weight>();
+
+			// If weight data is unavailable or broken, return false
+			if (!weightDataOpt)
+			{
+				LOG_ERR("Missing or broken weight data for document '{}'", ToStringView(m_document.GetDocumentType()));
+				return false;
+			}
+
+			const auto& weightData = weightDataOpt->get();
+
+			// Compare the current weight with the document's weight
+			bool accepted = m_analysisContext.m_currentWeight->value == weightData.value;
+
 			if (!accepted)
 			{
-				LOG_DISCREPANCY("Invalid weight. '{}'", ToStringView(m_document.GetDocumentType()));
+				LOG_DISCREPANCY("Invalid weight. Document type: '{}'", ToStringView(m_document.GetDocumentType()));
 			}
+
 			return accepted;
 		}
 
@@ -784,31 +817,61 @@ namespace paplease {
 		// Against other applicant documents
 		bool DocumentValidator::ValidateName() const
 		{
-			bool accepted = m_analysisContext.m_profile.RegisterData(m_documentData.GetField(FieldCategory::Name));
+			auto nameOpt = m_documentData.GetField(FieldCategory::Name);
+			if (!nameOpt)
+			{
+				LOG_ERR("No name data found for document '{}'.", ToStringView(m_document.GetDocumentType()));
+				return false;  // Return false if the name is missing
+			}
+
+			const auto& nameData = nameOpt->get();  // Get the actual field
+
+			bool accepted = m_analysisContext.m_profile.RegisterData(nameData);
 			if (!accepted)
 			{
-				LOG_DISCREPANCY("Mismatching names! '{}'", ToStringView(m_document.GetDocumentType()));
+				LOG_DISCREPANCY("Mismatching name '{}' for document '{}'.", nameData.ToString(), ToStringView(m_document.GetDocumentType()));
 			}
+
 			return accepted;
 		}
 
 		bool DocumentValidator::ValidateDateOfBirth() const
 		{
-			bool accepted = m_analysisContext.m_profile.RegisterData(m_documentData.GetField(FieldCategory::DateOfBirth));
+			auto dobOpt = m_documentData.GetField(FieldCategory::DateOfBirth);
+			if (!dobOpt)
+			{
+				LOG_ERR("No date of birth data found for document '{}'.", ToStringView(m_document.GetDocumentType()));
+				return false;
+			}
+
+			const auto& dobData = dobOpt->get();
+
+			bool accepted = m_analysisContext.m_profile.RegisterData(dobData);
 			if (!accepted)
 			{
-				LOG_DISCREPANCY("Mismatching date of birth! '{}'", ToStringView(m_document.GetDocumentType()));
+				LOG_DISCREPANCY("Mismatching date of birth '{}' for document '{}'.", dobData.ToString(), ToStringView(m_document.GetDocumentType()));
 			}
+
 			return accepted;
 		}
 
 		bool DocumentValidator::ValidatePassportNumber() const
 		{
-			bool accepted = m_analysisContext.m_profile.RegisterData(m_documentData.GetField(FieldCategory::PassportNumber));
+			auto passportOpt = m_documentData.GetField(FieldCategory::PassportNumber);
+			if (!passportOpt)
+			{
+				LOG_ERR("No passport number data found for document '{}'.", ToStringView(m_document.GetDocumentType()));
+				return false;  // Return false if the passport number is missing
+			}
+
+			const auto& passportData = passportOpt->get();  // Get the actual field
+
+			bool accepted = m_analysisContext.m_profile.RegisterData(passportData);
 			if (!accepted)
 			{
-				LOG_DISCREPANCY("Mismatching passport number! '{}'", ToStringView(m_document.GetDocumentType()));
+				LOG_DISCREPANCY("Mismatching passport number '{}' for document '{}'.", passportData.ToString(), ToStringView(m_document.GetDocumentType()));
 			}
+
 			return accepted;
 		}
 

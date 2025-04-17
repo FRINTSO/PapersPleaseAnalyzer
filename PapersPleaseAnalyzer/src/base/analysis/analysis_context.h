@@ -135,7 +135,7 @@ namespace paplease {
 			void OnNewApplicant(int applicantNumber);
 
 		private: // DocRegistry:
-			void HandleInspectionData(scannable::InspectionData& inspectionData);
+			void SaveAndAnalyzeScannedDocuments(scannable::InspectionData& inspectionData);
 			void HandleDocumentByType(documents::DocType documentType);
 
 			void StoreBulletin(const documents::Doc& document);
@@ -150,7 +150,7 @@ namespace paplease {
 			friend class DocumentValidator;
 		private:
 			// Plain data
-			documents::data::Date m_currentDate;
+			std::optional<documents::data::Date> m_currentDate;
 			std::optional<documents::data::SIUnitValue> m_currentWeight;
 			std::optional<documents::data::SIUnitValue> m_approximateHeight;
 			int m_applicantNumber;

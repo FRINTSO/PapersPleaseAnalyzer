@@ -10,7 +10,7 @@ namespace paplease {
         enum class DocType : unsigned int
         {
             Invalid = -1,
-            AccessPermit,
+            AccessPermit = 0,
             CertificateOfVaccination,
             DiplomaticAuthorization,
             EntryPermit,
@@ -42,7 +42,7 @@ namespace paplease {
         enum class AppearanceType : unsigned int
         {
             Invalid = -1,
-            AccessPermit,
+            AccessPermit = 0,
             CertificateOfVaccination,
             DiplomaticAuthorization,
             EntryPermit,
@@ -66,7 +66,6 @@ namespace paplease {
 
 #if USE_ENUM_FUNCS
 
-#define DOC_TYPE_NAME_INVALID                    std::string_view("Invalid", 7)
 #define DOC_TYPE_NAME_ACCESS_PERMIT              std::string_view("AccessPermit", 12)
 #define DOC_TYPE_NAME_CERTIFICATE_OF_VACCINATION std::string_view("CertificateOfVaccination", 24)
 #define DOC_TYPE_NAME_DIPLOMATIC_AUTHORIZATION   std::string_view("DiplomaticAuthorization", 23)
@@ -80,6 +79,7 @@ namespace paplease {
 #define DOC_TYPE_NAME_BULLETIN                   std::string_view("Bulletin", 8)
 #define DOC_TYPE_NAME_TRANSCRIPT                 std::string_view("Transcript", 10)
 #define DOC_TYPE_NAME_PASSPORT                   std::string_view("Passport", 8)
+#define DOC_TYPE_NAME_INVALID                    std::string_view("Invalid", 7)
 
 #if !defined(DOC_TYPE_NAMES)
 #define DOC_TYPE_NAMES                                \
@@ -101,9 +101,9 @@ namespace paplease {
     }
 #endif
 
-        static constexpr std::string_view& ToStringView(DocType documentType);
+        static constexpr const std::string_view& ToStringView(DocType documentType);
         static constexpr bool IsApplicantDocument(DocType documentType);
-        static consteval std::array<DocType, static_cast<size_t>(DocType::Count)> GetDocTypeIterator();
+        static constexpr bool IsApplicantRelatedDocument(DocType documentType);
 #endif
 
     }  // namespace documents

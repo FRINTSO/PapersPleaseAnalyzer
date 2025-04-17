@@ -154,12 +154,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\base\analysis\analysis_context.cpp" />
+    <ClCompile Include="src\base\analysis\analysis_writer.cpp" />
     <ClCompile Include="src\base\analysis\photo_analysis\photo_analyzer.cpp" />
     <ClCompile Include="src\base\documents\seal.cpp" />
-    <ClCompile Include="src\base\analysis\components\document_state.cpp" />
     <ClCompile Include="src\base\analysis\scannable\scan_context.cpp" />
     <ClCompile Include="src\base\utils\log.cpp" />
-    <ClCompile Include="src\base\analysis\document_analyzer.cpp" />
     <ClCompile Include="src\base\documents\doc_appearance.cpp" />
     <ClCompile Include="src\base\documents\doc_layout.cpp" />
     <ClCompile Include="src\base\analysis\data\criminals.cpp" />
@@ -167,15 +166,12 @@
     <ClCompile Include="src\base\analysis\data\rules.cpp" />
     <ClCompile Include="src\base\analysis\scannable\booth.cpp" />
     <ClCompile Include="src\base\analysis\scannable\inspection.cpp" />
-    <ClCompile Include="src\base\analysis\components\game_state.cpp" />
     <ClCompile Include="src\base\documents\doc_data.cpp" />
     <ClCompile Include="src\base\documents\doc_extractor.cpp" />
     <ClCompile Include="src\base\documents\data\date.cpp" />
     <ClCompile Include="src\base\documents\doc_class.cpp" />
-    <ClCompile Include="src\base\analysis\components\applicant_state.cpp" />
     <ClCompile Include="src\base\analysis\data\transcript.cpp" />
     <ClCompile Include="src\base\game_view.cpp" />
-    <ClCompile Include="src\base\screencap.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\base\ocr\font.cpp" />
     <ClCompile Include="src\base\ocr\ocr.cpp" />
@@ -188,27 +184,26 @@
     <ClCompile Include="src\test\documents\test_document_preprocessing.cpp" />
     <ClCompile Include="src\test\documents\test_document_boxing.cpp" />
     <ClCompile Include="src\test\documents\test_hsv.cpp" />
+    <ClCompile Include="src\test\faces.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\analysis\analysis_context.h" />
     <ClInclude Include="src\base\analysis\analysis_context.inl.h" />
+    <ClInclude Include="src\base\analysis\analysis_writer.h" />
     <ClInclude Include="src\base\analysis\photo_analysis\photo_analyzer.h" />
     <ClInclude Include="src\base\documents\doc_data.inl.h" />
     <ClInclude Include="src\base\documents\doc_data_type.h" />
     <ClInclude Include="src\base\documents\seal.h" />
     <ClInclude Include="src\base\documents\doc_type.inl.h" />
     <ClInclude Include="src\base\documents\utils\str_scanner.h" />
-    <ClInclude Include="src\base\analysis\components\document_state.h" />
     <ClInclude Include="src\base\analysis\scannable\scan_context.h" />
+    <ClInclude Include="src\base\scaled.h" />
     <ClInclude Include="src\base\utils\enum_range.h" />
     <ClInclude Include="src\base\utils\fixed_array.h" />
     <ClInclude Include="src\base\utils\log.h" />
-    <ClInclude Include="src\base\analysis\document_analyzer.h" />
-    <ClInclude Include="src\base\analysis\mediators\analysis_mediator.h" />
     <ClInclude Include="src\base\analysis\game_controller.h" />
     <ClInclude Include="src\base\analysis\scannable\booth.h" />
     <ClInclude Include="src\base\analysis\scannable\inspection.h" />
-    <ClInclude Include="src\base\analysis\components\game_state.h" />
     <ClInclude Include="src\base\color.h" />
     <ClInclude Include="src\base\common.h" />
     <ClInclude Include="src\base\documents\doc_extractor.h" />
@@ -224,14 +219,11 @@
     <ClInclude Include="src\base\documents\data\photo.h" />
     <ClInclude Include="src\base\analysis\data\criminals.h" />
     <ClInclude Include="src\base\analysis\data\rules.h" />
-    <ClInclude Include="src\base\analysis\components\applicant_state.h" />
-    <ClInclude Include="src\base\analysis\components\component.h" />
     <ClInclude Include="src\base\analysis\data\transcript.h" />
     <ClInclude Include="src\base\game_view.h" />
     <ClInclude Include="src\base\image_process.h" />
     <ClInclude Include="src\base\ocr\font.h" />
     <ClInclude Include="src\base\ocr\ocr.h" />
-    <ClInclude Include="src\base\screencap.h" />
     <ClInclude Include="src\base\shape.h" />
     <ClInclude Include="src\base\utils\metaprogramming.h" />
     <ClInclude Include="src\base\utils\strfuncs.h" />
@@ -240,6 +232,7 @@
     <ClInclude Include="src\test\documents\test_document_preprocessing.h" />
     <ClInclude Include="src\test\documents\test_document_boxing.h" />
     <ClInclude Include="src\test\documents\test_hsv.h" />
+    <ClInclude Include="src\test\faces.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\base\documents\bounding_box_finder.inc" />

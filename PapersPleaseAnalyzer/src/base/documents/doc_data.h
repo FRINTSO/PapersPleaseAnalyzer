@@ -83,7 +83,7 @@ namespace paplease {
 			template<FieldCategory Category>
 			constexpr detail::FieldDataType<Category> GetFieldData() const;
 
-			std::string ToText() const;
+			std::string ToString() const;
 
 			FieldType Type() const;
 			FieldCategory Category() const;
@@ -108,26 +108,19 @@ namespace paplease {
 		public:
 			DocData() = default;
 
-			const Field& GetField(FieldCategory category) const;
+			std::optional<std::reference_wrapper<const Field>> GetField(FieldCategory category, bool returnBroken = false) const;
 			template<FieldCategory Category>
 			constexpr detail::FieldDataType<Category> GetFieldData() const;
 
 			paplease::utils::FixedRefArray<Field, DocData::ArrayLength> GetAllValidFields() const;
 
-			void PrintAllFields() const // temporary for ease of development
-			{
-				for (const auto& data : m_data)
-				{
-					if (data.Type() != FieldType::Text) continue;
-					std::cout << data.ToText() << "\n";
-				}
-			}
+			void PrintAllFields() const; // temporary for ease of development
 		private:
 			explicit DocData(const std::array<Field, ArrayLength>& data);
 		private:
 			friend class DocDataBuilder;
 
-			std::array<Field, ArrayLength> m_data;
+			std::array<std::optional<Field>, ArrayLength> m_data;
 		};
 
 #pragma endregion
@@ -142,7 +135,7 @@ namespace paplease {
 			DocDataBuilder() = default;
 
 			bool AddFieldData(const FieldCategory category, Field&& data);
-			std::optional<DocData> GetDocData();
+			DocData GetDocData();
 			void Clear();
 		private:
 			std::array<Field, ArrayLength> m_data;

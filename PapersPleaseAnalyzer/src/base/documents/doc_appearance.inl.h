@@ -12,11 +12,11 @@ namespace paplease {
 		constexpr DocAppearance::DocAppearance(
 			const std::array<RgbColor, DocAppearance::MaxBorderColors>& borderColors,
 			const size_t colorCount,
-			const Shape shape,
+			const ScaledShape shape,
 			const AppearanceType appearanceType) noexcept
 			: m_borderColors{ borderColors },
 			m_colorCount{ colorCount },
-			m_shape{ shape },
+			m_shape{ static_cast<Shape>(shape) },
 			m_appearanceType{ appearanceType }
 		{}
 
@@ -69,7 +69,7 @@ namespace paplease {
 							RgbColor{ 176, 168, 173 },
 						},
 						2,
-						Shape{ DOWNSCALE(294), DOWNSCALE(392) },
+						ScaledShape{ 294, 392 },
 						type
 					};
 				case AppearanceType::CertificateOfVaccination:
@@ -79,7 +79,7 @@ namespace paplease {
 							RgbColor{ 177, 151, 97 },
 						},
 						2,
-						Shape{ DOWNSCALE(270), DOWNSCALE(312) },
+						ScaledShape{ 270, 312 },
 						type
 					};
 				case AppearanceType::DiplomaticAuthorization:
@@ -90,7 +90,7 @@ namespace paplease {
 							RgbColor{ 154, 179, 168 },
 						},
 						3,
-						Shape{ DOWNSCALE(300), DOWNSCALE(400) },
+						ScaledShape{ 300, 400 },
 						type
 					};
 				case AppearanceType::EntryPermit:
@@ -100,7 +100,7 @@ namespace paplease {
 							RgbColor{ 202, 201, 175 },
 						},
 						2,
-						Shape{ DOWNSCALE(300), DOWNSCALE(402) },
+						ScaledShape{ 300, 402 },
 						type
 					};
 				case AppearanceType::EntryTicket:
@@ -110,7 +110,7 @@ namespace paplease {
 							RgbColor{ 137, 106, 103 },
 						},
 						1,
-						Shape{ DOWNSCALE(256), DOWNSCALE(88) },
+						ScaledShape{ 256, 88 },
 						type
 					};
 #else
@@ -120,7 +120,7 @@ namespace paplease {
 							RgbColor{ 180, 169, 151 },
 						},
 						2,
-						Shape{ DOWNSCALE(280), DOWNSCALE(102) },
+						ScaledShape{ 280, 102 },
 						type
 					};
 #endif
@@ -131,7 +131,7 @@ namespace paplease {
 							RgbColor{ 180, 157, 175 },
 						},
 						2,
-						Shape{ DOWNSCALE(320), DOWNSCALE(374) },
+						ScaledShape{ 320, 374 },
 						type
 					};
 				case AppearanceType::IdentityCard:
@@ -141,7 +141,7 @@ namespace paplease {
 							RgbColor{ 178, 156, 204 },
 						},
 						2,
-						Shape{ DOWNSCALE(252), DOWNSCALE(142) },
+						ScaledShape{ 252, 142 },
 						type
 					};
 				case AppearanceType::IdentitySupplement:
@@ -151,7 +151,7 @@ namespace paplease {
 							RgbColor{ 181, 167, 166 },
 						},
 						2,
-						Shape{ DOWNSCALE(180), DOWNSCALE(300) },
+						ScaledShape{ 180, 300 },
 						type
 					};
 				case AppearanceType::Passport_Antegria:
@@ -160,7 +160,7 @@ namespace paplease {
 							RgbColor{ 49, 77, 33 }
 						},
 						1,
-						Shape{ DOWNSCALE(260), DOWNSCALE(324) },
+						ScaledShape{ 260, 324 },
 						type
 					};
 				case AppearanceType::Passport_Arstotzka:
@@ -169,7 +169,7 @@ namespace paplease {
 							RgbColor{ 59, 72, 59 }
 						},
 						1,
-						Shape{ DOWNSCALE(260), DOWNSCALE(324) },
+						ScaledShape{ 260, 324 },
 						type
 					};
 				case AppearanceType::Passport_Impor:
@@ -178,7 +178,7 @@ namespace paplease {
 							RgbColor{ 102, 31, 9 }
 						},
 						1,
-						Shape{ DOWNSCALE(260), DOWNSCALE(324) },
+						ScaledShape{ 260, 324 },
 						type
 					};
 				case AppearanceType::Passport_Kolechia:
@@ -187,7 +187,7 @@ namespace paplease {
 							RgbColor{ 85, 37, 63 }
 						},
 						1,
-						Shape{ DOWNSCALE(260), DOWNSCALE(324) },
+						ScaledShape{ 260, 324 },
 						type
 					};
 				case AppearanceType::Passport_Obristan:
@@ -196,7 +196,7 @@ namespace paplease {
 							RgbColor{ 138, 12, 12 }
 						},
 						1,
-						Shape{ DOWNSCALE(260), DOWNSCALE(324) },
+						ScaledShape{ 260, 324 },
 						type
 					};
 				case AppearanceType::Passport_Republia:
@@ -205,7 +205,7 @@ namespace paplease {
 							RgbColor{ 76, 42, 27 }
 						},
 						1,
-						Shape{ DOWNSCALE(260), DOWNSCALE(324) },
+						ScaledShape{ 260, 324 },
 						type
 					};
 				case AppearanceType::Passport_UnitedFederation:
@@ -214,7 +214,7 @@ namespace paplease {
 							RgbColor{ 35, 30, 85 }
 						},
 						1,
-						Shape{ DOWNSCALE(260), DOWNSCALE(324) },
+						ScaledShape{ 260, 324 },
 						type
 					};
 				case AppearanceType::WorkPass:
@@ -224,7 +224,7 @@ namespace paplease {
 							RgbColor{ 204, 175, 192 },
 						},
 						2,
-						Shape{ DOWNSCALE(294), DOWNSCALE(270) },
+						ScaledShape{ 294, 270 },
 						type
 					};
 				case AppearanceType::RuleBook:
@@ -233,7 +233,7 @@ namespace paplease {
 							RgbColor{87, 72, 72}
 						},
 						1,
-						Shape{ DOWNSCALE(480), DOWNSCALE(320) },
+						ScaledShape{ 480, 320 },
 						AppearanceType::RuleBook
 					};
 				case AppearanceType::Bulletin:
@@ -242,7 +242,7 @@ namespace paplease {
 							RgbColor{240, 240, 240}
 						},
 						1,
-						Shape{ DOWNSCALE(298), DOWNSCALE(398) },
+						ScaledShape{ 298, 398 },
 						AppearanceType::Bulletin
 					};
 				case AppearanceType::Transcript:
@@ -251,7 +251,7 @@ namespace paplease {
 							RgbColor{210, 237, 236}
 						},
 						1,
-						Shape{ DOWNSCALE(300), DOWNSCALE(400) },
+						ScaledShape{ 300, 400 },
 						AppearanceType::Transcript
 					};
 				case AppearanceType::Invalid:

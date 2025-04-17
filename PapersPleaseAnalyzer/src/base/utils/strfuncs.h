@@ -5,6 +5,7 @@
 namespace paplease {
     namespace utils {
         namespace strfuncs {
+
             static constexpr inline std::string Trim(const std::string& str)
             {
                 size_t start = str.find_first_not_of(" \t\n\r\f\v");
