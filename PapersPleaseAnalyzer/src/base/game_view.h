@@ -9,6 +9,7 @@ namespace paplease {
 	{
 		GameView() = default;
 		GameView(const std::string& filename);
+		GameView(const cv::Mat& gameView);
 
 		cv::Mat booth;
 		cv::Mat inspection;

@@ -1,5 +1,10 @@
 #pragma once
+#include <array>
+#include <optional>
+#include <string>
+
 #include "base/documents/doc_class.h"
+#include "base/utils/fixed_array.h"
 
 namespace paplease {
     namespace analysis {
@@ -24,14 +29,14 @@ namespace paplease {
             public:
                 Transcript() = default;
 
-                friend Transcript CreateTranscript(const documents::Doc& document);
+                friend std::optional<Transcript> CreateTranscript(const documents::Doc& document);
             private:
-                static constexpr size_t EntriesCapacity = 10;
+                static constexpr size_t MaxTranscriptEntries = 10;
             private:
-                std::array<TranscriptEntry, Transcript::EntriesCapacity> m_entries;
+                utils::FixedArray<TranscriptEntry, MaxTranscriptEntries> m_entries;
             };
 
-            Transcript CreateTranscript(const documents::Doc& document);
+            std::optional<Transcript> CreateTranscript(const documents::Doc& document);
 
         }  // namespace data
     }  // namespace analysis

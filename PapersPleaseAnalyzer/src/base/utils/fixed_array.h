@@ -56,7 +56,7 @@ namespace paplease {
 
 		private:
 			std::array<T, Size> m_array;
-			size_t m_count;
+			size_t m_count = 0;
 		};
 
 		template<typename T, size_t Size>

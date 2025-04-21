@@ -20,6 +20,11 @@ namespace paplease {
 				{
 					auto document = FindDocument(gameView, documentType);
 					if (!document) continue;
+					if (document->GetDocumentData().HasBrokenData())
+					{
+						LOG_ERR("Broken document '{}'", ToStringView(document->GetDocumentType()));
+						continue;
+					}
 
 					assert(count < InspectionData::DocumentScanCapacity);
 					foundDocuments[count] = std::move(document.value());

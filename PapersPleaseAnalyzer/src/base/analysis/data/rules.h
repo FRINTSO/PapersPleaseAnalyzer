@@ -4,64 +4,140 @@
 #include <string>
 
 #include "base/documents/doc_class.h"
+#include "base/utils/fixed_array.h"
 
 namespace paplease {
     namespace analysis {
         namespace data {
 
-            enum class ERule
+            enum class ERule : unsigned int
             {
-                Invalid = 0,
+                Invalid = -1,
 
-                RequireCurrentDocuments, // If this flag is set, mediator should know what functions to call
-
-                RequirePassport, // Search for passport, if inspection can't locate it, and booth can't either, then ask where it is
-                RequireArstotzkaPassport,	// Require that a passport is arstotzkan
+                // === REQUIREMENTS ===
+                RequireCurrentDocumentsFromEntrant, // If this flag is set, mediator should know what functions to call
+                RequirePassportFromEntrant,
+                RequireArstotzkanPassportFromEntrant,
                 RequireIdentityCardFromCitizens,
                 RequireEntryTicketFromForeigners,
                 RequireWorkPassFromWorkers,
                 RequireDiplomaticAuthorizationFromDiplomats,
                 RequireIdentitySupplementFromForeigners,
                 RequireGrantFromAsylumSeekers,
-                RequirePolioVaccination,
+                RequirePolioVaccinationFromEntrant,
                 RequireAccessPermitFromForeigners,
-
+                RequireEntryPermitFromForeigners,
                 RequireSearchOfKolechians,
-                ProhibitEntryFromImpor,
 
-                ProhibitWeaponsAndContraband,
-                ConfiscateArstotzkanPassportsFromAltanRegion,
+                // === PROHIBITIONS ===
+                ProhibitEntryFromImpor,
                 ProhibitEntryFromUnitedFederation,
-                ConfiscateArstotzkanPassports,
+                ProhibitWeaponsAndContrabandFromEntrant,
+
+                // === CONFISCATIONS ===
+                ConfiscateArstotzkanPassportsFromAltanDistrict,
+                ConfiscateArstotzkanPassportFromEntrant,
+
+                Count
+            };
+
+            // Scan order:
+            // All entrants require passport (RequirePassportFromEntrant)
+            // 1. Passport belongs to citizen
+            //  -> Require id card (RequireIdentityCardFromCitizens)
+            //  .
+            // 2. Passport belongs to foreigner
+            //  -> Require EntryTicket (RequireEntryTicketFromForeigners)
+            //  .
+            //  -> Require IdentitySupplement (RequireIdentitySupplementFromForeigners)
+            //  -> Require AccessPermit (RequireAccessPermitFromForeigners)
+            //  -> Require EntryPermit (RequireEntryPermitFromForeigners)
+            // 
+            //
+
+            enum class ERuleAction : unsigned char
+            {
+                Require,    // Need information
+                Prohibit,   // Limit
+                Confiscate  // Limit
+            };
+
+            enum class ERuleSubject : unsigned char
+            {
+                CurrentDocuments,
+                Passport,
+                ArstotzkanPassport,
+                IdentityCard,
+                EntryTicket,
+                WorkPass,
+                DiplomaticAuthorization,
+                IdentitySupplement,
+                Grant,
+                PolioVaccination,
+                AccessPermit,
+                EntryPermit,
+                WeaponsAndContraband,
+                Search,
+                Entry,
+            };
+
+            enum class ERuleTarget : unsigned char
+            {
+                Entrant,
+                Citizens,
+                Foreigners,
+                Workers,
+                Diplomats,
+                AsylumSeekers,
+                Kolechians,
+                FromImpor,
+                FromUnitedFederation,
+                FromAltanDistrict
+            };
+
+            struct RuleDescriptor
+            {
+                consteval RuleDescriptor( ERuleAction action, ERuleSubject subject, ERuleTarget target)
+                    : action{action}, subject{subject}, target{target}
+                {}
+
+                ERuleAction action;
+                ERuleSubject subject;
+                ERuleTarget target;
             };
 
             class Rule
             {
             public:
-                Rule() = default;
+                consteval Rule(ERule rule, RuleDescriptor descriptor)
+                    : m_rule{rule}, m_descriptor{descriptor}
+                {}
 
             public:
                 void ApplyRule() const;
             private:
-                std::string m_description;
-                void* m_implication;
-                void* m_inEffect;
                 ERule m_rule;
+                RuleDescriptor m_descriptor;
             };
 
             class RuleBook
             {
             public:
                 RuleBook() = default;
+                static constexpr size_t MaxRuleCount = 10;
+
+
+                const utils::FixedArray<const Rule*, MaxRuleCount>& GetRules() const
+                {
+                    return m_activeRules;
+                }
+            private:
+                void RegisterRule(ERule rule);
+
+            private:
+                utils::FixedArray<const Rule*, MaxRuleCount> m_activeRules;
 
                 friend std::optional<RuleBook> CreateRuleBook(const documents::Doc& document);
-            public:
-                void ApplyRules() const;
-            private:
-                static constexpr size_t RuleCapacity = 10;
-            private:
-                std::array<Rule, RuleBook::RuleCapacity> m_activeRules;
-                size_t m_ruleCount;
             };
 
             std::optional<RuleBook> CreateRuleBook(const documents::Doc& document);

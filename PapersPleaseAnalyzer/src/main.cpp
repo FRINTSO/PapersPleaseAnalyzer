@@ -4,12 +4,17 @@
 
 #include "base/analysis/game_controller.h"
 #include "base/analysis/photo_analysis/photo_analyzer.h"
+#include "base/screen_capture/screencap.h"
+#include "base/screen_capture/direct_x_screencap.h"
+#include "base/utils/log.h"
+#include "test/documents/test_document_boxing.h"
 #include "test/documents/test_hsv.h"
 #include "test/faces.h"
+#include "test/rulebook.h"
+#include "test/test_transcript.h"
+#include "base/analysis/scannable/doc_tracker.h"
 
-#include "base/utils/log.h"
 
-#include "test/documents/test_document_boxing.h"
 
 void Test()
 {
@@ -113,13 +118,35 @@ void Run()
 {
 	paplease::analysis::GameAnalysisController analyzer{ false };
 	paplease::GameView view;
-	while (paplease::GetNextGameSimView("3", view))
+	while (paplease::GetNextGameSimView("1", view))
 	{
 		analyzer.Update(view);
 	}
 
 	// Don't scan transcript until finished?
 	cv::waitKey();
+}
+
+void test_screencap()
+{
+	paplease::analysis::GameAnalysisController analyzer{ false };
+	paplease::analysis::scannable::DocTracker tracker{};
+	while (true)
+	{
+		auto result = paplease::screencap::CaptureGameWindow();
+
+		if (result.empty())
+		{
+			std::cout << "Empty\n";
+			continue;
+		}
+
+		paplease::GameView view(result);
+		tracker.Update(view);
+		analyzer.Update(view);
+		/*cv::imshow("output", result);
+		cv::waitKey(30);*/
+	}
 }
 
 void main()
@@ -130,8 +157,13 @@ void main()
 	//test::test_faces();
 	//test_is_same_person();
 	//test();
-	Run();
+	//Run();
 	//test_booth_face_extraction();
+
+	//test::test_rulebook();
+	//test::test_transcript();
+
+	test_screencap();
 
 	std::cin.get();
 }

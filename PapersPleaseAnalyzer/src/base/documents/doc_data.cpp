@@ -27,7 +27,7 @@ namespace paplease {
 
                     static inline Data FailedProcess(const std::string& message)
                     {
-                        std::cerr << message << "\n";
+                        // std::cerr << message << "\n";
                         return Data{ "", DataType::Invalid, true };
                     }
 
@@ -80,6 +80,33 @@ namespace paplease {
                         oss << " " << scanner.MatchToStr();
                     }
                     return Data{ oss.str() };
+                }
+
+                static inline Data ProcessDistrict(StrScanner& scanner)
+                {
+                    scanner.SkipWhitespace();
+
+                    std::ostringstream oss;
+
+                    scanner.StartMatch();
+                    while (!scanner.IsAtEnd() && scanner.Peek() != ' ') scanner.Advance();
+                    oss << scanner.MatchToStr();
+                    while (!scanner.IsAtEnd())
+                    {
+                        scanner.SkipWhitespace();
+                        scanner.StartMatch();
+                        while (!scanner.IsAtEnd() && scanner.Peek() != ' ') scanner.Advance();
+                        oss << " " << scanner.MatchToStr();
+                    }
+                    std::string district = oss.str();
+
+                    const std::string suffix = " DISTRICT";
+                    if (district.size() >= suffix.size() &&
+                        district.compare(district.size() - suffix.size(), suffix.size(), suffix) == 0)
+                    {
+                        return Data{ district.substr(0, district.size() - suffix.size()) };
+                    }
+                    return Data{ std::move(district) };
                 }
 
                 static inline Data ProcessCountry(StrScanner& scanner)
@@ -345,12 +372,15 @@ namespace paplease {
                     case FieldCategory::Field:
                     case FieldCategory::IssuingCity:
                     case FieldCategory::PhysicalAppearance:
-                    case FieldCategory::District:
                     case FieldCategory::DurationOfStay:
                     case FieldCategory::Purpose:
                     case FieldCategory::PassportNumber:
                     {
                         return processing::ProcessGenericString(scanner);
+                    }
+                    case FieldCategory::District:
+                    {
+                        return processing::ProcessDistrict(scanner);
                     }
                     case FieldCategory::IssuingCountry:
                     {
@@ -613,14 +643,14 @@ namespace paplease {
             const auto& fieldOpt = m_data[index];
             if (!fieldOpt)
             {
-                paplease::LOG_ERR("Field missing for category '{}'. Document may be incomplete or corrupted.", FieldCategoryAsString(category));
+                // paplease::LOG_ERR("Field missing for category '{}'. Document may be incomplete or corrupted.", FieldCategoryAsString(category));
                 return std::nullopt;
             }
 
             const auto& field = fieldOpt.value();
             if (field.IsBroken())
             {
-                paplease::LOG_ERR("Broken data in field '{}'. Document may be corrupted or have invalid values.", FieldCategoryAsString(category));
+                // paplease::LOG_ERR("Broken data in field '{}'. Document may be corrupted or have invalid values.", FieldCategoryAsString(category));
 
                 if (!returnBroken)
                     return std::nullopt;
@@ -647,6 +677,19 @@ namespace paplease {
             }
 
             return fieldsArray;
+        }
+
+        bool DocData::HasBrokenData() const
+        {
+            for (const auto& field : GetAllValidFields())
+            {
+                if (field->get().IsBroken())
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         void DocData::PrintAllFields() const // temporary for ease of development

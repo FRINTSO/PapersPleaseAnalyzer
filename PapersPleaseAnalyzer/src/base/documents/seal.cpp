@@ -33,7 +33,7 @@ namespace paplease {
 				if (entry.is_regular_file())
 				{
 					const auto& filePath = entry.path();
-					auto image = LoadImageFile(filePath.generic_string());
+					cv::Mat image = LoadImageFile(filePath.generic_string()) ^ 255;
 					if (!image.empty())
 						seals.emplace_back(std::move(image));
 				}
@@ -107,6 +107,7 @@ namespace paplease {
 				LOG_ERR("Invalid seal of document type: {}", ToStringView(documentType));
 				return false;
 			}
+			
 			return IsValidSeal(seal.value(), documentType);
 		}
 

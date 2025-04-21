@@ -1,0 +1,111 @@
+#include "pch.h"
+#include "screencap.h"
+
+#include <Windows.h>
+
+namespace paplease {
+    namespace screencap {
+
+        
+
+        cv::Mat GetMat(HWND hWND)
+        {
+            HDC deviceContext = GetDC(hWND);
+            HDC memoryDeviceContext = CreateCompatibleDC(deviceContext);
+
+            RECT windowRect;
+            GetClientRect(hWND, &windowRect);
+
+            int height = windowRect.bottom;
+            int width = windowRect.right;
+
+            HBITMAP bitmap = CreateCompatibleBitmap(deviceContext, width, height);
+
+            SelectObject(memoryDeviceContext, bitmap);
+
+            // copy data into bitmap
+            BitBlt(memoryDeviceContext, 0, 0, width, height, deviceContext, 0, 0, SRCCOPY);
+
+            // specify format by using bitmapinfoheader!
+            BITMAPINFOHEADER bi;
+            bi.biSize = sizeof(BITMAPINFOHEADER);
+            bi.biWidth = width;
+            bi.biHeight = -height;
+            bi.biPlanes = 1;
+            bi.biBitCount = 24;
+            bi.biCompression = BI_RGB;
+            bi.biSizeImage = 0; // because no compression
+            //bi.biXPelsPerMeter = 1;
+            //bi.biYPelsPerMeter = 2;
+            //bi.biClrUsed = 3;
+            //bi.biClrImportant = 4;
+
+            cv::Mat mat = cv::Mat(height, width, CV_8UC3);
+
+            // transform data
+            GetDIBits(memoryDeviceContext, bitmap, 0, height, mat.data, (BITMAPINFO*)&bi, DIB_RGB_COLORS);
+
+            // clean up!
+            DeleteObject(bitmap);
+            DeleteDC(memoryDeviceContext);
+            ReleaseDC(hWND, deviceContext);
+
+            return mat;
+        }
+
+        HWND GetGameWindowHandle()
+        {
+            LPCWSTR windowTitle = L"PapersPlease";
+            HWND hWND = FindWindow(NULL, windowTitle);
+            while (!hWND)
+            {
+                std::system("cls");
+                std::cout << "Start the game..." << std::endl;
+                HWND hWND = FindWindow(NULL, windowTitle);
+                Sleep(100);
+            }
+            return hWND;
+        }
+
+        static bool IsWindowForeground(HWND hwnd)
+        {
+            return GetForegroundWindow() == hwnd;
+        }
+
+        cv::Mat CaptureGameWindow()
+        {
+            HWND desktopWindow = GetDesktopWindow();
+            HWND gameWindow = GetGameWindowHandle();
+            if (!IsWindowForeground(gameWindow))
+            {
+                std::cout << "Window is not active!\n";
+                while (!IsWindowForeground(gameWindow));
+            }
+
+            auto screenWidth = GetSystemMetrics(SM_CXSCREEN);
+            auto screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+            RECT windowRect;
+            GetWindowRect(gameWindow, &windowRect);
+            while (windowRect.left < 0 || windowRect.top < 0 || windowRect.right > screenWidth || windowRect.bottom > screenHeight) {
+                std::cout << "Window is outside\n";
+                GetWindowRect(gameWindow, &windowRect);
+                continue;
+            }
+
+            windowRect.left += 7;
+            windowRect.right -= 7;
+            windowRect.bottom -= 7;
+            windowRect.top += 1;
+            
+            auto windowMat = GetMat(desktopWindow);
+
+            cv::Rect rect(windowRect.left, windowRect.top, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
+
+            auto finalWindow = windowMat(rect);
+
+            return finalWindow;
+        }
+
+    }
+}

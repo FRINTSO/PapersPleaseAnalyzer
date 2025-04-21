@@ -29,6 +29,13 @@
     <ClCompile Include="src\base\analysis\photo_analysis\photo_analyzer.cpp" />
     <ClCompile Include="src\test\faces.cpp" />
     <ClCompile Include="src\base\analysis\analysis_writer.cpp" />
+    <ClCompile Include="src\base\screen_capture\screencap.cpp" />
+    <ClCompile Include="src\base\screen_capture\direct_x_screencap.cpp" />
+    <ClCompile Include="src\test\rulebook.cpp" />
+    <ClCompile Include="src\base\analysis\data\location_bank.cpp" />
+    <ClCompile Include="src\test\test_transcript.cpp" />
+    <ClCompile Include="src\base\analysis\scannable\doc_tracker.cpp" />
+    <ClCompile Include="src\base\utils\str.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\color.h" />
@@ -77,6 +84,14 @@
     <ClInclude Include="src\test\faces.h" />
     <ClInclude Include="src\base\scaled.h" />
     <ClInclude Include="src\base\analysis\analysis_writer.h" />
+    <ClInclude Include="src\base\screen_capture\screencap.h" />
+    <ClInclude Include="src\base\screen_capture\direct_x_screencap.h" />
+    <ClInclude Include="src\test\rulebook.h" />
+    <ClInclude Include="src\base\analysis\data\entrant_data.h" />
+    <ClInclude Include="src\base\analysis\data\location_bank.h" />
+    <ClInclude Include="src\test\test_transcript.h" />
+    <ClInclude Include="src\base\analysis\scannable\doc_tracker.h" />
+    <ClInclude Include="src\base\utils\str.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\base\documents\bounding_box_finder.inc" />

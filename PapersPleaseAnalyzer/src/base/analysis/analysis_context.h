@@ -1,7 +1,9 @@
 #pragma once
 #include "base/analysis/data/criminals.h"
+#include "base/analysis/data/location_bank.h"
 #include "base/analysis/data/rules.h"
 #include "base/analysis/data/transcript.h"
+#include "base/analysis/data/entrant_data.h"
 #include "base/analysis/scannable/scan_context.h"
 #include "base/documents/data/date.h"
 #include "base/documents/doc_class.h"
@@ -35,70 +37,7 @@ namespace paplease {
 			std::array<documents::Doc, DocumentCapacity> m_documents;
 			size_t m_documentCount;
 		};
-
-		class LocationBank
-		{
-		public:
-			static constexpr size_t Countries = 7;
-			static constexpr size_t Districts = 8;
-			static constexpr size_t CitiesPerCountry = 3;
-
-			using CountryList = std::array<std::string_view, Countries>;
-			using DistrictList = std::array<std::string_view, Districts>;
-			using CityList = std::array<std::string_view, CitiesPerCountry>;
-			using CountryCityLookup = std::array<CityList, Countries>;
-
-			constexpr const std::string_view& GetCountry(documents::PassportType passportType) const noexcept
-			{
-				assert(passportType != documents::PassportType::Invalid, "PassportType cannot be invalid.");
-
-				return m_countryListLookUp[static_cast<size_t>(passportType) - static_cast<int>(documents::DocType::Passport)];
-			}
-			constexpr const CityList& GetCityList(documents::PassportType passportType) const noexcept
-			{
-				assert(passportType != documents::PassportType::Invalid, "PassportType cannot be invalid.");
-
-				return m_countryCityListLookUp[static_cast<size_t>(passportType) - static_cast<int>(documents::DocType::Passport)];
-			}
-			bool IsValidCountry(const std::string_view& countryName) const;
-			bool IsValidCountry(const std::string_view& countryName, documents::PassportType passportType) const;
-			bool IsValidDistrict(const std::string_view& districtName) const;
-			bool IsValidCity(const std::string_view& cityName) const;
-			bool IsValidCity(const std::string_view& cityName, documents::PassportType passportType) const;
-
-		private:
-			static constexpr CountryList m_countryListLookUp = {
-				"Antegria",
-				"Arstotzka",
-				"Impor",
-				"Kolechia",
-				"Obristan",
-				"Republia",
-				"United Federation",
-			};
-
-			static constexpr DistrictList m_districtListLookUp = {
-				"Altan",
-				"Vescillo",
-				"Burnton",
-				"Octovalis",
-				"Gennistora",
-				"Lendiforma",
-				"Wozenfield",
-				"Fardesto",
-			};
-
-			static constexpr CountryCityLookup m_countryCityListLookUp = {{
-				{ "St. Marmero", "Glorian", "Outer Grouse" },         // Antegria
-				{ "Orvech Vonor", "East Grestin", "Paradizna" },      // Arstotzka
-				{ "Enkyo", "Haihan", "Tsunkeido" },                   // Impor
-				{ "Yurko City", "Vedor", "West Grestin" },            // Kolechia
-				{ "Skal", "Lorndaz", "Mergerous" },                   // Obristan
-				{ "True Glorian", "Lesrenadi", "Bostan" },            // Republia
-				{ "Great Rapid", "Shingleton", "Korista City" },      // United Federation
-			}};
-		};
-
+		
 		class Profile
 		{
 		public:
@@ -135,7 +74,7 @@ namespace paplease {
 			void OnNewApplicant(int applicantNumber);
 
 		private: // DocRegistry:
-			void SaveAndAnalyzeScannedDocuments(scannable::InspectionData& inspectionData);
+			void SaveScannedDocuments(scannable::InspectionData& inspectionData);
 			void HandleDocumentByType(documents::DocType documentType);
 
 			void StoreBulletin(const documents::Doc& document);
@@ -161,10 +100,10 @@ namespace paplease {
 
 			// More complex
 			DocRegistry m_docRegistry;  // stores all documents currently in effect
-			const LocationBank m_locationBank;
 
 			// Profiler:
 			Profile m_profile;
+			data::EntrantInfo m_entrantInfo;
 		};
 
 		class DocumentValidator
@@ -179,7 +118,6 @@ namespace paplease {
 			bool ValidateIssuingCity() const;
 			bool ValidateDistrict() const;
 			bool ValidateForgedOrMissingSeal() const;
-			//bool ValidateNationality() const;
 			bool ValidateEntryTicketValidOnDate() const;
 			bool ValidateIssuingCountry() const;
 			bool ValidateAccessToAristotzka() const;

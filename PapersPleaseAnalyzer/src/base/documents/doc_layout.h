@@ -38,7 +38,7 @@ namespace paplease {
 			constexpr Rectangle GetFieldBox(FieldCategory type);
 			constexpr const std::array<Rectangle, DocLayout::MaxLayouts> GetAllFieldBoxes();
 
-			constexpr const DataLayout GetLayout(FieldCategory type) const noexcept;
+			constexpr const DataLayout& GetLayout(FieldCategory type) const noexcept;
 			constexpr const DataLayout* GetAllLayouts() const noexcept;
 			constexpr const size_t GetLayoutCount() const noexcept;
 		private:

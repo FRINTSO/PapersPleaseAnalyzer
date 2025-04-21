@@ -115,63 +115,6 @@ namespace paplease {
 
 #pragma endregion
 
-#pragma region LocationBank
-		
-		bool LocationBank::IsValidCountry(const std::string_view& countryName) const
-		{
-			for (auto passportType : utils::enum_range(PassportType::Antegria, PassportType::UnitedFederation))
-			{
-				if (this->IsValidCountry(countryName, passportType))
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
-		bool LocationBank::IsValidCountry(const std::string_view& countryName, documents::PassportType passportType) const
-		{
-			return utils::strfuncs::ToLower(this->GetCountry(passportType)) == utils::strfuncs::ToLower(countryName);
-		}
-
-		bool LocationBank::IsValidDistrict(const std::string_view& districtName) const
-		{
-			for (const auto& district : m_districtListLookUp)
-			{
-				if (utils::strfuncs::ToLower(district) == utils::strfuncs::ToLower(districtName))
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
-		bool LocationBank::IsValidCity(const std::string_view& cityName) const
-		{
-			for (auto passportType : utils::enum_range(PassportType::Antegria, PassportType::UnitedFederation))
-			{
-				if (this->IsValidCity(cityName, passportType))
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
-		bool LocationBank::IsValidCity(const std::string_view& cityName, documents::PassportType passportType) const
-		{
-			for (const auto& city : this->GetCityList(passportType))
-			{
-				if (utils::strfuncs::ToLower(city) == utils::strfuncs::ToLower(cityName))
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
-#pragma endregion
-
 #pragma region Profile
 
 		void Profile::OnNewDate()
@@ -229,7 +172,7 @@ namespace paplease {
 			else
 			{
 				// Log an error if date is missing
-				LOG_ERR("Missing boothData.date! Cannot update the date.");
+				// LOG_ERR("Missing boothData.date! Cannot update the date.");
 			}
 
 			if (scanContext.boothData.applicantNumber)
@@ -237,7 +180,8 @@ namespace paplease {
 				if (this->SetIfNewApplicant(scanContext.boothData.applicantNumber.value()))
 				{
 					LOG_RAW("-----------------[ New Applicant ]-----------------");
-					std::cin.get();
+					// std::cin.get();
+					m_entrantInfo = data::EntrantInfo{};
 					m_currentWeight = scanContext.boothData.weight;
 
 					if (scanContext.boothData.approximateHeight)
@@ -252,10 +196,16 @@ namespace paplease {
 				LOG_ERR("Missing boothData.applicantNumber! Cannot update the applicant.");
 			}
 
-			this->SaveAndAnalyzeScannedDocuments(scanContext.inspectionData);
+			this->SaveScannedDocuments(scanContext.inspectionData);
 		}
 
-		void AnalysisContext::SaveAndAnalyzeScannedDocuments(InspectionData& inspectionData)
+		//
+		// Scan Rules
+		// Then build scan-instructions from rules
+		// 
+		//
+
+		void AnalysisContext::SaveScannedDocuments(InspectionData& inspectionData)
 		{
 			for (auto& document : inspectionData.documents)
 			{
@@ -557,7 +507,7 @@ namespace paplease {
 
 		bool DocumentValidator::ValidateIssuingCity() const
 		{
-			bool accepted = m_analysisContext.m_locationBank.IsValidCity(m_documentData.GetFieldData<FieldCategory::IssuingCity>()->get());
+			bool accepted = data::LocationBank::IsValidCity(m_documentData.GetFieldData<FieldCategory::IssuingCity>()->get());
 			if (!accepted)
 			{
 				LOG_DISCREPANCY(
@@ -571,7 +521,7 @@ namespace paplease {
 
 		bool DocumentValidator::ValidateDistrict() const
 		{
-			bool accepted = m_analysisContext.m_locationBank.IsValidDistrict(m_documentData.GetFieldData<FieldCategory::District>()->get());
+			bool accepted = data::LocationBank::IsValidDistrict(m_documentData.GetFieldData<FieldCategory::District>()->get());
 			if (!accepted)
 			{
 				LOG_DISCREPANCY(
@@ -622,7 +572,7 @@ namespace paplease {
 
 		bool DocumentValidator::ValidateIssuingCountry() const
 		{
-			bool accepted = m_analysisContext.m_locationBank.IsValidCountry(m_documentData.GetFieldData<FieldCategory::IssuingCountry>()->get());
+			bool accepted = data::LocationBank::IsValidCountry(m_documentData.GetFieldData<FieldCategory::IssuingCountry>()->get());
 			if (!accepted)
 			{
 				LOG_DISCREPANCY(

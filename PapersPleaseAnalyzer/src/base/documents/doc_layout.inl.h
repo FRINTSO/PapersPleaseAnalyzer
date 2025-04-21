@@ -71,7 +71,7 @@ namespace paplease {
 				return boxes;
 			}
 
-			constexpr const DocLayout::DataLayout DocLayout::GetLayout(FieldCategory type) const noexcept
+			constexpr const DocLayout::DataLayout& DocLayout::GetLayout(FieldCategory type) const noexcept
 			{
 				for (size_t i = 0; i < m_layoutCount; i++)
 				{

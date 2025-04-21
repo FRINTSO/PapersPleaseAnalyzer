@@ -5,7 +5,7 @@ namespace paplease {
 	namespace analysis {
 		namespace data {
 
-			Transcript CreateTranscript(const documents::Doc& document)
+			std::optional<Transcript> CreateTranscript(const documents::Doc& document)
 			{
 				return {};
 			}

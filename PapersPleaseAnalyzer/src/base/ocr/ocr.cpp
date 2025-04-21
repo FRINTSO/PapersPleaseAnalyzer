@@ -32,7 +32,15 @@ namespace paplease {
 			const cv::Mat& ch = character;
 	#endif
 #else
-			cv::Mat ch = ScaleImage(character, SCALE);
+			cv::Mat ch;
+			if (character.rows / 2 >= 1 && character.cols / 2 >= 1)
+			{
+				ch = ScaleImage(character, SCALE);
+			}
+			else
+			{
+				ch = character;
+			}
 	#if not OCR_CHAR_CHECKSUM_OPTIMIZATION
 			ch = (ch & 1) ^ 1;
 	#endif
@@ -41,7 +49,7 @@ namespace paplease {
 #if 1
 			if (ch.rows * ch.cols >= 32)
 			{
-				LOG_ERR("CHARACTER TOO BIG");
+				// LOG_ERR("CHARACTER TOO BIG");
 				//cv::imshow("Char", character);
 				//cv::waitKey();
 				return -1;
@@ -319,7 +327,7 @@ namespace paplease {
 				// unrecognizable character
 				if (number <= 0 || chars.find(number) == chars.end())
 				{
-					LOG_ERR("Unrecognized character");
+					//LOG_ERR("Unrecognized character");
 					continue;
 				}
 

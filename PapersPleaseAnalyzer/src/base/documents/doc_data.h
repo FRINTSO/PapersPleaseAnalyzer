@@ -114,6 +114,8 @@ namespace paplease {
 
 			paplease::utils::FixedRefArray<Field, DocData::ArrayLength> GetAllValidFields() const;
 
+			bool HasBrokenData() const;
+
 			void PrintAllFields() const; // temporary for ease of development
 		private:
 			explicit DocData(const std::array<Field, ArrayLength>& data);
