@@ -4,6 +4,7 @@
 #include "base/analysis/data/rules.h"
 #include "base/analysis/data/transcript.h"
 #include "base/analysis/data/entrant_data.h"
+#include "base/analysis/scannable/doc_tracker.h"
 #include "base/analysis/scannable/scan_context.h"
 #include "base/documents/data/date.h"
 #include "base/documents/doc_class.h"
@@ -81,6 +82,8 @@ namespace paplease {
 			void StoreRuleBook(const documents::Doc& document);
 			void StoreTranscript(const documents::Doc& document);
 
+			void ReiterateRulebook() const;
+
 		private:  // Profiler:
 			void AddToProfile(const documents::Doc& document);
 			void ValidateDocument(const documents::Doc& document);
@@ -99,6 +102,7 @@ namespace paplease {
 			std::optional<data::Transcript> m_transcript;
 
 			// More complex
+			scannable::DocTracker m_docTracker;
 			DocRegistry m_docRegistry;  // stores all documents currently in effect
 
 			// Profiler:
@@ -136,8 +140,8 @@ namespace paplease {
 			bool ValidateFingerprints() const;
 
 			// Against rulebook, transcript, bulletin
-			bool ValidateAgainstRulebook() const;
-			bool ValidateAgainstTranscript() const;
+			//bool ValidateAgainstRulebook() const;
+			//bool ValidateAgainstTranscript() const;
 
 			// Against other applicant documents
 			bool ValidateName() const;

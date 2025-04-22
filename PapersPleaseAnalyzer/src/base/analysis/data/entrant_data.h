@@ -19,8 +19,6 @@ namespace paplease {
             {
                 bool IsCitizen() const;
 
-
-
                 ECountry nationality = ECountry::Invalid;
                 EDistrict district = EDistrict::Invalid;
                 ECity city = ECity::Invalid;

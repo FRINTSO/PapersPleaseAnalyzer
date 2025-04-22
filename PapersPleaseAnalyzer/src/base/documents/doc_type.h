@@ -64,6 +64,15 @@ namespace paplease {
             Count,
         };
 
+        constexpr DocType ToDocType(AppearanceType appearanceType)
+        {
+            if (appearanceType >= AppearanceType::Passport_Antegria && appearanceType <= AppearanceType::Passport_UnitedFederation)
+            {
+                return DocType::Passport;
+            }
+            return static_cast<DocType>(appearanceType);
+        }
+
 #if USE_ENUM_FUNCS
 
 #define DOC_TYPE_NAME_ACCESS_PERMIT              std::string_view("AccessPermit", 12)

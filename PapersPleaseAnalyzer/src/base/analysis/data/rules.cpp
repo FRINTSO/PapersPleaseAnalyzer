@@ -236,9 +236,25 @@ namespace paplease {
                 return rulebook;
             }
 
-            void Rule::ApplyRule() const
+            ERule Rule::GetRule() const
             {
+                return m_rule;
+            }
 
+            std::string_view Rule::GetDescription() const
+            {
+                for (const auto& [key, value] : g_StringRuleLookup)
+                {
+                    if (value == m_rule)
+                        return key;
+                }
+
+                return "";
+            }
+
+            const RuleDescriptor& Rule::GetDescriptor() const
+            {
+                return m_descriptor;
             }
 
             void RuleBook::RegisterRule(ERule rule)

@@ -116,7 +116,7 @@ namespace paplease {
 									FieldType::Text
 								},
 								DataLayout{
-									ScaledRectangle{ 156, 152, 112, 16 },
+									ScaledRectangle{ 156, 152, 116, 16 },
 									FieldCategory::PassportNumber,
 									FieldType::Text
 								},
@@ -546,7 +546,7 @@ namespace paplease {
 									FieldType::Text
 								},
 								DataLayout{
-									ScaledRectangle{ 134, 296, 118, 16 },
+									ScaledRectangle{ 130, 296, 118, 16 },
 									FieldCategory::PassportNumber,
 									FieldType::Text
 								},
@@ -629,7 +629,7 @@ namespace paplease {
 									FieldType::Text
 								},
 								DataLayout{
-									ScaledRectangle{ 136, 296, 118, 16 },
+									ScaledRectangle{ 130, 296, 118, 16 },
 									FieldCategory::PassportNumber,
 									FieldType::Text
 								},
@@ -671,7 +671,7 @@ namespace paplease {
 									FieldType::Text
 								},
 								DataLayout{
-									ScaledRectangle{ 134, 296, 118, 16 },
+									ScaledRectangle{ 130, 296, 118, 16 },
 									FieldCategory::PassportNumber,
 									FieldType::Text
 								},

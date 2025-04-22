@@ -25,6 +25,14 @@ namespace paplease {
 		bool DocRegistry::AcquireIfNewDocument(documents::Doc&& document)
 		{
 			if (!this->IsNewDocument(document)) return false;
+
+			// IS not brokjen
+			if (document.GetDocumentData().HasBrokenData())
+			{
+				LOG_ERR("Document does contain some broken data, needs to rescan. '{}'", ToStringView(document.GetDocumentType()));
+				return false;
+			}
+
 			this->AcquireDocument(std::move(document));
 			return true;
 		}
@@ -130,7 +138,17 @@ namespace paplease {
 		bool Profile::RegisterData(const documents::Field& fieldData)
 		{
 			int index = this->GetFieldIndexByCategoryType(fieldData.Category());
-			return this->CompareData(fieldData) != MismatchingData;
+			auto result = this->CompareData(fieldData);
+			if (result == MismatchingData)
+			{
+				return false;
+			}
+			else if (result == NoData)
+			{
+				m_fields[index] = fieldData;
+			}
+
+			return true;
 		}
 
 		int Profile::CompareData(const documents::Field& fieldData) const
@@ -188,6 +206,9 @@ namespace paplease {
 					{
 						m_approximateHeight = scanContext.boothData.approximateHeight.value();
 					}
+
+					// Rules
+					this->ReiterateRulebook();
 				}
 			}
 			else
@@ -283,6 +304,37 @@ namespace paplease {
 			m_transcript = data::CreateTranscript(document);
 		}
 
+		void AnalysisContext::ReiterateRulebook() const
+		{
+			if (!this->m_ruleBook)
+			{
+				LOG("Scan rule book!");
+				return;
+			}
+
+			// [Entrant type] -> [Required DocType]:
+			// Entrant -> Passport
+			// ArstotzkanPassport -> Entrant
+			// Id Card -> Citizen
+			// EntryTicket -> Foreigner
+			// WorkPass -> Worker
+			// DiplomaticAuth -> Diplomat
+			// Id Supplement -> Foreigner
+			// Grant -> Asylum Seeker
+			// PolioVaccine -> Entrant
+			// AccessPermit -> Foreigner
+			// EntryPermit -> Foreigner
+			//
+
+			for (const auto& rule : m_ruleBook->GetRules())
+			{
+				LOG("{}", rule->GetDescription());
+
+				//rule->GetDescriptor().
+			}
+
+
+		}
 
 		bool AnalysisContext::SetIfNewDate(documents::data::Date date)
 		{
@@ -315,6 +367,7 @@ namespace paplease {
 			m_criminalData = std::nullopt;
 			m_transcript = std::nullopt;
 
+			m_docTracker.OnNewDate();
 			m_docRegistry.OnNewDate();
 			m_profile.OnNewDate();
 		}
@@ -327,8 +380,10 @@ namespace paplease {
 
 			m_transcript = std::nullopt;
 
+			m_docTracker.OnNewApplicant();
 			m_docRegistry.OnNewApplicant();
 			m_profile.OnNewApplicant();
+			m_entrantInfo = data::EntrantInfo();
 		}
 
 #pragma region Profiler
@@ -381,7 +436,7 @@ namespace paplease {
 					valid &= ValidateHeight();
 					valid &= ValidateWeight();
 					valid &= ValidatePhysicalAppearance();
-					valid &= ValidateAgainstTranscript();
+					//valid &= ValidateAgainstTranscript();
 					return valid;
 				}
 				case DocType::CertificateOfVaccination:
@@ -407,7 +462,7 @@ namespace paplease {
 					valid &= ValidatePassportNumber();
 					valid &= ValidateExpirationDate();
 					valid &= ValidateForgedOrMissingSeal();
-					valid &= ValidateAgainstTranscript();
+					//valid &= ValidateAgainstTranscript();
 					return valid;
 				}
 				case DocType::EntryTicket:
@@ -457,7 +512,9 @@ namespace paplease {
 				}
 				case DocType::Passport:
 				{
-					valid &= ValidateAgainstRulebook();
+					m_analysisContext.m_entrantInfo.nationality = data::LocationBank::GetCountryFromPassportType(m_document.GetPassportType());
+
+					//valid &= ValidateAgainstRulebook();
 					valid &= ValidateExpirationDate();
 					valid &= ValidateIssuingCity();
 					valid &= ValidateName();
@@ -507,29 +564,33 @@ namespace paplease {
 
 		bool DocumentValidator::ValidateIssuingCity() const
 		{
-			bool accepted = data::LocationBank::IsValidCity(m_documentData.GetFieldData<FieldCategory::IssuingCity>()->get());
+			const auto& city = m_documentData.GetFieldData<FieldCategory::IssuingCity>()->get();
+			bool accepted = data::LocationBank::IsValidCity(city);
 			if (!accepted)
 			{
 				LOG_DISCREPANCY(
 					"{} is not a valid city. {}", 
-					m_documentData.GetFieldData<FieldCategory::IssuingCity>()->get(),
+					city,
 					ToStringView(m_document.GetDocumentType())
 				);
 			}
+			m_analysisContext.m_entrantInfo.city = data::LocationBank::FromCityString(city);
 			return true;
 		}
 
 		bool DocumentValidator::ValidateDistrict() const
 		{
-			bool accepted = data::LocationBank::IsValidDistrict(m_documentData.GetFieldData<FieldCategory::District>()->get());
+			const auto& district = m_documentData.GetFieldData<FieldCategory::District>()->get();
+			bool accepted = data::LocationBank::IsValidDistrict(district);
 			if (!accepted)
 			{
 				LOG_DISCREPANCY(
 					"{} is not a valid district. {}",
-					m_documentData.GetFieldData<FieldCategory::District>()->get(),
+					district,
 					ToStringView(m_document.GetDocumentType())
 				);
 			}
+			m_analysisContext.m_entrantInfo.district = data::LocationBank::FromDistrictString(district);
 			return true;
 		}
 
@@ -572,15 +633,17 @@ namespace paplease {
 
 		bool DocumentValidator::ValidateIssuingCountry() const
 		{
-			bool accepted = data::LocationBank::IsValidCountry(m_documentData.GetFieldData<FieldCategory::IssuingCountry>()->get());
+			const auto& country = m_documentData.GetFieldData<FieldCategory::IssuingCountry>()->get();
+			bool accepted = data::LocationBank::IsValidCountry(country);
 			if (!accepted)
 			{
 				LOG_DISCREPANCY(
 					"{} is not a valid country. {}",
-					m_documentData.GetFieldData<FieldCategory::IssuingCountry>()->get(),
+					country,
 					ToStringView(m_document.GetDocumentType())
 				);
 			}
+			// m_analysisContext.m_entrantInfo.nationality = data::LocationBank::FromCountryString(country);
 			return true;
 		}
 
@@ -589,10 +652,12 @@ namespace paplease {
 			auto& countryList = m_documentData.GetFieldData<FieldCategory::CountryList>()->get();
 			for (auto& countryName : countryList.strs)
 			{
+				if (countryName == "ARSTOTZKA")
+					return true;
 				std::cout << countryName << "\n";
 			}
-			__debugbreak();
-			return true;  // Placeholder, assuming valid for now
+			LOG_DISCREPANCY("Missing access to Arstotzka. '{}'", ToStringView(m_document.GetDocumentType()));
+			return false;
 		}
 
 		bool DocumentValidator::ValidateMissingVaccine() const
@@ -751,18 +816,18 @@ namespace paplease {
 			return true;  // Placeholder, assuming valid for now
 		}
 
-		// Against rulebook, transcript, bulletin
-		bool DocumentValidator::ValidateAgainstRulebook() const
-		{
-			LOG_ERR("DocumentValidator::ValidateAgainstRulebook() Not Implemented!");
-			return true;  // Placeholder, assuming valid for now
-		}
+		//// Against rulebook, transcript, bulletin
+		//bool DocumentValidator::ValidateAgainstRulebook() const
+		//{
+		//	LOG_ERR("DocumentValidator::ValidateAgainstRulebook() Not Implemented!");
+		//	return true;  // Placeholder, assuming valid for now
+		//}
 
-		bool DocumentValidator::ValidateAgainstTranscript() const
-		{
-			LOG_ERR("DocumentValidator::ValidateAgainstTranscript() Not Implemented!");
-			return true;  // Placeholder, assuming valid for now
-		}
+		//bool DocumentValidator::ValidateAgainstTranscript() const
+		//{
+		//	LOG_ERR("DocumentValidator::ValidateAgainstTranscript() Not Implemented!");
+		//	return true;  // Placeholder, assuming valid for now
+		//}
 
 		// Against other applicant documents
 		bool DocumentValidator::ValidateName() const

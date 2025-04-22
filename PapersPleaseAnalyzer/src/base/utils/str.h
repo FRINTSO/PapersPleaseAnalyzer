@@ -1,4 +1,6 @@
 #pragma once
+#include <memory>
+#include <string>
 #include <tuple>
 #include <vector>
 
@@ -7,6 +9,17 @@ namespace paplease {
 
         class PyStr
         {
+        public:
+            PyStr();
+            PyStr(const char* string, size_t length);
+            PyStr(const std::string& length);
+
+            PyStr& operator=(const PyStr& other);
+
+            ~PyStr();
+
+
+
         public:
             //Searching
             int find(PyStr sub) const;
@@ -82,6 +95,9 @@ namespace paplease {
             bool isspace() const;
             bool istitle() const;
             bool isupper() const;
+        private:
+            std::shared_ptr<char*> m_buffer;
+            size_t m_capacity;
         };
 
     }  // namespace utils

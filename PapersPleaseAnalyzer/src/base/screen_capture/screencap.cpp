@@ -86,17 +86,15 @@ namespace paplease {
             auto screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
             RECT windowRect;
-            GetWindowRect(gameWindow, &windowRect);
-            while (windowRect.left < 0 || windowRect.top < 0 || windowRect.right > screenWidth || windowRect.bottom > screenHeight) {
+            if (GetWindowRect(gameWindow, &windowRect) && (windowRect.left < 0 || windowRect.top < 0 || windowRect.right > screenWidth || windowRect.bottom > screenHeight))
+            {
                 std::cout << "Window is outside\n";
-                GetWindowRect(gameWindow, &windowRect);
-                continue;
+                while (GetWindowRect(gameWindow, &windowRect) && (windowRect.left < 0 || windowRect.top < 0 || windowRect.right > screenWidth || windowRect.bottom > screenHeight));
             }
 
             windowRect.left += 7;
             windowRect.right -= 7;
             windowRect.bottom -= 7;
-            windowRect.top += 1;
             
             auto windowMat = GetMat(desktopWindow);
 

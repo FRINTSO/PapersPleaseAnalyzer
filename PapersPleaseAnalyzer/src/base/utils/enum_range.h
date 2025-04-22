@@ -38,18 +38,18 @@ namespace paplease {
         template <typename E>
         class EnumRange
         {
-            int begin_value, end_value;
+            const int begin_value, end_value;
         public:
-            EnumRange(E begin, E end)
+            constexpr EnumRange(E begin, E end)
                 : begin_value(to_underlying(begin)), end_value(to_underlying(end))
             {}
 
-            EnumIterator<E> begin() const
+            constexpr EnumIterator<E> begin() const
             {
                 return EnumIterator<E>(begin_value);
             }
 
-            EnumIterator<E> end() const
+            constexpr EnumIterator<E> end() const
             {
                 return EnumIterator<E>(end_value + 1);
             }
@@ -57,7 +57,7 @@ namespace paplease {
 
         // Function to create an EnumRange from two enum values
         template <typename E>
-        EnumRange<E> enum_range(E begin, E end)
+        constexpr EnumRange<E> enum_range(E begin, E end)
         {
             return EnumRange<E>(begin, end);
         }

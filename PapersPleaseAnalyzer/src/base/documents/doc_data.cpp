@@ -244,7 +244,7 @@ namespace paplease {
                     scanner.SkipWhitespace();
                     if (scanner.IsAtEnd())
                     {
-                        return Data{ data::Vaccine(), DataType::Vaccine, true };
+                        return Data{ data::Vaccine(), DataType::Vaccine, false };
                     }
 
                     // Normal case

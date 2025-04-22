@@ -2,10 +2,12 @@
 #include "base/analysis/scannable/doc_tracker.h"
 
 #include "base/analysis/scannable/booth.h"
+#include "base/documents/doc_appearance.h"
 #include "base/documents/doc_type.h"
 #include "base/documents/doc_layout.h"
 #include "base/image_process.h"
 #include "base/shape.h"
+#include "base/utils/enum_range.h"
 
 #include "test/documents/test_hsv.h"
 
@@ -13,58 +15,214 @@ namespace paplease {
     namespace analysis {
         namespace scannable {
 
-            struct DocTrackInfo
-            {
-                documents::DocType documentType;
-                Rectangle box;
-            };
+			using namespace documents;
+
+			DocTracker::DocTracker()
+				: m_documentPositions{ TrackedDocument{ DocType::Invalid, Rectangle{ }} }, m_documentsInBoothView{DocType::Invalid}
+			{
+			}
 
             static cv::Mat PreprocessBoothView(const GameView& view)
             {
                 // Minimized documents
                 static constinit HSVConfig config1{ 36, 36, 0 ,255, 0, 255 };
                 auto binary1 = ToHSVBinary(view.booth, config1);
-
                 static constinit HSVConfig config2{ 11, 24, 77 ,147, 66, 139 };
                 auto binary2 = ToHSVBinary(view.booth, config2);
+                static auto boothDocArea = LoadImageFile("C:\\dev\\PapersPleaseAnalyzer\\PapersPleaseAnalyzer\\images\\booth\\booth_doc_area.png");
+                cv::Mat binaryMask;
+                cv::bitwise_or(binary1, binary2, binaryMask, boothDocArea);
 
-                static constinit HSVConfig config3{ 0, 0, 66, 71, 25, 50 };
-                auto binary3 = ToHSVBinary(view.booth, config3);
+                cv::Mat result;
+                cv::bitwise_and(view.booth, view.booth, result, binaryMask ^ 255);
+                
+                cv::Mat result2;
+                cv::bitwise_and(result, result, result2, boothDocArea);
+                return result2;
+            }
 
-                cv::Mat result = binary1 | binary2 | binary3;
-                static constinit auto headshotBox = documents::DocLayout::GetBooth().GetLayout(documents::FieldCategory::Photo).GetBox();
+            static cv::Mat PreprocessInspectionView(const GameView& view)
+            {
+                static constinit HSVConfig config1{0, 179, 0, 255, 51, 255};
+                // test::documents::find_hsv(view.inspection, config1);
+                auto binary1 = ToHSVBinary(view.inspection, config1);
 
-                cv::imshow("Bin1", binary1);
-                cv::imshow("Bin2", binary2);
-                cv::imshow("Bin3", binary3);
-                cv::imshow("result pre", result);
+                static auto inspectionViewFilter = LoadImageFile("C:\\dev\\PapersPleaseAnalyzer\\PapersPleaseAnalyzer\\images\\booth\\inspection_view_filter.png") ^ 255;
 
-                // booth:
-                // Extract headshot black silhouette + height measurements + black text
-                static constinit HSVConfig headshotHsvConfig{ 0, 23, 1, 71, 0, 255 };
-                cv::Mat headshot = ToHSVBinary(view.booth(headshotBox), headshotHsvConfig) ^ 255;
+                cv::Mat binaryMask = binary1 & inspectionViewFilter;
 
-                //cv::bitwise_and
-                cv::imshow("Headshot", headshot);
+                cv::imshow("Binmask", binaryMask);
 
-                result(cv::Rect(0, 0, headshot.cols, headshot.rows)) |= headshot;
-                cv::imshow("result post", result);
+                cv::Mat result;
+                cv::bitwise_and(view.inspection, view.inspection, result, binaryMask);
                 return result;
             }
 
+            static inline auto GetAppearanceTypes()
+            {
+                using namespace documents;
+				std::array<const DocAppearance*, static_cast<size_t>(AppearanceType::Count)> appearanceTypes{};
+
+                for (auto appearanceType : utils::enum_range(AppearanceType::AccessPermit, AppearanceType::Passport_UnitedFederation))
+                {
+                    appearanceTypes[static_cast<size_t>(appearanceType)] = &DocAppearance::GetRef(appearanceType);
+                }
+
+                return appearanceTypes;
+            }
+
+			static inline Rectangle FindDocumentBoundingBox(const cv::Mat& inspection, const documents::DocAppearance& appearance)
+			{
+				int left = INT_MAX;
+				int top = INT_MAX;
+				int right = 0;
+				int bottom = 0;
+				bool hasFoundTopLeft = false;
+
+#if MATCH_ONE_COLOR
+				const auto color = RGB_VAL(appearance.GetColors()[0]);
+#else
+				const RgbColor* colors = appearance.GetColors();
+				const size_t size = appearance.GetColorCount();
+#endif
+
+				int maxScanY = inspection.rows;
+				int minScanX = 0;
+				int maxScanX = inspection.cols;
+
+				for (int y = 0; y < maxScanY; y++)
+				{
+					const BgrColor* bgr = inspection.ptr<BgrColor>(y);
+
+					int min_x = INT_MAX;
+					int max_x = 0;
+					bool colorMatchedInRow = false;
+
+					for (int x = minScanX; x < maxScanX; x++)
+					{
+						// CHECK IF BGR_VAL(bgr[x]) is in colors
+#if MATCH_ONE_COLOR
+						if (color != BGR_VAL(bgr[x])) continue;
+#else
+						bool colorMatch = false;
+						for (size_t i = 0; i < size; i++)
+						{
+							if (RGB_VAL(colors[i]) == BGR_VAL(bgr[x]))
+							{
+								colorMatch = true;
+								break;
+							}
+						}
+						if (!colorMatch) continue;
+#endif
+#if CHEEKY_OPTIMIZATION
+						// cheeky optimization
+						if (!hasFoundTopLeft)
+						{
+							hasFoundTopLeft = !hasFoundTopLeft;
+
+							int width = appearance.GetWidth();
+							int height = appearance.GetHeight();
+
+							if (y + height - 1 < inspection.rows && x + width - 1 < inspection.cols)
+							{
+								// bottom_right
+								const auto& bottomRightColor = *inspection.ptr<BgrColor>(y + height - 1, x + width - 1);
+#if MATCH_ONE_COLOR
+								if (color == BGR_VAL(bgr[x]))
+									return Rectangle{ x,y,width,height };
+#else
+								for (size_t i = 0; i < size; i++)
+								{
+									if (RGB_VAL(colors[i]) == BGR_VAL(bottomRightColor))
+									{
+										return Rectangle{ x, y, width, height };
+									}
+								}
+#endif
+							}
+						}
+#endif
+
+						colorMatchedInRow = true;
+
+						min_x = std::min(min_x, x);
+						max_x = std::max(max_x, x);
+					}
+
+					if (colorMatchedInRow)
+					{
+						if (y < top)
+						{
+							top = y;
+#if EFFECTIVE_SCANNING_OPTIMIZATION
+							int maxHeight = top + appearance.GetHeight();
+							maxScanY = (maxHeight > inspection.rows) ? inspection.rows : maxHeight;
+#endif
+						}
+
+						bottom = std::max(bottom, y);
+
+						if (min_x < left)
+						{
+							left = min_x;
+#if EFFECTIVE_SCANNING_OPTIMIZATION
+							int maxWidth = left + appearance.GetWidth();
+							maxScanX = (maxWidth > inspection.cols) ? inspection.cols : maxWidth;
+#endif
+						}
+						if (max_x > right)
+						{
+							right = max_x;
+#if EFFECTIVE_SCANNING_OPTIMIZATION
+							int minWidth = right - appearance.GetWidth() + 1;
+							minScanX = (minWidth < 0) ? 0 : minWidth;
+#endif
+						}
+					}
+				}
+
+				// Nothing was found
+				if (left == INT_MAX && top == INT_MAX && !right && !bottom) return Rectangle{};
+
+				//cv::imshow("DBG_DOC_BOX", inspection(cv::Rect(left, top, right - left + 1, bottom - top + 1)));
+				//cv::waitKey();
+
+				return Rectangle{ left, top, right - left + 1, bottom - top + 1 };
+			}
+
             void DocTracker::TrackDocsInBoothView(const GameView& view)
             {
-                auto boothView = PreprocessBoothView(view);
-                cv::imshow("Booth View", boothView);
-                cv::waitKey(30);
+                auto boothView = PreprocessBoothView(view);  // TODO: Remove unscannable part
+                
+				for (auto docAppearance : GetAppearanceTypes())
+				{
+					auto boundingBox = FindDocumentBoundingBox(boothView, *docAppearance);
+					if (boundingBox.Empty()) continue;
+
+					cv::rectangle(boothView, boundingBox, cv::Scalar(127));
+					
+					auto docType = documents::ToDocType(docAppearance->GetType());
+					if (!m_documentPositions.Has(docType))
+					{
+ 						m_documentPositions.Set(docType, { docType, boundingBox, ViewArea::Booth });
+					}
+					else
+					{
+						m_documentPositions.Get(docType).box = boundingBox;
+					}
+
+				}
+				cv::imshow("Booth View", boothView);
+				cv::waitKey(30);
             }
 
             void DocTracker::TrackDocsInInspectionView(const GameView& view)
             {
                 // Full-sized documents
-                static HSVConfig config{};
-
-                test::documents::find_hsv(view.inspection, config);
+                auto inspectionView = PreprocessInspectionView(view);
+                cv::imshow("Inspection View", inspectionView);
+                cv::waitKey(30);
             }
 
 
@@ -76,8 +234,21 @@ namespace paplease {
                 TrackDocsInBoothView(gameView);
 
                 // Track docs in inspection
-                //TrackDocsInInspectionView(gameView.inspection);
+                // TrackDocsInInspectionView(gameView);
+
+
             }
+
+			void DocTracker::OnNewDate()
+			{
+				m_documentPositions.Clear();
+				m_documentsInBoothView.Clear();
+			}
+			void DocTracker::OnNewApplicant()
+			{
+				m_documentPositions.Clear();
+				m_documentsInBoothView.Clear();
+			}
 
         }
     }

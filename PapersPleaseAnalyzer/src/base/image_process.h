@@ -54,6 +54,14 @@ namespace paplease {
 
 	static inline cv::Mat ExtractDocumentField(const cv::Mat& document, const Rectangle& boundingBox)
 	{
+#define DEBUG_SHOW_BOX 0
+#if DEBUG_SHOW_BOX
+		cv::Mat temp;
+		document.copyTo(temp);
+		cv::rectangle(temp, boundingBox, cv::Scalar(127));
+		cv::imshow("Box", temp);
+		cv::waitKey();
+#endif
 		return document(boundingBox);
 	}
 

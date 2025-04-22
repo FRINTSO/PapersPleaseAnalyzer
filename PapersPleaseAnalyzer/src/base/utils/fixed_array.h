@@ -11,7 +11,10 @@ namespace paplease {
 		class FixedArray
 		{
 		public:
-			FixedArray() : m_count(0) {}
+			FixedArray(const T& defaultValue = T()) : m_array{}, m_count{}, m_default{defaultValue}
+			{
+				Clear();
+			}
 
 			void Add(const T& value)
 			{
@@ -44,6 +47,8 @@ namespace paplease {
 
 			void Clear()
 			{
+				for (auto& entry : m_array)
+					entry = m_default;
 				m_count = 0;
 			}
 
@@ -56,7 +61,8 @@ namespace paplease {
 
 		private:
 			std::array<T, Size> m_array;
-			size_t m_count = 0;
+			size_t m_count;
+			T m_default;
 		};
 
 		template<typename T, size_t Size>

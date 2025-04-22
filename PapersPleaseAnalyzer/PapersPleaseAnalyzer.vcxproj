@@ -191,6 +191,7 @@
     <ClCompile Include="src\test\documents\test_hsv.cpp" />
     <ClCompile Include="src\test\faces.cpp" />
     <ClCompile Include="src\test\rulebook.cpp" />
+    <ClCompile Include="src\test\test_booth.cpp" />
     <ClCompile Include="src\test\test_transcript.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -237,6 +238,7 @@
     <ClInclude Include="src\base\ocr\font.h" />
     <ClInclude Include="src\base\ocr\ocr.h" />
     <ClInclude Include="src\base\shape.h" />
+    <ClInclude Include="src\base\utils\table.h" />
     <ClInclude Include="src\base\utils\metaprogramming.h" />
     <ClInclude Include="src\base\utils\str.h" />
     <ClInclude Include="src\base\utils\strfuncs.h" />
@@ -247,6 +249,7 @@
     <ClInclude Include="src\test\documents\test_hsv.h" />
     <ClInclude Include="src\test\faces.h" />
     <ClInclude Include="src\test\rulebook.h" />
+    <ClInclude Include="src\test\test_booth.h" />
     <ClInclude Include="src\test\test_transcript.h" />
   </ItemGroup>
   <ItemGroup>

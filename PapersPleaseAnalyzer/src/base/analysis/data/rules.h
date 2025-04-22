@@ -110,11 +110,14 @@ namespace paplease {
             {
             public:
                 consteval Rule(ERule rule, RuleDescriptor descriptor)
-                    : m_rule{rule}, m_descriptor{descriptor}
+                    : m_rule{ rule }, m_descriptor{ descriptor }
                 {}
 
             public:
-                void ApplyRule() const;
+                // void ApplyRule() const;
+                ERule GetRule() const;
+                std::string_view GetDescription() const;
+                const RuleDescriptor& GetDescriptor() const;
             private:
                 ERule m_rule;
                 RuleDescriptor m_descriptor;
@@ -126,16 +129,16 @@ namespace paplease {
                 RuleBook() = default;
                 static constexpr size_t MaxRuleCount = 10;
 
-
                 const utils::FixedArray<const Rule*, MaxRuleCount>& GetRules() const
                 {
                     return m_activeRules;
                 }
+                
             private:
                 void RegisterRule(ERule rule);
 
             private:
-                utils::FixedArray<const Rule*, MaxRuleCount> m_activeRules;
+                utils::FixedArray<const Rule*, MaxRuleCount> m_activeRules{nullptr};
 
                 friend std::optional<RuleBook> CreateRuleBook(const documents::Doc& document);
             };

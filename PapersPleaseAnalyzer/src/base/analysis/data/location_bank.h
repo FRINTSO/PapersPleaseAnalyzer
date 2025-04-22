@@ -94,6 +94,13 @@ namespace paplease {
 				static bool IsValidCity(const std::string_view& cityName);
 				static bool IsValidCity(const std::string_view& cityName, documents::PassportType passportType);
 
+				static constexpr ECountry GetCountryFromPassportType(documents::PassportType passportType) noexcept
+				{
+					assert(passportType != documents::PassportType::Invalid && "PassportType cannot be invalid.");
+
+					return static_cast<ECountry>(static_cast<size_t>(passportType) - static_cast<int>(documents::DocType::Passport));
+				}
+
 				static ECountry FromCountryString(const std::string_view& countryName);
 				static const std::string_view& ToCountryStringView(ECountry country);
 				static EDistrict FromDistrictString(const std::string_view& districtName);

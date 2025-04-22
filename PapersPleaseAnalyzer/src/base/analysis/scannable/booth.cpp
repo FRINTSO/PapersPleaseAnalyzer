@@ -37,7 +37,6 @@ namespace paplease {
 				static constinit auto layouts = boothLayout.GetAllLayouts();
 
 				documents::DocDataBuilder builder{};
-
 				for (size_t i = 0; i < boothLayout.GetLayoutCount(); i++)
 				{
 					switch (layouts[i].GetType())
