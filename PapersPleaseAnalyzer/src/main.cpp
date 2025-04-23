@@ -13,7 +13,7 @@
 #include "test/rulebook.h"
 #include "test/test_transcript.h"
 #include "base/analysis/scannable/doc_tracker.h"
-
+#include "test/documents/test_document_boxing.h"
 
 
 void Test()
@@ -162,8 +162,8 @@ void main()
 
 	//test::test_rulebook();
 	//test::test_transcript();
-
-	test_screencap();
+	// test_screencap();
+	paplease::documents::test::test_document_character_boxing("29", paplease::documents::DocType::AccessPermit);
 
 	std::cin.get();
 }

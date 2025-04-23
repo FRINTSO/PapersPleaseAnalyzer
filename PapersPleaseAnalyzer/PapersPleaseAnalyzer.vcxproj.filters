@@ -37,6 +37,8 @@
     <ClCompile Include="src\base\analysis\scannable\doc_tracker.cpp" />
     <ClCompile Include="src\base\utils\str.cpp" />
     <ClCompile Include="src\test\test_booth.cpp" />
+    <ClCompile Include="src\base\documents\doc_scan.cpp" />
+    <ClCompile Include="src\base\analysis\game_analyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\color.h" />
@@ -95,6 +97,8 @@
     <ClInclude Include="src\base\utils\str.h" />
     <ClInclude Include="src\base\utils\table.h" />
     <ClInclude Include="src\test\test_booth.h" />
+    <ClInclude Include="src\base\documents\doc_scan.h" />
+    <ClInclude Include="src\base\analysis\game_analyzer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\base\documents\bounding_box_finder.inc" />

@@ -156,8 +156,10 @@
     <ClCompile Include="src\base\analysis\analysis_context.cpp" />
     <ClCompile Include="src\base\analysis\analysis_writer.cpp" />
     <ClCompile Include="src\base\analysis\data\location_bank.cpp" />
+    <ClCompile Include="src\base\analysis\game_analyzer.cpp" />
     <ClCompile Include="src\base\analysis\photo_analysis\photo_analyzer.cpp" />
     <ClCompile Include="src\base\analysis\scannable\doc_tracker.cpp" />
+    <ClCompile Include="src\base\documents\doc_scan.cpp" />
     <ClCompile Include="src\base\documents\seal.cpp" />
     <ClCompile Include="src\base\analysis\scannable\scan_context.cpp" />
     <ClCompile Include="src\base\screen_capture\direct_x_screencap.cpp" />
@@ -200,10 +202,12 @@
     <ClInclude Include="src\base\analysis\analysis_writer.h" />
     <ClInclude Include="src\base\analysis\data\entrant_data.h" />
     <ClInclude Include="src\base\analysis\data\location_bank.h" />
+    <ClInclude Include="src\base\analysis\game_analyzer.h" />
     <ClInclude Include="src\base\analysis\photo_analysis\photo_analyzer.h" />
     <ClInclude Include="src\base\analysis\scannable\doc_tracker.h" />
     <ClInclude Include="src\base\documents\doc_data.inl.h" />
     <ClInclude Include="src\base\documents\doc_data_type.h" />
+    <ClInclude Include="src\base\documents\doc_scan.h" />
     <ClInclude Include="src\base\documents\seal.h" />
     <ClInclude Include="src\base\documents\doc_type.inl.h" />
     <ClInclude Include="src\base\documents\utils\str_scanner.h" />

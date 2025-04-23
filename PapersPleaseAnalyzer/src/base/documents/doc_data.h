@@ -4,6 +4,7 @@
 #include "base/documents/data/photo.h"
 #include "base/documents/doc_data_type.h"
 #include "base/utils/fixed_array.h"
+#include "base/utils/table.h"
 
 #include <optional>
 #include <variant>
@@ -124,6 +125,16 @@ namespace paplease {
 
 			std::array<std::optional<Field>, ArrayLength> m_data;
 		};
+		class DocDataV2
+		{  // Represents the data of any document
+		public:
+			static constexpr size_t ArrayLength = static_cast<size_t>(FieldCategory::Count);
+			static constexpr size_t MaxFields = 10;
+		public:
+			//std::array<std::optional<Field>, ArrayLength> m_data;
+			utils::FixedArray<Field, MaxFields> m_fields;
+			utils::FixedTable<FieldCategory, Field*> m_data;
+		};
 
 #pragma endregion
 
@@ -141,6 +152,13 @@ namespace paplease {
 			void Clear();
 		private:
 			std::array<Field, ArrayLength> m_data;
+		};
+
+		class DocDataBuilderV2
+		{  // Builds a document data instance
+		public:
+		private:
+			DocData m_data;
 		};
 
 #pragma endregion
