@@ -1,14 +1,15 @@
 #include "pch.h"
 #include "test/documents/test_document_boxing.h"
 
-#include "base/game_view.h"
-#include "base/image_process.h"
-#include "base/ocr/font.h"
-#include "base/ocr/ocr.h"
-#include "base/shape.h"
+#include "paplease/game_view.h"
+#include "paplease/common/image_process.h"
+#include "paplease/scannable/doc_scan.h"
+#include "paplease/ocr/font.h"
+#include "paplease/ocr/ocr.h"
+#include "paplease/common/shape.h"
 
-#include "base/documents/doc_class.h"
-#include "base/documents/doc_layout.h"
+#include "paplease/documents/doc_class.h"
+#include "paplease/documents/doc_layout.h"
 
 namespace paplease {
 	namespace documents {
@@ -41,21 +42,22 @@ namespace paplease {
 				//
 
 				// Setup
-				GameView game = GetGameView(number);
+				GameView gameView = GetGameView(number);
 
-				auto doc = FindDocument(game, docType);
-				if (!doc.has_value())
+				auto docViewOpt = scannable::ScanForDocument(gameView, ViewArea::InspectionView, docType);
+				if (!docViewOpt.has_value())
 				{
 					std::cerr << "Document is not valid, test failed on setup!\n";
 					return;
 				}
+				auto doc = docViewOpt->ToDocument(gameView);
 
-				auto binary = doc.value().PreprocessDocument();
+				auto binary = doc.PreprocessDocument();
 
 				// Test
 				char name = 'a';
-				auto layouts = doc.value().GetLayout().GetAllLayouts();
-				auto layoutCount = doc.value().GetLayout().GetLayoutCount();
+				auto layouts = doc.GetLayout().GetAllLayouts();
+				auto layoutCount = doc.GetLayout().GetLayoutCount();
 				for (size_t i = 0; i < layoutCount; i++)
 				{
 					if (layouts[i].GetType() == FieldType::Text)
@@ -72,17 +74,19 @@ namespace paplease {
 			void test_document_field_boxing(const std::string& number, DocType docType)
 			{
 				// Setup
-				GameView game = GetGameView(number);
+				GameView gameView = GetGameView(number);
 
-				auto doc = FindDocument(game, docType);
-				if (!doc.has_value())
+				auto docViewOpt = scannable::ScanForDocument(gameView, ViewArea::InspectionView, docType);
+				if (!docViewOpt.has_value())
 				{
 					std::cerr << "Document is not valid, test failed on setup!\n";
 					return;
 				}
 
-				auto binary = doc.value().PreprocessDocument();
-				const auto& layout = doc.value().GetLayout();
+				auto doc = docViewOpt->ToDocument(gameView);
+
+				auto binary = doc.PreprocessDocument();
+				const auto& layout = doc.GetLayout();
 
 				// Test
 
@@ -98,17 +102,19 @@ namespace paplease {
 			void test_text_field_character_boxing(const std::string& number, DocType docType, FieldCategory dataField)
 			{
 				// Setup
-				GameView game = GetGameView(number);
+				GameView gameView = GetGameView(number);
 
-				auto doc = FindDocument(game, docType);
-				if (!doc.has_value())
+				auto docViewOpt = scannable::ScanForDocument(gameView, ViewArea::InspectionView, docType);
+				if (!docViewOpt.has_value())
 				{
 					std::cerr << "Document is not valid, test failed on setup!\n";
 					return;
 				}
 
-				auto binary = doc.value().PreprocessDocument();
-				const auto& layout = doc.value().GetLayout();
+				auto doc = docViewOpt->ToDocument(gameView);
+
+				auto binary = doc.PreprocessDocument();
+				const auto& layout = doc.GetLayout();
 
 				auto dataLayout = layout.GetLayout(dataField);
 

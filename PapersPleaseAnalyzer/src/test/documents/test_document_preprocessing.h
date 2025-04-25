@@ -3,7 +3,7 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "base/documents/doc_type.h"
+#include "paplease/documents/doc_type.h"
 
 namespace paplease {
 	namespace documents {

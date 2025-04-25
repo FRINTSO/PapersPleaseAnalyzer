@@ -113,7 +113,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\opencv\build\include;$(SolutionDir)PapersPleaseAnalyzer\src;$(SolutionDir)PapersPleaseAnalyzer\vendor\spdlog\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\opencv\build\include;$(SolutionDir)PapersPleaseAnalyzer\src;$(SolutionDir)PapersPleaseAnalyzer\vendor\spdlog\include;$(SolutionDir)PapersPleaseAnalyzer\src;$(SolutionDir)PapersPleaseAnalyzer\vendor\magic_enum\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/external:anglebrackets /external:I C:\opencv\build\include /external:W0 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -136,7 +136,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\opencv\build\include;$(SolutionDir)PapersPleaseAnalyzer\src;$(SolutionDir)PapersPleaseAnalyzer\vendor\spdlog\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\opencv\build\include;$(SolutionDir)PapersPleaseAnalyzer\src;$(SolutionDir)PapersPleaseAnalyzer\vendor\spdlog\include;$(SolutionDir)PapersPleaseAnalyzer\src;$(SolutionDir)PapersPleaseAnalyzer\vendor\magic_enum\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -153,35 +153,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\base\analysis\analysis_context.cpp" />
-    <ClCompile Include="src\base\analysis\analysis_writer.cpp" />
-    <ClCompile Include="src\base\analysis\data\location_bank.cpp" />
-    <ClCompile Include="src\base\analysis\game_analyzer.cpp" />
-    <ClCompile Include="src\base\analysis\photo_analysis\photo_analyzer.cpp" />
-    <ClCompile Include="src\base\analysis\scannable\doc_tracker.cpp" />
-    <ClCompile Include="src\base\documents\doc_scan.cpp" />
-    <ClCompile Include="src\base\documents\seal.cpp" />
-    <ClCompile Include="src\base\analysis\scannable\scan_context.cpp" />
-    <ClCompile Include="src\base\screen_capture\direct_x_screencap.cpp" />
-    <ClCompile Include="src\base\screen_capture\screencap.cpp" />
-    <ClCompile Include="src\base\utils\log.cpp" />
-    <ClCompile Include="src\base\documents\doc_appearance.cpp" />
-    <ClCompile Include="src\base\documents\doc_layout.cpp" />
-    <ClCompile Include="src\base\analysis\data\criminals.cpp" />
-    <ClCompile Include="src\base\analysis\game_controller.cpp" />
-    <ClCompile Include="src\base\analysis\data\rules.cpp" />
-    <ClCompile Include="src\base\analysis\scannable\booth.cpp" />
-    <ClCompile Include="src\base\analysis\scannable\inspection.cpp" />
-    <ClCompile Include="src\base\documents\doc_data.cpp" />
-    <ClCompile Include="src\base\documents\doc_extractor.cpp" />
-    <ClCompile Include="src\base\documents\data\date.cpp" />
-    <ClCompile Include="src\base\documents\doc_class.cpp" />
-    <ClCompile Include="src\base\analysis\data\transcript.cpp" />
-    <ClCompile Include="src\base\game_view.cpp" />
-    <ClCompile Include="src\base\utils\str.cpp" />
+    <ClCompile Include="src\paplease\analysis\analysis_context.cpp" />
+    <ClCompile Include="src\paplease\analysis\data\location_bank.cpp" />
+    <ClCompile Include="src\paplease\analysis\game_analyzer.cpp" />
+    <ClCompile Include="src\paplease\analysis\photo_analysis\photo_analyzer.cpp" />
+    <ClCompile Include="src\paplease\documents\data\date.cpp" />
+    <ClCompile Include="src\paplease\documents\doc_view.cpp" />
+    <ClCompile Include="src\paplease\analysis\doc_tracker.cpp" />
+    <ClCompile Include="src\paplease\scannable\doc_scan.cpp" />
+    <ClCompile Include="src\paplease\documents\seal.cpp" />
+    <ClCompile Include="src\paplease\scannable\scan_context.cpp" />
+    <ClCompile Include="src\paplease\screencap\screencap.cpp" />
+    <ClCompile Include="src\paplease\utils\log.cpp" />
+    <ClCompile Include="src\paplease\documents\doc_appearance.cpp" />
+    <ClCompile Include="src\paplease\documents\doc_layout.cpp" />
+    <ClCompile Include="src\paplease\analysis\data\criminals.cpp" />
+    <ClCompile Include="src\paplease\analysis\game_controller.cpp" />
+    <ClCompile Include="src\paplease\analysis\data\rules.cpp" />
+    <ClCompile Include="src\paplease\scannable\booth.cpp" />
+    <ClCompile Include="src\paplease\scannable\inspection.cpp" />
+    <ClCompile Include="src\paplease\documents\doc_data.cpp" />
+    <ClCompile Include="src\paplease\documents\doc_class.cpp" />
+    <ClCompile Include="src\paplease\analysis\data\transcript.cpp" />
+    <ClCompile Include="src\paplease\game_view.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\base\ocr\font.cpp" />
-    <ClCompile Include="src\base\ocr\ocr.cpp" />
+    <ClCompile Include="src\paplease\ocr\font.cpp" />
+    <ClCompile Include="src\paplease\ocr\ocr.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
@@ -191,73 +188,72 @@
     <ClCompile Include="src\test\documents\test_document_preprocessing.cpp" />
     <ClCompile Include="src\test\documents\test_document_boxing.cpp" />
     <ClCompile Include="src\test\documents\test_hsv.cpp" />
-    <ClCompile Include="src\test\faces.cpp" />
-    <ClCompile Include="src\test\rulebook.cpp" />
+    <ClCompile Include="src\test\test_faces.cpp" />
+    <ClCompile Include="src\test\test_rulebook.cpp" />
     <ClCompile Include="src\test\test_booth.cpp" />
     <ClCompile Include="src\test\test_transcript.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\base\analysis\analysis_context.h" />
-    <ClInclude Include="src\base\analysis\analysis_context.inl.h" />
-    <ClInclude Include="src\base\analysis\analysis_writer.h" />
-    <ClInclude Include="src\base\analysis\data\entrant_data.h" />
-    <ClInclude Include="src\base\analysis\data\location_bank.h" />
-    <ClInclude Include="src\base\analysis\game_analyzer.h" />
-    <ClInclude Include="src\base\analysis\photo_analysis\photo_analyzer.h" />
-    <ClInclude Include="src\base\analysis\scannable\doc_tracker.h" />
-    <ClInclude Include="src\base\documents\doc_data.inl.h" />
-    <ClInclude Include="src\base\documents\doc_data_type.h" />
-    <ClInclude Include="src\base\documents\doc_scan.h" />
-    <ClInclude Include="src\base\documents\seal.h" />
-    <ClInclude Include="src\base\documents\doc_type.inl.h" />
-    <ClInclude Include="src\base\documents\utils\str_scanner.h" />
-    <ClInclude Include="src\base\analysis\scannable\scan_context.h" />
-    <ClInclude Include="src\base\scaled.h" />
-    <ClInclude Include="src\base\screen_capture\direct_x_screencap.h" />
-    <ClInclude Include="src\base\screen_capture\screencap.h" />
-    <ClInclude Include="src\base\utils\enum_range.h" />
-    <ClInclude Include="src\base\utils\fixed_array.h" />
-    <ClInclude Include="src\base\utils\log.h" />
-    <ClInclude Include="src\base\analysis\game_controller.h" />
-    <ClInclude Include="src\base\analysis\scannable\booth.h" />
-    <ClInclude Include="src\base\analysis\scannable\inspection.h" />
-    <ClInclude Include="src\base\color.h" />
-    <ClInclude Include="src\base\common.h" />
-    <ClInclude Include="src\base\documents\doc_extractor.h" />
-    <ClInclude Include="src\base\documents\doc_appearance.inl.h" />
-    <ClInclude Include="src\base\documents\doc_layout.inl.h" />
-    <ClInclude Include="src\base\documents\data\date.h" />
-    <ClInclude Include="src\base\documents\doc_class.h" />
-    <ClInclude Include="src\base\documents\doc_appearance.h" />
-    <ClInclude Include="src\base\documents\doc_data.h" />
-    <ClInclude Include="src\base\documents\doc_layout.h" />
-    <ClInclude Include="src\base\documents\doc_type.h" />
-    <ClInclude Include="src\base\documents\data\field_data.h" />
-    <ClInclude Include="src\base\documents\data\photo.h" />
-    <ClInclude Include="src\base\analysis\data\criminals.h" />
-    <ClInclude Include="src\base\analysis\data\rules.h" />
-    <ClInclude Include="src\base\analysis\data\transcript.h" />
-    <ClInclude Include="src\base\game_view.h" />
-    <ClInclude Include="src\base\image_process.h" />
-    <ClInclude Include="src\base\ocr\font.h" />
-    <ClInclude Include="src\base\ocr\ocr.h" />
-    <ClInclude Include="src\base\shape.h" />
-    <ClInclude Include="src\base\utils\table.h" />
-    <ClInclude Include="src\base\utils\metaprogramming.h" />
-    <ClInclude Include="src\base\utils\str.h" />
-    <ClInclude Include="src\base\utils\strfuncs.h" />
+    <ClInclude Include="src\paplease\analysis\analysis_context.h" />
+    <ClInclude Include="src\paplease\analysis\analysis_context.inl.h" />
+    <ClInclude Include="src\paplease\analysis\data\entrant_data.h" />
+    <ClInclude Include="src\paplease\analysis\data\location_bank.h" />
+    <ClInclude Include="src\paplease\analysis\game_analyzer.h" />
+    <ClInclude Include="src\paplease\analysis\photo_analysis\photo_analyzer.h" />
+    <ClInclude Include="src\paplease\core\fixed.h" />
+    <ClInclude Include="src\paplease\core\optref.h" />
+    <ClInclude Include="src\paplease\documents\doc_view.h" />
+    <ClInclude Include="src\paplease\analysis\doc_tracker.h" />
+    <ClInclude Include="src\base\analysis\scannable\scanned_doc.h" />
+    <ClInclude Include="src\paplease\documents\doc_data.inl.h" />
+    <ClInclude Include="src\paplease\documents\doc_data_type.h" />
+    <ClInclude Include="src\paplease\scannable\doc_scan.h" />
+    <ClInclude Include="src\paplease\documents\seal.h" />
+    <ClInclude Include="src\paplease\documents\doc_type.inl.h" />
+    <ClInclude Include="src\paplease\documents\utils\str_scanner.h" />
+    <ClInclude Include="src\paplease\scannable\scan_context.h" />
+    <ClInclude Include="src\paplease\common\scaled.h" />
+    <ClInclude Include="src\paplease\screencap\screencap.h" />
+    <ClInclude Include="src\paplease\utils\enum_range.h" />
+    <ClInclude Include="src\paplease\utils\log.h" />
+    <ClInclude Include="src\paplease\analysis\game_controller.h" />
+    <ClInclude Include="src\paplease\scannable\booth.h" />
+    <ClInclude Include="src\paplease\scannable\inspection.h" />
+    <ClInclude Include="src\paplease\common\color.h" />
+    <ClInclude Include="src\paplease\common\common.h" />
+    <ClInclude Include="src\paplease\documents\doc_appearance.inl.h" />
+    <ClInclude Include="src\paplease\documents\doc_layout.inl.h" />
+    <ClInclude Include="src\paplease\documents\data\date.h" />
+    <ClInclude Include="src\paplease\documents\doc_class.h" />
+    <ClInclude Include="src\paplease\documents\doc_appearance.h" />
+    <ClInclude Include="src\paplease\documents\doc_data.h" />
+    <ClInclude Include="src\paplease\documents\doc_layout.h" />
+    <ClInclude Include="src\paplease\documents\doc_type.h" />
+    <ClInclude Include="src\paplease\documents\data\field_data.h" />
+    <ClInclude Include="src\paplease\documents\data\photo.h" />
+    <ClInclude Include="src\paplease\analysis\data\criminals.h" />
+    <ClInclude Include="src\paplease\analysis\data\rules.h" />
+    <ClInclude Include="src\paplease\analysis\data\transcript.h" />
+    <ClInclude Include="src\paplease\game_view.h" />
+    <ClInclude Include="src\paplease\common\image_process.h" />
+    <ClInclude Include="src\paplease\ocr\font.h" />
+    <ClInclude Include="src\paplease\ocr\ocr.h" />
+    <ClInclude Include="src\paplease\common\shape.h" />
+    <ClInclude Include="src\paplease\utils\metaprogramming.h" />
+    <ClInclude Include="src\paplease\core\pystr.h" />
+    <ClInclude Include="src\paplease\utils\strfuncs.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\test\documents\test_document_data_extraction.h" />
     <ClInclude Include="src\test\documents\test_document_preprocessing.h" />
     <ClInclude Include="src\test\documents\test_document_boxing.h" />
     <ClInclude Include="src\test\documents\test_hsv.h" />
-    <ClInclude Include="src\test\faces.h" />
-    <ClInclude Include="src\test\rulebook.h" />
+    <ClInclude Include="src\test\test_faces.h" />
+    <ClInclude Include="src\test\test_rulebook.h" />
     <ClInclude Include="src\test\test_booth.h" />
     <ClInclude Include="src\test\test_transcript.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\base\documents\bounding_box_finder.inc" />
+    <None Include="src\paplease\documents\bounding_box_finder.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

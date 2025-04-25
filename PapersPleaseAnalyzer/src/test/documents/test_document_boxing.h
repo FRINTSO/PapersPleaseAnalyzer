@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 
-#include "base/documents/doc_type.h"
-#include "base/documents/doc_data.h"
+#include "paplease/documents/doc_type.h"
+#include "paplease/documents/doc_data.h"
 
 namespace paplease {
 	namespace documents {

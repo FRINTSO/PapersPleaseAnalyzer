@@ -1,19 +1,22 @@
 #include "pch.h"
 
 #include <opencv2/core/utils/logger.hpp>
+#include <magic_enum/magic_enum.hpp>
 
-#include "base/analysis/game_controller.h"
-#include "base/analysis/photo_analysis/photo_analyzer.h"
-#include "base/screen_capture/screencap.h"
-#include "base/screen_capture/direct_x_screencap.h"
-#include "base/utils/log.h"
+#include "paplease/analysis/game_controller.h"
+#include "paplease/analysis/game_analyzer.h"
+#include "paplease/analysis/photo_analysis/photo_analyzer.h"
+#include "paplease/screencap/screencap.h"
+#include "paplease/utils/log.h"
 #include "test/documents/test_document_boxing.h"
 #include "test/documents/test_hsv.h"
-#include "test/faces.h"
-#include "test/rulebook.h"
+#include "test/test_faces.h"
+#include "test/test_rulebook.h"
 #include "test/test_transcript.h"
-#include "base/analysis/scannable/doc_tracker.h"
+#include "paplease/analysis/doc_tracker.h"
+#include "paplease/core/fixed.h"
 #include "test/documents/test_document_boxing.h"
+
 
 
 void Test()
@@ -25,7 +28,7 @@ void Test()
 	//auto path = "C:\\dev\\PapersPleaseAnalyzer\\PapersPleaseAnalyzer\\images\\game_sim\\3\\game_6.png";
 	paplease::GameView game(path);
 
-	auto result = paplease::analysis::scannable::ScanBooth(game);
+	auto result = paplease::scannable::ScanBooth(game);
 	
 	paplease::HSVConfig config{ 0, 179, 1, 70, 0, 65 };
 	// test::documents::test_hsv(result->applicantHeadshot.m_mat, &config);
@@ -38,7 +41,7 @@ void testit(const std::string& path)
 	using namespace paplease::documents;
 	using namespace paplease::documents::data;
 	paplease::GameView game(path);
-	auto boothData = paplease::analysis::scannable::ScanBooth(game);
+	auto boothData = paplease::scannable::ScanBooth(game);
 	Photo boothPhoto = boothData.PhotoToBinaryHeadshotPhoto();
 	// FIXUP BOOTH PHOTO
 	auto sil = boothData.ExtractSilhouette();
@@ -49,7 +52,7 @@ void testit(const std::string& path)
 	//cv::bitwise_and(face, face, resultImg, head);
 	//boothPhoto.m_mat =  sil | resultImg;
 
-	Photo passportHeadshot = paplease::documents::FindDocument(game, DocType::Passport)->GetDocumentData().GetFieldData<FieldCategory::Photo>()->get();
+	Photo passportHeadshot = paplease::scannable::ScanForDocument(game, paplease::ViewArea::InspectionView, DocType::Passport)->ToDocument(game).GetDocumentData().GetFieldData<FieldCategory::Photo>()->get();
 	// Photo idCardHeadshot = paplease::documents::FindDocument(game, DocType::IdentityCard)->GetDocumentData().GetFieldData<FieldCategory::Photo>()->get();
 
 	bool result = paplease::analysis::IsSamePerson(passportHeadshot, boothPhoto);
@@ -92,7 +95,7 @@ void test_booth_face_extraction()
 				if (fs::is_regular_file(entry.status()))
 				{
 					auto gameView = paplease::GameView(entry.path().string());
-					auto result = paplease::analysis::scannable::ScanBooth(gameView);
+					auto result = paplease::scannable::ScanBooth(gameView);
 					auto face = result.ExtractFace();
 					//cv::imshow("Face", face);
 					//cv::waitKey();
@@ -129,8 +132,9 @@ void Run()
 
 void test_screencap()
 {
-	paplease::analysis::GameAnalysisController analyzer{ false };
-	paplease::analysis::scannable::DocTracker tracker{};
+	//paplease::analysis::GameAnalysisController analyzer{ false };
+	// paplease::analysis::scannable::DocTracker tracker{};
+	paplease::analysis::GameAnalyzer analyzer{};
 	while (true)
 	{
 		auto result = paplease::screencap::CaptureGameWindow();
@@ -141,11 +145,13 @@ void test_screencap()
 			continue;
 		}
 
-		paplease::GameView view(result);
-		tracker.Update(view);
-		analyzer.Update(view);
-		/*cv::imshow("output", result);
-		cv::waitKey(30);*/
+		paplease::GameView view(std::move(result));
+		analyzer.Scan(view);
+
+		//tracker.Update(view);
+		//analyzer.Update(view);
+		//cv::imshow("output", result);
+		cv::waitKey(30);
 	}
 }
 
@@ -160,10 +166,14 @@ void main()
 	//Run();
 	//test_booth_face_extraction();
 
+	/*auto img = paplease::ScaleImage(cv::imread("C:\\dev\\PapersPleaseAnalyzer\\PapersPleaseAnalyzer\\images\\game_52.png", cv::IMREAD_UNCHANGED), 0.4f);
+	paplease::HSVConfig config{ 0 , 179 , 0 , 255 , 79 , 255 };
+	test::documents::find_hsv(img, config);*/
+
 	//test::test_rulebook();
 	//test::test_transcript();
-	// test_screencap();
-	paplease::documents::test::test_document_character_boxing("29", paplease::documents::DocType::AccessPermit);
+	test_screencap();
+	//paplease::documents::test::test_document_character_boxing("29", paplease::documents::DocType::AccessPermit);
 
 	std::cin.get();
 }

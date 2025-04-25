@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "base/image_process.h"
+#include "paplease/common/image_process.h"
 
 namespace test::documents {
 

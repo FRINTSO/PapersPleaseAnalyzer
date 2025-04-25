@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "test/documents/test_document_preprocessing.h"
 
-#include "base/game_view.h"
-
-#include "base/documents/doc_class.h"
+#include "paplease/game_view.h"
+#include "paplease/scannable/doc_scan.h"
+#include "paplease/documents/doc_class.h"
 
 namespace paplease {
 	namespace documents {
@@ -11,16 +11,17 @@ namespace paplease {
 
 			void test_document_preprocessing(const std::string& number, documents::DocType docType)
 			{
-				GameView game = GetGameView(number);
+				GameView gameView = GetGameView(number);
 
-				auto doc = documents::FindDocument(game, docType);
-				if (!doc.has_value())
+				auto docOptView = scannable::ScanForDocument(gameView, ViewArea::InspectionView, docType);
+				if (!docOptView.has_value())
 				{
 					std::cerr << "Failed test_document_preprocessing\n";
 					return;
 				}
+				auto doc = docOptView->ToDocument(gameView);
 
-				auto binary = doc.value().PreprocessDocument();
+				auto binary = doc.PreprocessDocument();
 				cv::imshow("Binary Document", binary);
 			}
 

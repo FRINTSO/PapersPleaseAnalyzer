@@ -1,7 +1,7 @@
 #pragma once
 #include <opencv2/opencv.hpp>
 
-#include "base/color.h"
+#include "paplease/common/color.h"
 
 namespace test::documents
 {
