@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <bitset>
+#include <iterator>
 #include <type_traits>
 
 namespace paplease {
@@ -168,14 +169,22 @@ namespace paplease {
 
             enum class EntryState : unsigned char { Empty, Occupied, Deleted };
 
-            struct Entry
+            class Entry
             {
+            public:
                 KeyType key{};
                 ValueType value{};
+            public:
                 EntryState state = EntryState::Empty;
 
                 constexpr Entry() = default;
             };
+
+            constexpr size_t GetHashIndex(const KeyType& key)
+            {
+                return Hash{}(key) % Size;
+                // return (size_t)key % Size;
+            }
 
         public:
             constexpr FixedHashTable() = default;
@@ -255,12 +264,66 @@ namespace paplease {
                 ValueType v;
                 return Get(key, v);
             }
-        private:
-            constexpr size_t GetHashIndex(const KeyType& key)
+
+            // Iterator support
+            class Iterator
             {
-                return Hash{}(key) % Size;
-                // return (size_t)key % Size;
-            }
+            public:
+                using iterator_category = std::forward_iterator_tag;
+                using value_type = EntryState;
+                using difference_type = std::ptrdiff_t;
+                using pointer = EntryState*;
+                using reference = EntryState&;
+
+                constexpr Iterator(Entry* ptr, Entry* end)
+                    : m_ptr(ptr), m_end(end)
+                {
+                    SkipInvalid();
+                }
+
+                constexpr reference operator*() { return *m_ptr; }
+                constexpr pointer operator->() const { return &m_ptr; }
+
+                constexpr Iterator& operator++()
+                {
+                    ++m_ptr;
+                    SkipInvalid();
+                    return *this;
+                }
+
+                constexpr Iterator operator++(int)
+                {
+                    Iterator temp = *this;
+                    ++(*this);
+                    return temp;
+                }
+
+                friend constexpr bool operator==(const Iterator& a, const Iterator& b)
+                {
+                    return a.m_ptr == b.m_ptr;
+                }
+
+                friend constexpr bool operator!=(const Iterator& a, const Iterator& b)
+                {
+                    return !(a == b);
+                }
+
+            private:
+                Entry* m_ptr;
+                Entry* m_end;
+
+                constexpr void SkipInvalid()
+                {
+                    while (m_ptr != m_end && m_ptr->state != EntryState::Occupied)
+                    {
+                        ++m_ptr;
+                    }
+                }
+            };
+
+            constexpr Iterator begin() { return Iterator(m_data.data(), m_data.data() + Size); }
+            constexpr Iterator end() { return Iterator(m_data.data() + Size, m_data.data() + Size); }
+
         private:
             std::array<Entry, Size> m_data{};
         };

@@ -189,6 +189,7 @@
     <ClCompile Include="src\test\documents\test_document_boxing.cpp" />
     <ClCompile Include="src\test\documents\test_hsv.cpp" />
     <ClCompile Include="src\test\test_faces.cpp" />
+    <ClCompile Include="src\test\test_fixed.cpp" />
     <ClCompile Include="src\test\test_rulebook.cpp" />
     <ClCompile Include="src\test\test_booth.cpp" />
     <ClCompile Include="src\test\test_transcript.cpp" />
@@ -248,6 +249,7 @@
     <ClInclude Include="src\test\documents\test_document_boxing.h" />
     <ClInclude Include="src\test\documents\test_hsv.h" />
     <ClInclude Include="src\test\test_faces.h" />
+    <ClInclude Include="src\test\test_fixed.h" />
     <ClInclude Include="src\test\test_rulebook.h" />
     <ClInclude Include="src\test\test_booth.h" />
     <ClInclude Include="src\test\test_transcript.h" />
