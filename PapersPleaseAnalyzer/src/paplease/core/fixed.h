@@ -266,7 +266,7 @@ namespace paplease {
             }
 
             // Iterator support
-            class Iterator
+            /*class Iterator
             {
             public:
                 using iterator_category = std::forward_iterator_tag;
@@ -323,7 +323,7 @@ namespace paplease {
 
             constexpr Iterator begin() { return Iterator(m_data.data(), m_data.data() + Size); }
             constexpr Iterator end() { return Iterator(m_data.data() + Size, m_data.data() + Size); }
-
+            */
         private:
             std::array<Entry, Size> m_data{};
         };

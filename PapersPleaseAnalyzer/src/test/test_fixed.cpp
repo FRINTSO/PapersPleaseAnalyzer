@@ -28,10 +28,10 @@ namespace test {
 		my_table.Set(float_as_hex(0.0f), RGB{ 127, 127, 127 });
 		my_table.Set(float_as_hex(1.0f), RGB{ 255, 255, 255 });
 
-		for (const auto& entry : my_table)
+		/*for (const auto& entry : my_table)
 		{
 
-		}
+		}*/
 	}
 
 }  // namespace test
