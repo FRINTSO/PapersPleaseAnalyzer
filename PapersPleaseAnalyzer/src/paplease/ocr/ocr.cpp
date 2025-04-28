@@ -40,7 +40,7 @@ namespace paplease {
 			{
 				ch = character;
 			}
-	#if not OCR_CHAR_CHECKSUM_OPTIMIZATION
+	#if not OPTIMIZE_OCR_CHAR_CHECKSUM
 			ch = (ch & 1) ^ 1;
 	#endif
 #endif
@@ -63,7 +63,7 @@ namespace paplease {
 				for (int j = 0; j < ch.cols; j++)
 				{
 					auto c = ch.at<uchar>(i, j);
-#if OCR_CHAR_CHECKSUM_OPTIMIZATION
+#if OPTIMIZE_OCR_CHAR_CHECKSUM
 					num = (num << 1) | ((c & 1) ^ 1); // concatenate binary digits row-wise
 #else
 					num = (num << 1) | c; // concatenate binary digits row-wise
@@ -116,7 +116,7 @@ namespace paplease {
 					continue;
 				}
 				auto character = cv::imread(entry.path().string(), cv::IMREAD_UNCHANGED);
-#if DOWNSCALE_OPTIMIZATION
+#if OPTIMIZE_DOWNSCALE
 				character = ScaleImage(character, 1.0f / 2.0f);
 #endif
 				int checksum = CharacterChecksum(character);

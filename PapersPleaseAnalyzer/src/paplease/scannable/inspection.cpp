@@ -45,7 +45,7 @@ namespace paplease {
 			auto scanResult = ScanForDocuments(gameView, ViewArea::InspectionView);
 
 			return InspectionData{
-				scanResult
+				std::move(scanResult)
 			};
 		}
 

@@ -130,7 +130,7 @@ namespace paplease {
 			if (m_mat.empty()) return false;
 
 			const Shape shape = GetAppearance().GetShape();
-#if STRICT_DOCUMENT_SCANNING
+#if ENABLE_STRICT_DOCUMENT_SCANNING
 			if (shape.width != m_mat.cols) return false;
 			if (shape.height != m_mat.rows) return false;
 #else
@@ -336,7 +336,7 @@ namespace paplease {
 					case FieldType::Text:
 					{
 						auto raw_text_data = GetFieldString(ExtractDocumentField(binary, layouts[i].GetBox()), m_documentType);
-#if DOCDATA_OPTIMIZATION
+#if OPTIMIZE_DOCDATA
 						builder.AddField(
 							Field{
 								Data{ std::move(raw_text_data) },
@@ -361,7 +361,7 @@ namespace paplease {
 					{
 						auto&& image_data = ExtractDocumentField(binary, layouts[i].GetBox());
 
-#if DOCDATA_OPTIMIZATION
+#if OPTIMIZE_DOCDATA
 						builder.AddField(
 							Field{
 								Data{
@@ -389,7 +389,7 @@ namespace paplease {
 					case FieldType::Invalid:
 					default:
 					{
-#if DOCDATA_OPTIMIZATION
+#if OPTIMIZE_DOCDATA
 						builder.AddField(
 							Field{
 								Data{},
@@ -405,7 +405,7 @@ namespace paplease {
 					}
 				}
 			}
-#if DOCDATA_OPTIMIZATION
+#if OPTIMIZE_DOCDATA
 			return builder.Build();
 #else
 			auto data = builder.GetDocData();

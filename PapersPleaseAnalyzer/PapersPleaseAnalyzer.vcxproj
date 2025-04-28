@@ -115,7 +115,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\opencv\build\include;$(SolutionDir)PapersPleaseAnalyzer\src;$(SolutionDir)PapersPleaseAnalyzer\vendor\spdlog\include;$(SolutionDir)PapersPleaseAnalyzer\src;$(SolutionDir)PapersPleaseAnalyzer\vendor\magic_enum\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalOptions>/external:anglebrackets /external:I C:\opencv\build\include /external:W0 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/external:I C:\opencv\build\include /external:W0 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -201,8 +201,9 @@
     <ClInclude Include="src\paplease\analysis\data\location_bank.h" />
     <ClInclude Include="src\paplease\analysis\game_analyzer.h" />
     <ClInclude Include="src\paplease\analysis\photo_analysis\photo_analyzer.h" />
+    <ClInclude Include="src\paplease\types.h" />
     <ClInclude Include="src\paplease\core\fixed.h" />
-    <ClInclude Include="src\paplease\core\optref.h" />
+    <ClInclude Include="src\paplease\core\ref.h" />
     <ClInclude Include="src\paplease\documents\doc_view.h" />
     <ClInclude Include="src\paplease\analysis\doc_tracker.h" />
     <ClInclude Include="src\base\analysis\scannable\scanned_doc.h" />

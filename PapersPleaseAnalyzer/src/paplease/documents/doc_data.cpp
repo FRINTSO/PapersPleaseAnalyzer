@@ -11,6 +11,8 @@
 #include <string>
 #include <unordered_set>
 
+#include <magic_enum/magic_enum.hpp>
+
 #include "paplease/documents/data/date.h"
 #include "paplease/documents/data/field_data.h"
 #include "paplease/documents/doc_data_type.h"
@@ -410,12 +412,12 @@ namespace paplease {
                         return { data };
                 }
 
-                std::cout << "IMPLEMENT ME!!! " << FieldCategoryAsString(category) << " : " << scanner.Start() << "\n";
+                std::cout << "IMPLEMENT ME!!! " << magic_enum::enum_name<FieldCategory>(category) << " : " << scanner.Start() << "\n";
 
                 return processing::ProcessGenericString(scanner);
             }
 
-            static inline Data ProcessImageData(const Data& data, const FieldCategory category)
+            static inline Data ProcessImageData(const Data& data, [[maybe_unused]] const FieldCategory category)
             {
                 return data;
             }
@@ -602,7 +604,7 @@ namespace paplease {
 
 #pragma region FieldData
 
-#if DOCDATA_OPTIMIZATION
+#if OPTIMIZE_DOCDATA
         Field::Field(Data&& data, FieldType type, FieldCategory category)
             : m_data(std::move(data)), m_fieldType(type), m_fieldCategory(category), m_fieldState(FieldState::Initialized)
         {}
@@ -637,10 +639,19 @@ namespace paplease {
             return m_data.IsBroken();
         }
 
+        bool Field::IsEmpty() const
+        {
+            if (!IsBroken() && m_fieldType == FieldType::Text && m_data.ToText().size() == 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
 #pragma endregion
 
 #pragma region DocData
-#if DOCDATA_OPTIMIZATION
+#if OPTIMIZE_DOCDATA
 
         core::OptRef<const Field> DocData::GetField(FieldCategory category, bool returnBroken) const
         {
@@ -740,9 +751,9 @@ namespace paplease {
             return std::cref(field);
         }
 
-        core::FixedRefArray<Field, DocData::ArrayLength> DocData::GetAllValidFields() const
+        core::FixedArray<const Field*, DocData::ArrayLength> DocData::GetAllValidFields() const
         {
-            core::FixedRefArray<Field, DocData::ArrayLength> fieldsArray{};
+            core::FixedArray<const Field*, DocData::ArrayLength> fieldsArray{};
             
             for (const auto& dataOpt : m_data)
             {
@@ -750,10 +761,10 @@ namespace paplease {
                     continue;
 
                 const auto& data = dataOpt.value();
-
+                
                 if (data.Type() != FieldType::Invalid)
                 {
-                    fieldsArray.Add(data);
+                    fieldsArray.Add(&data);
                 }
             }
 
@@ -764,7 +775,7 @@ namespace paplease {
         {
             for (const auto& field : GetAllValidFields())
             {
-                if (field->get().IsBroken())
+                if (field->IsBroken())
                 {
                     return true;
                 }
@@ -797,7 +808,7 @@ namespace paplease {
 
 #pragma region DocDataBuilder
 
-#if DOCDATA_OPTIMIZATION
+#if OPTIMIZE_DOCDATA
 
 
         bool DocDataBuilder::AddField(Field&& data, FieldCategory category)

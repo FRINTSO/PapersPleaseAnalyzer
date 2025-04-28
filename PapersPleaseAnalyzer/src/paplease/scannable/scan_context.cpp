@@ -22,6 +22,22 @@ namespace paplease {
 			for (auto& inspectionDoc : inspectionData.scannedDocuments)
 			{
 				cv::rectangle(imageCopy, inspectionDoc.GetGlobalBoundingBox(), color);
+
+#if DEBUG_SHOW_DOCUMENT_FIELD_BOXING
+				const documents::DocLayout& layout = documents::DocLayout::GetRef(inspectionDoc.appearanceType);
+				const size_t layoutCount = layout.GetLayoutCount();
+				const auto* layouts = layout.GetAllLayouts();
+				for (size_t i = 0; i < layoutCount; i++)
+				{
+					auto globalBox = inspectionDoc.GetGlobalBoundingBox();
+
+					auto layoutBox = layouts[i].GetBox();
+					layoutBox.x += globalBox.x;
+					layoutBox.y += globalBox.y;
+
+					cv::rectangle(imageCopy, layoutBox, color);
+				}
+#endif
 			}
 
 			cv::imshow("GameView With Document Boxes", imageCopy);
@@ -33,14 +49,14 @@ namespace paplease {
 			auto boothData = scannable::ScanBooth(gameView);  // Gets game state and some applicant info
 			auto inspectionData = scannable::ScanInspection(gameView);  // Gets documents
 
-#if DEBUG_DRAW_DOC_BOXES
+#if DEBUG_SHOW_DOCUMENT_BOXING
 			DrawDocumentBoxes(gameView, boothData, inspectionData);
 #endif
 
 			return scannable::ScanContext{
 				&gameView,
-				boothData,
-				inspectionData
+				std::move(boothData),
+				std::move(inspectionData)
 			};
 		}
 

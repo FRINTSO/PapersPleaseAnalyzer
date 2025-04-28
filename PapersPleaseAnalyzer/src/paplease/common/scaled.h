@@ -3,6 +3,20 @@
 
 namespace paplease {
 
+    constexpr float SCALE = 0.5f;
+
+    constexpr int Scale(int x)
+    {
+        if constexpr (IS_DOWNSCALED)
+        {
+            return static_cast<int>(x * SCALE);
+        }
+        else
+        {
+            return x;
+        }
+    }
+
     template<typename T = int>
     class scaled
     {
@@ -13,7 +27,7 @@ namespace paplease {
         consteval scaled(T value)
             : m_value{
 #if IS_DOWNSCALED
-                DOWNSCALE(value)
+                Scale(value)
 #else
                 value
 #endif

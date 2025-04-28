@@ -1,17 +1,459 @@
-#pragma once
+﻿#pragma once
+#include <algorithm>
 #include <array>
 #include <bitset>
+#include <compare>
 #include <iterator>
 #include <type_traits>
+#include <xutility>
+
+#include "paplease/common/common.h"
 
 namespace paplease {
     namespace core {
+        
+#if EXPERIMENTAL_FIXED_ARRAY_V2
+
+        template<class T, size_t Size>
+        class FixedArrayConstIterator
+        {
+        public:
+            using iterator_concept  = std::contiguous_iterator_tag;
+            using iterator_category = std::random_access_iterator_tag;
+            using value_type        = T;
+            using difference_type   = std::ptrdiff_t;
+            using pointer           = const T*;
+            using reference         = const T&;
+
+            constexpr FixedArrayConstIterator() noexcept : m_ptr() {}
+
+            constexpr explicit FixedArrayConstIterator(pointer parg, size_t offset = 0) noexcept : m_ptr(parg + offset) {}
+
+            [[nodiscard]] constexpr reference operator*() const { return *m_ptr; }
+
+            [[nodiscard]] constexpr pointer operator->() const { return m_ptr; }
+
+            constexpr FixedArrayConstIterator& operator++() noexcept
+            {
+                ++m_ptr;
+                return *this;
+            }
+
+            constexpr FixedArrayConstIterator operator++(int) noexcept
+            {
+                FixedArrayConstIterator tmp = *this;
+                ++*this;
+                return tmp;
+            }
+
+            constexpr FixedArrayConstIterator& operator--() noexcept
+            {
+                --m_ptr;
+                return *this;
+            }
+
+            constexpr FixedArrayConstIterator operator--(int) noexcept
+            {
+                FixedArrayConstIterator tmp = *this;
+                --*this;
+                return tmp;
+            }
+
+            constexpr FixedArrayConstIterator& operator+=(const std::ptrdiff_t offset) noexcept
+            {
+                m_ptr += offset;
+                return *this;
+            }
+
+            constexpr FixedArrayConstIterator& operator-=(const std::ptrdiff_t offset) noexcept
+            {
+                m_ptr -= offset;
+                return *this;
+            }
+
+            [[nodiscard]] constexpr std::ptrdiff_t operator-(const FixedArrayConstIterator& right) const noexcept
+            {
+                return m_ptr - right.m_ptr;
+            }
+
+            [[nodiscard]] constexpr reference operator[](const std::ptrdiff_t offset) const noexcept
+            {
+                return m_ptr[offset];
+            }
+
+            [[nodiscard]] constexpr bool operator==(const FixedArrayConstIterator& right) const noexcept
+            {
+                return m_ptr == right.m_ptr;
+            }
+
+            [[nodiscard]] constexpr std::strong_ordering operator<=>(const FixedArrayConstIterator& right) const noexcept
+            {
+                return m_ptr <=> right.m_ptr;
+            }
+
+        private:
+            pointer m_ptr; // pointer to element in vector
+
+        public:
+            [[nodiscard]] constexpr FixedArrayConstIterator operator+(const ptrdiff_t offset) const noexcept
+            {
+                FixedArrayConstIterator tmp = *this;
+                tmp += offset;
+                return tmp;
+            }
+
+            [[nodiscard]] constexpr FixedArrayConstIterator operator-(const ptrdiff_t offset) const noexcept
+            {
+                FixedArrayConstIterator tmp = *this;
+                tmp -= offset;
+                return tmp;
+            }
+
+            [[nodiscard]] friend constexpr FixedArrayConstIterator operator+(
+                const ptrdiff_t offset, FixedArrayConstIterator next) noexcept
+            {
+                next += offset;
+                return next;
+            }
+        };
+
+        template<class T, size_t Size>
+        class FixedArrayIterator : public FixedArrayConstIterator<T, Size>
+        {
+        public:
+            using MyBase = FixedArrayConstIterator<T, Size>;
+
+            using iterator_concept  = std::contiguous_iterator_tag;
+            using iterator_category = std::random_access_iterator_tag;
+            using value_type        = T;
+            using difference_type   = std::ptrdiff_t;
+            using pointer           = T*;
+            using reference         = T&;
+
+            constexpr FixedArrayIterator() noexcept {}
+
+            constexpr explicit FixedArrayIterator(pointer parg, size_t offset = 0) noexcept : MyBase(parg, offset) {}
+
+            [[nodiscard]] constexpr reference operator*() const noexcept
+            {
+                return const_cast<reference>(MyBase::operator*());
+            }
+
+            [[nodiscard]] constexpr pointer operator->() const noexcept
+            {
+                return const_cast<pointer>(MyBase::operator->());
+            }
+
+            constexpr FixedArrayIterator& operator++() noexcept
+            {
+                MyBase::operator++();
+                return *this;
+            }
+
+            constexpr FixedArrayIterator operator++(int) noexcept
+            {
+                FixedArrayIterator tmp = *this;
+                MyBase::operator++();
+                return tmp;
+            }
+
+            constexpr FixedArrayIterator& operator--() noexcept
+            {
+                MyBase::operator--();
+                return *this;
+            }
+
+            constexpr FixedArrayIterator operator--(int) noexcept
+            {
+                FixedArrayIterator tmp = *this;
+                MyBase::operator--();
+                return tmp;
+            }
+
+            constexpr FixedArrayIterator& operator+=(const std::ptrdiff_t offset) noexcept
+            {
+                MyBase::operator+=(offset);
+                return *this;
+            }
+
+            [[nodiscard]] constexpr FixedArrayIterator operator+(const std::ptrdiff_t offset) const noexcept
+            {
+                FixedArrayIterator tmp = *this;
+                tmp += offset;
+                return tmp;
+            }
+
+            [[nodiscard]] friend constexpr FixedArrayIterator operator+(const std::ptrdiff_t offset, FixedArrayIterator next) noexcept
+            {
+                next += offset;
+                return next;
+            }
+
+            constexpr FixedArrayIterator& operator-=(const std::ptrdiff_t offset) noexcept
+            {
+                MyBase::operator-=(offset);
+                return *this;
+            }
+
+            using MyBase::operator-;
+
+            [[nodiscard]] constexpr FixedArrayIterator operator-(const std::ptrdiff_t offset) const noexcept
+            {
+                FixedArrayIterator tmp = *this;
+                tmp -= offset;
+                return tmp;
+            }
+
+            [[nodiscard]] constexpr reference operator[](const std::ptrdiff_t offset) const noexcept
+            {
+                return const_cast<reference>(MyBase::operator[](offset));
+            }
+        };
 
         // --- FixedArray<T, Size> ---
         template<typename T, size_t Size>
         class FixedArray
         {
         public:
+            static_assert(std::is_object_v<T>, "The C++ Standard forbids containers of non-object types "
+                                               "because of [container.requirements].");
+            static_assert(std::is_default_constructible_v<T>, "Object has to be default constructible.");
+
+            using value_type      = T;
+            using pointer         = value_type*;
+            using const_pointer   = const value_type*;
+            using reference       = value_type&;
+            using const_reference = const value_type&;
+            using size_type       = std::size_t;
+            using difference_type = std::ptrdiff_t;
+
+            using iterator               = FixedArrayIterator<value_type, Size>;
+            using const_iterator         = FixedArrayConstIterator<value_type, Size>;
+            using reverse_iterator       = std::reverse_iterator<iterator>;
+            using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
+            constexpr FixedArray() : m_data(), m_count(0) {}
+
+            constexpr FixedArray(const size_type count, const T& value) : m_count(count)
+            {
+                assert(count <= Size);
+                for (size_t i = 0; i < count; i++)
+                {
+                    m_data[i] = value;
+                }
+            }
+
+            // template<class Iter, std::enable_if_t<std::_Is_iterator_v<Iter>, int> = 0>
+            // constexpr FixedArray(Iter first, Iter last) { assert(false); }
+
+            // constexpr FixedArray(std::initializer_list<T> initializer_list){ assert(false); }
+
+            constexpr FixedArray(const FixedArray& right)
+                : m_count(right.m_count)
+            {
+                assert(right.m_count <= Size);
+
+                for (size_t i = 0; i < right.m_count; i++)
+                {
+                    m_data[i] = right.m_data[i];
+                }
+            }
+
+            constexpr FixedArray(FixedArray&& right) noexcept
+                : m_count(right.m_count)
+            {
+                for (size_t i = 0; i < right.m_count; i++)
+                {
+                    m_data[i] = std::move(right.m_data[i]);
+                }
+
+                right.m_count = 0;
+            }
+
+            constexpr FixedArray& operator=(FixedArray&& right) noexcept
+            {
+                if (this != &right)
+                {
+                    for (size_t i = 0; i < right.m_count; i++)
+                    {
+                        m_data[i] = std::move(right.m_data[i]);
+                    }
+
+                    // Move the count
+                    m_count = right.m_count;
+
+                    // Optionally leave the source in a valid state
+                    right.m_count = 0;
+                }
+                return *this;
+            }
+
+            constexpr ~FixedArray(){
+                m_count = 0;
+            }
+
+        public:
+            constexpr FixedArray& operator=(const FixedArray& right)
+            {
+                if (this != &right)
+                {
+                    assert(right.m_count <= Size); // Ensure size consistency
+                    for (size_t i = 0; i < right.m_count; i++)
+                    {
+                        m_data[i] = right.m_data[i];
+                    }
+                    m_count = right.m_count;
+                }
+                return *this;
+            }
+
+        public:
+            template<class ValueType>
+            constexpr reference EmplaceBack(ValueType&& value)
+            {
+                if (m_count >= Size)
+                {
+                    __debugbreak();
+                }
+                m_data[m_count] = std::forward<ValueType>(value);
+                return m_data[m_count++];
+            }
+
+            constexpr void Add(const T& value)
+            {
+                EmplaceBack(value);
+            }
+
+            constexpr void Add(T&& value)
+            {
+                EmplaceBack(std::move(value));
+            }
+
+        public:
+            constexpr void PopBack() {}
+
+            constexpr iterator Erase(const_iterator where) {}
+            
+            constexpr iterator Erase(const_iterator first, const_iterator last) {}
+
+            constexpr void Clear() noexcept
+            {
+                m_count = 0;
+            }
+
+            constexpr void Swap(FixedArray& right) {}
+
+            [[nodiscard]] constexpr T* Data() noexcept
+            {
+                return m_data;
+            }
+
+            [[nodiscard]] constexpr const T* Data() const noexcept
+            {
+                return m_data;
+            }
+
+            [[nodiscard]] constexpr iterator begin() noexcept
+            {
+                return iterator(m_data, 0);
+            }
+
+            [[nodiscard]] constexpr const_iterator begin() const noexcept
+            {
+                return const_iterator(m_data, 0);
+            }
+
+            [[nodiscard]] constexpr iterator end() noexcept
+            {
+                return iterator(m_data, m_count);
+            }
+
+            [[nodiscard]] constexpr const_iterator end() const noexcept
+            {
+                return const_iterator(m_data, m_count);
+            }
+
+            [[nodiscard]] constexpr reverse_iterator rbegin() noexcept
+            {
+                return reverse_iterator(end());
+            }
+
+            [[nodiscard]] constexpr const_reverse_iterator rbegin() const noexcept
+            {
+                return const_reverse_iterator(end());
+            }
+
+            [[nodiscard]] constexpr reverse_iterator rend() noexcept
+            {
+                return reverse_iterator(begin());
+            }
+
+            [[nodiscard]] constexpr const_reverse_iterator rend() const noexcept
+            {
+                return const_reverse_iterator(begin());
+            }
+
+            [[nodiscard]] constexpr const_iterator cbegin() const noexcept
+            {
+                return begin();
+            }
+
+            [[nodiscard]] constexpr const_iterator cend() const noexcept
+            {
+                return end();
+            }
+
+            [[nodiscard]] constexpr const_reverse_iterator crbegin() const noexcept
+            {
+                return rbegin();
+            }
+
+            [[nodiscard]] constexpr const_reverse_iterator crend() const noexcept
+            {
+                return rend();
+            }
+
+            [[nodiscard]] constexpr bool Empty() const noexcept {
+                return m_count == 0;
+            }
+
+            [[nodiscard]] constexpr bool Full() const noexcept
+            {
+                return m_count == Size;
+            }
+
+            [[nodiscard]] constexpr size_type Count() const noexcept
+            {
+                return m_count;
+            }
+
+            [[nodiscard]] constexpr size_type MaxSize() const noexcept {
+                return Size;
+            }
+
+            [[nodiscard]] constexpr T& operator[](const size_type pos) noexcept
+            {
+                assert(pos < m_count && "FixedArray: Index out of bounds");
+                return m_data[pos];
+            }
+
+            [[nodiscard]] constexpr const T& operator[](const size_type pos) const noexcept
+            {
+                assert(pos < m_count && "FixedArray: Index out of bounds");
+                return m_data[pos];
+            }
+
+        private:
+            T m_data[Size];
+            size_t m_count;
+        };
+#else
+        // --- FixedArray<T, Size> ---
+        template<typename T, size_t Size>
+        class FixedArray
+        {
+        public:
+            template<typename U = T, std::enable_if_t<std::is_default_constructible_v<U>, int> = 0>
             constexpr FixedArray(const T& defaultValue = T()) : m_array{}, m_count{}, m_default{ defaultValue }
             {
                 Clear();
@@ -26,7 +468,6 @@ namespace paplease {
                 }
                 m_array[m_count++] = value;
             }
-
             constexpr void Add(T&& value)
             {
                 //assert(m_count < Size && "FixedArray: Add out of bounds");
@@ -47,7 +488,7 @@ namespace paplease {
                 m_array[m_count] = std::move(value);
                 return m_array[m_count++];
             }
-
+            
             constexpr const T& operator[](size_t index) const
             {
                 assert(index < m_count && "FixedArray: Index out of bounds");
@@ -84,6 +525,7 @@ namespace paplease {
             size_t m_count;
             T m_default;
         };
+#endif
 
         // --- FixedTable<Enum, T> ---
         template<typename Enum, typename T>
@@ -165,7 +607,7 @@ namespace paplease {
         class FixedHashTable
         {
         private:
-            static_assert(std::is_integral_v<KeyType>);
+            // static_assert(std::is_integral_v<KeyType>);
 
             enum class EntryState : unsigned char { Empty, Occupied, Deleted };
 
@@ -174,16 +616,22 @@ namespace paplease {
             public:
                 KeyType key{};
                 ValueType value{};
-            public:
+                constexpr const ValueType* operator->() const noexcept
+                {
+                    return &value;
+                }
+
+            private:
                 EntryState state = EntryState::Empty;
 
                 constexpr Entry() = default;
+
+                friend class FixedHashTable;
             };
 
-            constexpr size_t GetHashIndex(const KeyType& key)
+            constexpr size_t GetHashIndex(const KeyType& key) const
             {
                 return Hash{}(key) % Size;
-                // return (size_t)key % Size;
             }
 
         public:
@@ -196,6 +644,27 @@ namespace paplease {
                 {
                     const size_t idx = (start + offset) % Size;
                     Entry& entry = m_data[idx];
+
+                    if (entry.state == EntryState::Empty)
+                    {
+                        break;
+                    }
+                    if (entry.key == key)
+                    {
+                        outValue = entry.value;
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            constexpr bool Get(const KeyType& key, ValueType& outValue) const
+            {
+                const size_t start = GetHashIndex(key);
+                for (size_t offset = 0; offset < Size; offset++)
+                {
+                    const size_t idx = (start + offset) % Size;
+                    const Entry& entry = m_data[idx];
 
                     if (entry.state == EntryState::Empty)
                     {
@@ -231,10 +700,9 @@ namespace paplease {
                         return true;
                     }
                 }
-                // assert(false && "Hash table is full, cannot insert new key-value pair.");
                 return false;
             }
-            constexpr void Set(const KeyType& key, ValueType&& value)
+            constexpr bool Set(const KeyType& key, ValueType&& value)
             {
                 const size_t start = GetHashIndex(key);
                 for (size_t offset = 0; offset < Size; offset++)
@@ -247,33 +715,102 @@ namespace paplease {
                         entry.key = key;
                         entry.value = std::move(value);
                         entry.state = EntryState::Occupied;
-                        return;
+                        return true;
                     }
                     else if (entry.key == key)
                     {
                         entry.value = std::move(value);
-                        return;
+                        return true;
                     }
                 }
-
-                //assert(false && "Hash table is full, cannot insert new key-value pair.");
+                return false;
             }
 
-            constexpr bool Contains(const KeyType& key)
+            constexpr bool Remove(const KeyType& key)
+            {
+                const size_t start = GetHashIndex(key);
+                for (size_t offset = 0; offset < Size; offset++)
+                {
+                    const size_t idx = (start + offset) % Size;
+                    Entry& entry = m_data[idx];
+                    
+                    if (entry.key == key)
+                    {
+                        // entry.value = std::move(value);
+                        entry.state = EntryState::Deleted;
+                        return true;
+                    }
+                    else if (entry.state == EntryState::Empty)
+                    {
+                        break;
+                    }
+                }
+                return false;
+            }
+
+            constexpr bool Contains(const KeyType& key) const noexcept
             {
                 ValueType v;
                 return Get(key, v);
             }
 
+            constexpr void Clear()
+            {
+                for (auto& entry : m_data)
+                {
+                    entry.state = EntryState::Empty;
+                }
+            }
+
+            constexpr ValueType& operator[](const KeyType& key)
+            {
+                const size_t start = GetHashIndex(key);
+                for (size_t offset = 0; offset < Size; offset++)
+                {
+                    const size_t idx = (start + offset) % Size;
+                    const Entry& entry = m_data[idx];
+
+                    if (entry.state == EntryState::Empty)
+                    {
+                        break;
+                    }
+                    if (entry.key == key)
+                    {
+                        return entry.value;
+                    }
+                }
+                assert(false);
+            }
+
+            constexpr const ValueType& operator[](const KeyType& key) const
+            {
+                const size_t start = GetHashIndex(key);
+                for (size_t offset = 0; offset < Size; offset++)
+                {
+                    const size_t idx = (start + offset) % Size;
+                    const Entry& entry = m_data[idx];
+
+                    if (entry.state == EntryState::Empty)
+                    {
+                        break;
+                    }
+                    if (entry.key == key)
+                    {
+                        return entry.value;
+                    }
+                }
+                assert(false);
+            }
+
             // Iterator support
-            /*class Iterator
+            class Iterator
             {
             public:
                 using iterator_category = std::forward_iterator_tag;
-                using value_type = EntryState;
+                using value_type = Entry;
                 using difference_type = std::ptrdiff_t;
-                using pointer = EntryState*;
-                using reference = EntryState&;
+                using pointer = Entry*;
+                using reference = Entry&;
 
                 constexpr Iterator(Entry* ptr, Entry* end)
                     : m_ptr(ptr), m_end(end)
@@ -282,7 +819,7 @@ namespace paplease {
                 }
 
                 constexpr reference operator*() { return *m_ptr; }
-                constexpr pointer operator->() const { return &m_ptr; }
+                constexpr pointer operator->() const { return m_ptr; }
 
                 constexpr Iterator& operator++()
                 {
@@ -323,7 +860,7 @@ namespace paplease {
 
             constexpr Iterator begin() { return Iterator(m_data.data(), m_data.data() + Size); }
             constexpr Iterator end() { return Iterator(m_data.data() + Size, m_data.data() + Size); }
-            */
+            
         private:
             std::array<Entry, Size> m_data{};
         };
@@ -497,5 +1034,6 @@ namespace paplease {
             constexpr Iterator begin() { return Iterator(m_buckets.data(), m_buckets.data() + Size); }
             constexpr Iterator end() { return Iterator(m_buckets.data() + Size, m_buckets.data() + Size); }
         };
+
     }  // namespace core
 } // namespace paplease

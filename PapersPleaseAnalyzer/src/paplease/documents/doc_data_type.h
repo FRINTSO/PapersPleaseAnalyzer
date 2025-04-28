@@ -1,13 +1,14 @@
 #pragma once
 #include "paplease/common/common.h"
+#include "paplease/types.h"
 
 namespace paplease {
     namespace documents {
 
-        enum class FieldCategory : unsigned char
+        enum class FieldCategory : u8
         {
-            Invalid = -1,
-            CountryList,            // Ex. REPUBLIA, ARSTOTZKA, OBRISTAN, ANTEGRIA
+            Invalid = static_cast<u8>(-1),
+            CountryList = 0,            // Ex. REPUBLIA, ARSTOTZKA, OBRISTAN, ANTEGRIA
             District,               // Ex. BURNTON
             DurationOfStay,         // Ex. 3 MONTHS; FOREVER; 2 DAYS
             Field,                  // Refers to job position: FISHING; CONSTRUCTION
@@ -43,13 +44,15 @@ namespace paplease {
             CriminalPhoto1, CriminalPhoto2, CriminalPhoto3,
             TranscriptPage,
 
-            Count
+            Min = CountryList,
+            Max = TranscriptPage,
+            Count = Max - Min + 1
         };
 
         // Enumeration to specify the type of data being handled
-        enum class DataType : unsigned char
+        enum class DataType : u8
         {
-            Invalid = -1,
+            Invalid = static_cast<u8>(-1),
             GenericString = 0,
             GenericNumber,
             StrList,
@@ -61,80 +64,21 @@ namespace paplease {
         };
 
         // Enumeration to define the type of field within a document
-        enum class FieldType : unsigned char
+        enum class FieldType : u8
         {
-            Invalid = -1,
+            Invalid = static_cast<u8>(-1),
             Text = 0,
-            Image
+            Image,
         };
 
         // Enumeration to represent the state of a data field
-        enum class FieldState : unsigned char
+        enum class FieldState : u8
         {
-            Empty = -1,
+            Empty = static_cast<u8>(-1),
             Initialized = 0,
             ProcessedData,
             BrokenData,
         };
-
-#if USE_ENUM_FUNCS
-        constexpr const std::string FieldCategoryAsString(FieldCategory fieldCategory)
-        {
-            switch (fieldCategory)
-            {
-                case FieldCategory::Invalid:
-                    return "Invalid";
-                case FieldCategory::CountryList:
-                    return "CountryList";
-                case FieldCategory::DateOfBirth:
-                    return "DateOfBirth";
-                case FieldCategory::District:
-                    return "District";
-                case FieldCategory::DurationOfStay:
-                    return "DurationOfStay";
-                case FieldCategory::EndDate:
-                    return "EndDate";
-                case FieldCategory::ExpirationDate:
-                    return "ExpirationDate";
-                case FieldCategory::Field:
-                    return "Field";
-                case FieldCategory::FingerPrints:
-                    return "FingerPrints";
-                case FieldCategory::Height:
-                    return "Height";
-                case FieldCategory::IssuingCity:
-                    return "IssuingCity";
-                case FieldCategory::IssuingCountry:
-                    return "IssuingCountry";
-                case FieldCategory::Name:
-                    return "Name";
-                case FieldCategory::PassportNumber:
-                    return "PassportNumber";
-                case FieldCategory::Photo:
-                    return "Photo";
-                case FieldCategory::PhysicalAppearance:
-                    return "PhysicalAppearance";
-                case FieldCategory::Purpose:
-                    return "Purpose";
-                case FieldCategory::Sex:
-                    return "Sex";
-                case FieldCategory::ThumbPrint:
-                    return "ThumbPrint";
-                case FieldCategory::Vaccination1:
-                    return "Vaccination1";
-                case FieldCategory::Vaccination2:
-                    return "Vaccination2";
-                case FieldCategory::Vaccination3:
-                    return "Vaccination3";
-                case FieldCategory::ValidDate:
-                    return "ValidDate";
-                case FieldCategory::Weight:
-                    return "Weight";
-                default:
-                    return "";
-            }
-        }
-#endif
 
     }  // namespace documents
 }  // namspace paplease

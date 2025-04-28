@@ -1,61 +1,60 @@
 #pragma once
-#include "paplease/common/common.h"
-
-#include <cstdint>
 #include <type_traits>
+
+#include "paplease/common/common.h"
+#include "paplease/types.h"
 
 namespace paplease {
 
-#if COLOR_OPTIMIZATION
+#if OPTIMIZE_COLOR
 
 	struct RgbColor
 	{
 		constexpr RgbColor()
-			: bgrVal{ 0 }
+			: bgrVal(0)
 		{}
-		constexpr RgbColor(unsigned char red, unsigned char green, unsigned char blue)
-			: bgrVal{ ((uint32_t)red << 16) | ((uint32_t)green << 8) | (uint32_t)blue }
+		constexpr RgbColor(u8 red, u8 green, u8 blue)
+			: bgrVal((static_cast<u32>(red) << 16) | (static_cast<u32>(green) << 8) | static_cast<u32>(blue))
 		{}
 
 		union
 		{
-			uint32_t bgrVal;
+			u32 bgrVal;
 			struct
 			{
-				unsigned char blue;
-				unsigned char green;
-				unsigned char red;
-				unsigned char _;
+				u8 blue;
+				u8 green;
+				u8 red;
+				u8 _;
 			};
 		};
 
-		constexpr inline uint32_t BgrValue() const noexcept
+		constexpr inline u32 BgrValue() const noexcept
 		{
 			return bgrVal & 0x00'FF'FF'FF;
 		}
 
-		consteval inline uint32_t BgrValInstant() const noexcept
+		consteval inline u32 BgrValInstant() const noexcept
 		{
 			return bgrVal;
 		}
-
 
 	};
 
 	struct BgrColor
 	{
-		constexpr BgrColor(unsigned char blue, unsigned char green, unsigned char red)
+		constexpr BgrColor(u8 blue, u8 green, u8 red)
 			: blue(blue), green(green), red(red)
 		{
 
 		}
 
-		unsigned char blue;
-		unsigned char green;
-		unsigned char red;
+		u8 blue;
+		u8 green;
+		u8 red;
 	};
 
-#define PRINT_RGB(color) "(" << (int)color.red << ", " << (int)color.green << ", " << (int)color.blue << ")"
+#define PRi32_RGB(color) "(" << (i32)color.red << ", " << (i32)color.green << ", " << (i32)color.blue << ")"
 
 #define RGB_VAL(color) color.bgrVal
 
@@ -73,41 +72,41 @@ namespace paplease {
 #else
 	struct RgbColor
 	{
-		unsigned char red;
-		unsigned char green;
-		unsigned char blue;
+		u8 red;
+		u8 green;
+		u8 blue;
 	};
 
 	struct BgrColor
 	{
-		unsigned char blue;
-		unsigned char green;
-		unsigned char red;
+		u8 blue;
+		u8 green;
+		u8 red;
 	};
 
 
-	static constexpr inline uint32_t ToBgrValue(BgrColor color)
+	static constexpr inline u32 ToBgrValue(BgrColor color)
 	{
 		return (color.blue << 16) | (color.green << 8) | color.red;
 	}
 
-	static constexpr inline uint32_t ToBgrValue(RgbColor color)
+	static constexpr inline u32 ToBgrValue(RgbColor color)
 	{
 		return (color.blue << 16) | (color.green << 8) | color.red;
 	}
 
-	static constexpr inline uint32_t ToRgbValue(RgbColor color)
+	static constexpr inline u32 ToRgbValue(RgbColor color)
 	{
 		return (color.red << 16) | (color.green << 8) | color.blue;
 	}
 
-	static constexpr inline uint32_t ToRgbValue(BgrColor color)
+	static constexpr inline u32 ToRgbValue(BgrColor color)
 	{
 		return (color.red << 16) | (color.green << 8) | color.blue;
 	}
 
 
-#define PRINT_RGB(color) "(" << (int)color.red << ", " << (int)color.green << ", " << (int)color.blue << ")"
+#define PRi32_RGB(color) "(" << (i32)color.red << ", " << (i32)color.green << ", " << (i32)color.blue << ")"
 
 #define RGB_VAL(color) ToRgbValue(color)
 
@@ -117,12 +116,12 @@ namespace paplease {
 
 	struct HSVConfig
 	{
-		int hueMin = 0;
-		int hueMax = 179;
-		int satMin = 0;
-		int satMax = 255;
-		int valMin = 0;
-		int valMax = 255;
+		i32 hueMin = 0;
+		i32 hueMax = 179;
+		i32 satMin = 0;
+		i32 satMax = 255;
+		i32 valMin = 0;
+		i32 valMax = 255;
 
 		bool IsEmpty() const
 		{
@@ -134,19 +133,19 @@ namespace paplease {
 
 	struct HSLConfig
 	{
-		int hueMin = 0;
-		int hueMax = 179;
-		int satMin = 0;
-		int satMax = 255;
-		int litMin = 0;
-		int litMax = 255;
+		i32 hueMin = 0;
+		i32 hueMax = 179;
+		i32 satMin = 0;
+		i32 satMax = 255;
+		i32 litMin = 0;
+		i32 litMax = 255;
 	};
 
 
-	template<int RED, int GREEN, int BLUE>
-	struct rgb_color : std::integral_constant<int, (RED << 16) | (GREEN << 8) | BLUE>{};
+	template<i32 RED, i32 GREEN, i32 BLUE>
+	struct rgb_color : std::integral_constant<i32, (RED << 16) | (GREEN << 8) | BLUE>{};
 
-	template<int RED, int GREEN, int BLUE>
-	static constexpr int rgb_color_v = rgb_color<RED, GREEN, BLUE>::value;
+	template<i32 RED, i32 GREEN, i32 BLUE>
+	static constexpr i32 rgb_color_v = rgb_color<RED, GREEN, BLUE>::value;
 
 }  // namespace paplease

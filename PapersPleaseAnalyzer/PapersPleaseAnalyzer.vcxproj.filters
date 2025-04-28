@@ -36,6 +36,7 @@
     <ClCompile Include="src\test\test_booth.cpp" />
     <ClCompile Include="src\test\test_transcript.cpp" />
     <ClCompile Include="src\paplease\documents\doc_view.cpp" />
+    <ClCompile Include="src\test\test_fixed.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\paplease\analysis\analysis_context.h" />
@@ -45,7 +46,6 @@
     <ClInclude Include="src\paplease\analysis\game_analyzer.h" />
     <ClInclude Include="src\paplease\analysis\photo_analysis\photo_analyzer.h" />
     <ClInclude Include="src\paplease\core\fixed.h" />
-    <ClInclude Include="src\paplease\core\optref.h" />
     <ClInclude Include="src\paplease\analysis\doc_tracker.h" />
     <ClInclude Include="src\base\analysis\scannable\scanned_doc.h" />
     <ClInclude Include="src\paplease\documents\doc_data.inl.h" />
@@ -95,6 +95,9 @@
     <ClInclude Include="src\test\test_booth.h" />
     <ClInclude Include="src\test\test_transcript.h" />
     <ClInclude Include="src\paplease\documents\doc_view.h" />
+    <ClInclude Include="src\paplease\types.h" />
+    <ClInclude Include="src\paplease\core\ref.h" />
+    <ClInclude Include="src\test\test_fixed.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\paplease\documents\bounding_box_finder.inc" />

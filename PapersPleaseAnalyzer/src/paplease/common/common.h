@@ -4,61 +4,47 @@ namespace paplease {
 
 #pragma region Options
 
-#define DEBUG_OPTIONS true
-#define DO_OPTIMIZATIONS 1
-#define STRICT_DOCUMENT_SCANNING 1
-#define USE_CONST_REF 0
-#define USE_EXPERIMENTAL 1
+#define ENABLE_DEBUG_OPTIONS            true
+#define ENABLE_OPTIMIZATIONS            true
+#define ENABLE_STRICT_DOCUMENT_SCANNING true
+#define ENABLE_EXPERIMENTAL             true
 
 #pragma endregion
 
-#if DEBUG_OPTIONS
-#define DEBUG_DRAW_DOC_BOXES true
-#define DEBUG_PRINT_SCANNED_TYPES true
+#if ENABLE_DEBUG_OPTIONS
+#define DEBUG_SHOW_DOCUMENT_BOXING       true
+#define DEBUG_SHOW_DOCUMENT_FIELD_BOXING true
+#define DEBUG_PRINT_SCANNED_TYPES        false
+#define DEBUG_LOG_DOCUMENT_TRACKING      false
+#define DEBUG_LOG_RULES                  true
+#define DEBUG_LOG_APPLICABLE_RULES       true
+#define DEBUG_LOG_REQUIRED_DOCUMENTS     true
 #endif
 #undef DEBUG_OPTIONS
 
-#if USE_EXPERIMENTAL
-#define MATCH_ONE_COLOR 0
-#define MATCH_BORDER_COLOR 0 // NOT IMPLEMENTED
-#define USE_ENUM_FUNCS 1
-#define USE_NAMESPACE_ENUMS 1
+#if ENABLE_EXPERIMENTAL
+#define EXPERIMENTAL_MATCH_ONE_COLOR     false
+#define EXPERIMENTAL_MATCH_BORDER_COLOR  false // NOT IMPLEMENTED
+#define EXPERIMENTAL_USE_ENUM_FUNCS      false
+#define EXPERIMENTAL_USE_NAMESPACE_ENUMS false
+#define EXPERIMENTAL_FIXED_ARRAY_V2      true
 #endif
+#undef ENABLE_EXPERIMENTAL
 
-#if DO_OPTIMIZATIONS
-#define COLOR_OPTIMIZATION 1
-#define CHEEKY_OPTIMIZATION 1
-#define DOWNSCALE_OPTIMIZATION 0
-#define EFFECTIVE_SCANNING_OPTIMIZATION 1
-#define OCR_CHAR_CHECKSUM_OPTIMIZATION 1
-#define DOCDATA_OPTIMIZATION 1
+#if ENABLE_OPTIMIZATIONS
+#define OPTIMIZE_COLOR              true
+#define OPTIMIZE_CHEEKY             true
+#define OPTIMIZE_DOWNSCALE          false
+#define OPTIMIZE_EFFECTIVE_SCANNING true
+#define OPTIMIZE_OCR_CHAR_CHECKSUM  true
+#define OPTIMIZE_DOCDATA            true
+#endif
+#undef ENABLE_OPTIMIZATIONS
+
+#ifndef OPTIMIZE_DOWNSCALE
+#define IS_DOWNSCALED false
 #else
-#define COLOR_OPTIMIZATION 0
-#define CHEEKY_OPTIMIZATION 0
-#define DOWNSCALE_OPTIMIZATION 0
-#define EFFECTIVE_SCANNING_OPTIMIZATION 0
-#define OCR_CHAR_CHECKSUM_OPTIMIZATION 0
-#define DOCDATA_OPTIMIZATION 0
+#define IS_DOWNSCALED OPTIMIZE_DOWNSCALE
 #endif
-#undef DO_OPTIMIZATIONS
-
-#define IS_DOWNSCALED DOWNSCALE_OPTIMIZATION
-	constexpr float SCALE = 0.5f;
-
-	constexpr int Scale(int x)
-	{
-		if constexpr (IS_DOWNSCALED)
-		{
-			return static_cast<int>(x * SCALE);
-		}
-		else
-		{
-			return x;
-		}
-	}
-
-#define DOWNSCALE(x) Scale(x)
-
-#undef PREFER_MACRO
 
 }  // namespace paplease

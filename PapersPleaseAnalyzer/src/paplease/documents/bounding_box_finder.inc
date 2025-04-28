@@ -16,6 +16,11 @@
 namespace paplease {
 	namespace documents {
 
+		static inline Rectangle FindDocumentBoundingBoxV2(const cv::Mat& view, ViewArea viewArea, const DocAppearance& appearance)
+		{
+			throw;
+		}
+
 		static inline Rectangle FindDocumentBoundingBox(const cv::Mat& inspection, const DocAppearance& appearance)
 		{
 			int left = INT_MAX;
@@ -24,7 +29,7 @@ namespace paplease {
 			int bottom = 0;
 			bool hasFoundTopLeft = false;
 
-#if MATCH_ONE_COLOR
+#if EXPERIMENTAL_MATCH_ONE_COLOR
 			const auto color = RGB_VAL(appearance.GetColors()[0]);
 #else
 			const RgbColor* colors = appearance.GetColors();
@@ -46,7 +51,7 @@ namespace paplease {
 				for (int x = minScanX; x < maxScanX; x++)
 				{
 					// CHECK IF BGR_VAL(bgr[x]) is in colors
-#if MATCH_ONE_COLOR
+#if EXPERIMENTAL_MATCH_ONE_COLOR
 					if (color != BGR_VAL(bgr[x])) continue;
 #else
 					bool colorMatch = false;
@@ -60,7 +65,7 @@ namespace paplease {
 					}
 					if (!colorMatch) continue;
 #endif
-#if CHEEKY_OPTIMIZATION
+#if OPTIMIZE_CHEEKY
 					// cheeky optimization
 					if (!hasFoundTopLeft)
 					{
@@ -73,7 +78,7 @@ namespace paplease {
 						{
 							// bottom_right
 							const auto& bottomRightColor = *inspection.ptr<BgrColor>(y + height - 1, x + width - 1);
-#if MATCH_ONE_COLOR
+#if EXPERIMENTAL_MATCH_ONE_COLOR
 							if (color == BGR_VAL(bgr[x]))
 								return Rectangle{ x,y,width,height };
 #else
@@ -100,7 +105,7 @@ namespace paplease {
 					if (y < top)
 					{
 						top = y;
-#if EFFECTIVE_SCANNING_OPTIMIZATION
+#if OPTIMIZE_EFFECTIVE_SCANNING
 						int maxHeight = top + appearance.GetHeight();
 						maxScanY = (maxHeight > inspection.rows) ? inspection.rows : maxHeight;
 #endif
@@ -111,7 +116,7 @@ namespace paplease {
 					if (min_x < left)
 					{
 						left = min_x;
-#if EFFECTIVE_SCANNING_OPTIMIZATION
+#if OPTIMIZE_EFFECTIVE_SCANNING
 						int maxWidth = left + appearance.GetWidth();
 						maxScanX = (maxWidth > inspection.cols) ? inspection.cols : maxWidth;
 #endif
@@ -119,7 +124,7 @@ namespace paplease {
 					if (max_x > right)
 					{
 						right = max_x;
-#if EFFECTIVE_SCANNING_OPTIMIZATION
+#if OPTIMIZE_EFFECTIVE_SCANNING
 						int minWidth = right - appearance.GetWidth() + 1;
 						minScanX = (minWidth < 0) ? 0 : minWidth;
 #endif
@@ -130,12 +135,8 @@ namespace paplease {
 			// Nothing was found
 			if (left == INT_MAX && top == INT_MAX && !right && !bottom) return Rectangle{};
 
-			//cv::imshow("DBG_DOC_BOX", inspection(cv::Rect(left, top, right - left + 1, bottom - top + 1)));
-			//cv::waitKey();
-
 			return Rectangle{ left, top, right - left + 1, bottom - top + 1 };
 		}
-
 
 		namespace detail {
 
@@ -210,7 +211,7 @@ namespace paplease {
 
 			typedef bool(*DocumentBoundingBoxValidatorFunction)(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance);
 
-			static bool IsExactSizeMatched(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance)
+			static bool IsExactSizeMatched(const cv::Mat&, const Rectangle& boundingBox, const DocAppearance& appearance)
 			{
 				if (boundingBox.width == appearance.GetWidth() && boundingBox.height == appearance.GetHeight())
 				{
@@ -256,14 +257,42 @@ namespace paplease {
 				return false;
 			}
 
+			static inline bool IsTooLarge(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance)
+			{
+				if (boundingBox.width > appearance.GetWidth())
+				{
+					return true;
+				}
+
+				if (boundingBox.height > appearance.GetHeight())
+				{
+					return true;
+				}
+
+				return false;
+			}
+
 		}  // namespace detail
 
 		static inline bool ValidateDocumentBoundingBox(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance)
 		{
+			constexpr detail::DocumentBoundingBoxValidatorFunction negativeValidators[]{
+				detail::IsTooLarge,
+			};
+
+			for (auto& negativeValidator : negativeValidators)
+			{
+				auto shouldBeDiscarded = negativeValidator(inspection, boundingBox, appearance);
+				if (shouldBeDiscarded)
+				{
+					return false;
+				}
+			}
+
 			constexpr detail::DocumentBoundingBoxValidatorFunction validators[]
 			{
 				detail::IsExactSizeMatched,
-	#if !STRICT_DOCUMENT_SCANNING
+	#if !ENABLE_STRICT_DOCUMENT_SCANNING
 				detail::IsCornerMatched
 	#endif
 			};

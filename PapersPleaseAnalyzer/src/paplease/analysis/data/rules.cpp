@@ -229,10 +229,22 @@ namespace paplease {
                 {
                     auto ruleOpt = ruleData.GetField(category, false);
                     if (!ruleOpt)
-                        continue;
+                    {
+                        return std::nullopt;
+                    }
+
                     const auto& rule = ruleOpt.value().get();
+                    if (rule.IsEmpty())
+                    {
+                        continue;
+                    }
+
                     auto eRule = GetERuleFromDescription(rule.ToString());
-                    if (eRule == ERule::Invalid) continue;
+                    if (eRule == ERule::Invalid)
+                    {
+                        return std::nullopt;
+                    }
+
                     rulebook.RegisterRule(eRule);
                 }
 
@@ -266,7 +278,7 @@ namespace paplease {
                 if (fetchedRule == nullptr)
                     return;
 
-                m_activeRules.Add(fetchedRule);
+                m_activeRules.Add(*fetchedRule);
             }
 
         }  // namespace data

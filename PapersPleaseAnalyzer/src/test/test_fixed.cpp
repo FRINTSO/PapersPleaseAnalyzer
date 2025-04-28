@@ -22,16 +22,19 @@ namespace test {
 		using FloatHex = int;
 		constexpr size_t Count = 20;
 
+		// Mine
+
 		core::FixedHashTable<FloatHex, RGB, Count> my_table{};
 
 		my_table.Set(float_as_hex(-1.0f), RGB{ 0, 0, 0 });
 		my_table.Set(float_as_hex(0.0f), RGB{ 127, 127, 127 });
 		my_table.Set(float_as_hex(1.0f), RGB{ 255, 255, 255 });
 
-		/*for (const auto& entry : my_table)
+		for (const auto& entry : my_table)
 		{
+			std::cout << "Value: " << std::hex << entry.key << "\n";
+		}
 
-		}*/
 	}
 
 }  // namespace test

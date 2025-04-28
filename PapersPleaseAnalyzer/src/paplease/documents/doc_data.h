@@ -5,7 +5,7 @@
 #include "paplease/documents/doc_data_type.h"
 #include "paplease/documents/doc_layout.h"
 #include "paplease/core/fixed.h"
-#include "paplease/core/optref.h"
+#include "paplease/core/ref.h"
 
 #include <optional>
 #include <variant>
@@ -82,7 +82,7 @@ namespace paplease {
 		{  // Represents the data of any field
 		public:
 			Field() = default;
-#if DOCDATA_OPTIMIZATION
+#if OPTIMIZE_DOCDATA
 			explicit Field(Data&& data, FieldType type, FieldCategory category);
 #else
 			Field(const Data& data, const FieldType type, const FieldCategory category);
@@ -96,6 +96,7 @@ namespace paplease {
 			FieldType Type() const;
 			FieldCategory Category() const;
 			bool IsBroken() const;
+			bool IsEmpty() const;
 		private:
 			friend class DocDataBuilder;
 		private:
@@ -108,7 +109,7 @@ namespace paplease {
 #pragma endregion
 
 #pragma region DocData
-#if DOCDATA_OPTIMIZATION
+#if OPTIMIZE_DOCDATA
 		class DocData
 		{  // Represents the data of any document
 			static constexpr size_t MaxFields = 10;
@@ -146,11 +147,11 @@ namespace paplease {
 		public:
 			DocData() = default;
 
-			std::optional<std::reference_wrapper<const Field>> GetField(FieldCategory category, bool returnBroken) const;
+			core::OptCRef<Field> GetField(FieldCategory category, bool returnBroken) const;
 			template<FieldCategory Category>
 			constexpr detail::FieldDataType<Category> GetFieldData() const;
 
-			core::FixedRefArray<Field, DocData::ArrayLength> GetAllValidFields() const;
+			core::FixedArray<const Field*, DocData::ArrayLength> GetAllValidFields() const;
 
 			bool HasBrokenData() const;
 
@@ -168,7 +169,7 @@ namespace paplease {
 
 #pragma region DocDataBuilder
 
-#if DOCDATA_OPTIMIZATION
+#if OPTIMIZE_DOCDATA
 		class DocDataBuilder
 		{  // Builds a document data instance
 		public:

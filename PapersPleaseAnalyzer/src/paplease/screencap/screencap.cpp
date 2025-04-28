@@ -53,7 +53,7 @@ namespace paplease {
 
         HWND GetGameWindowHandle()
         {
-            LPCWSTR windowTitle = L"PapersPlease";
+            auto windowTitle = TEXT("PapersPlease");
             HWND hWND = FindWindow(NULL, windowTitle);
             while (!hWND)
             {
@@ -72,7 +72,7 @@ namespace paplease {
 
         cv::Mat CaptureGameWindow()
         {
-            HWND desktopWindow = GetDesktopWindow();
+            static HWND desktopWindow = GetDesktopWindow();
             HWND gameWindow = GetGameWindowHandle();
             if (!IsWindowForeground(gameWindow))
             {
@@ -80,8 +80,8 @@ namespace paplease {
                 while (!IsWindowForeground(gameWindow));
             }
 
-            auto screenWidth = GetSystemMetrics(SM_CXSCREEN);
-            auto screenHeight = GetSystemMetrics(SM_CYSCREEN);
+            static auto screenWidth = GetSystemMetrics(SM_CXSCREEN);
+            static auto screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
             RECT windowRect;
             if (GetWindowRect(gameWindow, &windowRect) && (windowRect.left < 0 || windowRect.top < 0 || windowRect.right > screenWidth || windowRect.bottom > screenHeight))

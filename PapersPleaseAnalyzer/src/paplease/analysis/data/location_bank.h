@@ -10,9 +10,9 @@ namespace paplease {
     namespace analysis {
         namespace data {
 
-			enum class ECountry : unsigned char
+			enum class ECountry : u8
 			{
-				Invalid = -1,
+				Invalid = static_cast<u8>(-1),
 				Antegria = 0,
 				Arstotzka,
 				Impor,
@@ -23,9 +23,9 @@ namespace paplease {
 				Count
 			};
 
-			enum class EDistrict : unsigned char
+			enum class EDistrict : u8
 			{
-				Invalid = -1,
+				Invalid = static_cast<u8>(-1),
 				Altan = 0,
 				Vescillo,
 				Burnton,
@@ -37,9 +37,9 @@ namespace paplease {
 				Count
 			};
 
-			enum class ECity : unsigned char
+			enum class ECity : u8
 			{
-				Invalid = -1,
+				Invalid = static_cast<u8>(-1),
 				StMarmero = 0,
 				Glorian,
 				OuterGrouse,

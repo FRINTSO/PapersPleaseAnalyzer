@@ -104,7 +104,7 @@ namespace paplease {
 						type
 					};
 				case AppearanceType::EntryTicket:
-#if MATCH_ONE_COLOR
+#if EXPERIMENTAL_MATCH_ONE_COLOR
 					return DocAppearance{
 						{
 							RgbColor{ 137, 106, 103 },

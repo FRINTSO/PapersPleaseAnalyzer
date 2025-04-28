@@ -4,6 +4,8 @@
 #include <optional>
 #include <string>
 
+#include <magic_enum/magic_enum.hpp>
+
 #include "paplease/common/image_process.h"
 
 #include "paplease/documents/bounding_box_finder.inc"
@@ -104,7 +106,7 @@ namespace paplease {
 			auto seal = ExtractSeal(binary);
 			if (!seal)
 			{
-				LOG_ERR("Invalid seal of document type: {}", ToStringView(documentType));
+				LOG_ERR("Invalid seal of document type: {}", magic_enum::enum_name<documents::DocType>(documentType));
 				return false;
 			}
 			

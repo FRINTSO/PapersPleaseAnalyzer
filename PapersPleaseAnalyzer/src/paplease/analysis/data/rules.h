@@ -10,12 +10,12 @@ namespace paplease {
     namespace analysis {
         namespace data {
 
-            enum class ERule : unsigned int
+            enum class ERule : u8
             {
-                Invalid = -1,
+                Invalid = static_cast<u8>(-1),
 
                 // === REQUIREMENTS ===
-                RequireCurrentDocumentsFromEntrant, // If this flag is set, mediator should know what functions to call
+                RequireCurrentDocumentsFromEntrant = 0, // If this flag is set, mediator should know what functions to call
                 RequirePassportFromEntrant,
                 RequireArstotzkanPassportFromEntrant,
                 RequireIdentityCardFromCitizens,
@@ -55,16 +55,18 @@ namespace paplease {
             // 
             //
 
-            enum class ERuleAction : unsigned char
+            enum class ERuleAction : u8
             {
-                Require,    // Need information
+                Invalid = static_cast<u8>(-1),
+                Require = 0,    // Need information
                 Prohibit,   // Limit
                 Confiscate  // Limit
             };
 
-            enum class ERuleSubject : unsigned char
+            enum class ERuleSubject : u8
             {
-                CurrentDocuments,
+                Invalid = static_cast<u8>(-1),
+                CurrentDocuments = 0,
                 Passport,
                 ArstotzkanPassport,
                 IdentityCard,
@@ -81,9 +83,41 @@ namespace paplease {
                 Entry,
             };
 
-            enum class ERuleTarget : unsigned char
+            static inline constexpr std::pair<documents::DocType, documents::PassportType> ERuleSubjectToDocType(ERuleSubject subject)
             {
-                Entrant,
+                switch (subject)
+                {
+                    case ERuleSubject::Passport:
+                        return std::make_pair(documents::DocType::Passport, documents::PassportType::Invalid);
+                    case ERuleSubject::ArstotzkanPassport:
+                        return std::make_pair(documents::DocType::Passport, documents::PassportType::Arstotzka);
+                    case ERuleSubject::IdentityCard:
+                        return std::make_pair(documents::DocType::IdentityCard, documents::PassportType::Invalid);
+                    case ERuleSubject::EntryTicket:
+                        return std::make_pair(documents::DocType::EntryTicket, documents::PassportType::Invalid);
+                    case ERuleSubject::WorkPass:
+                        return std::make_pair(documents::DocType::WorkPass, documents::PassportType::Invalid);
+                    case ERuleSubject::DiplomaticAuthorization:
+                        return std::make_pair(documents::DocType::DiplomaticAuthorization, documents::PassportType::Invalid);
+                    case ERuleSubject::IdentitySupplement:
+                        return std::make_pair(documents::DocType::IdentitySupplement, documents::PassportType::Invalid);
+                    case ERuleSubject::Grant:
+                        return std::make_pair(documents::DocType::GrantOfAsylum, documents::PassportType::Invalid);
+                    case ERuleSubject::PolioVaccination:
+                        return std::make_pair(documents::DocType::CertificateOfVaccination, documents::PassportType::Invalid);
+                    case ERuleSubject::AccessPermit:
+                        return std::make_pair(documents::DocType::AccessPermit, documents::PassportType::Invalid);
+                    case ERuleSubject::EntryPermit:
+                        return std::make_pair(documents::DocType::EntryPermit, documents::PassportType::Invalid);
+                    default:
+                        return std::make_pair(documents::DocType::Invalid, documents::PassportType::Invalid);
+                }
+            }
+
+            enum class ERuleTarget : u8
+            {
+                Invalid = static_cast<u8>(-1),
+                Entrant = 0,
                 Citizens,
                 Foreigners,
                 Workers,
@@ -97,19 +131,21 @@ namespace paplease {
 
             struct RuleDescriptor
             {
-                consteval RuleDescriptor( ERuleAction action, ERuleSubject subject, ERuleTarget target)
+                constexpr RuleDescriptor() = default;
+                constexpr RuleDescriptor(ERuleAction action, ERuleSubject subject, ERuleTarget target)
                     : action{action}, subject{subject}, target{target}
                 {}
 
-                ERuleAction action;
-                ERuleSubject subject;
-                ERuleTarget target;
+                ERuleAction action = ERuleAction::Invalid;
+                ERuleSubject subject = ERuleSubject::Invalid;
+                ERuleTarget target = ERuleTarget::Invalid;
             };
 
             class Rule
             {
             public:
-                consteval Rule(ERule rule, RuleDescriptor descriptor)
+                constexpr Rule() = default;
+                constexpr Rule(ERule rule, RuleDescriptor descriptor)
                     : m_rule{ rule }, m_descriptor{ descriptor }
                 {}
 
@@ -119,8 +155,8 @@ namespace paplease {
                 std::string_view GetDescription() const;
                 const RuleDescriptor& GetDescriptor() const;
             private:
-                ERule m_rule;
-                RuleDescriptor m_descriptor;
+                ERule m_rule = ERule::Invalid;
+                RuleDescriptor m_descriptor{};
             };
 
             class RuleBook
@@ -129,7 +165,7 @@ namespace paplease {
                 RuleBook() = default;
                 static constexpr size_t MaxRuleCount = 10;
 
-                const core::FixedArray<const Rule*, MaxRuleCount>& GetRules() const
+                const core::FixedArray<Rule, MaxRuleCount>& GetRules() const
                 {
                     return m_activeRules;
                 }
@@ -138,7 +174,7 @@ namespace paplease {
                 void RegisterRule(ERule rule);
 
             private:
-                core::FixedArray<const Rule*, MaxRuleCount> m_activeRules{nullptr};
+                core::FixedArray<Rule, MaxRuleCount> m_activeRules{};
 
                 friend std::optional<RuleBook> CreateRuleBook(const documents::Doc& document);
             };

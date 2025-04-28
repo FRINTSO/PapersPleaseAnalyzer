@@ -21,7 +21,7 @@ namespace paplease {
 #pragma region DocTracker
 
 		DocTracker::DocTracker()
-			: m_documentPositions{ TrackedDocument{ DocType::Invalid, Rectangle{ }} }, m_documentsInBoothView{DocType::Invalid}
+			: m_documentPositions{ TrackedDocument{ DocType::Invalid, Rectangle{ }} }, m_documentsInBoothView{}
 		{
 		}
 
@@ -82,7 +82,7 @@ namespace paplease {
 			int bottom = 0;
 			bool hasFoundTopLeft = false;
 
-#if MATCH_ONE_COLOR
+#if EXPERIMENTAL_MATCH_ONE_COLOR
 			const auto color = RGB_VAL(appearance.GetColors()[0]);
 #else
 			const RgbColor* colors = appearance.GetColors();
@@ -104,7 +104,7 @@ namespace paplease {
 				for (int x = minScanX; x < maxScanX; x++)
 				{
 					// CHECK IF BGR_VAL(bgr[x]) is in colors
-#if MATCH_ONE_COLOR
+#if EXPERIMENTAL_MATCH_ONE_COLOR
 					if (color != BGR_VAL(bgr[x])) continue;
 #else
 					bool colorMatch = false;
@@ -118,7 +118,7 @@ namespace paplease {
 					}
 					if (!colorMatch) continue;
 #endif
-#if CHEEKY_OPTIMIZATION
+#if OPTIMIZE_CHEEKY
 					// cheeky optimization
 					if (!hasFoundTopLeft)
 					{
@@ -131,7 +131,7 @@ namespace paplease {
 						{
 							// bottom_right
 							const auto& bottomRightColor = *inspection.ptr<BgrColor>(y + height - 1, x + width - 1);
-#if MATCH_ONE_COLOR
+#if EXPERIMENTAL_MATCH_ONE_COLOR
 							if (color == BGR_VAL(bgr[x]))
 								return Rectangle{ x,y,width,height };
 #else
@@ -158,7 +158,7 @@ namespace paplease {
 					if (y < top)
 					{
 						top = y;
-#if EFFECTIVE_SCANNING_OPTIMIZATION
+#if OPTIMIZE_EFFECTIVE_SCANNING
 						int maxHeight = top + appearance.GetHeight();
 						maxScanY = (maxHeight > inspection.rows) ? inspection.rows : maxHeight;
 #endif
@@ -169,7 +169,7 @@ namespace paplease {
 					if (min_x < left)
 					{
 						left = min_x;
-#if EFFECTIVE_SCANNING_OPTIMIZATION
+#if OPTIMIZE_EFFECTIVE_SCANNING
 						int maxWidth = left + appearance.GetWidth();
 						maxScanX = (maxWidth > inspection.cols) ? inspection.cols : maxWidth;
 #endif
@@ -177,7 +177,7 @@ namespace paplease {
 					if (max_x > right)
 					{
 						right = max_x;
-#if EFFECTIVE_SCANNING_OPTIMIZATION
+#if OPTIMIZE_EFFECTIVE_SCANNING
 						int minWidth = right - appearance.GetWidth() + 1;
 						minScanX = (minWidth < 0) ? 0 : minWidth;
 #endif
@@ -259,33 +259,36 @@ namespace paplease {
 
 		void DocTrackerV2::RegisterScannedDocuments(const scannable::DocViewCollection& scannedDocuments)
 		{
-			core::FixedHashSet<documents::DocType, static_cast<size_t>(documents::DocType::Count)> seenDocuments{};
-
 			for (const auto& docView : scannedDocuments)
 			{
 				auto documentType = ToDocType(docView.appearanceType);
-				seenDocuments.Insert(documentType);
+				m_visibleDocuments.Insert(documentType);
 				if (m_documents.Contains(documentType))
 				{  // Already stored document - Update position & view area
-					auto& storedDocView = m_documents.Get(documentType);
+					DocView storedDocView;
+					m_documents.Get(documentType, storedDocView);
 
 					if (storedDocView.viewArea != docView.viewArea)
 					{  // Document was moved from one scan area to the other
+#if DEBUG_LOG_DOCUMENT_TRACKING
 						LOG(
 							"Document '{}' changed from {} to {}",
 							magic_enum::enum_name<documents::AppearanceType>(docView.appearanceType),
 							magic_enum::enum_name<ViewArea>(storedDocView.viewArea),
 							magic_enum::enum_name<ViewArea>(docView.viewArea)
 						);
+#endif
 					}
 					else if (cv::Rect(storedDocView.boundingBox) != cv::Rect(docView.boundingBox))
 					{
+#if DEBUG_LOG_DOCUMENT_TRACKING
 						LOG(
 							"Document '{}' moved",
 							magic_enum::enum_name<documents::AppearanceType>(docView.appearanceType),
 							magic_enum::enum_name<ViewArea>(storedDocView.viewArea),
 							magic_enum::enum_name<ViewArea>(docView.viewArea)
 						);
+#endif
 					}
 					else
 					{
@@ -297,42 +300,107 @@ namespace paplease {
 				}
 				else
 				{  // New document
+#if DEBUG_LOG_DOCUMENT_TRACKING
 					LOG(
 						"New document '{}' in {}",
 						magic_enum::enum_name<documents::AppearanceType>(docView.appearanceType),
 						magic_enum::enum_name<ViewArea>(docView.viewArea)
 					);
+#endif
 					m_documents.Set(documentType, docView);
 				}
 			}
 
-			for (auto& doc : m_documents)
-			{
-				if (doc.appearanceType == AppearanceType::Invalid || doc.viewArea == ViewArea::BoothView) 
-				{
-					continue;
-				}
-				const auto docType = ToDocType(doc.appearanceType);
-				if (!seenDocuments.Contains(docType))
-				{
-					m_documentsNotVisible.Insert(docType);
-				}
-			}
 		}
 
 		void DocTrackerV2::RefreshTracking(const scannable::ScanContext& scanContext)
 		{
+			m_visibleDocuments.Clear();
 			RegisterScannedDocuments(scanContext.boothData.scannedDocuments);
-			m_documentsNotVisible.Clear();
 			RegisterScannedDocuments(scanContext.inspectionData.scannedDocuments);
 
-			for (auto docType : m_documentsNotVisible)
+#if DEBUG_LOG_DOCUMENT_TRACKING
+			for (const auto& entry : m_documents)
 			{
-				LOG(
-					"Can't see document '{}'",
-					magic_enum::enum_name<documents::DocType>(docType)
-				);
+				DocType documentType = ToDocType(entry.value.appearanceType);
+				if (!IsApplicantDocument(documentType))
+				{
+					continue;
+				}
+
+				if (m_visibleDocuments.Contains(entry.key))
+				{ // Visible
+					LOG("Visible: '{}'", magic_enum::enum_name<documents::DocType>(documentType));
+				}
+				else
+				{ // Not visible
+					LOG("Invisible: '{}'", magic_enum::enum_name<documents::DocType>(documentType));
+				}
 			}
+#endif
+		}
+
+		bool DocTrackerV2::Contains(documents::DocType documentType) const noexcept
+		{
+			return m_documents.Contains(documentType);
+		}
+
+		bool DocTrackerV2::Contains(documents::DocType documentType, documents::PassportType passportType) const noexcept
+		{
+			documents::DocView docView;
+			if (m_documents.Get(documentType, docView))
+			{
+				return ToAppearanceType(documentType, passportType) == docView.appearanceType;
+			}
+			return false;
+		}
+
+		bool DocTrackerV2::IsVisible(documents::DocType documentType) const noexcept
+		{
+			return m_visibleDocuments.Contains(documentType);
+		}
+
+		bool DocTrackerV2::IsVisible(documents::DocType documentType, ViewArea viewArea) const noexcept
+		{
+			if (!m_visibleDocuments.Contains(documentType))
+			{
+				return false;
+			}
+
+			const documents::DocView& docView = m_documents[documentType];
+			return docView.viewArea == viewArea;
+		}
+
+		bool DocTrackerV2::ExtractDoc(const GameView& gameView, documents::DocType documentType, documents::Doc& outDocument) const noexcept
+		{
+			if (!m_visibleDocuments.Contains(documentType))
+			{
+				return false;
+			}
+			const documents::DocView& docView = m_documents[documentType];
+			outDocument = docView.ToDocument(gameView);
+			return true;
+		}
+
+		void DocTrackerV2::AddRequiredDocument(std::pair<documents::DocType, documents::PassportType> docType)
+		{
+			if (m_requiredDocuments.Contains(docType))
+			{
+				return;
+			}
+
+#if DEBUG_LOG_REQUIRED_DOCUMENTS
+			if (docType.second != documents::PassportType::Invalid)
+			{
+				auto appearanceType = ToAppearanceType(docType.first, docType.second);
+				LOG("Required document: {}", magic_enum::enum_name<documents::AppearanceType>(appearanceType));
+			}
+			else
+			{
+				LOG("Required document: {}", magic_enum::enum_name<documents::DocType>(docType.first));
+			}
+#endif
+			m_requiredDocuments.Set(docType, true);
 		}
 
 #pragma endregion

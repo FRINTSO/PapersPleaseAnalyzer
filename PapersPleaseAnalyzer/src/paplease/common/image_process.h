@@ -57,7 +57,7 @@ namespace paplease {
 	static inline cv::Mat LoadImageFile(const std::string& path)
 	{
 		auto mat = cv::imread(path, cv::IMREAD_UNCHANGED);
-#if DOWNSCALE_OPTIMIZATION
+#if OPTIMIZE_DOWNSCALE
 		mat = ScaleImage(std::move(mat), 1.0f / 2.0f);
 #endif
 		return mat;

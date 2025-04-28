@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "paplease/scannable/doc_scan.h"
 
-#include <unordered_set>
-
 #include "paplease/documents/bounding_box_finder.inc"
 #include "paplease/utils/enum_range.h"
 
@@ -35,11 +33,17 @@ namespace paplease {
 				{
 					for (int i = 0; i < passportTypesColor.size(); i++)
 					{
-						// if (RGB_VAL(passportTypesColor[i]) == BGR_VAL(*mat.ptr<BgrColor>(row, col)))
+#if OPTIMIZE_COLOR
 						if (RgbVal(passportTypesColor[i]) == BgrVal(*mat.ptr<BgrColor>(row, col)))
 						{
 							return static_cast<PassportType>(static_cast<int>(PassportType::Antegria) + i);
 						}
+#else
+						if (RGB_VAL(passportTypesColor[i]) == BGR_VAL(*mat.ptr<BgrColor>(row, col)))
+						{
+							return static_cast<PassportType>(static_cast<int>(PassportType::Antegria) + i);
+						}
+#endif
 					}
 				}
 			}
@@ -217,7 +221,7 @@ namespace paplease {
 			constexpr detail::DocumentExtractionHandlerFunction handlers[]
 			{
 				detail::IsExactSizeMatched,
-	#if !STRICT_DOCUMENT_SCANNING
+	#if !ENABLE_STRICT_DOCUMENT_SCANNING
 				detail::IsCornerMatched
 	#endif
 			};
@@ -342,7 +346,11 @@ namespace paplease {
 				{
 					for (size_t i = 0; i < DocAppearance::GetInstant(appearanceType).GetColorCount(); i++)
 					{
+#if OPTIMIZE_COLOR
 						const int currentColorCode = RgbVal(DocAppearance::GetInstant(appearanceType).GetColors()[i]);
+#else
+						const int currentColorCode = RGB_VAL(DocAppearance::GetInstant(appearanceType).GetColors()[i]);
+#endif
 						if (!HasColor(storedColors, colorsCounted, currentColorCode))
 						{
 							storedColors[colorsCounted++] = currentColorCode;
@@ -382,7 +390,11 @@ namespace paplease {
 
 					for (size_t i = 0; i < colorCount; i++)
 					{
+#if OPTIMIZE_COLOR
 						const ColorCode code = RgbVal(colors[i]);
+#else
+						const ColorCode code = RGB_VAL(colors[i]);
+#endif
 						bool success = table.Set(code, appearanceType);
 						assert(success && "Failed to insert into color-appearance table at compile time");
 					}
@@ -457,8 +469,11 @@ namespace paplease {
 				const auto* color = mat.ptr<BgrColor>(row);
 				for (size_t column = 0; column < mat.cols; column++)
 				{
-					//int currentColor = BGR_VAL(color[column]);
+#if OPTIMIZE_COLOR
 					int currentColor = BgrVal(color[column]);
+#else
+					int currentColor = BGR_VAL(color[column]);
+#endif
 
 					AppearanceType type;
 					if (table.Get(currentColor, type))

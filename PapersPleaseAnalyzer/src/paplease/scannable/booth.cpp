@@ -500,7 +500,7 @@ namespace paplease {
 					case documents::FieldType::Text:
 					{
 						std::string raw_data = GetBoothString(ExtractDocumentField(binary, layouts[i].GetBox()));
-#if DOCDATA_OPTIMIZATION
+#if OPTIMIZE_DOCDATA
 						builder.AddField(
 							Field{
 								Data{ std::move(raw_data) },
@@ -524,7 +524,7 @@ namespace paplease {
 					{
 						cv::Mat image_data = ExtractDocumentField(booth, layouts[i].GetBox());
 
-#if DOCDATA_OPTIMIZATION
+#if OPTIMIZE_DOCDATA
 						builder.AddField(
 							Field{
 								Data{
@@ -552,7 +552,7 @@ namespace paplease {
 					case documents::FieldType::Invalid:
 					default:
 					{
-#if DOCDATA_OPTIMIZATION
+#if OPTIMIZE_DOCDATA
 						builder.AddField(
 							Field{
 								Data{},
@@ -576,7 +576,7 @@ namespace paplease {
 				}
 			}
 
-#if DOCDATA_OPTIMIZATION
+#if OPTIMIZE_DOCDATA
 			return builder.Build();
 #else
 			return { builder.GetDocData() };
@@ -601,7 +601,7 @@ namespace paplease {
 				applicantHeight,
 				photo,
 				counter,
-				scanResult
+				std::move(scanResult)
 			};
 		}
 
