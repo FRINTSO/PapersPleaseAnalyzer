@@ -193,14 +193,6 @@ namespace paplease {
                 m_storedDocumentData.Get(type, pdocData);
                 auto& docStatus = m_storedDocumentAnalysisStatus.Get(type);
 
-                //if (pdocView)
-                //    auto docView = *pdocView;
-                //if (pdoc)
-                //    auto doc = *pdoc;
-
-                //if (pdocData)
-                //    auto docData = *pdocData;
-
                 // Clear
                 m_storedDocumentViews.Clear();
                 m_storedDocuments.Clear();

@@ -52,7 +52,7 @@ namespace paplease {
 
 		bool GameAnalyzer::IsNewApplicant(int applicantNumber) const noexcept
 		{
-			return applicantNumber != m_analysisContext.applicantNumber;
+			return applicantNumber != m_analysisContext.applicantNumber && applicantNumber != 0;
 		}
 
 		void GameAnalyzer::OnNewDate()

@@ -19,6 +19,11 @@ namespace paplease {
             m_entrant.SetEntrantCity(city);
             UpdateRules();
         }
+        void AnalysisContextV2::SetEntrantClassification(u8 classification)
+        {
+            m_entrant.entrantClass |= classification;
+            UpdateRules();
+        }
 
         bool AnalysisContextV2::AddToProfile(const documents::Field& fieldData)
         {

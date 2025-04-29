@@ -25,6 +25,7 @@ namespace paplease {
             void SetEntrantCountry(data::ECountry country);
             void SetEntrantDistrict(data::EDistrict district);
             void SetEntrantCity(data::ECity city);
+            void SetEntrantClassification(u8 classification);
 
             bool AddToProfile(const documents::Field& fieldData);
 

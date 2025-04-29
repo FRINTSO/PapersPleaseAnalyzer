@@ -134,6 +134,7 @@ namespace paplease {
                     valid &= ValidatePassportNumber();
                     valid &= ValidateExpirationDate();
                     valid &= ValidateForgedOrMissingSeal();
+                    valid &= ValidatePurpose();
                     return valid;
                 }
                 case documents::DocType::EntryTicket:
@@ -402,6 +403,28 @@ namespace paplease {
             }
 
             return accepted;
+        }
+        bool DocAnalyzer::DocValidator::ValidatePurpose() const
+        {
+            const auto purposeOpt = m_documentData.GetFieldData<documents::FieldCategory::Purpose>();
+            const auto& purpose = utils::strfuncs::ToLower(purposeOpt->get());
+
+            if (purpose == "work")
+            {
+                m_context.SetEntrantClassification(data::EntrantClass::Worker);
+            }
+            else if (purpose == "transit")
+            { }
+            else if (purpose == "visit")
+            { }
+            else if (purpose == "immigrate")
+            { }
+            else
+            {
+                __debugbreak();
+            }
+
+            return true;
         }
 
         // Against booth

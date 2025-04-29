@@ -45,6 +45,7 @@ namespace paplease {
 				bool ValidateAccessToAristotzka() const;
 				bool ValidateMissingVaccine() const;
 				bool ValidateVaccineExpirationDate() const;
+				bool ValidatePurpose() const;
 
 				// Against booth
 				bool ValidateWeight() const;
