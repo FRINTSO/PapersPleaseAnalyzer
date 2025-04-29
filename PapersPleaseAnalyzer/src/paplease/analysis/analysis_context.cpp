@@ -30,7 +30,7 @@ namespace paplease {
 			// IS not brokjen
 			if (document.GetDocumentData().HasBrokenData())
 			{
-				LOG_ERR("Document does contain some broken data, needs to rescan. '{}'", magic_enum::enum_name<documents::DocType>(document.GetDocumentType()));
+				LOG_ERR("Document does contain some broken data, needs to rescan. '{}'", magic_enum::enum_name(document.GetDocumentType()));
 				return false;
 			}
 
@@ -274,7 +274,7 @@ namespace paplease {
 					}
 					else
 					{
-						LOG_ERR("Unimplemented document '{}' found in NotifyDocumentFound()!", magic_enum::enum_name<documents::DocType>(documentType));
+						LOG_ERR("Unimplemented document '{}' found in NotifyDocumentFound()!", magic_enum::enum_name(documentType));
 					}
 					break;
 				}
@@ -402,7 +402,7 @@ namespace paplease {
 
 		void AnalysisContext::ValidateDocument(const documents::Doc& document)
 		{
-			BeginLOG("AnalysisContext::ValidateDocument({})", magic_enum::enum_name<documents::DocType>(document.GetDocumentType()));
+			BeginLOG("AnalysisContext::ValidateDocument({})", magic_enum::enum_name(document.GetDocumentType()));
 
 			auto validator = DocumentValidator(document, *this);
 			bool result = validator.Validate();
@@ -546,7 +546,7 @@ namespace paplease {
 			// If expiration date data is missing, log the error and return false
 			if (!expirationDateData)
 			{
-				LOG_ERR("Missing expiration date for document '{}'", magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType()));
+				LOG_ERR("Missing expiration date for document '{}'", magic_enum::enum_name(m_document.GetDocumentType()));
 				return false;  // Early exit if expiration date is missing
 			}
 
@@ -557,7 +557,7 @@ namespace paplease {
 
 			if (!accepted)
 			{
-				LOG_DISCREPANCY("Invalid Expiration Date! Document type: '{}'", magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType()));
+				LOG_DISCREPANCY("Invalid Expiration Date! Document type: '{}'", magic_enum::enum_name(m_document.GetDocumentType()));
 			}
 
 			return accepted;
@@ -572,7 +572,7 @@ namespace paplease {
 				LOG_DISCREPANCY(
 					"{} is not a valid city. {}", 
 					city,
-					magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType())
+					magic_enum::enum_name(m_document.GetDocumentType())
 				);
 			}
 			m_analysisContext.m_entrantInfo.city = data::LocationBank::FromCityString(city);
@@ -588,7 +588,7 @@ namespace paplease {
 				LOG_DISCREPANCY(
 					"{} is not a valid district. {}",
 					district,
-					magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType())
+					magic_enum::enum_name(m_document.GetDocumentType())
 				);
 			}
 			m_analysisContext.m_entrantInfo.district = data::LocationBank::FromDistrictString(district);
@@ -600,7 +600,7 @@ namespace paplease {
 			bool accepted = m_document.IsAuthentic();
 			if (!accepted)
 			{
-				LOG_DISCREPANCY("Seal missing or forged. '{}'", magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType()));
+				LOG_DISCREPANCY("Seal missing or forged. '{}'", magic_enum::enum_name(m_document.GetDocumentType()));
 			}
 			return accepted;
 		}
@@ -613,7 +613,7 @@ namespace paplease {
 		//		LOG_DISCREPANCY(
 		//			"{} is not a valid country. {}",
 		//			m_documentData.GetFieldData<DataFieldCategory::IssuingCountry>()->get(),
-		//			magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType())
+		//			magic_enum::enum_name(m_document.GetDocumentType())
 		//		);
 		//	}
 		//	return true;
@@ -627,7 +627,7 @@ namespace paplease {
 			bool accepted = m_analysisContext.m_currentDate == expirationDate;
 			if (!accepted)
 			{
-				LOG_DISCREPANCY("Invalid Enter On Date! '{}'", magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType()));
+				LOG_DISCREPANCY("Invalid Enter On Date! '{}'", magic_enum::enum_name(m_document.GetDocumentType()));
 			}
 			return accepted;
 		}
@@ -641,7 +641,7 @@ namespace paplease {
 				LOG_DISCREPANCY(
 					"{} is not a valid country. {}",
 					country,
-					magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType())
+					magic_enum::enum_name(m_document.GetDocumentType())
 				);
 			}
 			// m_analysisContext.m_entrantInfo.nationality = data::LocationBank::FromCountryString(country);
@@ -657,7 +657,7 @@ namespace paplease {
 					return true;
 				std::cout << countryName << "\n";
 			}
-			LOG_DISCREPANCY("Missing access to Arstotzka. '{}'", magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType()));
+			LOG_DISCREPANCY("Missing access to Arstotzka. '{}'", magic_enum::enum_name(m_document.GetDocumentType()));
 			return false;
 		}
 
@@ -686,7 +686,7 @@ namespace paplease {
 			// If not accepted, log the discrepancy
 			if (!accepted)
 			{
-				LOG_DISCREPANCY("Missing polio vaccine. '{}'", magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType()));
+				LOG_DISCREPANCY("Missing polio vaccine. '{}'", magic_enum::enum_name(m_document.GetDocumentType()));
 			}
 
 			return accepted;
@@ -724,8 +724,8 @@ namespace paplease {
 
 			if (!accepted)
 			{
-				LOG_ERR("Missing or expired polio vaccine. Document type: '{}'", magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType()));
-				LOG_DISCREPANCY("Polio vaccine issue. '{}'", magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType()));
+				LOG_ERR("Missing or expired polio vaccine. Document type: '{}'", magic_enum::enum_name(m_document.GetDocumentType()));
+				LOG_DISCREPANCY("Polio vaccine issue. '{}'", magic_enum::enum_name(m_document.GetDocumentType()));
 			}
 
 			return accepted;
@@ -746,7 +746,7 @@ namespace paplease {
 			// If weight data is unavailable or broken, return false
 			if (!weightDataOpt)
 			{
-				LOG_ERR("Missing or broken weight data for document '{}'", magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType()));
+				LOG_ERR("Missing or broken weight data for document '{}'", magic_enum::enum_name(m_document.GetDocumentType()));
 				return false;
 			}
 
@@ -757,7 +757,7 @@ namespace paplease {
 
 			if (!accepted)
 			{
-				LOG_DISCREPANCY("Invalid weight. Document type: '{}'", magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType()));
+				LOG_DISCREPANCY("Invalid weight. Document type: '{}'", magic_enum::enum_name(m_document.GetDocumentType()));
 			}
 
 			return accepted;
@@ -793,7 +793,7 @@ namespace paplease {
 					"Invalid height. Expected '{}', but received '{}'.  '{}'",
 					m_documentData.GetFieldData<FieldCategory::Height>().value().get().value,
 					m_analysisContext.m_approximateHeight->value,
-					magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType())
+					magic_enum::enum_name(m_document.GetDocumentType())
 				);
 			}
 			return accepted;
@@ -836,7 +836,7 @@ namespace paplease {
 			auto nameOpt = m_documentData.GetField(FieldCategory::Name, false);
 			if (!nameOpt)
 			{
-				LOG_ERR("No name data found for document '{}'.", magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType()));
+				LOG_ERR("No name data found for document '{}'.", magic_enum::enum_name(m_document.GetDocumentType()));
 				return false;  // Return false if the name is missing
 			}
 
@@ -845,7 +845,7 @@ namespace paplease {
 			bool accepted = m_analysisContext.m_profile.RegisterData(nameData);
 			if (!accepted)
 			{
-				LOG_DISCREPANCY("Mismatching name '{}' for document '{}'.", nameData.ToString(), magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType()));
+				LOG_DISCREPANCY("Mismatching name '{}' for document '{}'.", nameData.ToString(), magic_enum::enum_name(m_document.GetDocumentType()));
 			}
 
 			return accepted;
@@ -856,7 +856,7 @@ namespace paplease {
 			auto dobOpt = m_documentData.GetField(FieldCategory::DateOfBirth, false);
 			if (!dobOpt)
 			{
-				LOG_ERR("No date of birth data found for document '{}'.", magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType()));
+				LOG_ERR("No date of birth data found for document '{}'.", magic_enum::enum_name(m_document.GetDocumentType()));
 				return false;
 			}
 
@@ -865,7 +865,7 @@ namespace paplease {
 			bool accepted = m_analysisContext.m_profile.RegisterData(dobData);
 			if (!accepted)
 			{
-				LOG_DISCREPANCY("Mismatching date of birth '{}' for document '{}'.", dobData.ToString(), magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType()));
+				LOG_DISCREPANCY("Mismatching date of birth '{}' for document '{}'.", dobData.ToString(), magic_enum::enum_name(m_document.GetDocumentType()));
 			}
 
 			return accepted;
@@ -876,7 +876,7 @@ namespace paplease {
 			auto passportOpt = m_documentData.GetField(FieldCategory::PassportNumber, false);
 			if (!passportOpt)
 			{
-				LOG_ERR("No passport number data found for document '{}'.", magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType()));
+				LOG_ERR("No passport number data found for document '{}'.", magic_enum::enum_name(m_document.GetDocumentType()));
 				return false;  // Return false if the passport number is missing
 			}
 
@@ -885,7 +885,7 @@ namespace paplease {
 			bool accepted = m_analysisContext.m_profile.RegisterData(passportData);
 			if (!accepted)
 			{
-				LOG_DISCREPANCY("Mismatching passport number '{}' for document '{}'.", passportData.ToString(), magic_enum::enum_name<documents::DocType>(m_document.GetDocumentType()));
+				LOG_DISCREPANCY("Mismatching passport number '{}' for document '{}'.", passportData.ToString(), magic_enum::enum_name(m_document.GetDocumentType()));
 			}
 
 			return accepted;

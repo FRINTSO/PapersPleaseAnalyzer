@@ -154,7 +154,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\paplease\analysis\analysis_context.cpp" />
+    <ClCompile Include="src\paplease\analysis\analysis_context_v2.cpp" />
     <ClCompile Include="src\paplease\analysis\data\location_bank.cpp" />
+    <ClCompile Include="src\paplease\analysis\doc_analyzer.cpp" />
+    <ClCompile Include="src\paplease\analysis\doc_pipeline.cpp" />
+    <ClCompile Include="src\paplease\analysis\doc_store.cpp" />
+    <ClCompile Include="src\paplease\analysis\doc_validator.cpp" />
     <ClCompile Include="src\paplease\analysis\game_analyzer.cpp" />
     <ClCompile Include="src\paplease\analysis\photo_analysis\photo_analyzer.cpp" />
     <ClCompile Include="src\paplease\documents\data\date.cpp" />
@@ -197,8 +202,14 @@
   <ItemGroup>
     <ClInclude Include="src\paplease\analysis\analysis_context.h" />
     <ClInclude Include="src\paplease\analysis\analysis_context.inl.h" />
+    <ClInclude Include="src\paplease\analysis\analysis_context_v2.h" />
     <ClInclude Include="src\paplease\analysis\data\entrant_data.h" />
     <ClInclude Include="src\paplease\analysis\data\location_bank.h" />
+    <ClInclude Include="src\paplease\analysis\data\profile.h" />
+    <ClInclude Include="src\paplease\analysis\doc_analyzer.h" />
+    <ClInclude Include="src\paplease\analysis\doc_pipeline.h" />
+    <ClInclude Include="src\paplease\analysis\doc_store.h" />
+    <ClInclude Include="src\paplease\analysis\doc_validator.h" />
     <ClInclude Include="src\paplease\analysis\game_analyzer.h" />
     <ClInclude Include="src\paplease\analysis\photo_analysis\photo_analyzer.h" />
     <ClInclude Include="src\paplease\types.h" />

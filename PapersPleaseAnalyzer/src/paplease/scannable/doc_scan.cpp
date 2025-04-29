@@ -475,10 +475,10 @@ namespace paplease {
 					int currentColor = BGR_VAL(color[column]);
 #endif
 
-					AppearanceType type;
+					AppearanceType* type;
 					if (table.Get(currentColor, type))
 					{
-						types.Insert(type);
+						types.Insert(*type);
 					}
 				}
 			}
@@ -525,7 +525,7 @@ namespace paplease {
 				const auto boundingBox = FindDocumentBoundingBox(mat, docAppearance);
 				const bool success = viewArea == ViewArea::InspectionView
 					? ValidateDocumentBoundingBox(mat, boundingBox, docAppearance)
-					: true;
+					: ValidateDocumentBoundingBoxInBoothView(mat, boundingBox, docAppearance);  // TODO: Fix this to filter bounding boxes in booth view
 
 				if (!boundingBox.Empty() && success)
 				{

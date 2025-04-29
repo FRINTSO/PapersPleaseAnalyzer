@@ -193,7 +193,7 @@ namespace paplease {
                 { "foreigners require an entry permit",                           ERule::RequireEntryPermitFromForeigners },
                 { "foreigners require an entry ticket",                           ERule::RequireEntryTicketFromForeigners },
                 { "foreigners require an id supplement",                          ERule::RequireIdentitySupplementFromForeigners },
-                { "no entry from United Federation",                              ERule::ProhibitEntryFromUnitedFederation },
+                { "no entry from united federation",                              ERule::ProhibitEntryFromUnitedFederation },
                 { "no entry from impor",                                          ERule::ProhibitEntryFromImpor },
                 { "no weapons or contraband",                                     ERule::ProhibitWeaponsAndContrabandFromEntrant },
                 { "workers must have a work pass",                                ERule::RequireWorkPassFromWorkers },

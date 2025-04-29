@@ -317,7 +317,7 @@ namespace paplease {
                         "foreigners require an entry permit",
                         "foreigners require an entry ticket",
                         "foreigners require an id supplement",
-                        "no entry from United Federation",
+                        "no entry from united federation",
                         "no entry from impor",
                         "no weapons or contraband",
                         "workers must have a work pass",
@@ -412,7 +412,7 @@ namespace paplease {
                         return { data };
                 }
 
-                std::cout << "IMPLEMENT ME!!! " << magic_enum::enum_name<FieldCategory>(category) << " : " << scanner.Start() << "\n";
+                std::cout << "IMPLEMENT ME!!! " << magic_enum::enum_name(category) << " : " << scanner.Start() << "\n";
 
                 return processing::ProcessGenericString(scanner);
             }

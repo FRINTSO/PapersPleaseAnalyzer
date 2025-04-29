@@ -113,7 +113,7 @@ namespace paplease {
 		class DocData
 		{  // Represents the data of any document
 			static constexpr size_t MaxFields = 10;
-			using index_type = unsigned char;
+			using index_type = u8;
 			static_assert(std::is_unsigned_v<index_type> && std::numeric_limits<index_type>::max() + 1 >= MaxFields,
 						  "index_type must be unsigned and large enough to hold MaxFields.");
 		public:

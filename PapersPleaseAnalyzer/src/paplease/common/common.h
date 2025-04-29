@@ -19,6 +19,8 @@ namespace paplease {
 #define DEBUG_LOG_RULES                  true
 #define DEBUG_LOG_APPLICABLE_RULES       true
 #define DEBUG_LOG_REQUIRED_DOCUMENTS     true
+#define DEBUG_LOG_DOCUMENT_STATUS        false
+#define DEBUG_LOG_DOCUMENT_DATA          true
 #endif
 #undef DEBUG_OPTIONS
 

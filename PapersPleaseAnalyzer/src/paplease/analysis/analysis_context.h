@@ -1,6 +1,7 @@
 #pragma once
+#include <optional>
+
 #include "paplease/analysis/data/criminals.h"
-#include "paplease/analysis/data/location_bank.h"
 #include "paplease/analysis/data/rules.h"
 #include "paplease/analysis/data/transcript.h"
 #include "paplease/analysis/data/entrant_data.h"
@@ -9,8 +10,6 @@
 #include "paplease/documents/data/date.h"
 #include "paplease/documents/doc_class.h"
 #include "paplease/documents/doc_type.h"
-
-#include <optional>
 
 namespace paplease {
 	namespace analysis {
@@ -87,7 +86,6 @@ namespace paplease {
 		private:  // Profiler:
 			void AddToProfile(const documents::Doc& document);
 			void ValidateDocument(const documents::Doc& document);
-			// void CompareAgainstProfile(const documents::Doc& document);
 
 			friend class DocumentValidator;
 		private:

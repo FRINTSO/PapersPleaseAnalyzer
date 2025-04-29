@@ -217,7 +217,7 @@ namespace paplease {
         public:
             static_assert(std::is_object_v<T>, "The C++ Standard forbids containers of non-object types "
                                                "because of [container.requirements].");
-            static_assert(std::is_default_constructible_v<T>, "Object has to be default constructible.");
+            //static_assert(std::is_default_constructible_v<T>, "Object has to be default constructible.");
 
             using value_type      = T;
             using pointer         = value_type*;
@@ -550,32 +550,32 @@ namespace paplease {
                 Clear();
             }
 
-            constexpr T& Get(Enum key)
+            constexpr T& Get(Enum key) noexcept
             {
                 return m_array[ToIndex(key)];
             }
-            constexpr const T& Get(Enum key) const
+            constexpr const T& Get(Enum key) const noexcept
             {
                 return m_array[ToIndex(key)];
             }
-            constexpr void Set(Enum key, const T& value)
+            constexpr void Set(Enum key, const T& value) noexcept
             {
                 size_t index = ToIndex(key);
                 m_array[index] = value;
                 m_set[index] = true;
             }
-            constexpr void Set(Enum key, T&& value)
+            constexpr void Set(Enum key, T&& value) noexcept
             {
                 size_t index = ToIndex(key);
                 m_array[index] = std::move(value);
                 m_set[index] = true;
             }
-            constexpr bool Contains(Enum key) const
+            constexpr bool Contains(Enum key) const noexcept
             {
                 return m_set[ToIndex(key)];
             }
 
-            constexpr void Clear()
+            constexpr void Clear() noexcept
             {
                 for (auto& entry : m_array)
                     entry = m_defaultValue;
@@ -596,6 +596,7 @@ namespace paplease {
                 assert(index < static_cast<size_t>(Enum::Count) && "Key was outside of the enum!");
                 return index;
             }
+
         private:
             std::array<T, Size> m_array{};
             std::bitset<Size> m_set{};  // Tracks which keys were Set
@@ -637,7 +638,9 @@ namespace paplease {
         public:
             constexpr FixedHashTable() = default;
 
-            constexpr bool Get(const KeyType& key, ValueType& outValue)
+            //template <typename T = ValueType>
+            //constexpr std::enable_if_t<!std::is_const_v<T>, bool>
+            constexpr bool Get(const KeyType& key, ValueType*& outValue) noexcept
             {
                 const size_t start = GetHashIndex(key);
                 for (size_t offset = 0; offset < Size; offset++)
@@ -651,14 +654,16 @@ namespace paplease {
                     }
                     if (entry.key == key)
                     {
-                        outValue = entry.value;
+                        outValue = &entry.value;
                         return true;
                     }
                 }
                 return false;
             }
 
-            constexpr bool Get(const KeyType& key, ValueType& outValue) const
+            //template <typename T = ValueType>
+            //constexpr std::enable_if_t<std::is_const_v<T>, bool>
+            constexpr bool Get(const KeyType& key, const ValueType*& outValue) const noexcept
             {
                 const size_t start = GetHashIndex(key);
                 for (size_t offset = 0; offset < Size; offset++)
@@ -672,7 +677,7 @@ namespace paplease {
                     }
                     if (entry.key == key)
                     {
-                        outValue = entry.value;
+                        outValue = &entry.value;
                         return true;
                     }
                 }
@@ -750,7 +755,7 @@ namespace paplease {
 
             constexpr bool Contains(const KeyType& key) const noexcept
             {
-                ValueType v;
+                const ValueType* v = nullptr;
                 return Get(key, v);
             }
 
@@ -768,7 +773,7 @@ namespace paplease {
                 for (size_t offset = 0; offset < Size; offset++)
                 {
                     const size_t idx = (start + offset) % Size;
-                    const Entry& entry = m_data[idx];
+                    Entry& entry = m_data[idx];
 
                     if (entry.state == EntryState::Empty)
                     {
@@ -779,7 +784,7 @@ namespace paplease {
                         return entry.value;
                     }
                 }
-                assert(false);
+//                __debugbreak();
             }
 
             constexpr const ValueType& operator[](const KeyType& key) const
@@ -803,6 +808,61 @@ namespace paplease {
             }
 
             // Iterator support
+            class ConstIterator
+            {
+            public:
+                using iterator_category = std::forward_iterator_tag;
+                using value_type = Entry;
+                using difference_type = std::ptrdiff_t;
+                using pointer = const value_type*;
+                using reference = const value_type&;
+
+                constexpr ConstIterator(const Entry* ptr, const Entry* end)
+                    : m_ptr(ptr), m_end(end)
+                {
+                    SkipInvalid();
+                }
+
+                constexpr reference operator*() const { return *m_ptr; }
+                constexpr pointer operator->() const { return m_ptr; }
+
+                constexpr ConstIterator& operator++()
+                {
+                    ++m_ptr;
+                    SkipInvalid();
+                    return *this;
+                }
+
+                constexpr ConstIterator operator++(int)
+                {
+                    ConstIterator temp = *this;
+                    ++(*this);
+                    return temp;
+                }
+
+                friend constexpr bool operator==(const ConstIterator& a, const ConstIterator& b)
+                {
+                    return a.m_ptr == b.m_ptr;
+                }
+
+                friend constexpr bool operator!=(const ConstIterator& a, const ConstIterator& b)
+                {
+                    return !(a == b);
+                }
+
+            private:
+                const Entry* m_ptr;
+                const Entry* m_end;
+
+                constexpr void SkipInvalid()
+                {
+                    while (m_ptr != m_end && m_ptr->state != EntryState::Occupied)
+                    {
+                        ++m_ptr;
+                    }
+                }
+            };
+
             class Iterator
             {
             public:
@@ -860,6 +920,8 @@ namespace paplease {
 
             constexpr Iterator begin() { return Iterator(m_data.data(), m_data.data() + Size); }
             constexpr Iterator end() { return Iterator(m_data.data() + Size, m_data.data() + Size); }
+            constexpr ConstIterator begin() const { return ConstIterator(m_data.data(), m_data.data() + Size); }
+            constexpr ConstIterator end() const { return ConstIterator(m_data.data() + Size, m_data.data() + Size); }
             
         private:
             std::array<Entry, Size> m_data{};
@@ -976,6 +1038,61 @@ namespace paplease {
             }
 
             // Iterator support
+            class ConstIterator
+            {
+            public:
+                using iterator_category = std::forward_iterator_tag;
+                using value_type        = T;
+                using difference_type   = std::ptrdiff_t;
+                using pointer           = const value_type*;
+                using reference         = const value_type&;
+
+                constexpr ConstIterator(const Bucket* ptr, const Bucket* end)
+                    : m_ptr(ptr), m_end(end)
+                {
+                    SkipInvalid();
+                }
+
+                constexpr reference operator*() const { return m_ptr->value; }
+                constexpr pointer operator->() const { return &m_ptr->value; }
+
+                constexpr ConstIterator& operator++()
+                {
+                    ++m_ptr;
+                    SkipInvalid();
+                    return *this;
+                }
+
+                constexpr ConstIterator operator++(int)
+                {
+                    ConstIterator temp = *this;
+                    ++(*this);
+                    return temp;
+                }
+
+                friend constexpr bool operator==(const ConstIterator& a, const ConstIterator& b)
+                {
+                    return a.m_ptr == b.m_ptr;
+                }
+
+                friend constexpr bool operator!=(const ConstIterator& a, const ConstIterator& b)
+                {
+                    return !(a == b);
+                }
+
+            private:
+                const Bucket* m_ptr;
+                const Bucket* m_end;
+
+                constexpr void SkipInvalid()
+                {
+                    while (m_ptr != m_end && m_ptr->state != EntryState::Occupied)
+                    {
+                        ++m_ptr;
+                    }
+                }
+            };
+
             class Iterator
             {
             public:
@@ -1033,6 +1150,8 @@ namespace paplease {
 
             constexpr Iterator begin() { return Iterator(m_buckets.data(), m_buckets.data() + Size); }
             constexpr Iterator end() { return Iterator(m_buckets.data() + Size, m_buckets.data() + Size); }
+            constexpr ConstIterator begin() const { return ConstIterator(m_buckets.data(), m_buckets.data() + Size); }
+            constexpr ConstIterator end() const { return ConstIterator(m_buckets.data() + Size, m_buckets.data() + Size); }
         };
 
     }  // namespace core

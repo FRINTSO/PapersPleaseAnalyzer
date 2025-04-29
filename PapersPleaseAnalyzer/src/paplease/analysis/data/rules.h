@@ -1,8 +1,7 @@
 #pragma once
-#include <array>
 #include <optional>
-#include <string>
 
+#include "paplease/analysis/doc_store.h"
 #include "paplease/documents/doc_class.h"
 #include "paplease/core/fixed.h"
 
@@ -31,8 +30,8 @@ namespace paplease {
 
                 // === PROHIBITIONS ===
                 ProhibitEntryFromImpor,
-                ProhibitEntryFromUnitedFederation,
-                ProhibitWeaponsAndContrabandFromEntrant,
+                ProhibitEntryFromUnitedFederation,        // something to realize when
+                ProhibitWeaponsAndContrabandFromEntrant,  // needs to be same weight 
 
                 // === CONFISCATIONS ===
                 ConfiscateArstotzkanPassportsFromAltanDistrict,
@@ -83,34 +82,34 @@ namespace paplease {
                 Entry,
             };
 
-            static inline constexpr std::pair<documents::DocType, documents::PassportType> ERuleSubjectToDocType(ERuleSubject subject)
+            static inline constexpr DocRequirement ERuleSubjectToDocType(ERuleSubject subject)
             {
                 switch (subject)
                 {
                     case ERuleSubject::Passport:
-                        return std::make_pair(documents::DocType::Passport, documents::PassportType::Invalid);
+                        return { documents::DocType::Passport, documents::PassportType::Invalid };
                     case ERuleSubject::ArstotzkanPassport:
-                        return std::make_pair(documents::DocType::Passport, documents::PassportType::Arstotzka);
+                        return { documents::DocType::Passport, documents::PassportType::Arstotzka };
                     case ERuleSubject::IdentityCard:
-                        return std::make_pair(documents::DocType::IdentityCard, documents::PassportType::Invalid);
+                        return { documents::DocType::IdentityCard, documents::PassportType::Invalid };
                     case ERuleSubject::EntryTicket:
-                        return std::make_pair(documents::DocType::EntryTicket, documents::PassportType::Invalid);
+                        return { documents::DocType::EntryTicket, documents::PassportType::Invalid };
                     case ERuleSubject::WorkPass:
-                        return std::make_pair(documents::DocType::WorkPass, documents::PassportType::Invalid);
+                        return { documents::DocType::WorkPass, documents::PassportType::Invalid };
                     case ERuleSubject::DiplomaticAuthorization:
-                        return std::make_pair(documents::DocType::DiplomaticAuthorization, documents::PassportType::Invalid);
+                        return { documents::DocType::DiplomaticAuthorization, documents::PassportType::Invalid };
                     case ERuleSubject::IdentitySupplement:
-                        return std::make_pair(documents::DocType::IdentitySupplement, documents::PassportType::Invalid);
+                        return { documents::DocType::IdentitySupplement, documents::PassportType::Invalid };
                     case ERuleSubject::Grant:
-                        return std::make_pair(documents::DocType::GrantOfAsylum, documents::PassportType::Invalid);
+                        return { documents::DocType::GrantOfAsylum, documents::PassportType::Invalid };
                     case ERuleSubject::PolioVaccination:
-                        return std::make_pair(documents::DocType::CertificateOfVaccination, documents::PassportType::Invalid);
+                        return { documents::DocType::CertificateOfVaccination, documents::PassportType::Invalid };
                     case ERuleSubject::AccessPermit:
-                        return std::make_pair(documents::DocType::AccessPermit, documents::PassportType::Invalid);
+                        return { documents::DocType::AccessPermit, documents::PassportType::Invalid };
                     case ERuleSubject::EntryPermit:
-                        return std::make_pair(documents::DocType::EntryPermit, documents::PassportType::Invalid);
+                        return { documents::DocType::EntryPermit, documents::PassportType::Invalid };
                     default:
-                        return std::make_pair(documents::DocType::Invalid, documents::PassportType::Invalid);
+                        return { documents::DocType::Invalid, documents::PassportType::Invalid };
                 }
             }
 

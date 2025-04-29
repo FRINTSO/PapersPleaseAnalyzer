@@ -1,6 +1,8 @@
 #pragma once
 #include <opencv2/opencv.hpp>
 
+#include "paplease/analysis/analysis_context_v2.h"
+#include "paplease/analysis/doc_store.h"
 #include "paplease/core/fixed.h"
 #include "paplease/documents/doc_type.h"
 #include "paplease/game_view.h"
@@ -35,61 +37,51 @@ namespace paplease {
             core::FixedArray<documents::DocType, static_cast<size_t>(documents::DocType::Count)> m_documentsInBoothView;
         };
 
-        namespace detail {
-            
-            struct HashPair
-            {
-                template <typename T, typename U>
-                std::size_t operator()(const std::pair<T, U>& p) const
-                {
-                    auto h1 = std::hash<T>{}(p.first);  // Hash the first element
-                    auto h2 = std::hash<U>{}(p.second); // Hash the second element
+        
 
-                    // Combine the hashes using a standard method
-                    return h1 ^ (h2 << 1);  // Simple XOR and shift combination
-                }
-            };
 
-        }  // namespace detail
-
+        // Tracks document position and 
         class DocTrackerV2
         {
+        private:
+            static inline constexpr size_t DocTypeCount = static_cast<size_t>(documents::DocType::Count);
+            using DocTypeSet = core::FixedHashSet<documents::DocType, DocTypeCount>;
         public:
-            DocTrackerV2() = default;
+            constexpr DocTrackerV2(DocStore& store, AnalysisContextV2& analysisContext)
+                : m_store(store), m_context(analysisContext) {}
 
             void RefreshTracking(const scannable::ScanContext& scanContext);
 
-            bool Contains(documents::DocType documentType) const noexcept;
+            // Get documents that have changed in appearance since last scan
+            DocTypeSet GetVisibleDocuments() const;
 
-            bool Contains(documents::DocType documentType, documents::PassportType passportType) const noexcept;
+            DocTypeSet GetUpdatedDocuments() const;
 
-            bool IsVisible(documents::DocType documentType) const noexcept;
-
-            bool IsVisible(documents::DocType documentType, ViewArea viewArea) const noexcept;
-
-            bool ExtractDoc(const GameView& gameView, documents::DocType documentType, documents::Doc& outDocument) const noexcept;
 
             void AddRequiredDocument(std::pair<documents::DocType, documents::PassportType> docType);
 
+            void UpdateRequiredDocuments();
+
+            void ReportMissingDocuments() const noexcept;
+
         private:
             void RegisterScannedDocuments(const scannable::DocViewCollection& scannedDocuments);
-
+            void RegisterSingleScannedDocument(documents::DocView&& scannedDocView);
+            
         private:
-            static inline constexpr size_t DocTypeCount = static_cast<size_t>(documents::DocType::Count);
-
-            core::FixedHashTable<documents::DocType, documents::DocView, DocTypeCount> m_documents{};
+            DocStore& m_store;
+            AnalysisContextV2& m_context;
+            
             core::FixedHashSet<documents::DocType, DocTypeCount> m_visibleDocuments{};
-            core::FixedHashTable<
-                std::pair<
-                    documents::DocType,
-                    documents::PassportType
-                >,
-                bool,
-                DocTypeCount,
-                detail::HashPair
-            > m_requiredDocuments;
-
-            friend class GameAnalyzer;
+            //core::FixedHashTable<
+            //    std::pair<
+            //        documents::DocType,
+            //        documents::PassportType
+            //    >,
+            //    bool,
+            //    DocTypeCount,
+            //    detail::HashPair
+            //> m_requiredDocuments;
         };  
 
     }  // namespace analysis

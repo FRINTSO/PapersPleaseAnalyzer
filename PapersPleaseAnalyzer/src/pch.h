@@ -7,6 +7,7 @@
 #include <utility>
 #include <vector>
 
+#include <magic_enum/magic_enum.hpp>
 #include <opencv2/opencv.hpp>
 
 #include "paplease/utils/log.h"

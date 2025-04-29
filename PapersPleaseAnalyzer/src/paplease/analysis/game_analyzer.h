@@ -1,7 +1,7 @@
 #pragma once
-#include "paplease/analysis/data/entrant_data.h"
+#include "paplease/analysis/analysis_context_v2.h"
 #include "paplease/analysis/data/rules.h"
-#include "paplease/analysis/doc_tracker.h"
+#include "paplease/analysis/doc_pipeline.h"
 #include "paplease/game_view.h"
 #include "paplease/scannable/scan_context.h"
 
@@ -11,13 +11,18 @@ namespace paplease {
 		class GameAnalyzer
 		{
 		public:
+			constexpr GameAnalyzer()
+				: m_analysisContext(), m_documentPipeline(m_analysisContext) {}
 			void Scan(const GameView& gameView);
 
 		private:
-			bool TryGetRulebook();
-			void RenewApplicableRules(const data::RuleBook& rulebook);
-			void RenewRequireDocumentRules(const data::RuleBook& rulebook);
-			void FigureOutEntrantInfo();
+			void UpdateAnalysisContext();
+
+			bool IsNewDate(const documents::data::Date& date) const noexcept;
+			bool IsNewApplicant(int applicantNumber) const noexcept;
+
+			void OnNewDate();
+			void OnNewApplicant();
 
 		private:
 			// Per scan
@@ -25,23 +30,10 @@ namespace paplease {
 			scannable::ScanContext m_currentScanContext;
 
 			// States
-			DocTrackerV2 m_documentTracker;
-			std::optional<data::RuleBook> m_rulebook = std::nullopt;
+			DocPipeline m_documentPipeline;
 
 			// Data
-			data::EntrantInfo m_entrant;
-
-			struct TrackedRule
-			{
-				enum class Status : u8 { Unmet, Complied, Broken };
-
-				data::Rule rule;
-				Status status;
-			};
-			
-			core::FixedHashTable<data::ERule, TrackedRule, 10> m_applicableRules;
-			
-			
+			AnalysisContextV2 m_analysisContext;
 		};
 
 	}  // namespace analysis

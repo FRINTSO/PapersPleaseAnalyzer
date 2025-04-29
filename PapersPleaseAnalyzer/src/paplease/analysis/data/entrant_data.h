@@ -31,6 +31,7 @@ namespace paplease {
                     FromAltanDistrict = 0b01'00'00'01,
                 };
 
+                static inline constexpr u8 CountryMask = 0b00'00'00'11;
                 static inline constexpr size_t Count = 10;
                 
                 constexpr bool IsCitizen() const noexcept
@@ -110,11 +111,21 @@ namespace paplease {
                 {
                     return EntrantClass(m_data + other.m_data);
                 }
+                constexpr EntrantClass& operator+=(const EntrantClass& other)
+                {
+                    m_data += other.m_data;
+                    return *this;
+                }
 
                 // Subtraction operator
                 constexpr EntrantClass operator-(const EntrantClass& other) const noexcept
                 {
                     return EntrantClass(m_data - other.m_data);
+                }
+                constexpr EntrantClass& operator-=(const EntrantClass& other)
+                {
+                    m_data -= other.m_data;
+                    return *this;
                 }
 
                 // Multiplication operator
@@ -122,11 +133,21 @@ namespace paplease {
                 {
                     return EntrantClass(m_data * other.m_data);
                 }
+                constexpr EntrantClass& operator*=(const EntrantClass& other)
+                {
+                    m_data *= other.m_data;
+                    return *this;
+                }
 
                 // Division operator
                 constexpr EntrantClass operator/(const EntrantClass& other) const noexcept
                 {
                     return EntrantClass(m_data / other.m_data);
+                }
+                constexpr EntrantClass& operator/=(const EntrantClass& other)
+                {
+                    m_data /= other.m_data;
+                    return *this;
                 }
 
                 // Equality operator
@@ -146,17 +167,32 @@ namespace paplease {
                 {
                     return EntrantClass(m_data & other.m_data);
                 }
+                constexpr EntrantClass& operator&=(const EntrantClass& other)
+                {
+                    m_data &= other.m_data;
+                    return *this;
+                }
 
                 // Bitwise OR operator
                 constexpr EntrantClass operator|(const EntrantClass& other) const noexcept
                 {
                     return EntrantClass(m_data | other.m_data);
                 }
+                constexpr EntrantClass& operator|=(const EntrantClass& other)
+                {
+                    m_data |= other.m_data;
+                    return *this;
+                }
 
                 // Bitwise XOR operator
                 constexpr EntrantClass operator^(const EntrantClass& other) const noexcept
                 {
                     return EntrantClass(m_data ^ other.m_data);
+                }
+                constexpr EntrantClass& operator^=(const EntrantClass& other)
+                {
+                    m_data ^= other.m_data;
+                    return *this;
                 }
 
                 // Bitwise NOT operator
@@ -170,11 +206,21 @@ namespace paplease {
                 {
                     return EntrantClass(m_data << shift);
                 }
+                constexpr EntrantClass& operator<<=(int shift)
+                {
+                    m_data <<= shift;
+                    return *this;
+                }
 
                 // Bitwise right shift operator
                 constexpr EntrantClass operator>>(int shift) const noexcept
                 {
                     return EntrantClass(m_data >> shift);
+                }
+                constexpr EntrantClass& operator>>=(int shift)
+                {
+                    m_data >>= shift;
+                    return *this;
                 }
 
             private:
@@ -188,6 +234,38 @@ namespace paplease {
                 ECountry nationality = ECountry::Invalid;
                 EDistrict district = EDistrict::Invalid;
                 ECity city = ECity::Invalid;
+
+                void SetNationaility(ECountry country)
+                {
+                    if ((entrantClass & entrantClass.CountryMask) != 0)
+                    {
+                        LOG_WARN("Setting country twice");
+                    }
+                    else
+                    {
+                        if (country == ECountry::Arstotzka)
+                        {
+                            entrantClass |= data::EntrantClass::Citizen;
+                            LOG("Is citizen");
+                        }
+                        else
+                        {
+                            entrantClass |= data::EntrantClass::Foreigner;
+                            LOG("Is foreigner");
+                        }
+                    }
+                    
+                    nationality = country;
+                }
+                void SetEntrantDistrict(EDistrict district)
+                {
+                    this->district = district;
+                }
+                void SetEntrantCity(ECity city)
+                {
+                    this->city = city;
+                }
+
             };
 
         }

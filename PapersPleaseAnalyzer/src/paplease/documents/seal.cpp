@@ -106,7 +106,7 @@ namespace paplease {
 			auto seal = ExtractSeal(binary);
 			if (!seal)
 			{
-				LOG_ERR("Invalid seal of document type: {}", magic_enum::enum_name<documents::DocType>(documentType));
+				LOG_ERR("Invalid seal of document type: {}", magic_enum::enum_name(documentType));
 				return false;
 			}
 			

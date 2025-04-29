@@ -92,7 +92,7 @@ namespace paplease {
 
 #pragma region Document Appearance And Layout
 
-		AppearanceType Doc::GetAppearanceType() const noexcept
+		const AppearanceType Doc::GetAppearanceType() const noexcept
 		{
 			return ToAppearanceType(m_documentType, m_passportType);
 		}

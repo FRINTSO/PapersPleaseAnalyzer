@@ -257,70 +257,17 @@ namespace paplease {
 
 #pragma region DocTrackerV2
 
-		void DocTrackerV2::RegisterScannedDocuments(const scannable::DocViewCollection& scannedDocuments)
-		{
-			for (const auto& docView : scannedDocuments)
-			{
-				auto documentType = ToDocType(docView.appearanceType);
-				m_visibleDocuments.Insert(documentType);
-				if (m_documents.Contains(documentType))
-				{  // Already stored document - Update position & view area
-					DocView storedDocView;
-					m_documents.Get(documentType, storedDocView);
-
-					if (storedDocView.viewArea != docView.viewArea)
-					{  // Document was moved from one scan area to the other
-#if DEBUG_LOG_DOCUMENT_TRACKING
-						LOG(
-							"Document '{}' changed from {} to {}",
-							magic_enum::enum_name<documents::AppearanceType>(docView.appearanceType),
-							magic_enum::enum_name<ViewArea>(storedDocView.viewArea),
-							magic_enum::enum_name<ViewArea>(docView.viewArea)
-						);
-#endif
-					}
-					else if (cv::Rect(storedDocView.boundingBox) != cv::Rect(docView.boundingBox))
-					{
-#if DEBUG_LOG_DOCUMENT_TRACKING
-						LOG(
-							"Document '{}' moved",
-							magic_enum::enum_name<documents::AppearanceType>(docView.appearanceType),
-							magic_enum::enum_name<ViewArea>(storedDocView.viewArea),
-							magic_enum::enum_name<ViewArea>(docView.viewArea)
-						);
-#endif
-					}
-					else
-					{
-						continue;
-					}
-
-					storedDocView.boundingBox = docView.boundingBox;
-					storedDocView.viewArea = docView.viewArea;
-				}
-				else
-				{  // New document
-#if DEBUG_LOG_DOCUMENT_TRACKING
-					LOG(
-						"New document '{}' in {}",
-						magic_enum::enum_name<documents::AppearanceType>(docView.appearanceType),
-						magic_enum::enum_name<ViewArea>(docView.viewArea)
-					);
-#endif
-					m_documents.Set(documentType, docView);
-				}
-			}
-
-		}
-
+		// Refresh all trackers
 		void DocTrackerV2::RefreshTracking(const scannable::ScanContext& scanContext)
 		{
+			UpdateRequiredDocuments();
 			m_visibleDocuments.Clear();
 			RegisterScannedDocuments(scanContext.boothData.scannedDocuments);
 			RegisterScannedDocuments(scanContext.inspectionData.scannedDocuments);
 
 #if DEBUG_LOG_DOCUMENT_TRACKING
-			for (const auto& entry : m_documents)
+			auto& documents = m_store.GetStoredCollection<documents::DocView>();
+			for (const auto& entry : documents)
 			{
 				DocType documentType = ToDocType(entry.value.appearanceType);
 				if (!IsApplicantDocument(documentType))
@@ -330,81 +277,174 @@ namespace paplease {
 
 				if (m_visibleDocuments.Contains(entry.key))
 				{ // Visible
-					LOG("Visible: '{}'", magic_enum::enum_name<documents::DocType>(documentType));
+					LOG("Visible: '{}'", magic_enum::enum_name(documentType));
 				}
 				else
 				{ // Not visible
-					LOG("Invisible: '{}'", magic_enum::enum_name<documents::DocType>(documentType));
+					LOG("Invisible: '{}'", magic_enum::enum_name(documentType));
 				}
 			}
 #endif
 		}
 
-		bool DocTrackerV2::Contains(documents::DocType documentType) const noexcept
+		void DocTrackerV2::RegisterScannedDocuments(const scannable::DocViewCollection& scannedDocuments)
 		{
-			return m_documents.Contains(documentType);
-		}
-
-		bool DocTrackerV2::Contains(documents::DocType documentType, documents::PassportType passportType) const noexcept
-		{
-			documents::DocView docView;
-			if (m_documents.Get(documentType, docView))
+			for (documents::DocView scannedDocView : scannedDocuments)
 			{
-				return ToAppearanceType(documentType, passportType) == docView.appearanceType;
+				RegisterSingleScannedDocument(std::move(scannedDocView));
 			}
-			return false;
 		}
 
-		bool DocTrackerV2::IsVisible(documents::DocType documentType) const noexcept
+		void DocTrackerV2::RegisterSingleScannedDocument(documents::DocView&& scannedDocView)
 		{
-			return m_visibleDocuments.Contains(documentType);
-		}
+			const auto documentType = ToDocType(scannedDocView.appearanceType);
 
-		bool DocTrackerV2::IsVisible(documents::DocType documentType, ViewArea viewArea) const noexcept
-		{
-			if (!m_visibleDocuments.Contains(documentType))
+			// Mark as scanned and visible
+			m_store.GetAnalysisStatus(documentType).wasScanned = true;
+			m_visibleDocuments.Insert(documentType);
+
+			if (m_store.Contains<documents::DocView>(documentType))
 			{
-				return false;
-			}
+				// Update existing document if it moved
+				DocView& storedDocView = m_store.GetStored<documents::DocView>(documentType);
+				const bool viewAreaChanged = storedDocView.viewArea != scannedDocView.viewArea;
+				const bool moved = cv::Rect(storedDocView.boundingBox) != cv::Rect(scannedDocView.boundingBox);
 
-			const documents::DocView& docView = m_documents[documentType];
-			return docView.viewArea == viewArea;
-		}
+				if (!viewAreaChanged && !moved)
+					return;
 
-		bool DocTrackerV2::ExtractDoc(const GameView& gameView, documents::DocType documentType, documents::Doc& outDocument) const noexcept
-		{
-			if (!m_visibleDocuments.Contains(documentType))
-			{
-				return false;
-			}
-			const documents::DocView& docView = m_documents[documentType];
-			outDocument = docView.ToDocument(gameView);
-			return true;
-		}
-
-		void DocTrackerV2::AddRequiredDocument(std::pair<documents::DocType, documents::PassportType> docType)
-		{
-			if (m_requiredDocuments.Contains(docType))
-			{
+#if DEBUG_LOG_DOCUMENT_TRACKING
+				if (viewAreaChanged)
+				{
+					LOG("Document '{}' changed from {} to {}",
+						magic_enum::enum_name(scannedDocView.appearanceType),
+						magic_enum::enum_name(storedDocView.viewArea),
+						magic_enum::enum_name(scannedDocView.viewArea));
+				}
+				else if (moved)
+				{
+					LOG("Document '{}' moved",
+						magic_enum::enum_name(scannedDocView.appearanceType));
+				}
+#endif
+				storedDocView.boundingBox = scannedDocView.boundingBox;
+				storedDocView.viewArea = scannedDocView.viewArea;
 				return;
 			}
 
-#if DEBUG_LOG_REQUIRED_DOCUMENTS
-			if (docType.second != documents::PassportType::Invalid)
-			{
-				auto appearanceType = ToAppearanceType(docType.first, docType.second);
-				LOG("Required document: {}", magic_enum::enum_name<documents::AppearanceType>(appearanceType));
-			}
-			else
-			{
-				LOG("Required document: {}", magic_enum::enum_name<documents::DocType>(docType.first));
-			}
+			// Handle new document
+#if DEBUG_LOG_DOCUMENT_TRACKING
+			LOG("New document '{}' in {}",
+				magic_enum::enum_name(scannedDocView.appearanceType),
+				magic_enum::enum_name(scannedDocView.viewArea));
 #endif
-			m_requiredDocuments.Set(docType, true);
+
+			LOG("[Document {}] has been detected!",
+				magic_enum::enum_name(documentType));
+
+			if (documentType == documents::DocType::Passport)
+			{
+				const auto country = data::LocationBank::GetCountryFromPassportType(documents::ToPassportType(scannedDocView.appearanceType));
+				m_context.SetEntrantCountry(country);
+			}
+
+			m_store.StoreDocumentView(std::move(scannedDocView));
+		}
+
+
+		// Call after tracking call, to fetch all documents
+		DocTrackerV2::DocTypeSet DocTrackerV2::GetVisibleDocuments() const
+		{
+			return m_visibleDocuments;
+		}
+
+		DocTrackerV2::DocTypeSet DocTrackerV2::GetUpdatedDocuments() const
+		{
+			throw "Unimplemented";
+		}
+
+
+		// Talking to user and informing
+		void DocTrackerV2::ReportMissingDocuments() const noexcept
+		{
+			// Required documents not in m_store
+			for (auto& [documentType, passportType] : m_store.GetRequiredTypes())
+			{
+				auto& status = m_store.GetAnalysisStatus(documentType);
+				if (status.wasScanned)
+					continue;
+
+				if (!status.isRequiredReported)
+				{
+					if (passportType == documents::PassportType::Invalid)
+					{
+						LOG_WARN("[Document {}] is required.",
+								 magic_enum::enum_name(documentType));
+					}
+					else
+					{
+						const auto appearanceType = ToAppearanceType(documentType, passportType);
+						LOG_WARN("[Document {}] is required.",
+								 magic_enum::enum_name(appearanceType));
+					}
+
+					status.isRequiredReported = true;
+				}
+			}
+		}
+
+
+		void DocTrackerV2::AddRequiredDocument(std::pair<documents::DocType, documents::PassportType> docType)
+		{
+//			if (m_requiredDocuments.Contains(docType))
+//			{
+//				return;
+//			}
+//
+//#if DEBUG_LOG_REQUIRED_DOCUMENTS
+//			if (docType.second != documents::PassportType::Invalid)
+//			{
+//				auto appearanceType = ToAppearanceType(docType.first, docType.second);
+//				LOG("Required document: {}", magic_enum::enum_name(appearanceType));
+//			}
+//			else
+//			{
+//				LOG("Required document: {}", magic_enum::enum_name(docType.first));
+//			}
+//#endif
+//			m_requiredDocuments.Set(docType, true);
+		}
+
+		void DocTrackerV2::UpdateRequiredDocuments()
+		{
+			for (const auto& trackedRule : m_context.GetApplicableRules())
+			{
+				const auto rule = trackedRule->rule;
+				switch (rule.GetRule())
+				{
+					case data::ERule::RequireAccessPermitFromForeigners:
+					case data::ERule::RequireArstotzkanPassportFromEntrant:
+					case data::ERule::RequireDiplomaticAuthorizationFromDiplomats:
+					case data::ERule::RequireEntryPermitFromForeigners:
+					case data::ERule::RequireEntryTicketFromForeigners:
+					case data::ERule::RequireGrantFromAsylumSeekers:
+					case data::ERule::RequireIdentityCardFromCitizens:
+					case data::ERule::RequireIdentitySupplementFromForeigners:
+					case data::ERule::RequirePassportFromEntrant:
+					case data::ERule::RequirePolioVaccinationFromEntrant:
+					case data::ERule::RequireWorkPassFromWorkers:
+					{
+						const auto requiredType = data::ERuleSubjectToDocType(rule.GetDescriptor().subject);
+						m_store.SetRequiredType(requiredType);
+						break;
+					}
+					default:
+						continue;
+				}
+			}
 		}
 
 #pragma endregion
-
 
     }  // namespace analysis
 }  // namespace paplease

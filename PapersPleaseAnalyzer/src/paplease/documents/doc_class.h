@@ -28,6 +28,7 @@ namespace paplease {
 
 			const DocType GetDocumentType() const;
 			const PassportType GetPassportType() const;
+			const AppearanceType GetAppearanceType() const noexcept;
 			bool IsValid() const;
 
 			bool HasSeal() const;
@@ -44,8 +45,7 @@ namespace paplease {
 			Doc(cv::Mat&& mat, const DocType documentType, const PassportType passportType);
 
 			DocData ExtractDocData() const;
-
-			AppearanceType GetAppearanceType() const noexcept;
+			
 			const DocAppearance& GetAppearance() const noexcept;
 
 		private: // Private members

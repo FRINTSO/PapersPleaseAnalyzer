@@ -310,6 +310,43 @@ namespace paplease {
 
 			return false;
 		}
+		
+		static inline bool ValidateDocumentBoundingBoxInBoothView(const cv::Mat& inspection, const Rectangle& boundingBox, const DocAppearance& appearance)
+		{
+			constexpr detail::DocumentBoundingBoxValidatorFunction negativeValidators[]{
+				detail::IsTooLarge,
+			};
+
+			for (auto& negativeValidator : negativeValidators)
+			{
+				auto shouldBeDiscarded = negativeValidator(inspection, boundingBox, appearance);
+				if (shouldBeDiscarded)
+				{
+					return false;
+				}
+			}
+
+			constexpr detail::DocumentBoundingBoxValidatorFunction validators[]
+			{
+				detail::IsExactSizeMatched,
+	#if !ENABLE_STRICT_DOCUMENT_SCANNING
+				detail::IsCornerMatched
+	#endif
+			};
+
+			assert(appearance.GetType() != AppearanceType::Invalid);
+
+			for (auto& validator : validators)
+			{
+				auto isValid = validator(inspection, boundingBox, appearance);
+				if (isValid)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
 
 		static std::optional<Rectangle> FindBoundingBox(const cv::Mat& mat, const std::function<bool(int, int)>& whatPixelShouldMatch)
 		{
