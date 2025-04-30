@@ -59,8 +59,8 @@ void main()
 	paplease::utils::Log::Init();
 
 	//RunWithSimulatedGame();
-	//RunWithLiveGame();
+	RunWithLiveGame();
 
-	test::test_transcript();
+	//test::test_transcript();
 	std::cin.get();
 }
