@@ -237,11 +237,27 @@ namespace paplease {
                     m_data[i] = value;
                 }
             }
+            
+            //template<class Iter, std::enable_if_t<std::_Is_iterator_v<Iter>, int> = 0>
+            //constexpr FixedArray(Iter first, Iter last)
+            //    requires std::contiguous_iterator<Iter>
+            //    : m_count(static_cast<size_t>(last - first))
+            //{
+            //    for (size_t i = 0; i < m_count; ++i)
+            //    {
+            //        m_data[i] = first[i]; // Only safe for contiguous iterators
+            //    }
+            //}
 
-            // template<class Iter, std::enable_if_t<std::_Is_iterator_v<Iter>, int> = 0>
-            // constexpr FixedArray(Iter first, Iter last) { assert(false); }
-
-            // constexpr FixedArray(std::initializer_list<T> initializer_list){ assert(false); }
+            constexpr FixedArray(std::initializer_list<T> initializer_list)
+                : m_count(initializer_list.size())
+            {
+                size_t i = 0;
+                for (const auto& item : initializer_list)
+                {
+                    m_data[i++] = item;
+                }
+            }
 
             constexpr FixedArray(const FixedArray& right)
                 : m_count(right.m_count)
@@ -442,6 +458,9 @@ namespace paplease {
             T m_data[Size];
             size_t m_count;
         };
+
+        template <typename First, typename...Rest>
+        FixedArray(First, Rest...) -> FixedArray<First, 1 + sizeof...(Rest)>;
 
         // --- FixedTable<Enum, T> ---
         template<typename Enum, typename T>

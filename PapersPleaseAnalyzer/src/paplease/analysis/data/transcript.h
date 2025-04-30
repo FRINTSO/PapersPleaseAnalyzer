@@ -1,6 +1,8 @@
 #pragma once
 #include "paplease/core/fixed.h"
 #include "paplease/documents/doc_class.h"
+#include "paplease/types.h"
+
 
 #include <optional>
 #include <string>
@@ -9,30 +11,35 @@ namespace paplease {
     namespace analysis {
         namespace data {
 
-            enum class SpeakerRole
+            enum class SpeakerRole : u8
             {
-                Invalid = 0,
-                Applicant,
-                Inspector
-            };
-
-            class TranscriptEntry
-            {
-            private:
-                SpeakerRole m_speakerRole;
-                std::string m_dialogueLine;
+                Inspector,
+                Entrant,
             };
 
             class Transcript
             {
-            public:
+            private:
+                struct Entry
+                {
+                    std::string dialogueLine;
+                    SpeakerRole speakerRole;
+                };
+
                 Transcript() = default;
 
-                friend std::optional<Transcript> CreateTranscript(const documents::Doc& document);
-            private:
+            public:
                 static constexpr size_t MaxTranscriptEntries = 10;
+
+                constexpr const core::FixedArray<Entry, MaxTranscriptEntries>& Entries() const noexcept
+                {
+                    return m_entries;
+                }
+
             private:
-                core::FixedArray<TranscriptEntry, MaxTranscriptEntries> m_entries;
+                core::FixedArray<Entry, MaxTranscriptEntries> m_entries;
+
+                friend std::optional<Transcript> CreateTranscript(const documents::Doc& document);
             };
 
             std::optional<Transcript> CreateTranscript(const documents::Doc& document);

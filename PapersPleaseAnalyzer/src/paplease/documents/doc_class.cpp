@@ -22,6 +22,8 @@
 #include <iostream>
 #include <type_traits>
 
+#include "test/documents/test_hsv.h"
+
 namespace paplease {
 	namespace documents {
 
@@ -51,7 +53,6 @@ namespace paplease {
 		Doc::Doc(const Doc& other)
 			: Doc{ other.m_mat.clone(), other.m_documentType, other.m_passportType }
 		{}
-
 
 		Doc::Doc(Doc&& other) noexcept
 			: m_mat{ std::move(other.m_mat) }, m_documentType{ other.m_documentType }, m_passportType{ other.m_passportType }
@@ -161,98 +162,7 @@ namespace paplease {
 
 #pragma region Data Extraction
 
-		static inline constexpr int TryFindBlackPixel(const cv::Mat& mat, int row)
-		{
-			for (int col = 0; col < mat.cols; col++)
-			{
-				if (!mat.at<bool>(row, col))
-				{ // isBlackPixel
-					return col;
-				}
-			}
-			return -1;
-		}
-
-		static inline constexpr int CountContinuousBlackPixelsCol(const cv::Mat& mat, int row, int left)
-		{
-			int count = 0;
-			for (int col = left; col < mat.cols; col++)
-			{
-				if (!mat.at<bool>(row, col))
-				{ // isBlackPixel
-					count++;
-				}
-				else
-				{
-					break;
-				}
-			}
-			return count;
-		}
-
-		static inline constexpr int CountContinuousBlackPixelsRow(const cv::Mat& mat, int top, int col)
-		{
-			int count = 0;
-			for (int row = top; row < mat.rows; row++)
-			{
-				if (!mat.at<bool>(row, col))
-				{ // isBlackPixel
-					count++;
-				}
-				else
-				{
-					break;
-				}
-			}
-			return count;
-		}
-
-		static inline constexpr int FindValidRightEdge(const cv::Mat& transcript, int row, int left, int minColLimit)
-		{
-			int colCount = CountContinuousBlackPixelsCol(transcript, row, left);
-			return (colCount >= minColLimit) ? left + colCount - 1 : -1;
-		}
-
-		static inline constexpr int FindValidBottomEdge(const cv::Mat& transcript, int top, int right, int minRowLimit)
-		{
-			int rowCount = CountContinuousBlackPixelsRow(transcript, top, right);
-			return (rowCount >= minRowLimit) ? top + rowCount - 1 : -1;
-		}
-
-		static void InvertRegion(cv::Mat& transcript, int left, int top, int right, int bottom)
-		{
-			cv::Mat cutout(transcript, cv::Rect(left, top, right - left + 1, bottom - top + 1));
-			cv::bitwise_not(cutout, cutout);
-		}
-
-		static inline cv::Mat AdjustBinaryTextColorOfTranscript(const cv::Mat& transcript_bin)
-		{
-			constexpr auto layout = DocLayout::GetInstant(AppearanceType::Transcript);
-			constexpr auto box = layout.GetLayout(FieldCategory::TranscriptPage).GetBox();
-
-			cv::Mat transcript(transcript_bin, cv::Rect(box.x, box.y, box.width, box.height));
-
-			constexpr int minColLimit = 20;
-			constexpr int minRowLimit = 15;
-
-			for (int row = 0; row < transcript.rows; row++)
-			{
-				int left = TryFindBlackPixel(transcript, row);
-				if (left == -1) continue;
-
-				int right = FindValidRightEdge(transcript, row, left, minColLimit);
-				if (right == -1) continue;
-
-				int bottom = FindValidBottomEdge(transcript, row, right, minRowLimit);
-				if (bottom == -1) continue;
-
-				InvertRegion(transcript, left, row, right, bottom);
-
-				row = bottom;
-			}
-
-			return transcript_bin;
-		}
+		
 		cv::Mat Doc::PreprocessDocument() const
 		{
 			// if (m_documentType == DocType::Invalid || !this->IsValid()) return {};
@@ -276,6 +186,7 @@ namespace paplease {
 				case AppearanceType::EntryTicket:
 				case AppearanceType::GrantOfAsylum:
 				case AppearanceType::IdentitySupplement:
+				case AppearanceType::Transcript:
 				case AppearanceType::WorkPass:
 				case AppearanceType::Passport_Antegria:
 				case AppearanceType::Passport_Arstotzka:
@@ -307,8 +218,7 @@ namespace paplease {
 				}
 				case AppearanceType::RuleBook:
 					return applyThreshold(157);
-				case AppearanceType::Transcript:
-					return AdjustBinaryTextColorOfTranscript(applyThreshold(127));
+				
 				default:
 				{
 					std::cerr << "AppearanceType not implemented in Doc::PreprocessDocument()!\n";

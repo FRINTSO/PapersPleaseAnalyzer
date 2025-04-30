@@ -8,20 +8,33 @@
 
 namespace test {
 
+    using namespace paplease;
+    using namespace documents;
+    using namespace scannable;
+    using namespace analysis;
+    using namespace analysis::data;
+
     void test_transcript()
     {
-        paplease::GameView game("C:\\dev\\PapersPleaseAnalyzer\\PapersPleaseAnalyzer\\images\\game_57.png");
-        auto transcriptDocOpt = paplease::scannable::ScanForDocument(game, paplease::ViewArea::InspectionView, paplease::documents::DocType::Transcript);
+        GameView game("C:\\dev\\PapersPleaseAnalyzer\\PapersPleaseAnalyzer\\images\\game_59.png");
+        auto transcriptDocOpt = ScanForDocument(game, ViewArea::InspectionView, DocType::Transcript);
         if (!transcriptDocOpt)
             assert(false && "Couldn't find a transcript!");
 
         auto transcriptDoc = transcriptDocOpt->ToDocument(game);
 
-        auto transcriptOpt = paplease::analysis::data::CreateTranscript(transcriptDoc);
+        auto transcriptOpt = CreateTranscript(transcriptDoc);
         if (!transcriptOpt)
             assert(false && "Couldn't extract transcript!");
 
-        const paplease::analysis::data::Transcript& rulebook = transcriptOpt.value();
+        const Transcript& rulebook = transcriptOpt.value();
+
+        for (auto& entry : rulebook.Entries())
+        {
+            LOG("{}: \"{}\"",
+                magic_enum::enum_name(entry.speakerRole),
+                entry.dialogueLine);
+        }
     }
 
 }  // namespace test
