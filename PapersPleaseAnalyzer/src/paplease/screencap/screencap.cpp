@@ -6,7 +6,7 @@
 namespace paplease {
     namespace screencap {
 
-        cv::Mat GetMat(HWND hWND)
+        static cv::Mat GetMat(HWND hWND)
         {
             HDC deviceContext = GetDC(hWND);
             HDC memoryDeviceContext = CreateCompatibleDC(deviceContext);
@@ -51,7 +51,7 @@ namespace paplease {
             return mat;
         }
 
-        HWND GetGameWindowHandle()
+        static HWND GetGameWindowHandle()
         {
             auto windowTitle = TEXT("PapersPlease");
             HWND hWND = FindWindow(NULL, windowTitle);

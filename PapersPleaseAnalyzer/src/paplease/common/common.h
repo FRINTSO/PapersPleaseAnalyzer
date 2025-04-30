@@ -12,15 +12,15 @@ namespace paplease {
 #pragma endregion
 
 #if ENABLE_DEBUG_OPTIONS
-#define DEBUG_SHOW_DOCUMENT_BOXING       false
-#define DEBUG_SHOW_DOCUMENT_FIELD_BOXING false
+#define DEBUG_SHOW_DOCUMENT_BOXING       true
+#define DEBUG_SHOW_DOCUMENT_FIELD_BOXING true
 #define DEBUG_LOG_DOCUMENT_TRACKING      false
 #define DEBUG_LOG_RULES                  true
 #define DEBUG_LOG_APPLICABLE_RULES       true
 #define DEBUG_LOG_REQUIRED_DOCUMENTS     true
 #define DEBUG_LOG_DOCUMENT_DATA          true
 #endif
-#undef DEBUG_OPTIONS
+#undef ENABLE_DEBUG_OPTIONS
 
 #if ENABLE_EXPERIMENTAL
 #define EXPERIMENTAL_MATCH_ONE_COLOR     false
