@@ -70,10 +70,26 @@ namespace paplease {
             return GetForegroundWindow() == hwnd;
         }
 
+        static bool ResizeGameWindowIfNeeded(HWND hwnd)
+        {
+            constexpr int TargetWidth = 1142;
+            constexpr int TargetHeight = 672;
+
+            constexpr int WidthAddon = TargetWidth - 1128;
+            constexpr int HeightAddon = TargetHeight - 665;
+
+            BOOL success = ::SetWindowPos(hwnd, NULL, 0, 0, TargetWidth + WidthAddon, TargetHeight + HeightAddon, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+            assert(success && "Failed to resize game window to 1142x672");
+            return success;
+        }
+
         cv::Mat CaptureGameWindow()
         {
             static HWND desktopWindow = GetDesktopWindow();
             HWND gameWindow = GetGameWindowHandle();
+            
+            static auto result = ResizeGameWindowIfNeeded(gameWindow);
+
             if (!IsWindowForeground(gameWindow))
             {
                 std::cout << "Window is not active!\n";
