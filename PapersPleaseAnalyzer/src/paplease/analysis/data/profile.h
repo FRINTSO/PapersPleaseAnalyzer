@@ -1,4 +1,5 @@
 #pragma once
+#include "paplease/core/fixed.h"
 #include "paplease/documents/doc_data.h"
 
 namespace paplease {

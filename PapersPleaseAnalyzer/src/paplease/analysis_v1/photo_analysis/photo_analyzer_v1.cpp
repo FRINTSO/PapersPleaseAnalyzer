@@ -1,14 +1,14 @@
 #include "pch.h"
-#include "paplease/analysis/photo_analysis/photo_analyzer.h"
+#include "paplease/analysis_v1/photo_analysis/photo_analyzer.h"
 
 #include <array>
 
+#include "paplease/documents/bounding_box_finder.inc"
+#include "paplease/common/image_process.h"
 #include "paplease/common/shape.h"
 
-#include "paplease/documents/bounding_box_finder.inc"
-
 namespace paplease {
-    namespace analysis {
+    namespace analysis_v1 {
 
 		static cv::Mat CutoutHeadshot(const cv::Mat& headshot)
 		{
@@ -365,5 +365,5 @@ namespace paplease {
             return false;
         }
 
-    }
-}
+    }  // namespace analysis_v1
+}  // namespace paplease

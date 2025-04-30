@@ -2,12 +2,8 @@
 #include "paplease/documents/seal.h"
 
 #include <optional>
-#include <string>
-
-#include <magic_enum/magic_enum.hpp>
 
 #include "paplease/common/image_process.h"
-
 #include "paplease/documents/bounding_box_finder.inc"
 
 namespace paplease {

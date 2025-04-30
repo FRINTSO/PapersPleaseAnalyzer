@@ -1,5 +1,5 @@
 #pragma once
-#include "paplease/analysis/analysis_context.h"
+#include "paplease/analysis_v1/analysis_context.h"
 #include "paplease/game_view.h"
 
 // Context of current analysis
@@ -8,7 +8,7 @@
 // Also stores the game state
 
 namespace paplease {
-	namespace analysis {
+	namespace analysis_v1 {
 
 		class GameAnalysisController
 		{
@@ -23,5 +23,5 @@ namespace paplease {
 			bool m_showGameView;
 		};
 
-	}  // namespace analysis
+	}  // namespace analysis_v1
 }  // namespace paplease

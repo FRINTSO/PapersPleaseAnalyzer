@@ -3,43 +3,7 @@
 
 #include <filesystem>
 
-#include "paplease/common/common.h"
-#include "paplease/common/image_process.h"
-
 namespace paplease {
-
-//	GameView::GameView(const std::string& filename)
-//	{
-//#if	USE_GRAY
-//		auto gameView = ToGrayscale(cv::imread(filename));
-//#else
-//		auto gameView = cv::imread(filename);
-//#endif
-//#if IS_DOWNSCALED
-//		booth = ScaleImage(gameView(cv::Rect(1, 237, 356, 434)), SCALE);
-//		inspection = ScaleImage(gameView(cv::Rect(357, 237, 784, 434)), SCALE);
-//#else
-//		booth = gameView(cv::Rect());
-//		inspection = gameView(cv::Rect());
-//#endif
-//	}
-//
-//	GameView::GameView(const cv::Mat& gameView)
-//	{
-//#if	USE_GRAY
-//		auto gameView = ToGrayscale(cv::imread(filename));
-//#else
-//#endif
-//#if IS_DOWNSCALED
-//		booth = ScaleImage(gameView(cv::Rect(1, 237, 356, 434)), SCALE);
-//		inspection = ScaleImage(gameView(cv::Rect(357, 237, 784, 434)), SCALE);
-//#else
-//		booth = gameView(cv::Rect(1, 237, 356, 434));
-//		inspection = gameView(cv::Rect(357, 237, 784, 434));
-//#endif
-//	}
-//
-
 
 	GameView::GameView(const std::string& filename)
 		: GameView(std::move(cv::imread(filename)))

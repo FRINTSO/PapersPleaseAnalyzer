@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "paplease/documents/doc_data.h"
 
-#include <array>
 #include <cctype>
 #include <climits>
 #include <iosfwd>
@@ -11,13 +10,10 @@
 #include <string>
 #include <unordered_set>
 
-#include <magic_enum/magic_enum.hpp>
-
 #include "paplease/documents/data/date.h"
 #include "paplease/documents/data/field_data.h"
 #include "paplease/documents/doc_data_type.h"
 #include "paplease/documents/utils/str_scanner.h"
-#include "paplease/common/image_process.h"
 #include "paplease/utils/log.h"
 #include "paplease/utils/strfuncs.h"
 

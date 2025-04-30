@@ -1,13 +1,11 @@
 #pragma once
+#include "paplease/core/fixed.h"
+#include "paplease/core/ref.h"
 #include "paplease/documents/data/date.h"
 #include "paplease/documents/data/field_data.h"
 #include "paplease/documents/data/photo.h"
 #include "paplease/documents/doc_data_type.h"
-#include "paplease/documents/doc_layout.h"
-#include "paplease/core/fixed.h"
-#include "paplease/core/ref.h"
 
-#include <optional>
 #include <variant>
 
 namespace paplease {

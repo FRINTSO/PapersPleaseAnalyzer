@@ -1,8 +1,6 @@
 #pragma once
 #include <optional>
 
-#include <opencv2/opencv.hpp>
-
 #include "paplease/core/fixed.h"
 #include "paplease/documents/doc_type.h"
 #include "paplease/documents/doc_view.h"

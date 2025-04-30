@@ -3,12 +3,12 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "paplease/common/image_process.h"
 #include "paplease/common/shape.h"
+#include "paplease/types.h"
 
 namespace paplease {
 
-	enum class ViewArea : unsigned char
+	enum class ViewArea : u8
 	{
 		BoothView,
 		InspectionView,

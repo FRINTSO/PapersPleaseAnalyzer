@@ -1,159 +1,72 @@
 #pragma once
 #include <optional>
 
-#include "paplease/analysis/data/criminals.h"
+#include "paplease/analysis/data/entrant_data.h"
+#include "paplease/analysis/data/profile.h"
 #include "paplease/analysis/data/rules.h"
 #include "paplease/analysis/data/transcript.h"
-#include "paplease/analysis/data/entrant_data.h"
-#include "paplease/analysis/doc_tracker.h"
-#include "paplease/scannable/scan_context.h"
-#include "paplease/documents/data/date.h"
-#include "paplease/documents/doc_class.h"
-#include "paplease/documents/doc_type.h"
+#include "paplease/scannable/booth.h"
+#include "paplease/types.h"
 
 namespace paplease {
-	namespace analysis {
-		
-		class DocRegistry
-		{
-		public:
-			using DocRef = std::reference_wrapper<const documents::Doc>;
-		
-			bool AcquireIfNewDocument(documents::Doc&& document);
-			std::optional<DocRef> GetDocumentByType(const documents::DocType documentType) const;
+    namespace analysis {
 
-		private:
-			void AcquireDocument(documents::Doc&& document);
-			bool IsNewDocument(const documents::Doc& document) const;
-			bool HasDocumentOfType(documents::DocType documentType) const;
+        struct TrackedRule
+        {
+            enum class Status : u8 { Unmet, Complied, Broken };
 
-		public:
-			void OnNewDate();
-			void OnNewApplicant();
+            data::Rule rule;
+            Status status;
+        };
 
-		private:
-			static constexpr size_t DocumentCapacity = 10;
-		private:
-			std::array<documents::Doc, DocumentCapacity> m_documents;
-			size_t m_documentCount;
-		};
-		
-		class Profile
-		{
-		public:
-			static constexpr int MatchingData = 1;
-			static constexpr int NoData = 0;
-			static constexpr int MismatchingData = -1;
+        class AnalysisContext
+        {
+        public:
+            void SetEntrantCountry(data::ECountry country);
+            void SetEntrantDistrict(data::EDistrict district);
+            void SetEntrantCity(data::ECity city);
+            void SetEntrantClassification(u8 classification);
 
-			void OnNewDate();
-			void OnNewApplicant();
+            bool AddToProfile(const documents::Field& fieldData);
 
-			bool RegisterData(const documents::Field& fieldData);
-		private:
-			void Clear();
-			int CompareData(const documents::Field& fieldData) const;
+            bool HasRulebook() const noexcept;
+            bool HasTranscript() const noexcept;
 
-			static constexpr size_t FieldsCapacity = 20;
-			static constexpr std::array<documents::FieldCategory, FieldsCapacity> ProfileFields();
-			static constexpr int GetFieldIndexByCategoryType(documents::FieldCategory category);
-		private:
-			std::array<std::optional<documents::Field>, Profile::FieldsCapacity> m_fields;
-			size_t m_fieldCount;
-		};
+            const data::RuleBook& GetRulebook() const;
+            const data::Transcript& GetTranscript() const;
 
-		class AnalysisContext  // Object containing everything necessary for any analysis to take place
-		{
-		public:
-			void Update(scannable::ScanContext& scanContext);
+            void SetRulebook(data::RuleBook&& rulebook);
+            void SetTranscript(data::Transcript&& transcript);
 
-		private:
-			bool SetIfNewDate(documents::data::Date date);
-			bool SetIfNewApplicant(int applicantNumber);
+            const core::FixedHashTable<data::ERule, TrackedRule, 10>& GetApplicableRules() const;
 
-			void OnNewDate(documents::data::Date date);
-			void OnNewApplicant(int applicantNumber);
+            void OnNewDate();
+            void OnNewApplicant();
 
-		private: // DocRegistry:
-			void SaveScannedDocuments(scannable::InspectionData& inspectionData, const GameView& gameView);
-			void HandleDocumentByType(documents::DocType documentType);
+        public:
+            void SetBoothFields(const scannable::BoothData& boothData);
 
-			void StoreBulletin(const documents::Doc& document);
-			void StoreRuleBook(const documents::Doc& document);
-			void StoreTranscript(const documents::Doc& document);
+            // Booth
+            std::optional<documents::data::Date> currentDate;
+            std::optional<documents::data::SIUnitValue> currentWeight;
+            std::optional<documents::data::SIUnitValue> approximateHeight;
+            int applicantNumber;
 
-			void ReiterateRulebook() const;
+        private:
+            void UpdateRules();
 
-		private:  // Profiler:
-			void AddToProfile(const documents::Doc& document);
-			void ValidateDocument(const documents::Doc& document);
+        private:
+            // Store
+            data::EntrantInfo m_entrant;
+            data::Profile     m_profile;
 
-			friend class DocumentValidator;
-		private:
-			// Plain data
-			std::optional<documents::data::Date> m_currentDate;
-			std::optional<documents::data::SIUnitValue> m_currentWeight;
-			std::optional<documents::data::SIUnitValue> m_approximateHeight;
-			int m_applicantNumber;
+            // Special document types
+            std::optional<data::RuleBook> m_rulebook = std::nullopt;
+            std::optional<data::Transcript> m_transcript = std::nullopt;
+            
+            // Rules
+            core::FixedHashTable<data::ERule, TrackedRule, 10> m_applicableRules;
+        };
 
-			std::optional<data::RuleBook> m_ruleBook;
-			std::optional<data::CriminalData> m_criminalData;
-			std::optional<data::Transcript> m_transcript;
-
-			// More complex
-			DocTracker m_docTracker;
-			DocRegistry m_docRegistry;  // stores all documents currently in effect
-
-			// Profiler:
-			Profile m_profile;
-			data::EntrantInfo m_entrantInfo;
-		};
-
-		class DocumentValidator
-		{
-		public:
-			DocumentValidator(const documents::Doc& document, AnalysisContext& analysisContext);
-
-			bool Validate();
-
-			// Against static information, ex. Issuing city, or current date
-			bool ValidateExpirationDate() const;
-			bool ValidateIssuingCity() const;
-			bool ValidateDistrict() const;
-			bool ValidateForgedOrMissingSeal() const;
-			bool ValidateEntryTicketValidOnDate() const;
-			bool ValidateIssuingCountry() const;
-			bool ValidateAccessToAristotzka() const;
-			bool ValidateMissingVaccine() const;
-			bool ValidateVaccineExpirationDate() const;
-
-			// Against booth
-			bool ValidateWeight() const;
-
-			// Against images - not supported yet
-			bool ValidateSex() const;
-			bool ValidatePhoto() const;
-			bool ValidateHeight() const;
-			bool ValidatePhysicalAppearance() const;
-			bool ValidateThumbprint() const;
-			bool ValidateFingerprints() const;
-
-			// Against rulebook, transcript, bulletin
-			//bool ValidateAgainstRulebook() const;
-			//bool ValidateAgainstTranscript() const;
-
-			// Against other applicant documents
-			bool ValidateName() const;
-			bool ValidateDateOfBirth() const;
-			bool ValidatePassportNumber() const;
-			bool ValidateWorkEndDate() const;
-
-		private:
-			AnalysisContext& m_analysisContext;
-			const documents::Doc& m_document;  // The document being validated
-			documents::DocData m_documentData;
-		};
-
-	}  // namespace analysis
-}  // namespace paplease
-
-#include "paplease/analysis/analysis_context.inl.h"
+    }
+}

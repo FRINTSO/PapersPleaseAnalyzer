@@ -4,7 +4,6 @@
 #include <cassert>
 #include <iostream>
 
-#include "paplease/common/common.h"
 #include "paplease/documents/doc_type.h"
 
 namespace paplease {

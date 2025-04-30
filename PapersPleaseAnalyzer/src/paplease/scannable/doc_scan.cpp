@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "paplease/scannable/doc_scan.h"
 
+#include "paplease/common/image_process.h"
 #include "paplease/documents/bounding_box_finder.inc"
 #include "paplease/utils/enum_range.h"
 

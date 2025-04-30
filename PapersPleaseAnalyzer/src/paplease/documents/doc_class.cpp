@@ -2,10 +2,8 @@
 #include "pch.h"
 #include "paplease/documents/doc_class.h"
 
-#include <array>
 #include <cassert>
 #include <iostream>
-#include <optional>
 #include <type_traits>
 
 #include <opencv2/core.hpp>
@@ -13,16 +11,13 @@
 #include <opencv2/core/types.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include "paplease/common/color.h"
 #include "paplease/common/common.h"
-#include "paplease/documents/bounding_box_finder.inc"
 #include "paplease/documents/doc_appearance.h"
 #include "paplease/documents/doc_data.h"
 #include "paplease/documents/doc_data_type.h"
 #include "paplease/documents/doc_layout.h"
 #include "paplease/documents/doc_type.h"
 #include "paplease/documents/seal.h"
-#include "paplease/game_view.h"
 #include "paplease/common/image_process.h"
 #include "paplease/common/shape.h"
 

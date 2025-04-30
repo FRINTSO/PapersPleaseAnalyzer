@@ -1,7 +1,7 @@
 #pragma once
 
 namespace paplease {
-	namespace analysis {
+	namespace analysis_v1 {
 
 		constexpr std::array<documents::FieldCategory, Profile::FieldsCapacity> Profile::ProfileFields()
 		{
@@ -55,5 +55,5 @@ namespace paplease {
 			}
 		}
 
-	}  // namespace analysis
+	}  // namespace analysis_v1
 }  // namespace paplease

@@ -1,12 +1,8 @@
 #include "pch.h"
-#include "paplease/analysis/game_controller.h"
-
-#include <utility>
-
-#include "paplease/utils/log.h"
+#include "paplease/analysis_v1/game_controller.h"
 
 namespace paplease {
-	namespace analysis {
+	namespace analysis_v1 {
 
 		using namespace documents;
 
@@ -32,5 +28,5 @@ namespace paplease {
 			}
 		}
 
-	}  // namespace analysis
+	}  // namespace analysis_v1
 }  // namespace paplease

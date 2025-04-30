@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\paplease\analysis\analysis_context.cpp" />
+    <ClCompile Include="src\paplease\analysis_v1\analysis_context_v1.cpp" />
     <ClCompile Include="src\paplease\analysis\data\location_bank.cpp" />
     <ClCompile Include="src\paplease\analysis\game_analyzer.cpp" />
     <ClCompile Include="src\paplease\analysis\photo_analysis\photo_analyzer.cpp" />
@@ -15,7 +15,7 @@
     <ClCompile Include="src\paplease\documents\doc_appearance.cpp" />
     <ClCompile Include="src\paplease\documents\doc_layout.cpp" />
     <ClCompile Include="src\paplease\analysis\data\criminals.cpp" />
-    <ClCompile Include="src\paplease\analysis\game_controller.cpp" />
+    <ClCompile Include="src\paplease\analysis_v1\game_controller.cpp" />
     <ClCompile Include="src\paplease\analysis\data\rules.cpp" />
     <ClCompile Include="src\paplease\scannable\booth.cpp" />
     <ClCompile Include="src\paplease\scannable\inspection.cpp" />
@@ -41,11 +41,17 @@
     <ClCompile Include="src\paplease\analysis\doc_validator.cpp" />
     <ClCompile Include="src\paplease\analysis\doc_store.cpp" />
     <ClCompile Include="src\paplease\analysis\doc_analyzer.cpp" />
-    <ClCompile Include="src\paplease\analysis\analysis_context_v2.cpp" />
+    <ClCompile Include="src\paplease\analysis\analysis_context.cpp" />
+    <ClCompile Include="src\paplease\analysis_v1\doc_tracker_v1.cpp" />
+    <ClCompile Include="src\paplease\analysis_v1\data\criminals_v1.cpp" />
+    <ClCompile Include="src\paplease\analysis_v1\data\location_bank_v1.cpp" />
+    <ClCompile Include="src\paplease\analysis_v1\data\rules_v1.cpp" />
+    <ClCompile Include="src\paplease\analysis_v1\data\transcript_v1.cpp" />
+    <ClCompile Include="src\paplease\analysis_v1\photo_analysis\photo_analyzer_v1.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\paplease\analysis\analysis_context.h" />
-    <ClInclude Include="src\paplease\analysis\analysis_context.inl.h" />
+    <ClInclude Include="src\paplease\analysis_v1\analysis_context.h" />
+    <ClInclude Include="src\paplease\analysis_v1\analysis_context.inl.h" />
     <ClInclude Include="src\paplease\analysis\data\entrant_data.h" />
     <ClInclude Include="src\paplease\analysis\data\location_bank.h" />
     <ClInclude Include="src\paplease\analysis\game_analyzer.h" />
@@ -64,7 +70,7 @@
     <ClInclude Include="src\paplease\screencap\screencap.h" />
     <ClInclude Include="src\paplease\utils\enum_range.h" />
     <ClInclude Include="src\paplease\utils\log.h" />
-    <ClInclude Include="src\paplease\analysis\game_controller.h" />
+    <ClInclude Include="src\paplease\analysis_v1\game_controller.h" />
     <ClInclude Include="src\paplease\scannable\booth.h" />
     <ClInclude Include="src\paplease\scannable\inspection.h" />
     <ClInclude Include="src\paplease\common\color.h" />
@@ -107,8 +113,15 @@
     <ClInclude Include="src\paplease\analysis\doc_pipeline.h" />
     <ClInclude Include="src\paplease\analysis\doc_store.h" />
     <ClInclude Include="src\paplease\analysis\doc_validator.h" />
-    <ClInclude Include="src\paplease\analysis\analysis_context_v2.h" />
+    <ClInclude Include="src\paplease\analysis\analysis_context.h" />
     <ClInclude Include="src\paplease\analysis\data\profile.h" />
+    <ClInclude Include="src\paplease\analysis_v1\doc_tracker.h" />
+    <ClInclude Include="src\paplease\analysis_v1\data\criminals.h" />
+    <ClInclude Include="src\paplease\analysis_v1\data\entrant_data.h" />
+    <ClInclude Include="src\paplease\analysis_v1\data\location_bank.h" />
+    <ClInclude Include="src\paplease\analysis_v1\data\rules.h" />
+    <ClInclude Include="src\paplease\analysis_v1\data\transcript.h" />
+    <ClInclude Include="src\paplease\analysis_v1\photo_analysis\photo_analyzer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\paplease\documents\bounding_box_finder.inc" />

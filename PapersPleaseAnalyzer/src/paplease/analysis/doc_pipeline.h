@@ -1,5 +1,5 @@
 #pragma once
-#include "paplease/analysis/analysis_context_v2.h"
+#include "paplease/analysis/analysis_context.h"
 #include "paplease/analysis/doc_analyzer.h"
 #include "paplease/analysis/doc_store.h"
 #include "paplease/analysis/doc_tracker.h"
@@ -31,7 +31,7 @@ namespace paplease {
             * 
             */
         public:
-            constexpr DocPipeline(AnalysisContextV2& analysisContext)
+            constexpr DocPipeline(AnalysisContext& analysisContext)
                 : m_store(),
                 m_tracker(m_store, analysisContext),
                 m_validator(m_store, analysisContext),
@@ -46,7 +46,7 @@ namespace paplease {
             bool ProcessSingleDocument(documents::DocType documentType, const GameView& gameView);
 
         private:
-            DocTrackerV2  m_tracker;
+            DocTracker  m_tracker;
             DocValidator  m_validator;
             DocAnalyzer   m_analyzer;
             DocStore      m_store;

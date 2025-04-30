@@ -4,9 +4,9 @@
 #include <opencv2/opencv.hpp>
 
 #include "paplease/common/color.h"
+#include "paplease/common/image_process.h"
 #include "paplease/documents/doc_data.h"
 #include "paplease/documents/doc_layout.h"
-#include "paplease/common/image_process.h"
 #include "test/documents/test_hsv.h"
 
 #include "paplease/documents/bounding_box_finder.inc"

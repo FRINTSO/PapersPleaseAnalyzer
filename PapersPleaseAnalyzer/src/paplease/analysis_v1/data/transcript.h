@@ -6,7 +6,7 @@
 #include "paplease/documents/doc_class.h"
 
 namespace paplease {
-    namespace analysis {
+    namespace analysis_v1 {
         namespace data {
 
             enum class SpeakerRole
@@ -38,5 +38,5 @@ namespace paplease {
             std::optional<Transcript> CreateTranscript(const documents::Doc& document);
 
         }  // namespace data
-    }  // namespace analysis
+    }  // namespace analysis_v1
 }  // namespace paplease

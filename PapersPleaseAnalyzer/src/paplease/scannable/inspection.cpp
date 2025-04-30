@@ -1,13 +1,11 @@
 #include "pch.h"
 #include "paplease/scannable/inspection.h"
 
-#include <utility>
+#include <type_traits>
 
-#include <magic_enum/magic_enum_all.hpp>
-
+#include "paplease/common/image_process.h"
 #include "paplease/documents/doc_class.h"
 #include "paplease/scannable/doc_scan.h"
-#include "test/documents/test_hsv.h"
 
 namespace paplease {
 	namespace scannable {	

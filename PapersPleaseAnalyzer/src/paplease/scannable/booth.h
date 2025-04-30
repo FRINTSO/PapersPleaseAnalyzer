@@ -6,8 +6,8 @@
 #include "paplease/documents/data/date.h"
 #include "paplease/documents/data/field_data.h"
 #include "paplease/documents/data/photo.h"
-#include "paplease/scannable/doc_scan.h"
 #include "paplease/game_view.h"
+#include "paplease/scannable/doc_scan.h"
 
 namespace paplease {
 	namespace scannable {

@@ -1,5 +1,5 @@
 #pragma once
-#include "paplease/analysis/analysis_context_v2.h"
+#include "paplease/analysis/analysis_context.h"
 #include "paplease/analysis/data/rules.h"
 #include "paplease/analysis/doc_pipeline.h"
 #include "paplease/game_view.h"
@@ -33,7 +33,7 @@ namespace paplease {
 			DocPipeline m_documentPipeline;
 
 			// Data
-			AnalysisContextV2 m_analysisContext;
+			AnalysisContext m_analysisContext;
 		};
 
 	}  // namespace analysis

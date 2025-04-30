@@ -1,6 +1,6 @@
 #pragma once
-#include "paplease/scannable/doc_scan.h"
 #include "paplease/game_view.h"
+#include "paplease/scannable/doc_scan.h"
 
 namespace paplease {
 	namespace scannable {

@@ -1,5 +1,5 @@
 #pragma once
-#include "paplease/analysis/analysis_context_v2.h"
+#include "paplease/analysis/analysis_context.h"
 #include "paplease/analysis/doc_store.h"
 #include "paplease/documents/doc_type.h"
 
@@ -9,7 +9,7 @@ namespace paplease {
         class DocAnalyzer
         {
         public:
-            constexpr DocAnalyzer(DocStore& store, AnalysisContextV2& analysisContext)
+            constexpr DocAnalyzer(DocStore& store, AnalysisContext& analysisContext)
                 : m_store(store), m_context(analysisContext) {}
 
             bool AnalyzeDocumentData(documents::DocType documentType);
@@ -23,7 +23,7 @@ namespace paplease {
             {
 			public:
 				constexpr DocValidator(
-					AnalysisContextV2& analysisContext,
+					AnalysisContext& analysisContext,
 					const documents::Doc& document,
 					const documents::DocData& documentData
 				)
@@ -65,14 +65,14 @@ namespace paplease {
 				bool ValidateWorkEndDate() const;
 
 			private:
-				AnalysisContextV2& m_context;
+				AnalysisContext& m_context;
 				const documents::Doc& m_document;  // The document being validated
 				const documents::DocData& m_documentData;
             };
 
         private:
             DocStore& m_store;
-            AnalysisContextV2& m_context;
+            AnalysisContext& m_context;
         };
 
     }  // namespace analysis

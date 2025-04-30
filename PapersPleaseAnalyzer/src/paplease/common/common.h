@@ -29,7 +29,6 @@ namespace paplease {
 #define EXPERIMENTAL_MATCH_BORDER_COLOR  false // NOT IMPLEMENTED
 #define EXPERIMENTAL_USE_ENUM_FUNCS      false
 #define EXPERIMENTAL_USE_NAMESPACE_ENUMS false
-#define EXPERIMENTAL_FIXED_ARRAY_V2      true
 #endif
 #undef ENABLE_EXPERIMENTAL
 

@@ -1,7 +1,7 @@
 #pragma once
+#include "paplease/game_view.h"
 #include "paplease/scannable/booth.h"
 #include "paplease/scannable/inspection.h"
-#include "paplease/game_view.h"
 
 namespace paplease {
 	namespace scannable {

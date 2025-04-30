@@ -12,8 +12,6 @@
 namespace paplease {
     namespace core {
         
-#if EXPERIMENTAL_FIXED_ARRAY_V2
-
         template<class T, size_t Size>
         class FixedArrayConstIterator
         {
@@ -447,85 +445,6 @@ namespace paplease {
             T m_data[Size];
             size_t m_count;
         };
-#else
-        // --- FixedArray<T, Size> ---
-        template<typename T, size_t Size>
-        class FixedArray
-        {
-        public:
-            template<typename U = T, std::enable_if_t<std::is_default_constructible_v<U>, int> = 0>
-            constexpr FixedArray(const T& defaultValue = T()) : m_array{}, m_count{}, m_default{ defaultValue }
-            {
-                Clear();
-            }
-
-            constexpr void Add(const T& value)
-            {
-                //assert(m_count < Size && "FixedArray: Add out of bounds");
-                if (m_count >= Size)
-                {
-                    __debugbreak();
-                }
-                m_array[m_count++] = value;
-            }
-            constexpr void Add(T&& value)
-            {
-                //assert(m_count < Size && "FixedArray: Add out of bounds");
-                if (m_count >= Size)
-                {
-                    __debugbreak();
-                }
-                m_array[m_count++] = std::move(value);
-            }
-
-            constexpr T& EmplaceBack(T&& value)
-            {
-                // assert(m_count < Size && "FixedArray: Add out of bounds");
-                if (m_count >= Size)
-                {
-                    __debugbreak();
-                }
-                m_array[m_count] = std::move(value);
-                return m_array[m_count++];
-            }
-            
-            constexpr const T& operator[](size_t index) const
-            {
-                assert(index < m_count && "FixedArray: Index out of bounds");
-                return m_array[index];
-            }
-
-            constexpr T& operator[](size_t index)
-            {
-                assert(index < m_count && "FixedArray: Index out of bounds");
-                return m_array[index];
-            }
-
-            constexpr size_t Count() const { return m_count; }
-            constexpr size_t Capacity() const { return Size; }
-            constexpr bool Empty() const { return m_count == 0; }
-            constexpr bool Full() const { return m_count == Size; }
-
-            constexpr void Clear()
-            {
-                for (auto& entry : m_array)
-                    entry = m_default;
-                m_count = 0;
-            }
-
-            // Range support
-            constexpr auto begin() { return m_array.begin(); }
-            constexpr auto end() { return m_array.begin() + m_count; }
-
-            constexpr auto begin() const { return m_array.begin(); }
-            constexpr auto end() const { return m_array.begin() + m_count; }
-
-        private:
-            std::array<T, Size> m_array;
-            size_t m_count;
-            T m_default;
-        };
-#endif
 
         // --- FixedTable<Enum, T> ---
         template<typename Enum, typename T>
