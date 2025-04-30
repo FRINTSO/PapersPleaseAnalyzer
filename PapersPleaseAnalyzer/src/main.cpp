@@ -9,8 +9,9 @@
 #include "paplease/core/resource_manager.h"
 #include "test/test_document_scanning.h"
 
+#include "test/test_transcript.h"
 
-void RunWithSimulatedGame()
+static void RunWithSimulatedGame()
 {
 	paplease::analysis_v1::GameAnalysisController analyzer{ false };
 	paplease::GameView view;
@@ -23,7 +24,7 @@ void RunWithSimulatedGame()
 	cv::waitKey();
 }
 
-void RunWithLiveGame()
+static void RunWithLiveGame()
 {
 	//paplease::analysis::GameAnalysisController analyzer{ false };
 	// paplease::analysis::scannable::DocTracker tracker{};
@@ -57,12 +58,9 @@ void main()
 	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
 	paplease::utils::Log::Init();
 
-	// RunWithSimulatedGame();
-	RunWithLiveGame();
+	//RunWithSimulatedGame();
+	//RunWithLiveGame();
 
-	//test::test_document_scanning();
-
-	//test::test_fixed_hash_table();
-
+	test::test_transcript();
 	std::cin.get();
 }

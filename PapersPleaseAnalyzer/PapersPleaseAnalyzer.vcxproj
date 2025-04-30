@@ -266,6 +266,7 @@
     <ClInclude Include="src\paplease\common\scaled.h" />
     <ClInclude Include="src\paplease\screencap\screencap.h" />
     <ClInclude Include="src\paplease\utils\enum_range.h" />
+    <ClInclude Include="src\paplease\utils\enum_struct.h" />
     <ClInclude Include="src\paplease\utils\log.h" />
     <ClInclude Include="src\paplease\analysis_v1\game_controller.h" />
     <ClInclude Include="src\paplease\scannable\booth.h" />
