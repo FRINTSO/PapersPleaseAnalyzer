@@ -2,17 +2,14 @@
 
 #include <opencv2/core/utils/logger.hpp>
 
-#include "base/game_state/game_controller.h"
+#include "paplease/analysis/game_analyzer.h"
+#include "paplease/analysis_v1/game_controller.h"
+#include "paplease/screencap/screencap.h"
 
-#include "base/utils/log.h"
 
-
-void main()
+void RunWithSimulatedGame()
 {
-	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
-	paplease::utils::Log::Init();
-
-	paplease::analysis::GameAnalysisController analyzer{};
+	paplease::analysis_v1::GameAnalysisController analyzer{ false };
 	paplease::GameView view;
 	while (paplease::GetNextGameSimView("1", view))
 	{
@@ -21,5 +18,42 @@ void main()
 
 	// Don't scan transcript until finished?
 	cv::waitKey();
+}
+
+void RunWithLiveGame()
+{
+	//paplease::analysis::GameAnalysisController analyzer{ false };
+	// paplease::analysis::scannable::DocTracker tracker{};
+	paplease::analysis::GameAnalyzer analyzer{};
+	while (true)
+	{
+		auto result = paplease::screencap::CaptureGameWindow();
+
+		if (result.empty())
+		{
+			std::cout << "Empty\n";
+			continue;
+		}
+
+		paplease::GameView view(std::move(result));
+		analyzer.Scan(view);
+
+		//tracker.Update(view);
+		//analyzer.Update(view);
+		//cv::imshow("output", result);
+		cv::waitKey(30);
+	}
+}
+
+void main()
+{
+	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
+	paplease::utils::Log::Init();
+
+	// RunWithSimulatedGame();
+	RunWithLiveGame();
+
+	//test::test_fixed_hash_table();
+
 	std::cin.get();
 }

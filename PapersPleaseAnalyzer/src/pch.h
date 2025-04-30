@@ -5,8 +5,10 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <variant>
 #include <vector>
 
+#include <magic_enum/magic_enum.hpp>
 #include <opencv2/opencv.hpp>
 
-#include "base/utils/log.h"
+#include "paplease/utils/log.h"

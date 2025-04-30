@@ -1,9 +1,24 @@
 #pragma once
 #include <opencv2/opencv.hpp>
 
-namespace Documents::Test
+#include "paplease/common/color.h"
+
+namespace test::documents
 {
 
-	void test_hsv(const cv::Mat& image);
+	void test_hsv(
+		const cv::Mat& image,
+		paplease::HSVConfig* hsvConfig = nullptr
+	);
+
+	cv::Mat find_hsv(
+		const cv::Mat& image,
+		paplease::HSVConfig& hsvConfig
+	);
+
+	cv::Mat find_hsl(
+		const cv::Mat& image,
+		paplease::HSLConfig& hslConfig
+	);
 
 }
