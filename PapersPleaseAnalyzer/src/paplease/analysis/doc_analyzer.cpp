@@ -80,7 +80,8 @@ namespace paplease {
         bool DocAnalyzer::AnalyzeTranscript()
         {
             const auto& document = m_store.GetStored<documents::Doc>(documents::DocType::Bulletin);
-            auto transcriptOpt = data::CreateTranscript(document);
+            // auto transcriptOpt = data::CreateTranscript(document);
+            std::optional<data::Transcript> transcriptOpt = std::nullopt;
             if (!transcriptOpt)
             {
                 return false;
