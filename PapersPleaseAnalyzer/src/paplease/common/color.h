@@ -1,8 +1,8 @@
 #pragma once
-#include <type_traits>
-
 #include "paplease/common/common.h"
 #include "paplease/types.h"
+
+#include <type_traits>
 
 namespace paplease {
 

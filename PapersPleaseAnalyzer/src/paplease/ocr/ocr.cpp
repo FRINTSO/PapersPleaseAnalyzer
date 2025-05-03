@@ -1,21 +1,22 @@
 #include "pch.h"
 #include "paplease/ocr/ocr.h"
 
-#include <climits>
-#include <filesystem>
-#include <string>
-#include <unordered_map>
-#include <utility>
-#include <vector>
+#include "paplease/common/common.h"
+#include "paplease/common/image_process.h"
+#include "paplease/ocr/font.h"
+
 
 #include <opencv2/core/hal/interface.h>
 #include <opencv2/core/mat.hpp>
 #include <opencv2/core/types.hpp>
 #include <opencv2/imgcodecs.hpp>
 
-#include "paplease/common/common.h"
-#include "paplease/common/image_process.h"
-#include "paplease/ocr/font.h"
+#include <climits>
+#include <filesystem>
+#include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 namespace paplease {
 	namespace ocr {
@@ -366,7 +367,7 @@ namespace paplease {
 
 				field.push_back(ch);
 			}
-
+			LOG_RAW("SIZE OF STRING: {}", field.size());
 			return field;
 		}
 

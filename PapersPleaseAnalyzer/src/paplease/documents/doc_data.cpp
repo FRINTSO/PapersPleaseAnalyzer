@@ -1,6 +1,13 @@
 #include "pch.h"
 #include "paplease/documents/doc_data.h"
 
+#include "paplease/documents/data/date.h"
+#include "paplease/documents/data/field_data.h"
+#include "paplease/documents/doc_data_type.h"
+#include "paplease/documents/utils/str_scanner.h"
+#include "paplease/utils/log.h"
+#include "paplease/utils/strfuncs.h"
+
 #include <cctype>
 #include <climits>
 #include <iosfwd>
@@ -9,13 +16,6 @@
 #include <sstream>
 #include <string>
 #include <unordered_set>
-
-#include "paplease/documents/data/date.h"
-#include "paplease/documents/data/field_data.h"
-#include "paplease/documents/doc_data_type.h"
-#include "paplease/documents/utils/str_scanner.h"
-#include "paplease/utils/log.h"
-#include "paplease/utils/strfuncs.h"
 
 namespace paplease {
     namespace documents {
@@ -203,7 +203,7 @@ namespace paplease {
                         year += 1900;
                     }
 
-                    return Data{ data::Date{day, month, year}};
+                    return Data{ data::Date{static_cast<u8>(day), static_cast<u8>(month), static_cast<u16>(year) }};
                 }
 
                 static inline Data ProcessSIUnit(StrScanner& scanner)
@@ -258,7 +258,7 @@ namespace paplease {
 
                     auto name = scanner.MatchToStr();
 
-                    return Data{ data::Vaccine{ date_data.Get<data::Date>(), name } };
+                    return Data{ data::Vaccine{ name, date_data.Get<data::Date>() } };
                 }
 
                 static inline Data ProcessStrList(StrScanner& scanner)
@@ -442,12 +442,12 @@ namespace paplease {
             : m_data{ std::forward<T>(data) }, m_type{ type }, m_isBroken{ isBroken }
         {}
 
-        Data::Data(std::string&& data)
-            : Data{ std::move(data), DataType::GenericString }
-        {}
-
         Data::Data(int data)
             : Data{ data, DataType::GenericNumber }
+        {}
+
+        Data::Data(std::string&& data)
+            : Data{ std::move(data), DataType::GenericString }
         {}
 
         Data::Data(data::Date&& data)
@@ -470,7 +470,7 @@ namespace paplease {
             : Data{ data, DataType::Sex }
         {}
 
-        Data::Data(data::Photo&& data)
+        Data::Data(cv::Mat&& data)
             : Data{ std::move(data), DataType::Image }
         {}
 

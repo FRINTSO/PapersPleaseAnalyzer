@@ -1,10 +1,10 @@
 #pragma once
-#include <string>
+#include "paplease/common/shape.h"
+#include "paplease/types.h"
 
 #include <opencv2/opencv.hpp>
 
-#include "paplease/common/shape.h"
-#include "paplease/types.h"
+#include <string>
 
 namespace paplease {
 

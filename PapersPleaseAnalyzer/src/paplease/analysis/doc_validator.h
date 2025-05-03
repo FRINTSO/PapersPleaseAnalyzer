@@ -1,7 +1,6 @@
 #pragma once
 #include "paplease/analysis/analysis_context.h"
 #include "paplease/analysis/doc_store.h"
-#include "paplease/documents/doc_view.h"
 #include "paplease/game_view.h"
 
 namespace paplease {

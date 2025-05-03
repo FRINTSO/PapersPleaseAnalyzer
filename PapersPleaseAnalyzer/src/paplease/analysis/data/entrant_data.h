@@ -1,14 +1,15 @@
 #pragma once
 #include "paplease/analysis/data/location_bank.h"
 #include "paplease/analysis/data/rules.h"
+#include "paplease/core/enum_base.h"
 
 namespace paplease {
     namespace analysis {
         namespace data {
 
-            class EntrantClass
+            struct EntrantClass : public core::EnumBase<u8>
             {
-            public:
+                using EnumBase::EnumBase;
                 enum : u8
                 {
                     Entrant       = 0b00'00'00'00,   // All instances of this is an entrant
@@ -102,135 +103,11 @@ namespace paplease {
                             return IsFromAltanDistrict();
                     }
                 }
-
-                constexpr EntrantClass(u8 value) noexcept : m_data(value) {}
-                constexpr explicit operator u8() const noexcept { return m_data; }
-
-                // Addition operator
-                constexpr EntrantClass operator+(const EntrantClass& other) const noexcept
-                {
-                    return EntrantClass(m_data + other.m_data);
-                }
-                constexpr EntrantClass& operator+=(const EntrantClass& other)
-                {
-                    m_data += other.m_data;
-                    return *this;
-                }
-
-                // Subtraction operator
-                constexpr EntrantClass operator-(const EntrantClass& other) const noexcept
-                {
-                    return EntrantClass(m_data - other.m_data);
-                }
-                constexpr EntrantClass& operator-=(const EntrantClass& other)
-                {
-                    m_data -= other.m_data;
-                    return *this;
-                }
-
-                // Multiplication operator
-                constexpr EntrantClass operator*(const EntrantClass& other) const noexcept
-                {
-                    return EntrantClass(m_data * other.m_data);
-                }
-                constexpr EntrantClass& operator*=(const EntrantClass& other)
-                {
-                    m_data *= other.m_data;
-                    return *this;
-                }
-
-                // Division operator
-                constexpr EntrantClass operator/(const EntrantClass& other) const noexcept
-                {
-                    return EntrantClass(m_data / other.m_data);
-                }
-                constexpr EntrantClass& operator/=(const EntrantClass& other)
-                {
-                    m_data /= other.m_data;
-                    return *this;
-                }
-
-                // Equality operator
-                constexpr bool operator==(const EntrantClass& other) const noexcept
-                {
-                    return m_data == other.m_data;
-                }
-
-                // Inequality operator
-                constexpr bool operator!=(const EntrantClass& other) const noexcept
-                {
-                    return m_data != other.m_data;
-                }
-
-                // Bitwise AND operator
-                constexpr EntrantClass operator&(const EntrantClass& other) const noexcept
-                {
-                    return EntrantClass(m_data & other.m_data);
-                }
-                constexpr EntrantClass& operator&=(const EntrantClass& other)
-                {
-                    m_data &= other.m_data;
-                    return *this;
-                }
-
-                // Bitwise OR operator
-                constexpr EntrantClass operator|(const EntrantClass& other) const noexcept
-                {
-                    return EntrantClass(m_data | other.m_data);
-                }
-                constexpr EntrantClass& operator|=(const EntrantClass& other)
-                {
-                    m_data |= other.m_data;
-                    return *this;
-                }
-
-                // Bitwise XOR operator
-                constexpr EntrantClass operator^(const EntrantClass& other) const noexcept
-                {
-                    return EntrantClass(m_data ^ other.m_data);
-                }
-                constexpr EntrantClass& operator^=(const EntrantClass& other)
-                {
-                    m_data ^= other.m_data;
-                    return *this;
-                }
-
-                // Bitwise NOT operator
-                constexpr EntrantClass operator~() const noexcept
-                {
-                    return EntrantClass(~m_data);
-                }
-
-                // Bitwise left shift operator
-                constexpr EntrantClass operator<<(int shift) const noexcept
-                {
-                    return EntrantClass(m_data << shift);
-                }
-                constexpr EntrantClass& operator<<=(int shift)
-                {
-                    m_data <<= shift;
-                    return *this;
-                }
-
-                // Bitwise right shift operator
-                constexpr EntrantClass operator>>(int shift) const noexcept
-                {
-                    return EntrantClass(m_data >> shift);
-                }
-                constexpr EntrantClass& operator>>=(int shift)
-                {
-                    m_data >>= shift;
-                    return *this;
-                }
-
-            private:
-                u8 m_data;
             };
 
             struct EntrantInfo
             {
                 EntrantClass entrantClass = EntrantClass::Entrant;
-
                 ECountry nationality = ECountry::Invalid;
                 EDistrict district = EDistrict::Invalid;
                 ECity city = ECity::Invalid;

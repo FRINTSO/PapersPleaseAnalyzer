@@ -1,10 +1,10 @@
 #pragma once
-#include <opencv2/opencv.hpp>
-
 #include "paplease/documents/doc_appearance.h"
 #include "paplease/documents/doc_data.h"
 #include "paplease/documents/doc_layout.h"
 #include "paplease/documents/doc_type.h"
+
+#include <opencv2/opencv.hpp>
 
 namespace paplease {
 	namespace documents {

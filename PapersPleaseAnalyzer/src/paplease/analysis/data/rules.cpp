@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "paplease/analysis/data/rules.h"
 
+#include "paplease/utils/enum_range.h"
+
 #include <string>
 #include <unordered_map>
-
-#include "paplease/utils/enum_range.h"
 
 namespace paplease {
     namespace analysis {

@@ -1,7 +1,7 @@
 #pragma once
-#include <opencv2/opencv.hpp>
-
 #include "paplease/common/scaled.h"
+
+#include <opencv2/opencv.hpp>
 
 namespace paplease {
 

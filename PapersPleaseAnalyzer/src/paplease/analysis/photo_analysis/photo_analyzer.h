@@ -1,7 +1,4 @@
 #pragma once
-#include <opencv2/opencv.hpp>
-
-#include "paplease/documents/doc_type.h"
 #include "paplease/documents/data/photo.h"
 
 namespace paplease {

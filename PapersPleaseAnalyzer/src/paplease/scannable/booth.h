@@ -1,13 +1,13 @@
 #pragma once
-#include <optional>
-
-#include <opencv2/opencv.hpp>
-
 #include "paplease/documents/data/date.h"
 #include "paplease/documents/data/field_data.h"
 #include "paplease/documents/data/photo.h"
 #include "paplease/game_view.h"
 #include "paplease/scannable/doc_scan.h"
+
+#include <opencv2/opencv.hpp>
+
+#include <optional>
 
 namespace paplease {
 	namespace scannable {
@@ -18,7 +18,7 @@ namespace paplease {
 			std::optional<documents::data::Date> date;
 			std::optional<documents::data::SIUnitValue> weight;
 			std::optional<documents::data::SIUnitValue> approximateHeight;
-			std::optional<documents::data::Photo> applicantHeadshot;
+			std::optional<cv::Mat> applicantHeadshot;
 			std::optional<int> applicantNumber;
 
 			DocViewCollection scannedDocuments;

@@ -1,6 +1,5 @@
 #pragma once
 #include "paplease/analysis/analysis_context.h"
-#include "paplease/analysis/data/rules.h"
 #include "paplease/analysis/doc_pipeline.h"
 #include "paplease/game_view.h"
 #include "paplease/scannable/scan_context.h"

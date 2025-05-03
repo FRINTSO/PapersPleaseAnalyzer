@@ -1,14 +1,13 @@
 #pragma once
-#include <string>
-#include <vector>
-
-#include <opencv2/opencv.hpp>
-
 #include "paplease/common/color.h"
 #include "paplease/common/shape.h"
 #include "paplease/documents/doc_type.h"
 #include "paplease/ocr/font.h"
 #include "paplease/ocr/ocr.h"
+
+#include <opencv2/opencv.hpp>
+
+#include <string>
 
 namespace paplease {
 

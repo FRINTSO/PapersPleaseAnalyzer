@@ -1,13 +1,39 @@
 #pragma once
-#include <optional>
-
 #include "paplease/analysis/doc_store.h"
 #include "paplease/documents/doc_class.h"
 #include "paplease/core/fixed.h"
 
+#include <optional>
+
 namespace paplease {
     namespace analysis {
         namespace data {
+
+            /*
+            
+            struct Rule
+            {
+                ERule type;
+                std::function<bool(const EntrantInfo&)> appliesTo;
+                std::string description;
+            };
+
+
+            if (rule.appliesTo(context.GetEntrantInfo()))
+            {
+                context.MarkRuleAsApplicable(rule.type);
+                if (!context.IsRuleComplied(rule.type))
+                    context.MarkRuleAsBroken(rule.type);
+            }
+
+            // Rule: All Kolechians must be searched
+            Rule{
+                .type = ERule::SearchKolechians,
+                .appliesTo = [](const EntrantInfo& info) { return info.country == ECountry::Kolechia; },
+                .description = "All Kolechians must be searched."
+            }
+
+            */
 
             enum class ERule : u8
             {

@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "paplease/documents/seal.h"
 
-#include <optional>
-
 #include "paplease/common/image_process.h"
 #include "paplease/documents/bounding_box_finder.inc"
+
+#include <optional>
 
 namespace paplease {
 	namespace documents {

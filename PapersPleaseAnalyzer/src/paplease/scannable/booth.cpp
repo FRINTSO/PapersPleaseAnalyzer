@@ -1,13 +1,14 @@
 #include "pch.h"
 #include "paplease/scannable/booth.h"
 
-#include <opencv2/opencv.hpp>
-
 #include "paplease/common/color.h"
 #include "paplease/common/image_process.h"
+#include "paplease/core/resource_manager.h"
 #include "paplease/documents/doc_data.h"
 #include "paplease/documents/doc_layout.h"
 #include "test/documents/test_hsv.h"
+
+#include <opencv2/opencv.hpp>
 
 #include "paplease/documents/bounding_box_finder.inc"
 
@@ -294,7 +295,7 @@ namespace paplease {
 			if (!applicantHeadshot)
 				return std::nullopt;
 
-			auto preprocessed = PreprocessApplicantHeadshot(applicantHeadshot->m_mat);
+			auto preprocessed = PreprocessApplicantHeadshot(applicantHeadshot.value());
 			if (!preprocessed)
 				return std::nullopt;
 
@@ -315,7 +316,7 @@ namespace paplease {
 			if (!applicantHeadshot)
 				return std::nullopt;
 
-			auto preprocessed = PreprocessApplicantHeadshot(applicantHeadshot->m_mat);
+			auto preprocessed = PreprocessApplicantHeadshot(applicantHeadshot.value());
 			if (!preprocessed)
 				return std::nullopt;
 
@@ -329,7 +330,7 @@ namespace paplease {
 			if (!boundingBoxOpt)
 				return std::nullopt;
 
-			cv::Mat originalCutout(applicantHeadshot->m_mat, *boundingBoxOpt);
+			cv::Mat originalCutout(applicantHeadshot.value(), *boundingBoxOpt);
 			cv::Mat silhouetteMask(headshot, *boundingBoxOpt);
 
 			cv::Mat hsvImage;
@@ -363,7 +364,7 @@ namespace paplease {
 			if (!applicantHeadshot)
 				return std::nullopt;
 
-			auto preprocessed = PreprocessApplicantHeadshot(applicantHeadshot->m_mat);
+			auto preprocessed = PreprocessApplicantHeadshot(applicantHeadshot.value());
 			if (!preprocessed)
 				return std::nullopt;
 
@@ -377,7 +378,7 @@ namespace paplease {
 			if (!boundingBoxOpt)
 				return std::nullopt;
 
-			cv::Mat originalCutout(applicantHeadshot->m_mat, *boundingBoxOpt);
+			cv::Mat originalCutout(applicantHeadshot.value(), *boundingBoxOpt);
 			cv::Mat silhouetteMask(headshot, *boundingBoxOpt);
 
 			cv::Mat hsvImage;
@@ -441,12 +442,12 @@ namespace paplease {
 			if (!applicantHeadshot)
 				return documents::data::Photo{};
 
-			return documents::data::Photo{ PreprocessApplicantHeadshot(applicantHeadshot->m_mat).value_or(cv::Mat{}) };
+			return documents::data::Photo{ PreprocessApplicantHeadshot(applicantHeadshot.value()).value_or(cv::Mat{}) };
 		}
 
-		static std::optional<SIUnitValue> FindApplicantHeight(const documents::data::Photo& applicantInBooth)
+		static std::optional<SIUnitValue> FindApplicantHeight(const cv::Mat& applicantInBooth)
 		{
-			auto preprocessed = PreprocessApplicantHeadshot(applicantInBooth.m_mat);
+			auto preprocessed = PreprocessApplicantHeadshot(applicantInBooth);
 			if (!preprocessed)
 				return std::nullopt;
 
@@ -523,12 +524,11 @@ namespace paplease {
 					case documents::FieldType::Image:
 					{
 						cv::Mat image_data = ExtractDocumentField(booth, layouts[i].GetBox());
-
 #if OPTIMIZE_DOCDATA
 						builder.AddField(
 							Field{
 								Data{
-									Photo{ std::move(image_data) }
+									std::move(image_data)
 								},
 								layouts[i].GetType(),
 								layouts[i].GetCategory()
@@ -540,7 +540,7 @@ namespace paplease {
 							layouts[i].GetCategory(),
 							documents::Field{
 								documents::Data{
-									Photo{ std::move(image_data) }
+									std::move(image_data)
 								},
 								layouts[i].GetType(),
 								layouts[i].GetCategory()
@@ -591,7 +591,7 @@ namespace paplease {
 			auto weight          = loaded.GetFieldData<FieldCategory::Weight>();
 			auto photo           = loaded.GetFieldData<FieldCategory::Photo>();
 			auto counter         = loaded.GetFieldData<FieldCategory::BoothCounter>();
-			auto applicantHeight = photo ? FindApplicantHeight(*photo) : std::nullopt;
+			auto applicantHeight = photo ? FindApplicantHeight(photo.value()) : std::nullopt;
 
 			auto scanResult = ScanForDocuments(gameView, ViewArea::BoothView);
 

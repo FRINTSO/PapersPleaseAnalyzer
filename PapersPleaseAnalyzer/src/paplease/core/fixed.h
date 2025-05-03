@@ -1,13 +1,10 @@
 ﻿#pragma once
-#include <algorithm>
 #include <array>
 #include <bitset>
 #include <compare>
 #include <iterator>
 #include <type_traits>
 #include <xutility>
-
-#include "paplease/common/common.h"
 
 namespace paplease {
     namespace core {

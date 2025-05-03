@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "paplease/scannable/inspection.h"
 
-#include <type_traits>
-
 #include "paplease/common/image_process.h"
 #include "paplease/documents/doc_class.h"
 #include "paplease/scannable/doc_scan.h"
+
+#include <type_traits>
 
 namespace paplease {
 	namespace scannable {	

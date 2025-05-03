@@ -8,6 +8,16 @@
 namespace paplease {
     namespace analysis {
 
+        /*
+        
+        class DocPipeline {
+            void Preprocess(FrameContext&);
+            void ExtractViews(FrameContext&, DocumentStore&);
+            void AnalyzeViews(DocumentStore&);
+            void CheckRequirements(DocumentStore&, RuleSet&);
+        };
+        
+        */
         // Common class containing all things pertaining to documents
         class DocPipeline
         {

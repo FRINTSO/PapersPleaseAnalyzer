@@ -48,6 +48,8 @@
     <ClCompile Include="src\paplease\analysis_v1\data\rules_v1.cpp" />
     <ClCompile Include="src\paplease\analysis_v1\data\transcript_v1.cpp" />
     <ClCompile Include="src\paplease\analysis_v1\photo_analysis\photo_analyzer_v1.cpp" />
+    <ClCompile Include="src\paplease\core\pool.cpp" />
+    <ClCompile Include="src\test\core\pool_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\paplease\analysis_v1\analysis_context.h" />
@@ -122,6 +124,12 @@
     <ClInclude Include="src\paplease\analysis_v1\data\rules.h" />
     <ClInclude Include="src\paplease\analysis_v1\data\transcript.h" />
     <ClInclude Include="src\paplease\analysis_v1\photo_analysis\photo_analyzer.h" />
+    <ClInclude Include="src\paplease\core\enum_base.h" />
+    <ClInclude Include="src\paplease\analysis\good_ideas.h" />
+    <ClInclude Include="src\paplease\core\string_buffer.h" />
+    <ClInclude Include="src\paplease\core\resource_manager.h" />
+    <ClInclude Include="src\paplease\core\pool.h" />
+    <ClInclude Include="src\test\core\pool_test.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\paplease\documents\bounding_box_finder.inc" />
