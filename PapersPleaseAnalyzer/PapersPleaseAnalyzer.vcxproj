@@ -153,6 +153,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\paplease\analysis\analysis_statemachine.cpp" />
+    <ClCompile Include="src\paplease\analysis\doc_engine.cpp" />
+    <ClCompile Include="src\paplease\analysis\rule_engine.cpp" />
     <ClCompile Include="src\paplease\analysis_v1\analysis_context_v1.cpp" />
     <ClCompile Include="src\paplease\analysis\analysis_context.cpp" />
     <ClCompile Include="src\paplease\analysis\data\location_bank.cpp" />
@@ -208,7 +211,16 @@
     <ClCompile Include="src\test\test_transcript.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\paplease\analysis\analysis_statemachine.h" />
+    <ClInclude Include="src\paplease\analysis\combination.txt" />
+    <ClInclude Include="src\paplease\analysis\contexts\entrant_context.h" />
+    <ClInclude Include="src\paplease\analysis\contexts\frame_context.h" />
+    <ClInclude Include="src\paplease\analysis\contexts\game_context.h" />
+    <ClInclude Include="src\paplease\analysis\contexts\rule_context.h" />
+    <ClInclude Include="src\paplease\analysis\doc_engine.h" />
     <ClInclude Include="src\paplease\analysis\good_ideas.h" />
+    <ClInclude Include="src\paplease\analysis\required_docs_tracker.h" />
+    <ClInclude Include="src\paplease\analysis\rule_engine.h" />
     <ClInclude Include="src\paplease\analysis_v1\analysis_context.h" />
     <ClInclude Include="src\paplease\analysis_v1\analysis_context.inl.h" />
     <ClInclude Include="src\paplease\analysis\analysis_context.h" />

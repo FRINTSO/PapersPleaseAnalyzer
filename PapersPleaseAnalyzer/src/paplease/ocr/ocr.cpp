@@ -367,7 +367,6 @@ namespace paplease {
 
 				field.push_back(ch);
 			}
-			LOG_RAW("SIZE OF STRING: {}", field.size());
 			return field;
 		}
 

@@ -6,6 +6,7 @@
 namespace paplease {
 	namespace documents {
 
+		bool HasSeal(DocType documentType);
 		bool IsDocumentValidlySealed(const cv::Mat& mat, DocType documentType);
 
 	}  // namespace documents

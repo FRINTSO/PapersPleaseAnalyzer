@@ -15,41 +15,34 @@ namespace paplease {
             static inline constexpr size_t DocTypeCount = static_cast<size_t>(documents::DocType::Count);
             using DocTypeSet = core::FixedHashSet<documents::DocType, DocTypeCount>;
         public:
-            constexpr DocTracker(DocStore& store, AnalysisContext& analysisContext)
-                : m_store(store), m_context(analysisContext) {}
+            constexpr DocTracker(DocStore& store)
+                : m_store(store) {}
 
-            void RefreshTracking(const scannable::ScanContext& scanContext);
+
+            void TrackDocument(const documents::DocView& docView);
+
+
+
+
+            //void RefreshTracking(const scannable::ScanContext& scanContext);
 
             // Get documents that have changed in appearance since last scan
-            DocTypeSet GetVisibleDocuments() const;
+        //    DocTypeSet GetVisibleDocuments() const;
 
-            DocTypeSet GetUpdatedDocuments() const;
+        //    DocTypeSet GetUpdatedDocuments() const;
 
 
-            void AddRequiredDocument(std::pair<documents::DocType, documents::PassportType> docType);
+        //    void UpdateRequiredDocuments();
+        //    void ReportMissingDocuments() const noexcept;
 
-            void UpdateRequiredDocuments();
-
-            void ReportMissingDocuments() const noexcept;
-
-        private:
-            void RegisterScannedDocuments(const scannable::DocViewCollection& scannedDocuments);
-            void RegisterSingleScannedDocument(documents::DocView&& scannedDocView);
+        //private:
+        //    void RegisterScannedDocuments(const scannable::DocViewCollection& scannedDocuments);
+        //    void RegisterSingleScannedDocument(documents::DocView&& scannedDocView);
             
         private:
             DocStore& m_store;
-            AnalysisContext& m_context;
             
             core::FixedHashSet<documents::DocType, DocTypeCount> m_visibleDocuments{};
-            //core::FixedHashTable<
-            //    std::pair<
-            //        documents::DocType,
-            //        documents::PassportType
-            //    >,
-            //    bool,
-            //    DocTypeCount,
-            //    detail::HashPair
-            //> m_requiredDocuments;
         };  
 
     }  // namespace analysis

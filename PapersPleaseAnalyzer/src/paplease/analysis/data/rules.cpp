@@ -215,18 +215,22 @@ namespace paplease {
 
             std::optional<RuleBook> CreateRuleBook(const Doc& document)
             {
-                auto ruleData = document.GetDocumentData();
-
                 if (!document.IsValid())
                 {
                     LOG_ERR("Tried to create rule book from invalid document");
                     return std::nullopt;
                 }
 
+                auto ruleData = document.GetDocumentData();
+                return CreateRuleBook(ruleData);
+            }
+
+            std::optional<RuleBook> CreateRuleBook(const documents::DocData& data)
+            {
                 RuleBook rulebook{};
                 for (auto category : utils::enum_range(FieldCategory::Rule1, FieldCategory::Rule10))
                 {
-                    auto ruleOpt = ruleData.GetField(category, false);
+                    auto ruleOpt = data.GetField(category, false);
                     if (!ruleOpt)
                     {
                         return std::nullopt;

@@ -202,9 +202,11 @@ namespace paplease {
                 core::FixedArray<Rule, MaxRuleCount> m_activeRules{};
 
                 friend std::optional<RuleBook> CreateRuleBook(const documents::Doc& document);
+                friend std::optional<RuleBook> CreateRuleBook(const documents::DocData& data);
             };
 
             std::optional<RuleBook> CreateRuleBook(const documents::Doc& document);
+            std::optional<RuleBook> CreateRuleBook(const documents::DocData& data);
 
         }  // namespace data
     }  // namespace analysis

@@ -60,6 +60,11 @@ namespace paplease {
                         return FailedProcess("INVALID RULE");
                     }
 
+                    static inline Data FailedBoothCounterProcess()
+                    {
+                        return FailedProcess("INVALID BOOTH COUNTER");
+                    }
+
                 }  // namespace err
 
                 static inline Data ProcessGenericString(StrScanner& scanner)
@@ -333,6 +338,22 @@ namespace paplease {
                     return data;
                 }
 
+                static inline Data ProcessBoothCounter(StrScanner& scanner)
+                {
+                    scanner.SkipWhitespace();
+                    scanner.StartMatch();
+
+                    while (!scanner.IsAtEnd() && scanner.MatchDigits(2, StrScanner::MatchRemaining));
+                    int matchLength = scanner.MatchLength();
+                    int number = scanner.MatchToInt();
+
+                    scanner.SkipWhitespace();
+                    if (!scanner.IsAtEnd()) return err::FailedGenericIntProcess();
+                    if (matchLength != 2) return err::FailedBoothCounterProcess();
+
+                    return Data{ number };
+                }
+
             }  // namespace processing
 
             static inline Data ProcessTextData(const Data& data, const FieldCategory category)
@@ -392,7 +413,7 @@ namespace paplease {
                         return processing::ProcessVaccine(scanner);
                     }
                     case FieldCategory::BoothCounter:
-                        return processing::ProcessGenericInt(scanner);
+                        return processing::ProcessBoothCounter(scanner);
                     case FieldCategory::Rule1:
                     case FieldCategory::Rule2:
                     case FieldCategory::Rule3:
@@ -490,9 +511,9 @@ namespace paplease {
                 {
                     const data::Date& date = this->Get<data::Date>();
                     std::ostringstream oss;
-                    oss << date.GetDay() << "."
-                        << date.GetMonth() << "."
-                        << date.GetYear();
+                    oss << (u32)date.GetDay() << "."
+                        << (u32)date.GetMonth() << "."
+                        << (u32)date.GetYear();
                     return oss.str();
                 }
                 case DataType::SIUnit:
@@ -519,9 +540,9 @@ namespace paplease {
 
                     std::ostringstream oss;
                     const auto& date = vaccine.date;
-                    oss << date.GetDay() << "."
-                        << date.GetMonth() << "."
-                        << date.GetYear();
+                    oss << (u32)date.GetDay() << "."
+                        << (u32)date.GetMonth() << "."
+                        << (u32)date.GetYear();
                     oss << "\t"
                         << vaccine.name;
                     return oss.str();
@@ -682,6 +703,11 @@ namespace paplease {
             }
 
             return false;
+        }
+
+        const DocData::DocFields& DocData::GetFields() const
+        {
+            return m_fieldStorage;
         }
 
         void DocData::AddField(Field&& field)

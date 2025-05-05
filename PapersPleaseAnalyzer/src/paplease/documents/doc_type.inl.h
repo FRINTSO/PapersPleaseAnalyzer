@@ -3,7 +3,7 @@
 namespace paplease {
 	namespace documents {
 
-		constexpr bool IsApplicantDocument(DocType documentType)
+		constexpr bool IsEntrantDocument(DocType documentType)
 		{
             switch (documentType)
             {

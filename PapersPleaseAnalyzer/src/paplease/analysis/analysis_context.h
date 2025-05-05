@@ -1,4 +1,5 @@
 #pragma once
+#include "paplease/analysis/data/criminals.h"
 #include "paplease/analysis/data/entrant_data.h"
 #include "paplease/analysis/data/profile.h"
 #include "paplease/analysis/data/rules.h"
@@ -66,21 +67,6 @@ namespace paplease {
             
             // Rules
             core::FixedHashTable<data::ERule, TrackedRule, 10> m_applicableRules;
-        };
-
-        class FrameContext // Lives only for one frame
-        {
-
-        };
-
-        class EntrantContext // Lives only for one applicant
-        {
-
-        };
-
-        class GameContext // Lives for the entire day
-        {
-
         };
 
     }

@@ -158,6 +158,8 @@ namespace paplease {
 			using index_type = u8;
 			static_assert(std::is_unsigned_v<index_type> && std::numeric_limits<index_type>::max() + 1 >= MaxFields,
 						  "index_type must be unsigned and large enough to hold MaxFields.");
+
+			using DocFields = core::FixedArray<Field, MaxFields>;
 		public:
 			DocData() = default;
 
@@ -166,6 +168,8 @@ namespace paplease {
 
 			core::OptRef<const Field> GetField(FieldCategory category, bool returnBroken) const;
 			bool HasBrokenData() const;
+
+			const DocFields& GetFields() const;
 
 		private:
 			void AddField(Field&& field);

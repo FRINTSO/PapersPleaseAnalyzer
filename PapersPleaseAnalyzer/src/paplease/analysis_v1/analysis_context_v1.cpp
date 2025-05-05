@@ -264,7 +264,7 @@ namespace paplease {
                 }
                 default:
                 {
-                    if (IsApplicantDocument(documentType))
+                    if (IsEntrantDocument(documentType))
                     {
                         this->AddToProfile(*document);
                     }

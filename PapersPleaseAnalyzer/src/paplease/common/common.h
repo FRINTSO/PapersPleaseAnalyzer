@@ -12,8 +12,8 @@ namespace paplease {
 #pragma endregion
 
 #if ENABLE_DEBUG_OPTIONS
-#define DEBUG_SHOW_DOCUMENT_BOXING       true
-#define DEBUG_SHOW_DOCUMENT_FIELD_BOXING true
+#define DEBUG_SHOW_DOCUMENT_BOXING       false
+#define DEBUG_SHOW_DOCUMENT_FIELD_BOXING false
 #define DEBUG_LOG_DOCUMENT_TRACKING      false
 #define DEBUG_LOG_RULES                  true
 #define DEBUG_LOG_APPLICABLE_RULES       true

@@ -142,6 +142,10 @@ namespace paplease {
                 {
                     this->city = city;
                 }
+                void SetEntrantClassification(u8 classification)
+                {
+                    entrantClass |= classification;
+                }
 
             };
 
