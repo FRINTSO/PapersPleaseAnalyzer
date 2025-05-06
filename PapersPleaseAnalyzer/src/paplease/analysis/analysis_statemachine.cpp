@@ -94,6 +94,8 @@ namespace paplease {
         {  // document pipeline - process documents - add to profile - find discrepancies - etc.
             for (const auto& doc : frame.documents)
             {  // Here we can tag documents as found/scanned/needing scan depending on ViewArea and current scan status
+                m_registry.AddSeenDocument(DocLookup{ doc.appearanceType });
+
                 if (!m_docEngine.IsAnalyzable(doc, frame.gameView))
                 {
                     continue;

@@ -218,6 +218,7 @@
     <ClInclude Include="src\paplease\analysis\contexts\game_context.h" />
     <ClInclude Include="src\paplease\analysis\contexts\rule_context.h" />
     <ClInclude Include="src\paplease\analysis\doc_engine.h" />
+    <ClInclude Include="src\paplease\analysis\doc_registry.h" />
     <ClInclude Include="src\paplease\analysis\good_ideas.h" />
     <ClInclude Include="src\paplease\analysis\required_docs_tracker.h" />
     <ClInclude Include="src\paplease\analysis\rule_engine.h" />
