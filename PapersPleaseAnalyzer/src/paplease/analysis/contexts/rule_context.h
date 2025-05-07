@@ -16,6 +16,11 @@ namespace paplease {
             struct RuleContext
             {
                 core::FixedHashTable<data::ERule, TrackedRule, 10> applicableRules;
+
+                void Reset()
+                {
+                    applicableRules.Clear();
+                }
             };
 
         }  // namespace contexts

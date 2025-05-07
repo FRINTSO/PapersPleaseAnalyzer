@@ -33,6 +33,7 @@ namespace paplease {
                 };
 
                 static inline constexpr u8 CountryMask = 0b00'00'00'11;
+                static inline constexpr u8 ForeignerSpecMask = 0b00'00'11'00;
                 static inline constexpr size_t Count = 10;
                 
                 constexpr bool IsCitizen() const noexcept
@@ -116,7 +117,10 @@ namespace paplease {
                 {
                     if ((entrantClass & entrantClass.CountryMask) != 0)
                     {
-                        LOG_WARN("Setting country twice");
+                        if (nationality != country)
+                        {
+                            LOG_WARN("Setting country twice, to a different value!");
+                        }
                     }
                     else
                     {
@@ -130,6 +134,19 @@ namespace paplease {
                             entrantClass |= data::EntrantClass::Foreigner;
                             LOG("Is foreigner");
                         }
+
+                        if (country == ECountry::Kolechia)
+                        {
+                            entrantClass |= EntrantClass::FromKolechia;
+                        }
+                        else if (country == ECountry::Impor)
+                        {
+                            entrantClass |= EntrantClass::FromImpor;
+                        }
+                        else if (country == ECountry::UnitedFederation)
+                        {
+                            entrantClass |= EntrantClass::FromUnitedFed;
+                        }
                     }
                     
                     nationality = country;
@@ -137,6 +154,10 @@ namespace paplease {
                 void SetEntrantDistrict(EDistrict district)
                 {
                     this->district = district;
+                    if (district == EDistrict::Altan)
+                    {
+                        entrantClass |= EntrantClass::FromAltanDistrict;
+                    }
                 }
                 void SetEntrantCity(ECity city)
                 {

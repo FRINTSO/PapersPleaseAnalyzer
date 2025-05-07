@@ -540,11 +540,12 @@ namespace paplease {
 
                     std::ostringstream oss;
                     const auto& date = vaccine.date;
-                    oss << (u32)date.GetDay() << "."
-                        << (u32)date.GetMonth() << "."
-                        << (u32)date.GetYear();
-                    oss << "\t"
-                        << vaccine.name;
+                    //oss << (u32)date.GetDay() << "."
+                    //    << (u32)date.GetMonth() << "."
+                    //    << (u32)date.GetYear();
+                    //oss << "\t"
+                    //    << vaccine.name;
+                    oss << vaccine.name;
                     return oss.str();
                 }
                 case DataType::StrList:

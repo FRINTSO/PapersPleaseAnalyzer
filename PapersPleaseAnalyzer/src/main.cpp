@@ -7,7 +7,7 @@
 #include "paplease/analysis_v1/game_controller.h"
 #include "paplease/screencap/screencap.h"
 #include "paplease/core/resource_manager.h"
-#include "test/core/pool_test.h"
+#include "test/test_document_scanning.h"
 
 
 void RunWithSimulatedGame()
@@ -59,6 +59,8 @@ void main()
 
 	// RunWithSimulatedGame();
 	RunWithLiveGame();
+
+	//test::test_document_scanning();
 
 	//test::test_fixed_hash_table();
 

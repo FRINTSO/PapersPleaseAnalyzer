@@ -33,9 +33,18 @@ namespace paplease {
                 std::optional<documents::data::SIUnitValue> GetWeight() const { return m_weight; }
                 void SetHeight(documents::data::SIUnitValue height) { m_approximateHeight = height; }
                 std::optional<documents::data::SIUnitValue> GetApproximateHeight() const { return m_approximateHeight; }
+                void SetAnalysisCompleted() noexcept { m_currentAnalysisCompleted = true; }
+                bool AnalysisCompleted() const noexcept { return m_currentAnalysisCompleted; }
                 void Reset()
                 {
+                    m_entrant = data::EntrantInfo{};
+                    m_profile = data::Profile{};
+                    m_memoryStore = DocMemoryStore{};
+                    m_weight = std::nullopt;
+                    m_approximateHeight = std::nullopt;
+                    m_transcript = std::nullopt;
 
+                    m_currentAnalysisCompleted = false;
                 }
             private:
                 data::EntrantInfo m_entrant;
@@ -44,6 +53,8 @@ namespace paplease {
                 std::optional<documents::data::SIUnitValue> m_weight;  // needs to be set
                 std::optional<documents::data::SIUnitValue> m_approximateHeight;  // needs to be set
                 std::optional<data::Transcript> m_transcript;
+
+                bool m_currentAnalysisCompleted = false;
             };
 
         }  // namespace contexts

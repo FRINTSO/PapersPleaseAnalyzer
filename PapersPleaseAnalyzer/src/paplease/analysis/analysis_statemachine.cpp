@@ -21,21 +21,51 @@ namespace paplease {
                     // Toggle new date state
         			std::system("cls");
         			LOG_RAW("====================[ New Date ]====================");
-                    break;
+                    return;
                 }
                 case FrameAnalysisResult::OnNewEntrant:
                 {
                     // Toggle new entrant state
                     std::system("cls");
                     LOG_RAW("-----------------[ New Applicant ]-----------------");
-                    break;
+                    return;
                 }
                 case FrameAnalysisResult::SkipAnalysis:
                 {
-                    return; // GameView is not in an analyzable state
+                    return; // GameView is not in an analyzable state / or analysis is completed of current entrant
                 }
             }
 
+            // Try to locate and analyze documents in required documents list. Default value (at first) in this list, should be rulebook.
+            // If required-document-to-analyze-list is empty, then I think we are done with the analysis
+            // Required docs has two steps:
+            // 1. First we need to see its DocView to verify that it is present
+            // 2. Then we need to prompt the user to drag it into inspection view so we can analyze it.
+            // If it is not visible, then we need to prompt the inspector, to demand the entrant to supply it
+
+            // A required document can have this info
+            // 1. Does it exist?  (For example, rulebook should have this implicitly set to true, since it is always available)
+            // 2. Has it been seen?
+            // 3. Has it been analyzed?
+
+            // If rule book engine, run it
+            if (m_ruleEngine.IsInitialized())
+            {
+                this->RunRuleEngine();
+            }
+
+            if (!m_requiredDocsTracker.ExpectsMoreDocuments())
+            {
+                this->PromptUserAnalysisFinishState();
+                return;
+            }
+
+            // Continue analysis
+            this->RunDocumentAnalysisByRequiredDocumentsTracker(frame);
+
+            m_requiredDocsTracker.WarnMissingRequiredDocuments();
+
+#if OLD
             // Other states here
             // 
             // If rule book engine, run it
@@ -46,11 +76,18 @@ namespace paplease {
 
             // Default case (always run)
             this->RunDocumentAnalysis(frame);
+#endif
+        }
+
+        void AnalysisStateMachine::PromptUserAnalysisFinishState()
+        {
+            LOG("ANALYSIS OF CURRENT ENTRANT IS COMPLETE!");
+            m_entrant.SetAnalysisCompleted();
         }
 
         FrameAnalysisResult AnalysisStateMachine::RunAnalyzeFrame(contexts::FrameContext& frame)
         {
-            // Update entrant context
+            // Update entrant context - only set once
             if (frame.weight.has_value() && !m_entrant.GetWeight().has_value())
             {
                 m_entrant.SetWeight(*frame.weight);
@@ -61,7 +98,7 @@ namespace paplease {
                 m_entrant.SetHeight(*frame.approximateHeight);
             }
 
-            // Update game context
+            // Update game context - only set when new data
             if (frame.date && frame.date != m_game.GetCurrentDate())
             {
                 this->OnNewDate(*frame.date);
@@ -74,6 +111,12 @@ namespace paplease {
                 return FrameAnalysisResult::OnNewEntrant;
             }
 
+            // Don't continue
+            if (m_entrant.AnalysisCompleted())
+            {
+                return FrameAnalysisResult::SkipAnalysis;
+            }
+
             return FrameAnalysisResult::ContinueAnalysis;
         }
 
@@ -82,20 +125,22 @@ namespace paplease {
             m_game.Reset();
             m_game.SetCurrentDate(date);
             m_entrant.Reset();
+            m_ruleEngine.Reset();
+            m_requiredDocsTracker.ResetDay();
         }
 
         void AnalysisStateMachine::OnNewEntrant(int entrantNumber)
         {
             m_entrant.Reset();
             m_game.SetEntrantNumber(entrantNumber);
+            m_ruleEngine.ResetEntrant();
+            m_requiredDocsTracker.ResetEntrant();
         }
 
         void AnalysisStateMachine::RunDocumentAnalysis(contexts::FrameContext& frame)
         {  // document pipeline - process documents - add to profile - find discrepancies - etc.
             for (const auto& doc : frame.documents)
             {  // Here we can tag documents as found/scanned/needing scan depending on ViewArea and current scan status
-                m_registry.AddSeenDocument(DocLookup{ doc.appearanceType });
-
                 if (!m_docEngine.IsAnalyzable(doc, frame.gameView))
                 {
                     continue;
@@ -107,6 +152,36 @@ namespace paplease {
 
         }
 
+        void AnalysisStateMachine::RunDocumentAnalysisByRequiredDocumentsTracker(contexts::FrameContext& frame)
+        {
+            for (const auto& doc : frame.documents)
+            {
+                this->AttemptEntrantClassificationByProvidedDocument(doc.appearanceType);
+
+                if (!m_requiredDocsTracker.Requires(doc.appearanceType))
+                {
+                    continue;  // only analyze required documents
+                }
+
+                m_requiredDocsTracker.SetExists(doc.appearanceType);
+
+                if (!m_docEngine.IsAnalyzable(doc, frame.gameView))
+                {
+                    continue;
+                }
+
+                auto result = m_docEngine.RunAnalysis(doc, frame.gameView);
+                if (result == DocAnalysisResult::SuccessfulAnalysis)
+                {
+                    m_requiredDocsTracker.SetAnalyzed(doc.appearanceType);
+                }
+                else
+                {
+                    this->HandleDocumentAnalysisResult(result);
+                }
+            }
+        }
+
         void AnalysisStateMachine::HandleDocumentAnalysisResult(DocAnalysisResult result)
         {
             switch (result)
@@ -116,6 +191,9 @@ namespace paplease {
                     auto rulebookOpt = m_docEngine.TryBuildRuleBook();
                     if (!rulebookOpt) return;
                     this->HandleNewRuleBook(std::move(rulebookOpt.value()));
+
+                    // Clear rule book from required document here, but this should be moved later
+                    m_requiredDocsTracker.SetAnalyzed(documents::AppearanceType::RuleBook);
                     break;
                 }
                 case DocAnalysisResult::CanBuildTranscript:
@@ -148,9 +226,19 @@ namespace paplease {
         }
 
 
+        void AnalysisStateMachine::AttemptEntrantClassificationByProvidedDocument(documents::AppearanceType appearanceType)
+        {
+            if (!m_ruleEngine.IsInitialized())
+            {
+                return;
+            }
+            m_ruleEngine.ClassifyEntrantBasedOnDocument(appearanceType);
+        }
+
         void AnalysisStateMachine::RunRuleEngine()
         {
             m_ruleEngine.UpdateApplicableRules();
+            
         }
 
     }

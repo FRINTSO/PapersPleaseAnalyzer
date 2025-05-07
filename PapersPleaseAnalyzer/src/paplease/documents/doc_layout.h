@@ -1,5 +1,6 @@
 #pragma once
 #include "paplease/common/shape.h"
+#include "paplease/core/fixed.h"
 #include "paplease/documents/doc_data_type.h"
 #include "paplease/documents/doc_type.h"
 
@@ -41,6 +42,8 @@ namespace paplease {
 			constexpr const DataLayout& GetLayout(FieldCategory type) const noexcept;
 			constexpr const DataLayout* GetAllLayouts() const noexcept;
 			constexpr const size_t GetLayoutCount() const noexcept;
+
+			constexpr const core::FixedArray<const DataLayout*, MaxLayouts> GetLayouts() const noexcept;
 		private:
 			constexpr DocLayout() noexcept;
 			constexpr DocLayout(std::array<DataLayout, DocLayout::MaxLayouts> layouts, size_t layoutCount) noexcept;

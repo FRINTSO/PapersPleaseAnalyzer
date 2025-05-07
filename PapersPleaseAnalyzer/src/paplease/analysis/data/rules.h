@@ -1,5 +1,6 @@
 #pragma once
 #include "paplease/analysis/doc_store.h"
+#include "paplease/analysis/required_docs_tracker.h"
 #include "paplease/documents/doc_class.h"
 #include "paplease/core/fixed.h"
 
@@ -108,32 +109,32 @@ namespace paplease {
                 Entry,
             };
 
-            static inline constexpr DocRequirement ERuleSubjectToDocType(ERuleSubject subject)
+            static inline constexpr DocLookup ERuleSubjectToDocType(ERuleSubject subject)
             {
                 switch (subject)
                 {
                     case ERuleSubject::Passport:
-                        return { documents::DocType::Passport, documents::PassportType::Invalid };
+                        return { documents::DocType::Passport };
                     case ERuleSubject::ArstotzkanPassport:
                         return { documents::DocType::Passport, documents::PassportType::Arstotzka };
                     case ERuleSubject::IdentityCard:
-                        return { documents::DocType::IdentityCard, documents::PassportType::Invalid };
+                        return { documents::DocType::IdentityCard };
                     case ERuleSubject::EntryTicket:
-                        return { documents::DocType::EntryTicket, documents::PassportType::Invalid };
+                        return { documents::DocType::EntryTicket };
                     case ERuleSubject::WorkPass:
-                        return { documents::DocType::WorkPass, documents::PassportType::Invalid };
+                        return { documents::DocType::WorkPass };
                     case ERuleSubject::DiplomaticAuthorization:
-                        return { documents::DocType::DiplomaticAuthorization, documents::PassportType::Invalid };
+                        return { documents::DocType::DiplomaticAuthorization };
                     case ERuleSubject::IdentitySupplement:
-                        return { documents::DocType::IdentitySupplement, documents::PassportType::Invalid };
+                        return { documents::DocType::IdentitySupplement };
                     case ERuleSubject::Grant:
-                        return { documents::DocType::GrantOfAsylum, documents::PassportType::Invalid };
+                        return { documents::DocType::GrantOfAsylum };
                     case ERuleSubject::PolioVaccination:
-                        return { documents::DocType::CertificateOfVaccination, documents::PassportType::Invalid };
+                        return { documents::DocType::CertificateOfVaccination };
                     case ERuleSubject::AccessPermit:
-                        return { documents::DocType::AccessPermit, documents::PassportType::Invalid };
+                        return { documents::DocType::AccessPermit };
                     case ERuleSubject::EntryPermit:
-                        return { documents::DocType::EntryPermit, documents::PassportType::Invalid };
+                        return { documents::DocType::EntryPermit };
                     default:
                         return { documents::DocType::Invalid, documents::PassportType::Invalid };
                 }

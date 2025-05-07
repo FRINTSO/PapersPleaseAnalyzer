@@ -5,11 +5,17 @@
 #include "paplease/analysis/doc_engine.h"
 #include "paplease/analysis/rule_engine.h"
 #include "paplease/analysis/required_docs_tracker.h"
-#include "paplease/analysis/doc_registry.h"
 #include "paplease/game_view.h"
 
 namespace paplease {
     namespace analysis {
+
+        /*
+        Steps to analysis (Require document model):  - Require == Needs to analyze
+        1. Require rulebook.
+        
+        */
+
 
         enum class FrameAnalysisResult
         {
@@ -24,7 +30,8 @@ namespace paplease {
         public:
             AnalysisStateMachine()
                 : m_game(), m_entrant(),
-                m_docEngine(m_game, m_entrant), m_ruleEngine(m_entrant)
+                m_docEngine(m_game, m_entrant, m_requiredDocsTracker), m_ruleEngine(m_entrant, m_requiredDocsTracker),
+                m_requiredDocsTracker()
             {}
             void Run(const GameView& gameView);
 
@@ -32,6 +39,7 @@ namespace paplease {
             void RunInternal(contexts::FrameContext& frame);
             FrameAnalysisResult RunAnalyzeFrame(contexts::FrameContext& frame);
             void RunDocumentAnalysis(contexts::FrameContext& frame);
+            void RunDocumentAnalysisByRequiredDocumentsTracker(contexts::FrameContext& frame);
             void HandleDocumentAnalysisResult(DocAnalysisResult result);
             void RunRuleEngine();
 
@@ -42,6 +50,10 @@ namespace paplease {
             void OnNewDate(documents::data::Date date);
             void OnNewEntrant(int entrantNumber);
 
+            void PromptUserAnalysisFinishState();
+
+            void AttemptEntrantClassificationByProvidedDocument(documents::AppearanceType appearanceType);
+
         private:
             contexts::GameContext    m_game;
             contexts::EntrantContext m_entrant;
@@ -50,7 +62,6 @@ namespace paplease {
             RuleEngine m_ruleEngine;
 
             RequiredDocsTracker m_requiredDocsTracker;
-            DocRegistry m_registry;
         };
 
     }

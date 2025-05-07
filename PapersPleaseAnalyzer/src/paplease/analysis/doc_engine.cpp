@@ -41,7 +41,7 @@ namespace paplease {
 
             if (documents::IsEntrantDocument(documentType))
             {
-                this->RunAnalysisOnEntrantDocument(docView, gameView);
+                return this->RunAnalysisOnEntrantDocument(docView, gameView) ? DocAnalysisResult::SuccessfulAnalysis : DocAnalysisResult::FailedAnalysis;
             }
             else if (documentType == documents::DocType::RuleBook)
             {
@@ -66,12 +66,15 @@ namespace paplease {
                 const documents::Field& field,
                 documents::DocType docType,
                 contexts::GameContext& game,
-                contexts::EntrantContext& entrant
+                contexts::EntrantContext& entrant,
+                RequiredDocsTracker& requiredDocsTracker
             )
                 : m_field(field),
                 m_documentType(docType),
                 m_game(game),
-                m_entrant(entrant) {}
+                m_entrant(entrant),
+                m_requiredDocsTracker(requiredDocsTracker)
+            {}
 
             bool Validate() const
             {
@@ -95,11 +98,11 @@ namespace paplease {
                     case FC::PassportNumber:    return ValidatePassportNumber();
                     //case FC::Sex:               return ValidateSex();
                     //case FC::Photo:             return ValidatePhoto();
-                    case FC::ThumbPrint:        return ValidateThumbprint();
+                    //case FC::ThumbPrint:        return ValidateThumbprint();
                     case FC::Vaccination1:
                     case FC::Vaccination2:
                     case FC::Vaccination3:      return ValidateVaccineExpirationDate(); // grouped
-                    case FC::Height:            return ValidateHeight();
+                    //case FC::Height:            return ValidateHeight();
                     case FC::Weight:            return ValidateWeight();
                     //case FC::BoothDate:         return ValidateAgainstBoothDate();
                     //case FC::BoothCounter:      return ValidateBoothCounter(); // optional
@@ -124,7 +127,7 @@ namespace paplease {
                                  magic_enum::enum_name(m_field.Category()),
                                  magic_enum::enum_name(m_documentType)
                         );
-                        return false;
+                        return true;
                     }
                 }
                 return true;
@@ -178,7 +181,7 @@ namespace paplease {
                     duration.c_str()
                 );
 #endif
-                return false;
+                return true;
             }
             bool ValidateJobField() const
             {
@@ -238,6 +241,7 @@ namespace paplease {
                 if (purpose == "work")
                 {
                     m_entrant.GetEntrantInfo().SetEntrantClassification(data::EntrantClass::Worker);
+                    m_requiredDocsTracker.AddRequiredDocument({ documents::DocType::WorkPass });
                 }
                 else if (purpose == "transit")
                 {
@@ -473,18 +477,22 @@ namespace paplease {
             documents::DocType m_documentType;
             contexts::GameContext& m_game;
             contexts::EntrantContext& m_entrant;
+            RequiredDocsTracker& m_requiredDocsTracker;
         };
 
-        void DocEngine::RunAnalysisOnEntrantDocument(const documents::DocView& docView, const GameView& gameView)
+        bool DocEngine::RunAnalysisOnEntrantDocument(const documents::DocView& docView, const GameView& gameView)
         {  // Normal user document
 
             // Document specific analysis
             // Check seal
+            bool wasSuccessfulAnalysis = true;
+
             auto documentType = documents::ToDocType(docView.appearanceType);
             bool isSealed = docView.ToDocument(gameView).IsAuthentic();
             if (!isSealed)
             {
                 LOG_DISCREPANCY("Seal missing or forged. '{}'", magic_enum::enum_name(documentType));
+                wasSuccessfulAnalysis = false;
             }
 
             // Field analysis
@@ -493,7 +501,7 @@ namespace paplease {
             const auto& data = m_entrant.GetMemoryStore().data.Get(documentType);
             for (const auto& field : data.GetFields())
             {
-                DocFieldComparator comparator{ field, documentType, m_game, m_entrant };
+                DocFieldComparator comparator{ field, documentType, m_game, m_entrant, m_requiredDocsTracker };
                 bool validField;
 
                 if (static_cast<size_t>(field.Category()) - static_cast<size_t>(documents::FieldCategory::Vaccination1) < 3)
@@ -517,14 +525,17 @@ namespace paplease {
                 if (!validField)
                 {
                     //LOG_DISCREPANCY("Invalid field: {}", magic_enum::enum_name(field.Category()));
+                    wasSuccessfulAnalysis = false;
                 }
             }
 
             if (hasVaccineField && !hasPolioVaccine)
             {
                 LOG_DISCREPANCY("Missing polio vaccine. '{}'", magic_enum::enum_name(documentType));
+                wasSuccessfulAnalysis = false;
             }
 
+            return wasSuccessfulAnalysis;
         }
 
         std::optional<data::RuleBook>     DocEngine::TryBuildRuleBook()
