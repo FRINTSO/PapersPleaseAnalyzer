@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "paplease/ocr/font.h"
 
+#include "paplease/documents/doc_type.h"
+
 #include <cassert>
 #include <iostream>
-
-#include "paplease/documents/doc_type.h"
 
 namespace paplease {
 	namespace ocr {

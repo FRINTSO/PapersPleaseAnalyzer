@@ -4,18 +4,32 @@
 namespace paplease {
     namespace analysis {
 
-        void DocPipeline::Process(const scannable::ScanContext& scanContext)
+        void DocPipeline::Run(contexts::FrameContext& frame)
         {
-            m_tracker.RefreshTracking(scanContext);
-            
-            // GetUpdatedDocuments (instead of GetVisibleDocuments) - only get documents with visual changes
-            for (const documents::DocType documentType : m_tracker.GetVisibleDocuments())
-            {
-                ProcessSingleDocument(documentType, *scanContext.currentGameView);
-            }
-
-            m_tracker.ReportMissingDocuments();
+            //for (auto& doc : frame.docCache.views)
+            //{
+            //    if (!m_validator.ValidateDocument(doc, frame.gameView))
+            //    {
+            //        continue;
+            //    }
+            //    
+            //    auto documentType = documents::ToDocType(doc.appearanceType);
+            //    m_analyzer.AnalyzeDocument(documentType);
+            //}
         }
+
+        //void DocPipeline::Process(const scannable::ScanContext& scanContext)
+        //{
+        //    m_tracker.RefreshTracking(scanContext);
+        //    
+        //    // GetUpdatedDocuments (instead of GetVisibleDocuments) - only get documents with visual changes
+        //    for (const documents::DocType documentType : m_tracker.GetVisibleDocuments())
+        //    {
+        //        ProcessSingleDocument(documentType, *scanContext.currentGameView);
+        //    }
+
+        //    m_tracker.ReportMissingDocuments();
+        //}
 
         bool DocPipeline::ProcessSingleDocument(documents::DocType documentType, const GameView& gameView)
         {
@@ -32,16 +46,11 @@ namespace paplease {
 
 
             // --- ANALYZE ---
-            if (!m_analyzer.AnalyzeDocumentData(documentType))
-                return false;
+            //if (!m_analyzer.AnalyzeDocumentData(documentType))
+            //    return false;
 
             LOG("[Document {}] has been completely analyzed!", magic_enum::enum_name(documentType));
             return true;
-        }
-
-        void DocPipeline::Clear()
-        {
-            m_store.Clear();
         }
 
     }  // namespace analysis

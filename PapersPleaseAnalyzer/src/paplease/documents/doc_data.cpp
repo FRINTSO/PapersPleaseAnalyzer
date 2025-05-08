@@ -1,6 +1,13 @@
 #include "pch.h"
 #include "paplease/documents/doc_data.h"
 
+#include "paplease/documents/data/date.h"
+#include "paplease/documents/data/field_data.h"
+#include "paplease/documents/doc_data_type.h"
+#include "paplease/documents/utils/str_scanner.h"
+#include "paplease/utils/log.h"
+#include "paplease/utils/strfuncs.h"
+
 #include <cctype>
 #include <climits>
 #include <iosfwd>
@@ -9,13 +16,6 @@
 #include <sstream>
 #include <string>
 #include <unordered_set>
-
-#include "paplease/documents/data/date.h"
-#include "paplease/documents/data/field_data.h"
-#include "paplease/documents/doc_data_type.h"
-#include "paplease/documents/utils/str_scanner.h"
-#include "paplease/utils/log.h"
-#include "paplease/utils/strfuncs.h"
 
 namespace paplease {
     namespace documents {
@@ -58,6 +58,11 @@ namespace paplease {
                     static inline Data FailedRuleProcess()
                     {
                         return FailedProcess("INVALID RULE");
+                    }
+
+                    static inline Data FailedBoothCounterProcess()
+                    {
+                        return FailedProcess("INVALID BOOTH COUNTER");
                     }
 
                 }  // namespace err
@@ -203,7 +208,7 @@ namespace paplease {
                         year += 1900;
                     }
 
-                    return Data{ data::Date{day, month, year}};
+                    return Data{ data::Date{static_cast<u8>(day), static_cast<u8>(month), static_cast<u16>(year) }};
                 }
 
                 static inline Data ProcessSIUnit(StrScanner& scanner)
@@ -258,7 +263,7 @@ namespace paplease {
 
                     auto name = scanner.MatchToStr();
 
-                    return Data{ data::Vaccine{ date_data.Get<data::Date>(), name } };
+                    return Data{ data::Vaccine{ name, date_data.Get<data::Date>() } };
                 }
 
                 static inline Data ProcessStrList(StrScanner& scanner)
@@ -333,6 +338,22 @@ namespace paplease {
                     return data;
                 }
 
+                static inline Data ProcessBoothCounter(StrScanner& scanner)
+                {
+                    scanner.SkipWhitespace();
+                    scanner.StartMatch();
+
+                    while (!scanner.IsAtEnd() && scanner.MatchDigits(2, StrScanner::MatchRemaining));
+                    int matchLength = scanner.MatchLength();
+                    int number = scanner.MatchToInt();
+
+                    scanner.SkipWhitespace();
+                    if (!scanner.IsAtEnd()) return err::FailedGenericIntProcess();
+                    if (matchLength != 2) return err::FailedBoothCounterProcess();
+
+                    return Data{ number };
+                }
+
             }  // namespace processing
 
             static inline Data ProcessTextData(const Data& data, const FieldCategory category)
@@ -392,7 +413,7 @@ namespace paplease {
                         return processing::ProcessVaccine(scanner);
                     }
                     case FieldCategory::BoothCounter:
-                        return processing::ProcessGenericInt(scanner);
+                        return processing::ProcessBoothCounter(scanner);
                     case FieldCategory::Rule1:
                     case FieldCategory::Rule2:
                     case FieldCategory::Rule3:
@@ -442,12 +463,12 @@ namespace paplease {
             : m_data{ std::forward<T>(data) }, m_type{ type }, m_isBroken{ isBroken }
         {}
 
-        Data::Data(std::string&& data)
-            : Data{ std::move(data), DataType::GenericString }
-        {}
-
         Data::Data(int data)
             : Data{ data, DataType::GenericNumber }
+        {}
+
+        Data::Data(std::string&& data)
+            : Data{ std::move(data), DataType::GenericString }
         {}
 
         Data::Data(data::Date&& data)
@@ -470,7 +491,7 @@ namespace paplease {
             : Data{ data, DataType::Sex }
         {}
 
-        Data::Data(data::Photo&& data)
+        Data::Data(cv::Mat&& data)
             : Data{ std::move(data), DataType::Image }
         {}
 
@@ -490,9 +511,9 @@ namespace paplease {
                 {
                     const data::Date& date = this->Get<data::Date>();
                     std::ostringstream oss;
-                    oss << date.GetDay() << "."
-                        << date.GetMonth() << "."
-                        << date.GetYear();
+                    oss << (u32)date.GetDay() << "."
+                        << (u32)date.GetMonth() << "."
+                        << (u32)date.GetYear();
                     return oss.str();
                 }
                 case DataType::SIUnit:
@@ -519,11 +540,12 @@ namespace paplease {
 
                     std::ostringstream oss;
                     const auto& date = vaccine.date;
-                    oss << date.GetDay() << "."
-                        << date.GetMonth() << "."
-                        << date.GetYear();
-                    oss << "\t"
-                        << vaccine.name;
+                    //oss << (u32)date.GetDay() << "."
+                    //    << (u32)date.GetMonth() << "."
+                    //    << (u32)date.GetYear();
+                    //oss << "\t"
+                    //    << vaccine.name;
+                    oss << vaccine.name;
                     return oss.str();
                 }
                 case DataType::StrList:
@@ -682,6 +704,11 @@ namespace paplease {
             }
 
             return false;
+        }
+
+        const DocData::DocFields& DocData::GetFields() const
+        {
+            return m_fieldStorage;
         }
 
         void DocData::AddField(Field&& field)

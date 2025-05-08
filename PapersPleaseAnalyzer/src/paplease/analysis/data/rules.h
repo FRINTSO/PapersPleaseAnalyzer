@@ -1,13 +1,40 @@
 #pragma once
-#include <optional>
-
-#include "paplease/analysis/doc_store.h"
-#include "paplease/documents/doc_class.h"
+#include "paplease/analysis/data/entrant_data.h"
 #include "paplease/core/fixed.h"
+#include "paplease/documents/doc_class.h"
+#include "paplease/documents/doc_lookup.h"
+
+#include <optional>
 
 namespace paplease {
     namespace analysis {
         namespace data {
+
+            /*
+            
+            struct Rule
+            {
+                ERule type;
+                std::function<bool(const EntrantInfo&)> appliesTo;
+                std::string description;
+            };
+
+
+            if (rule.appliesTo(context.GetEntrantInfo()))
+            {
+                context.MarkRuleAsApplicable(rule.type);
+                if (!context.IsRuleComplied(rule.type))
+                    context.MarkRuleAsBroken(rule.type);
+            }
+
+            // Rule: All Kolechians must be searched
+            Rule{
+                .type = ERule::SearchKolechians,
+                .appliesTo = [](const EntrantInfo& info) { return info.country == ECountry::Kolechia; },
+                .description = "All Kolechians must be searched."
+            }
+
+            */
 
             enum class ERule : u8
             {
@@ -58,6 +85,7 @@ namespace paplease {
             {
                 Invalid = static_cast<u8>(-1),
                 Require = 0,    // Need information
+                RequireDocument,
                 Prohibit,   // Limit
                 Confiscate  // Limit
             };
@@ -82,32 +110,32 @@ namespace paplease {
                 Entry,
             };
 
-            static inline constexpr DocRequirement ERuleSubjectToDocType(ERuleSubject subject)
+            static inline constexpr documents::DocLookup ERuleSubjectToDocType(ERuleSubject subject)
             {
                 switch (subject)
                 {
                     case ERuleSubject::Passport:
-                        return { documents::DocType::Passport, documents::PassportType::Invalid };
+                        return { documents::DocType::Passport };
                     case ERuleSubject::ArstotzkanPassport:
                         return { documents::DocType::Passport, documents::PassportType::Arstotzka };
                     case ERuleSubject::IdentityCard:
-                        return { documents::DocType::IdentityCard, documents::PassportType::Invalid };
+                        return { documents::DocType::IdentityCard };
                     case ERuleSubject::EntryTicket:
-                        return { documents::DocType::EntryTicket, documents::PassportType::Invalid };
+                        return { documents::DocType::EntryTicket };
                     case ERuleSubject::WorkPass:
-                        return { documents::DocType::WorkPass, documents::PassportType::Invalid };
+                        return { documents::DocType::WorkPass };
                     case ERuleSubject::DiplomaticAuthorization:
-                        return { documents::DocType::DiplomaticAuthorization, documents::PassportType::Invalid };
+                        return { documents::DocType::DiplomaticAuthorization };
                     case ERuleSubject::IdentitySupplement:
-                        return { documents::DocType::IdentitySupplement, documents::PassportType::Invalid };
+                        return { documents::DocType::IdentitySupplement };
                     case ERuleSubject::Grant:
-                        return { documents::DocType::GrantOfAsylum, documents::PassportType::Invalid };
+                        return { documents::DocType::GrantOfAsylum };
                     case ERuleSubject::PolioVaccination:
-                        return { documents::DocType::CertificateOfVaccination, documents::PassportType::Invalid };
+                        return { documents::DocType::CertificateOfVaccination };
                     case ERuleSubject::AccessPermit:
-                        return { documents::DocType::AccessPermit, documents::PassportType::Invalid };
+                        return { documents::DocType::AccessPermit };
                     case ERuleSubject::EntryPermit:
-                        return { documents::DocType::EntryPermit, documents::PassportType::Invalid };
+                        return { documents::DocType::EntryPermit };
                     default:
                         return { documents::DocType::Invalid, documents::PassportType::Invalid };
                 }
@@ -153,6 +181,12 @@ namespace paplease {
                 ERule GetRule() const;
                 std::string_view GetDescription() const;
                 const RuleDescriptor& GetDescriptor() const;
+                ERuleAction GetAction() const;
+                ERuleSubject GetSubject() const;
+                ERuleTarget GetTarget() const;
+
+                bool AppliesTo(const EntrantInfo& entrant) const;
+                EntrantClass GetTargetEntrantClass() const;
             private:
                 ERule m_rule = ERule::Invalid;
                 RuleDescriptor m_descriptor{};
@@ -176,9 +210,11 @@ namespace paplease {
                 core::FixedArray<Rule, MaxRuleCount> m_activeRules{};
 
                 friend std::optional<RuleBook> CreateRuleBook(const documents::Doc& document);
+                friend std::optional<RuleBook> CreateRuleBook(const documents::DocData& data);
             };
 
             std::optional<RuleBook> CreateRuleBook(const documents::Doc& document);
+            std::optional<RuleBook> CreateRuleBook(const documents::DocData& data);
 
         }  // namespace data
     }  // namespace analysis

@@ -1,17 +1,16 @@
 #pragma once
+#include "paplease/common/color.h"
+#include "paplease/common/common.h"
+#include "paplease/common/shape.h"
+#include "paplease/documents/doc_appearance.h"
+#include "paplease/game_view.h"
+
+#include <opencv2/opencv.hpp>
+
 #include <algorithm>
 #include <climits>
 #include <functional>
 #include <utility>
-
-#include <opencv2/opencv.hpp>
-
-#include "paplease/common/color.h"
-#include "paplease/common/common.h"
-#include "paplease/documents/doc_appearance.h"
-#include "paplease/game_view.h"
-#include "paplease/common/shape.h"
-
 
 namespace paplease {
 	namespace documents {

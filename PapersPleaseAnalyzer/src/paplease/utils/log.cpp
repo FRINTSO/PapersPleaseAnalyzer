@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "paplease/utils/log.h"
 
-#include <memory>
-
 #include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
+
+#include <memory>
 
 namespace paplease {
 	namespace utils {

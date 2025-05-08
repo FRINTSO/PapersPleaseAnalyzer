@@ -1,12 +1,12 @@
 #pragma once
+#include "paplease/common/common.h"
 #include "paplease/core/fixed.h"
+#include "paplease/core/pool.h"
 #include "paplease/core/ref.h"
 #include "paplease/documents/data/date.h"
 #include "paplease/documents/data/field_data.h"
 #include "paplease/documents/data/photo.h"
 #include "paplease/documents/doc_data_type.h"
-
-#include <variant>
 
 namespace paplease {
 	namespace documents {
@@ -26,6 +26,50 @@ namespace paplease {
 
 		}  // namespace detail
 
+#if OPTIMIZE_DOCDATA
+		class Data
+		{
+		public:
+			Data() = default;
+
+			template<typename T>
+			explicit Data(T&& data, DataType type, bool isBroken = false);
+
+			explicit Data(int data);
+			explicit Data(std::string&& data);
+			explicit Data(data::Date&& data);
+			explicit Data(data::SIUnitValue&& data);
+			explicit Data(data::Vaccine&& data);
+			explicit Data(data::StrList&& data);
+			explicit Data(data::Sex data);
+			explicit Data(cv::Mat&& data);
+
+			template<typename T>
+			constexpr const T& Get() const
+			{
+				return std::get<T>(m_data);
+			}
+
+			std::string ToText() const;
+			DataType Type() const;
+			bool IsBroken() const;
+
+			bool operator==(const Data&) const;
+
+		private:
+			std::variant<
+				int,
+				std::string,
+				data::Date,
+				data::SIUnitValue,
+				data::Vaccine,
+				data::StrList,
+				data::Sex,
+				cv::Mat> m_data;
+			DataType m_type = DataType::Invalid;
+			bool m_isBroken = false;
+		};
+#else
 		class Data
 		{
 		public:
@@ -68,9 +112,9 @@ namespace paplease {
 			DataType m_type = DataType::Invalid;
 			bool m_isBroken = false;
 		};
-
 		static_assert(std::is_move_constructible_v<Data>);
 		static_assert(std::is_move_assignable_v<Data>);
+#endif
 
 #pragma endregion
 
@@ -114,6 +158,8 @@ namespace paplease {
 			using index_type = u8;
 			static_assert(std::is_unsigned_v<index_type> && std::numeric_limits<index_type>::max() + 1 >= MaxFields,
 						  "index_type must be unsigned and large enough to hold MaxFields.");
+
+			using DocFields = core::FixedArray<Field, MaxFields>;
 		public:
 			DocData() = default;
 
@@ -122,6 +168,8 @@ namespace paplease {
 
 			core::OptRef<const Field> GetField(FieldCategory category, bool returnBroken) const;
 			bool HasBrokenData() const;
+
+			const DocFields& GetFields() const;
 
 		private:
 			void AddField(Field&& field);

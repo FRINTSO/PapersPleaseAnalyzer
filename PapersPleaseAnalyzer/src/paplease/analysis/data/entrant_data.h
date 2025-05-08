@@ -1,14 +1,14 @@
 #pragma once
 #include "paplease/analysis/data/location_bank.h"
-#include "paplease/analysis/data/rules.h"
+#include "paplease/core/enum_base.h"
 
 namespace paplease {
     namespace analysis {
         namespace data {
 
-            class EntrantClass
+            struct EntrantClass : public core::EnumBase<u8>
             {
-            public:
+                using EnumBase::EnumBase;
                 enum : u8
                 {
                     Entrant       = 0b00'00'00'00,   // All instances of this is an entrant
@@ -32,6 +32,7 @@ namespace paplease {
                 };
 
                 static inline constexpr u8 CountryMask = 0b00'00'00'11;
+                static inline constexpr u8 ForeignerSpecMask = 0b00'00'11'00;
                 static inline constexpr size_t Count = 10;
                 
                 constexpr bool IsCitizen() const noexcept
@@ -74,163 +75,11 @@ namespace paplease {
                     return (m_data & FromAltanDistrict) == FromAltanDistrict;
                 }
 
-                constexpr bool IsTarget(ERuleTarget ruleTarget) const noexcept
-                {
-                    switch (ruleTarget)
-                    {
-                        case ERuleTarget::Invalid:
-                            return false;
-                        case ERuleTarget::Entrant:
-                            return true;
-                        case ERuleTarget::Citizens:
-                            return IsCitizen();
-                        case ERuleTarget::Foreigners:
-                            return IsForeigner();
-                        case ERuleTarget::Workers:
-                            return IsWorker();
-                        case ERuleTarget::Diplomats:
-                            return IsDiplomat();
-                        case ERuleTarget::AsylumSeekers:
-                            return IsAsylumSeeker();
-                        case ERuleTarget::Kolechians:
-                            return IsFromKolechia();
-                        case ERuleTarget::FromImpor:
-                            return IsFromImpor();
-                        case ERuleTarget::FromUnitedFederation:
-                            return IsFromUnitedFed();
-                        case ERuleTarget::FromAltanDistrict:
-                            return IsFromAltanDistrict();
-                    }
-                }
-
-                constexpr EntrantClass(u8 value) noexcept : m_data(value) {}
-                constexpr explicit operator u8() const noexcept { return m_data; }
-
-                // Addition operator
-                constexpr EntrantClass operator+(const EntrantClass& other) const noexcept
-                {
-                    return EntrantClass(m_data + other.m_data);
-                }
-                constexpr EntrantClass& operator+=(const EntrantClass& other)
-                {
-                    m_data += other.m_data;
-                    return *this;
-                }
-
-                // Subtraction operator
-                constexpr EntrantClass operator-(const EntrantClass& other) const noexcept
-                {
-                    return EntrantClass(m_data - other.m_data);
-                }
-                constexpr EntrantClass& operator-=(const EntrantClass& other)
-                {
-                    m_data -= other.m_data;
-                    return *this;
-                }
-
-                // Multiplication operator
-                constexpr EntrantClass operator*(const EntrantClass& other) const noexcept
-                {
-                    return EntrantClass(m_data * other.m_data);
-                }
-                constexpr EntrantClass& operator*=(const EntrantClass& other)
-                {
-                    m_data *= other.m_data;
-                    return *this;
-                }
-
-                // Division operator
-                constexpr EntrantClass operator/(const EntrantClass& other) const noexcept
-                {
-                    return EntrantClass(m_data / other.m_data);
-                }
-                constexpr EntrantClass& operator/=(const EntrantClass& other)
-                {
-                    m_data /= other.m_data;
-                    return *this;
-                }
-
-                // Equality operator
-                constexpr bool operator==(const EntrantClass& other) const noexcept
-                {
-                    return m_data == other.m_data;
-                }
-
-                // Inequality operator
-                constexpr bool operator!=(const EntrantClass& other) const noexcept
-                {
-                    return m_data != other.m_data;
-                }
-
-                // Bitwise AND operator
-                constexpr EntrantClass operator&(const EntrantClass& other) const noexcept
-                {
-                    return EntrantClass(m_data & other.m_data);
-                }
-                constexpr EntrantClass& operator&=(const EntrantClass& other)
-                {
-                    m_data &= other.m_data;
-                    return *this;
-                }
-
-                // Bitwise OR operator
-                constexpr EntrantClass operator|(const EntrantClass& other) const noexcept
-                {
-                    return EntrantClass(m_data | other.m_data);
-                }
-                constexpr EntrantClass& operator|=(const EntrantClass& other)
-                {
-                    m_data |= other.m_data;
-                    return *this;
-                }
-
-                // Bitwise XOR operator
-                constexpr EntrantClass operator^(const EntrantClass& other) const noexcept
-                {
-                    return EntrantClass(m_data ^ other.m_data);
-                }
-                constexpr EntrantClass& operator^=(const EntrantClass& other)
-                {
-                    m_data ^= other.m_data;
-                    return *this;
-                }
-
-                // Bitwise NOT operator
-                constexpr EntrantClass operator~() const noexcept
-                {
-                    return EntrantClass(~m_data);
-                }
-
-                // Bitwise left shift operator
-                constexpr EntrantClass operator<<(int shift) const noexcept
-                {
-                    return EntrantClass(m_data << shift);
-                }
-                constexpr EntrantClass& operator<<=(int shift)
-                {
-                    m_data <<= shift;
-                    return *this;
-                }
-
-                // Bitwise right shift operator
-                constexpr EntrantClass operator>>(int shift) const noexcept
-                {
-                    return EntrantClass(m_data >> shift);
-                }
-                constexpr EntrantClass& operator>>=(int shift)
-                {
-                    m_data >>= shift;
-                    return *this;
-                }
-
-            private:
-                u8 m_data;
             };
 
             struct EntrantInfo
             {
                 EntrantClass entrantClass = EntrantClass::Entrant;
-
                 ECountry nationality = ECountry::Invalid;
                 EDistrict district = EDistrict::Invalid;
                 ECity city = ECity::Invalid;
@@ -239,7 +88,10 @@ namespace paplease {
                 {
                     if ((entrantClass & entrantClass.CountryMask) != 0)
                     {
-                        LOG_WARN("Setting country twice");
+                        if (nationality != country)
+                        {
+                            LOG_WARN("Setting country twice, to a different value!");
+                        }
                     }
                     else
                     {
@@ -253,6 +105,19 @@ namespace paplease {
                             entrantClass |= data::EntrantClass::Foreigner;
                             LOG("Is foreigner");
                         }
+
+                        if (country == ECountry::Kolechia)
+                        {
+                            entrantClass |= EntrantClass::FromKolechia;
+                        }
+                        else if (country == ECountry::Impor)
+                        {
+                            entrantClass |= EntrantClass::FromImpor;
+                        }
+                        else if (country == ECountry::UnitedFederation)
+                        {
+                            entrantClass |= EntrantClass::FromUnitedFed;
+                        }
                     }
                     
                     nationality = country;
@@ -260,10 +125,37 @@ namespace paplease {
                 void SetEntrantDistrict(EDistrict district)
                 {
                     this->district = district;
+                    if (district == EDistrict::Altan)
+                    {
+                        entrantClass |= EntrantClass::FromAltanDistrict;
+                    }
                 }
                 void SetEntrantCity(ECity city)
                 {
                     this->city = city;
+                }
+                void SetEntrantClassification(EntrantClass classification)
+                {
+                    if (classification.HasFlag(EntrantClass::FromKolechia))
+                    {
+                        this->SetNationaility(ECountry::Kolechia);
+                    }
+                    else if (classification.HasFlag(EntrantClass::FromImpor))
+                    {
+                        this->SetNationaility(ECountry::Impor);
+                    }
+                    else if (classification.HasFlag(EntrantClass::FromUnitedFed))
+                    {
+                        this->SetNationaility(ECountry::UnitedFederation);
+                    }
+                    else if (classification.HasFlag(EntrantClass::FromAltanDistrict))
+                    {
+                        this->SetEntrantDistrict(EDistrict::Altan);
+                    }
+                    else
+                    {
+                        entrantClass |= classification;
+                    }
                 }
 
             };

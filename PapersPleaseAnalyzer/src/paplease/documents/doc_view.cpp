@@ -38,5 +38,12 @@ namespace paplease {
 			return Doc{ mat(this->boundingBox), ToDocType(this->appearanceType), ToPassportType(this->appearanceType) };
 		}
 
+		cv::Mat DocView::ToCutout(const GameView& gameView) const
+		{
+			auto box = this->GetGlobalBoundingBox();
+			const cv::Mat& gameViewImage = gameView.image();
+			return gameViewImage(box);
+		}
+
 	}  // namespace documents
 }  // namespace paplease

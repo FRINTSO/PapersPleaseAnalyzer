@@ -1,11 +1,11 @@
 #pragma once
-#include <string>
-#include <vector>
+#include "paplease/common/shape.h"
+#include "paplease/ocr/font.h"
 
 #include <opencv2/core/mat.hpp>
 
-#include "paplease/common/shape.h"
-#include "paplease/ocr/font.h"
+#include <string>
+#include <vector>
 
 namespace paplease {
 	namespace ocr {

@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "paplease/types.h"
+
 #include <string>
 
 namespace paplease {
@@ -9,17 +11,17 @@ namespace paplease {
 			{
 			public:
 				Date();
-				Date(const int d, const int m, const int y);
+				Date(const u8 d, const u8 m, const u16 y);
 
 				bool IsValid() const;
 
-				int GetDay() const;
-				int GetMonth() const;
-				int GetYear() const;
+				u8 GetDay() const;
+				u8 GetMonth() const;
+				u16 GetYear() const;
 
-				void SetDay(const int day);
-				void SetMonth(const int month);
-				void SetYear(const int year);
+				void SetDay(const u8 day);
+				void SetMonth(const u8 month);
+				void SetYear(const u16 year);
 
 				Date operator ++(); // prefix
 				Date operator ++(int); // postfix
@@ -28,9 +30,9 @@ namespace paplease {
 
 				std::string ToString() const;
 			private:
-				int m_year;
-				int m_month;
-				int m_day;
+				u16 m_year;
+				u8 m_month;
+				u8 m_day;
 			};
 
 			bool operator ==(const Date&, const Date&); // comparison operators

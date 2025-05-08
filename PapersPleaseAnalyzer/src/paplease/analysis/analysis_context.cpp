@@ -101,7 +101,7 @@ namespace paplease {
                 const auto& [action, subject, target] = rule.GetDescriptor();
                 const data::ERule eRule = rule.GetRule();
                 
-                if (m_entrant.entrantClass.IsTarget(target) && !m_applicableRules.Contains(eRule))
+                if (rule.AppliesTo(m_entrant) && !m_applicableRules.Contains(eRule))
                 {
                 	TrackedRule trackedRule{ rule, TrackedRule::Status::Unmet };
 #if DEBUG_LOG_APPLICABLE_RULES

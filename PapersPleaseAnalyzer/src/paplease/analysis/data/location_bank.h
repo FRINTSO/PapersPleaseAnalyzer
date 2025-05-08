@@ -1,10 +1,8 @@
 #pragma once
+#include "paplease/documents/doc_type.h"
 
 #include <array>
 #include <cassert>
-#include <string_view>
-
-#include "paplease/documents/doc_type.h"
 
 namespace paplease {
     namespace analysis {

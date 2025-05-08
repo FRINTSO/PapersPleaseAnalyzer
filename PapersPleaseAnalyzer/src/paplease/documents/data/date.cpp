@@ -6,7 +6,7 @@ namespace paplease {
 		namespace data {
 
 			///////////////////////////// construction //////////
-			Date::Date(const int d, const int m, const int y)
+			Date::Date(const u8 d, const u8 m, const u16 y)
 			{
 				m_day = d;
 				m_month = m;
@@ -16,13 +16,13 @@ namespace paplease {
 			///////////////////////////// inline definitions //////////
 			Date::Date() { m_year = 0; m_month = 0; m_day = 0; };
 
-			int Date::GetDay() const { return m_day; };
-			int Date::GetMonth() const { return m_month; };
-			int Date::GetYear() const { return m_year; };
+			u8 Date::GetDay() const { return m_day; };
+			u8 Date::GetMonth() const { return m_month; };
+			u16 Date::GetYear() const { return m_year; };
 
-			void Date::SetDay(const int day) { Date::m_day = day; };
-			void Date::SetMonth(const int month) { Date::m_month = month; };
-			void Date::SetYear(const int year) { Date::m_year = year; };
+			void Date::SetDay(const u8 day) { Date::m_day = day; };
+			void Date::SetMonth(const u8 month) { Date::m_month = month; };
+			void Date::SetYear(const u16 year) { Date::m_year = year; };
 
 			bool Date::IsValid() const
 			{
@@ -97,7 +97,7 @@ namespace paplease {
 				return (d1 > d2);
 			}
 
-			inline Date NextDate(const Date& d)
+			static inline Date NextDate(const Date& d)
 			{
 				Date ndat;
 				if (!d.IsValid()) { return ndat; };
@@ -106,7 +106,7 @@ namespace paplease {
 				ndat = Date(1, 1, (d.GetYear() + 1)); return ndat;
 			}
 
-			inline Date PreviousDate(const Date& d)
+			static inline Date PreviousDate(const Date& d)
 			{
 				Date ndat;
 				if (!d.IsValid()) { return ndat; }; // return zero
@@ -147,11 +147,11 @@ namespace paplease {
 			std::string Date::ToString() const
 			{
 				std::ostringstream oss;
-				oss << this->GetDay() << "." << this->GetMonth() << "." << this->GetYear();
+				oss << static_cast<int>(this->GetDay()) << "." << static_cast<int>(this->GetMonth()) << "." << static_cast<int>(this->GetYear());
 				return oss.str();
 			}
 
-			inline long LongDate(const Date& d)
+			static inline long LongDate(const Date& d)
 			{
 				if (d.IsValid()) { return d.GetYear() * 10000 + d.GetMonth() * 100 + d.GetDay(); };
 				return -1;
@@ -159,7 +159,7 @@ namespace paplease {
 
 			std::ostream& operator << (std::ostream& os, const Date& d)
 			{
-				os << d.GetDay() << "." << d.GetMonth() << "." << d.GetYear();
+				os << static_cast<int>(d.GetDay()) << "." << static_cast<int>(d.GetMonth()) << "." << static_cast<int>(d.GetYear());
 				return os;
 			}
 

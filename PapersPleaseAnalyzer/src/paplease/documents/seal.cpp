@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "paplease/documents/seal.h"
 
-#include <optional>
-
 #include "paplease/common/image_process.h"
 #include "paplease/documents/bounding_box_finder.inc"
+
+#include <optional>
 
 namespace paplease {
 	namespace documents {
@@ -92,6 +92,21 @@ namespace paplease {
 		}
 
 #pragma region Exposed Functions
+
+		bool HasSeal(DocType documentType)
+		{
+			switch (documentType)
+			{
+				case DocType::AccessPermit:
+				case DocType::DiplomaticAuthorization:
+				case DocType::EntryPermit:
+				case DocType::GrantOfAsylum:
+				case DocType::WorkPass:
+					return true;
+				default:
+					return false;
+			}
+		}
 
 		bool IsDocumentValidlySealed(const cv::Mat& mat, DocType documentType)
 		{

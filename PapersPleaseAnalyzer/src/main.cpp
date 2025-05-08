@@ -2,9 +2,12 @@
 
 #include <opencv2/core/utils/logger.hpp>
 
-#include "paplease/analysis/game_analyzer.h"
+//#include "paplease/analysis/game_analyzer.h"
+#include "paplease/analysis/analysis_statemachine.h"
 #include "paplease/analysis_v1/game_controller.h"
 #include "paplease/screencap/screencap.h"
+#include "paplease/core/resource_manager.h"
+#include "test/test_document_scanning.h"
 
 
 void RunWithSimulatedGame()
@@ -24,7 +27,10 @@ void RunWithLiveGame()
 {
 	//paplease::analysis::GameAnalysisController analyzer{ false };
 	// paplease::analysis::scannable::DocTracker tracker{};
-	paplease::analysis::GameAnalyzer analyzer{};
+	//paplease::core::ResourceManager resources;
+	//paplease::analysis::GameAnalyzer analyzer{resources};
+	//paplease::analysis::GameAnalyzer analyzer{};
+	paplease::analysis::AnalysisStateMachine sm{};
 	while (true)
 	{
 		auto result = paplease::screencap::CaptureGameWindow();
@@ -36,7 +42,8 @@ void RunWithLiveGame()
 		}
 
 		paplease::GameView view(std::move(result));
-		analyzer.Scan(view);
+		//analyzer.Scan(view);
+		sm.Run(view);
 
 		//tracker.Update(view);
 		//analyzer.Update(view);
@@ -52,6 +59,8 @@ void main()
 
 	// RunWithSimulatedGame();
 	RunWithLiveGame();
+
+	//test::test_document_scanning();
 
 	//test::test_fixed_hash_table();
 

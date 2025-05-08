@@ -59,7 +59,7 @@ namespace paplease {
             {
                 std::system("cls");
                 std::cout << "Start the game..." << std::endl;
-                HWND hWND = FindWindow(NULL, windowTitle);
+                hWND = FindWindow(NULL, windowTitle);
                 Sleep(100);
             }
             return hWND;

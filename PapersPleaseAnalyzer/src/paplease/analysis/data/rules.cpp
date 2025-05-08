@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "paplease/analysis/data/rules.h"
 
+#include "paplease/utils/enum_range.h"
+
 #include <string>
 #include <unordered_map>
-
-#include "paplease/utils/enum_range.h"
 
 namespace paplease {
     namespace analysis {
@@ -24,7 +24,7 @@ namespace paplease {
                 Rule{  // RequirePassport
                     ERule::RequirePassportFromEntrant,
                     RuleDescriptor{
-                        ERuleAction::Require,
+                        ERuleAction::RequireDocument,
                         ERuleSubject::Passport,
                         ERuleTarget::Entrant,
                     }
@@ -32,7 +32,7 @@ namespace paplease {
                 Rule{  // RequireArstotzkanPassport
                     ERule::RequireArstotzkanPassportFromEntrant,
                     RuleDescriptor{
-                        ERuleAction::Require,
+                        ERuleAction::RequireDocument,
                         ERuleSubject::ArstotzkanPassport,
                         ERuleTarget::Entrant,
                     }
@@ -40,7 +40,7 @@ namespace paplease {
                 Rule{  // RequireIdentityCardFromCitizens
                     ERule::RequireIdentityCardFromCitizens,
                     RuleDescriptor{
-                        ERuleAction::Require,
+                        ERuleAction::RequireDocument,
                         ERuleSubject::IdentityCard,
                         ERuleTarget::Citizens,
                     }
@@ -48,7 +48,7 @@ namespace paplease {
                 Rule{  // RequireEntryTicketFromForeigners
                     ERule::RequireEntryTicketFromForeigners,
                     RuleDescriptor{
-                        ERuleAction::Require,
+                        ERuleAction::RequireDocument,
                         ERuleSubject::EntryTicket,
                         ERuleTarget::Foreigners,
                     }
@@ -56,7 +56,7 @@ namespace paplease {
                 Rule{  // RequireWorkPassFromWorkers
                     ERule::RequireWorkPassFromWorkers,
                     RuleDescriptor{
-                        ERuleAction::Require,
+                        ERuleAction::RequireDocument,
                         ERuleSubject::WorkPass,
                         ERuleTarget::Workers,
                     }
@@ -64,7 +64,7 @@ namespace paplease {
                 Rule{  // RequireDiplomaticAuthorizationFromDiplomats
                     ERule::RequireDiplomaticAuthorizationFromDiplomats,
                     RuleDescriptor{
-                        ERuleAction::Require,
+                        ERuleAction::RequireDocument,
                         ERuleSubject::DiplomaticAuthorization,
                         ERuleTarget::Diplomats,
                     }
@@ -72,7 +72,7 @@ namespace paplease {
                 Rule{  // RequireIdentitySupplementFromForeigners
                     ERule::RequireIdentitySupplementFromForeigners,
                     RuleDescriptor{
-                        ERuleAction::Require,
+                        ERuleAction::RequireDocument,
                         ERuleSubject::IdentitySupplement,
                         ERuleTarget::Foreigners,
                     }
@@ -80,7 +80,7 @@ namespace paplease {
                 Rule{  // RequireGrantFromAsylumSeekers
                     ERule::RequireGrantFromAsylumSeekers,
                     RuleDescriptor{
-                        ERuleAction::Require,
+                        ERuleAction::RequireDocument,
                         ERuleSubject::Grant,
                         ERuleTarget::AsylumSeekers,
                     }
@@ -88,7 +88,7 @@ namespace paplease {
                 Rule{  // RequirePolioVaccination
                     ERule::RequirePolioVaccinationFromEntrant,
                     RuleDescriptor{
-                        ERuleAction::Require,
+                        ERuleAction::RequireDocument,
                         ERuleSubject::PolioVaccination,
                         ERuleTarget::Entrant,
                     }
@@ -96,7 +96,7 @@ namespace paplease {
                 Rule{  // RequireAccessPermitFromForeigners
                     ERule::RequireAccessPermitFromForeigners,
                     RuleDescriptor{
-                        ERuleAction::Require,
+                        ERuleAction::RequireDocument,
                         ERuleSubject::AccessPermit,
                         ERuleTarget::Foreigners,
                     }
@@ -104,7 +104,7 @@ namespace paplease {
                 Rule{  // RequireEntryPermitFromForeigners
                     ERule::RequireEntryPermitFromForeigners,
                     RuleDescriptor{
-                        ERuleAction::Require,
+                        ERuleAction::RequireDocument,
                         ERuleSubject::EntryPermit,
                         ERuleTarget::Foreigners,
                     }
@@ -125,6 +125,14 @@ namespace paplease {
                         ERuleTarget::FromImpor,
                     }
                 },
+                Rule{
+                    ERule::ProhibitEntryFromUnitedFederation,
+                    RuleDescriptor{
+                        ERuleAction::Prohibit,
+                        ERuleSubject::Entry,
+                        ERuleTarget::FromUnitedFederation,
+                    }
+                },
                 Rule{  // ProhibitWeaponsAndContraband
                     ERule::ProhibitWeaponsAndContrabandFromEntrant,
                     RuleDescriptor{
@@ -139,14 +147,6 @@ namespace paplease {
                         ERuleAction::Confiscate,
                         ERuleSubject::ArstotzkanPassport,
                         ERuleTarget::FromAltanDistrict,
-                    }
-                },
-                Rule{  // ProhibitEntryFromUnitedFederation
-                    ERule::ProhibitEntryFromUnitedFederation,
-                    RuleDescriptor{
-                        ERuleAction::Prohibit,
-                        ERuleSubject::Entry,
-                        ERuleTarget::FromUnitedFederation,
                     }
                 },
                 Rule{  // ConfiscateArstotzkanPassportFromEntrant
@@ -215,18 +215,22 @@ namespace paplease {
 
             std::optional<RuleBook> CreateRuleBook(const Doc& document)
             {
-                auto ruleData = document.GetDocumentData();
-
                 if (!document.IsValid())
                 {
                     LOG_ERR("Tried to create rule book from invalid document");
                     return std::nullopt;
                 }
 
+                auto ruleData = document.GetDocumentData();
+                return CreateRuleBook(ruleData);
+            }
+
+            std::optional<RuleBook> CreateRuleBook(const documents::DocData& data)
+            {
                 RuleBook rulebook{};
                 for (auto category : utils::enum_range(FieldCategory::Rule1, FieldCategory::Rule10))
                 {
-                    auto ruleOpt = ruleData.GetField(category, false);
+                    auto ruleOpt = data.GetField(category, false);
                     if (!ruleOpt)
                     {
                         return std::nullopt;
@@ -269,6 +273,86 @@ namespace paplease {
             const RuleDescriptor& Rule::GetDescriptor() const
             {
                 return m_descriptor;
+            }
+
+            ERuleAction Rule::GetAction() const
+            {
+                return m_descriptor.action;
+            }
+
+            ERuleSubject Rule::GetSubject() const
+            {
+                return m_descriptor.subject;
+            }
+
+            ERuleTarget Rule::GetTarget() const
+            {
+                return m_descriptor.target;
+            }
+
+            bool Rule::AppliesTo(const EntrantInfo& entrant) const
+            {
+                const auto& [action, subject, target] = this->GetDescriptor();
+                const EntrantClass& entrantClass = entrant.entrantClass;
+                
+                switch (target)
+                {
+                    case ERuleTarget::Entrant:
+                        return entrantClass.HasFlag(EntrantClass::Entrant);
+                    case ERuleTarget::Citizens:
+                        return entrantClass.HasFlag(EntrantClass::Citizen);
+                    case ERuleTarget::Foreigners:
+                        return entrantClass.HasFlag(EntrantClass::Foreigner);
+                    case ERuleTarget::Workers:
+                        return entrantClass.HasFlag(EntrantClass::Worker);
+                    case ERuleTarget::Diplomats:
+                        return entrantClass.HasFlag(EntrantClass::Diplomat);
+                    case ERuleTarget::AsylumSeekers:
+                        return entrantClass.HasFlag(EntrantClass::AsylumSeeker);
+                    case ERuleTarget::Kolechians:
+                        return entrantClass.HasFlag(EntrantClass::FromKolechia);
+                    case ERuleTarget::FromImpor:
+                        return entrantClass.HasFlag(EntrantClass::FromImpor);
+                    case ERuleTarget::FromUnitedFederation:
+                        return entrantClass.HasFlag(EntrantClass::FromUnitedFed);
+                    case ERuleTarget::FromAltanDistrict:
+                        return entrantClass.HasFlag(EntrantClass::FromAltanDistrict);
+                    default:
+                        return false;
+                }
+            }
+
+            EntrantClass Rule::GetTargetEntrantClass() const
+            {
+                const auto& [action, subject, target] = this->GetDescriptor();
+                switch (target)
+                {
+                    case ERuleTarget::Entrant:
+                        return EntrantClass::Entrant;
+                    case ERuleTarget::Citizens:
+                        return EntrantClass::Citizen;
+                    case ERuleTarget::Foreigners:
+                        return EntrantClass::Foreigner;
+                    case ERuleTarget::Workers:
+                        return EntrantClass::Worker;
+                    case ERuleTarget::Diplomats:
+                        return EntrantClass::Diplomat;
+                    case ERuleTarget::AsylumSeekers:
+                        return EntrantClass::AsylumSeeker;
+                    case ERuleTarget::Kolechians:
+                        return EntrantClass::FromKolechia;
+                    case ERuleTarget::FromImpor:
+                        return EntrantClass::FromImpor;
+                    case ERuleTarget::FromUnitedFederation:
+                        return EntrantClass::FromUnitedFed;
+                    case ERuleTarget::FromAltanDistrict:
+                        return EntrantClass::FromAltanDistrict;
+                    default:
+                    {
+                        LOG_ERR("Shouldn't reach this");
+                        assert(false);
+                    }
+                }
             }
 
             void RuleBook::RegisterRule(ERule rule)

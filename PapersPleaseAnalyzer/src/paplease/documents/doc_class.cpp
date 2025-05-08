@@ -2,24 +2,25 @@
 #include "pch.h"
 #include "paplease/documents/doc_class.h"
 
-#include <cassert>
-#include <iostream>
-#include <type_traits>
-
-#include <opencv2/core.hpp>
-#include <opencv2/core/mat.hpp>
-#include <opencv2/core/types.hpp>
-#include <opencv2/imgproc.hpp>
-
 #include "paplease/common/common.h"
+#include "paplease/common/image_process.h"
+#include "paplease/common/shape.h"
+#include "paplease/core/resource_manager.h"
 #include "paplease/documents/doc_appearance.h"
 #include "paplease/documents/doc_data.h"
 #include "paplease/documents/doc_data_type.h"
 #include "paplease/documents/doc_layout.h"
 #include "paplease/documents/doc_type.h"
 #include "paplease/documents/seal.h"
-#include "paplease/common/image_process.h"
-#include "paplease/common/shape.h"
+
+#include <opencv2/core.hpp>
+#include <opencv2/core/mat.hpp>
+#include <opencv2/core/types.hpp>
+#include <opencv2/imgproc.hpp>
+
+#include <cassert>
+#include <iostream>
+#include <type_traits>
 
 namespace paplease {
 	namespace documents {
@@ -319,34 +320,47 @@ namespace paplease {
 		DocData Doc::ExtractDocData() const
 		{
 			auto binary = this->PreprocessDocument();
-			const auto& layout = this->GetLayout();
-			auto layouts = layout.GetAllLayouts();
-
+			const auto& layoutProvider = this->GetLayout();
+			auto mouseBoxOpt = GetMouseBox(this->m_mat);
 			DocDataBuilder builder{};
-
-			for (size_t i = 0; i < layout.GetLayoutCount(); i++)
+			for (const auto& layout : layoutProvider.GetLayouts())
 			{
-				switch (layouts[i].GetType())
+				switch (layout->GetType())
 				{
 					case FieldType::Text:
 					{
-						auto raw_text_data = GetFieldString(ExtractDocumentField(binary, layouts[i].GetBox()), m_documentType);
+						// Check if layout box is colliding with mouse
+						if (mouseBoxOpt && mouseBoxOpt->Intersects(layout->GetBox()))
+						{
+							// Mouse intersects, let's assume data to be broken
+							builder.AddField(
+								Field{
+									Data{ "" },
+									layout->GetType(),
+									layout->GetCategory()
+								},
+								layout->GetCategory()
+							);
+							continue;
+						}
+
+						auto raw_text_data = GetFieldString(ExtractDocumentField(binary, layout->GetBox()), m_documentType);
 #if OPTIMIZE_DOCDATA
 						builder.AddField(
 							Field{
 								Data{ std::move(raw_text_data) },
-								layouts[i].GetType(),
-								layouts[i].GetCategory()
+								layout->GetType(),
+								layout->GetCategory()
 							},
-							layouts[i].GetCategory()
+							layout->GetCategory()
 						);
 #else
 						builder.AddFieldData(
-							layouts[i].GetCategory(),
+							layout->GetCategory(),
 							Field{
 								Data{ std::move(raw_text_data) },
-								layouts[i].GetType(),
-								layouts[i].GetCategory()
+								layout->GetType(),
+								layout->GetCategory()
 							}
 						);
 #endif
@@ -354,28 +368,27 @@ namespace paplease {
 					}
 					case FieldType::Image:
 					{
-						auto&& image_data = ExtractDocumentField(binary, layouts[i].GetBox());
-
+						auto&& image_data = ExtractDocumentField(binary, layout->GetBox());
 #if OPTIMIZE_DOCDATA
 						builder.AddField(
 							Field{
 								Data{
-									data::Photo{ std::move(image_data) }
+									std::move(image_data)
 								},
-								layouts[i].GetType(),
-								layouts[i].GetCategory()
+								layout->GetType(),
+								layout->GetCategory()
 							},
-							layouts[i].GetCategory()
+							layout->GetCategory()
 						);
 #else
 						builder.AddFieldData(
-							layouts[i].GetCategory(),
+							layout->GetCategory(),
 							documents::Field{
 								documents::Data{
 									data::Photo{ std::move(image_data) }
 								},
-								layouts[i].GetType(),
-								layouts[i].GetCategory()
+								layout->GetType(),
+								layout->GetCategory()
 							}
 						);
 #endif
@@ -388,13 +401,13 @@ namespace paplease {
 						builder.AddField(
 							Field{
 								Data{},
-								layouts[i].GetType(),
-								layouts[i].GetCategory()
+								layout->GetType(),
+								layout->GetCategory()
 							},
-							layouts[i].GetCategory()
+							layout->GetCategory()
 						);
 #else
-						builder.AddFieldData(layouts[i].GetCategory(), Field{ Data{} , layouts[i].GetType(), layouts[i].GetCategory() });
+						builder.AddFieldData(layout->GetCategory(), Field{ Data{}, layout->GetType(), layout->GetCategory() });
 #endif
 						break;
 					}

@@ -8,6 +8,13 @@
 namespace paplease {
     namespace analysis {
 
+        bool DocAnalyzer::AnalyzeDocument(documents::DocType documentType)
+        {
+            throw;
+        }
+
+#if 0
+
         bool DocAnalyzer::AnalyzeDocumentData(documents::DocType documentType)
         {
             if (documents::IsApplicantDocument(documentType))
@@ -615,6 +622,8 @@ namespace paplease {
         }
 
 #pragma endregion
+
+#endif
 
     }  // namespace analysis
 }  // namespace paplease

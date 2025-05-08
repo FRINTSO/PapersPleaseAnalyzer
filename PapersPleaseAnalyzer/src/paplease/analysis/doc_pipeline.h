@@ -4,10 +4,23 @@
 #include "paplease/analysis/doc_store.h"
 #include "paplease/analysis/doc_tracker.h"
 #include "paplease/analysis/doc_validator.h"
+#include "paplease/analysis/contexts/entrant_context.h"
+#include "paplease/analysis/contexts/frame_context.h"
+#include "paplease/analysis/contexts/game_context.h"
 
 namespace paplease {
     namespace analysis {
 
+        /*
+        
+        class DocPipeline {
+            void Preprocess(FrameContext&);
+            void ExtractViews(FrameContext&, DocumentStore&);
+            void AnalyzeViews(DocumentStore&);
+            void CheckRequirements(DocumentStore&, RuleSet&);
+        };
+        
+        */
         // Common class containing all things pertaining to documents
         class DocPipeline
         {
@@ -31,21 +44,24 @@ namespace paplease {
             * 
             */
         public:
-            constexpr DocPipeline(AnalysisContext& analysisContext)
-                : m_store(),
-                m_tracker(m_store, analysisContext),
-                m_validator(m_store, analysisContext),
-                m_analyzer(m_store, analysisContext)
-            {}
+            //DocPipeline(contexts::EntrantContext& entrant, contexts::GameContext& game)
+            //    : m_entrant(entrant), m_game(game),
+            //    m_store(),
+            //    m_tracker(m_store),
+            //    m_validator(m_entrant),
+            //    m_analyzer(m_store)
+            //{}
 
-            void Process(const scannable::ScanContext& scanContext);
-
-            void Clear();
+            // void Process(const scannable::ScanContext& scanContext);
+            void Run(contexts::FrameContext& frame);
 
         private:
             bool ProcessSingleDocument(documents::DocType documentType, const GameView& gameView);
 
         private:
+            contexts::EntrantContext& m_entrant;
+            contexts::GameContext&    m_game;
+
             DocTracker  m_tracker;
             DocValidator  m_validator;
             DocAnalyzer   m_analyzer;

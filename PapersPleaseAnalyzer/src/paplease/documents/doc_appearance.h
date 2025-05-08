@@ -1,9 +1,9 @@
 #pragma once
-#include <array>
-
 #include "paplease/common/color.h"
-#include "paplease/documents/doc_type.h"
 #include "paplease/common/shape.h"
+#include "paplease/documents/doc_type.h"
+
+#include <array>
 
 namespace paplease {
 	namespace documents {

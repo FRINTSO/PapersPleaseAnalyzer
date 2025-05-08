@@ -1,7 +1,7 @@
 #pragma once
-#include <opencv2/opencv.hpp>
-
 #include "paplease/common/scaled.h"
+
+#include <opencv2/opencv.hpp>
 
 namespace paplease {
 
@@ -29,6 +29,29 @@ namespace paplease {
 		{}
 	};
 
+	struct Point
+	{
+		constexpr Point()
+			: x(0), y(0)
+		{}
+
+		constexpr Point(int x, int y)
+			: x(x), y(y)
+		{}
+
+		constexpr bool operator!=(const Point& other) const noexcept
+		{
+			return x != other.x || y != other.y;
+		}
+
+		constexpr bool operator==(const Point& other) const noexcept
+		{
+			return !(*this != other);
+		}
+
+		int x, y;
+	};
+
 	struct Rectangle
 	{
 
@@ -47,6 +70,21 @@ namespace paplease {
 		operator cv::Rect() const
 		{
 			return cv::Rect(x, y, width, height);
+		}
+
+		constexpr bool Intersects(const Rectangle& other) const noexcept
+		{
+			int a_x1 = x;
+			int a_y1 = y;
+			int a_x2 = x + width;
+			int a_y2 = y + height;
+
+			int b_x1 = other.x;
+			int b_y1 = other.y;
+			int b_x2 = other.x + other.width;
+			int b_y2 = other.y + other.height;
+
+			return a_x1 < b_x2 && a_x2 > b_x1 && a_y1 < b_y2 && a_y2 > b_y1;
 		}
 
 		int x, y, width, height;

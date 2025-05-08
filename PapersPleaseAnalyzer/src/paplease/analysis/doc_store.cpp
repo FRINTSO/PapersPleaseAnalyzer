@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "paplease/analysis/doc_store.h"
 
-#include <magic_enum/magic_enum.hpp>
-
 namespace paplease {
     namespace analysis {
 

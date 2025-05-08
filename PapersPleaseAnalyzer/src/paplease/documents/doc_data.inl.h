@@ -1,7 +1,7 @@
 #pragma once
-#include <type_traits>
-
 #include "paplease/utils/metaprogramming.h"
+
+#include <type_traits>
 
 namespace paplease {
 	namespace documents {
@@ -110,7 +110,7 @@ namespace paplease {
         struct detail::field_data_type<Category, std::enable_if_t<detail::is_sex_type(Category)>> : utils::has_type<data::Sex>{};
 
         template<FieldCategory Category>
-        struct detail::field_data_type<Category, std::enable_if_t<detail::is_photo_type(Category)>> : utils::has_type<data::Photo>{};
+        struct detail::field_data_type<Category, std::enable_if_t<detail::is_photo_type(Category)>> : utils::has_type<cv::Mat>{};
 
 #if OPTIMIZE_DOCDATA
         template<FieldCategory Category>

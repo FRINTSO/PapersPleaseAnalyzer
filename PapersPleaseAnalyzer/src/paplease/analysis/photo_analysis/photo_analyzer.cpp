@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "paplease/analysis/photo_analysis/photo_analyzer.h"
 
-#include <array>
-
 #include "paplease/common/shape.h"
+
+#include <array>
 
 #include "paplease/documents/bounding_box_finder.inc"
 

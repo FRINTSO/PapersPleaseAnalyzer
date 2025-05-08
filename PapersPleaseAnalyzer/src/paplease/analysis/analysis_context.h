@@ -1,12 +1,13 @@
 #pragma once
-#include <optional>
-
+#include "paplease/analysis/data/criminals.h"
 #include "paplease/analysis/data/entrant_data.h"
 #include "paplease/analysis/data/profile.h"
 #include "paplease/analysis/data/rules.h"
 #include "paplease/analysis/data/transcript.h"
 #include "paplease/scannable/booth.h"
 #include "paplease/types.h"
+
+#include <optional>
 
 namespace paplease {
     namespace analysis {

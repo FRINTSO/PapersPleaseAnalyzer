@@ -78,9 +78,9 @@ namespace test {
         }
     }
 
-    std::vector<paplease::documents::data::Photo> load_faces()
+    std::vector<cv::Mat> load_faces()
     {
-        std::vector<paplease::documents::data::Photo> faces{};
+        std::vector<cv::Mat> faces{};
 
         paplease::GameView view;
         while (GetNextGameView(view))
@@ -114,7 +114,7 @@ namespace test {
                 {
                     if (const auto& photo = photoField.GetFieldData<paplease::documents::FieldCategory::Photo>(); photo)
                     {
-                        faces.push_back(photo->get());
+                        faces.push_back(photo.value().get());
                     }
                 }
             }
@@ -128,7 +128,7 @@ namespace test {
         auto faces = load_faces();
         for (const auto& face : faces)
         {
-            cv::imshow("Face", face.m_mat);
+            cv::imshow("Face", face);
             cv::waitKey();
         }
     }

@@ -1,9 +1,9 @@
 #pragma once
-#include <optional>
-#include <string>
-
 #include "paplease/core/fixed.h"
 #include "paplease/documents/doc_class.h"
+
+#include <optional>
+#include <string>
 
 namespace paplease {
     namespace analysis {

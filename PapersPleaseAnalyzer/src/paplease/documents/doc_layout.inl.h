@@ -94,6 +94,17 @@ namespace paplease {
 				return m_layoutCount;
 			}
 
+			constexpr const core::FixedArray<const DocLayout::DataLayout*, DocLayout::MaxLayouts> DocLayout::GetLayouts() const noexcept
+			{
+				core::FixedArray<const DocLayout::DataLayout*, DocLayout::MaxLayouts> output;
+
+				for (size_t i = 0; i < m_layoutCount; i++)
+				{
+					output.Add(&m_layouts[i]);
+				}
+				return output;
+			}
+
 #pragma endregion
 
 #pragma region Object Acquisition

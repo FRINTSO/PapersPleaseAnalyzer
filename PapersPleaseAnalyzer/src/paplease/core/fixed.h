@@ -1,13 +1,10 @@
 ﻿#pragma once
-#include <algorithm>
 #include <array>
 #include <bitset>
 #include <compare>
 #include <iterator>
 #include <type_traits>
 #include <xutility>
-
-#include "paplease/common/common.h"
 
 namespace paplease {
     namespace core {
@@ -502,8 +499,65 @@ namespace paplease {
             }
 
             // Range support
-            constexpr auto begin() { return m_array.begin(); }
-            constexpr auto end() { return m_array.begin() + Size; }
+            class Iterator
+            {
+            public:
+                using iterator_category = std::forward_iterator_tag;
+                using value_type        = T;
+                using difference_type   = std::ptrdiff_t;
+                using pointer           = T*;
+                using reference         = T&;
+
+                constexpr Iterator(T* ptr, T* end, const std::bitset<Size>* set)
+                    : m_begin(ptr), m_ptr(ptr), m_end(end), m_set(set)
+                {
+                    SkipInvalid();
+                }
+
+                constexpr reference operator*() { return *m_ptr; }
+                constexpr pointer operator->() const { return m_ptr; }
+
+                constexpr Iterator& operator++()
+                {
+                    ++m_ptr;
+                    SkipInvalid();
+                    return *this;
+                }
+
+                constexpr Iterator operator++(int)
+                {
+                    Iterator temp = *this;
+                    ++(*this);
+                    return temp;
+                }
+
+                friend constexpr bool operator==(const Iterator& a, const Iterator& b)
+                {
+                    return a.m_ptr == b.m_ptr;
+                }
+
+                friend constexpr bool operator!=(const Iterator& a, const Iterator& b)
+                {
+                    return !(a == b);
+                }
+
+            private:
+                const T* m_begin;
+                T* m_ptr;
+                const T* m_end;
+                const std::bitset<Size>* m_set;
+
+                constexpr void SkipInvalid()
+                {
+                    while (m_ptr != m_end && !m_set->test((size_t)(m_ptr - m_begin)))
+                    {
+                        ++m_ptr;
+                    }
+                }
+            };
+            
+            constexpr auto begin() { return Iterator(m_array.data(), m_array.data() + Size, &m_set); }
+            constexpr auto end() { return Iterator(m_array.data() + Size, m_array.data() + Size, &m_set); }
 
             constexpr auto begin() const { return m_array.begin(); }
             constexpr auto end() const { return m_array.begin() + Size; }
@@ -571,6 +625,10 @@ namespace paplease {
                     {
                         break;
                     }
+                    if (entry.state == EntryState::Deleted)
+                    {
+                        continue;
+                    }
                     if (entry.key == key)
                     {
                         outValue = &entry.value;
@@ -594,6 +652,10 @@ namespace paplease {
                     {
                         break;
                     }
+                    if (entry.state == EntryState::Deleted)
+                    {
+                        continue;
+                    }
                     if (entry.key == key)
                     {
                         outValue = &entry.value;
@@ -611,11 +673,12 @@ namespace paplease {
                     const size_t idx = (start + offset) % Size;
                     Entry& entry = m_data[idx];
 
-                    if (entry.state == EntryState::Empty)
+                    if (entry.state == EntryState::Empty || entry.state == EntryState::Deleted)
                     {
                         entry.key = key;
                         entry.value = value;
                         entry.state = EntryState::Occupied;
+                        m_count++;
                         return true;
                     }
                     else if (entry.key == key)
@@ -634,11 +697,12 @@ namespace paplease {
                     const size_t idx = (start + offset) % Size;
                     Entry& entry = m_data[idx];
 
-                    if (entry.state == EntryState::Empty)
+                    if (entry.state == EntryState::Empty || entry.state == EntryState::Deleted)
                     {
                         entry.key = key;
                         entry.value = std::move(value);
                         entry.state = EntryState::Occupied;
+                        m_count++;
                         return true;
                     }
                     else if (entry.key == key)
@@ -658,15 +722,20 @@ namespace paplease {
                     const size_t idx = (start + offset) % Size;
                     Entry& entry = m_data[idx];
                     
-                    if (entry.key == key)
+                    if (entry.state == EntryState::Empty)
+                    {
+                        break;
+                    }
+                    if (entry.state == EntryState::Deleted)
+                    {
+                        continue;
+                    }
+                    else if (entry.key == key)
                     {
                         // entry.value = std::move(value);
                         entry.state = EntryState::Deleted;
+                        m_count--;
                         return true;
-                    }
-                    else if (entry.state == EntryState::Empty)
-                    {
-                        break;
                     }
                 }
                 return false;
@@ -678,12 +747,18 @@ namespace paplease {
                 return Get(key, v);
             }
 
+            constexpr size_t Count() const noexcept
+            {
+                return m_count;
+            }
+
             constexpr void Clear()
             {
                 for (auto& entry : m_data)
                 {
                     entry.state = EntryState::Empty;
                 }
+                m_count = 0;
             }
 
             constexpr ValueType& operator[](const KeyType& key)
@@ -694,7 +769,7 @@ namespace paplease {
                     const size_t idx = (start + offset) % Size;
                     Entry& entry = m_data[idx];
 
-                    if (entry.state == EntryState::Empty)
+                    if (entry.state == EntryState::Empty || entry.state == EntryState::Deleted)
                     {
                         break;
                     }
@@ -714,7 +789,7 @@ namespace paplease {
                     const size_t idx = (start + offset) % Size;
                     const Entry& entry = m_data[idx];
 
-                    if (entry.state == EntryState::Empty)
+                    if (entry.state == EntryState::Empty || entry.state == EntryState::Deleted)
                     {
                         break;
                     }
@@ -844,6 +919,7 @@ namespace paplease {
             
         private:
             std::array<Entry, Size> m_data{};
+            size_t m_count = 0;
         };
 
         // --- FixedHashSet<Enum, T> ---

@@ -8,25 +8,13 @@ namespace paplease {
 	namespace documents {
 		namespace data {
 
-			enum class Country
-			{
-				Invalid = 0,
-				Antegria,
-				Arstotzka,
-				Impor,
-				Kolechia,
-				Obristan,
-				Republia,
-				UnitedFederation,
-			};
-
-			enum class Sex
+			enum class Sex : u8
 			{
 				Male,
 				Female,
 			};
 
-			enum class SIUnit
+			enum class SIUnit : u8
 			{
 				KG,
 				CM,
@@ -42,8 +30,8 @@ namespace paplease {
 
 			struct Vaccine
 			{
-				Date date;
 				std::string name;
+				Date date;
 
 				bool operator==(const Vaccine&) const = default;
 			};

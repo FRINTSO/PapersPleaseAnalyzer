@@ -1,8 +1,8 @@
 #pragma once
-#include <array>
-
 #include "paplease/documents/doc_class.h"
 #include "paplease/documents/data/photo.h"
+
+#include <array>
 
 namespace paplease {
 	namespace analysis {
