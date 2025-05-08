@@ -243,11 +243,9 @@ namespace paplease {
                     m_entrant.GetEntrantInfo().SetEntrantClassification(data::EntrantClass::Worker);
                     m_requiredDocsTracker.AddRequiredDocument({ documents::DocType::WorkPass });
                 }
-                else if (purpose == "transit")
+                else if (purpose == "transit" || purpose == "visit")
                 {
-                }
-                else if (purpose == "visit")
-                {
+                    m_requiredDocsTracker.AddRequiredDocument({ documents::DocType::Transcript });
                 }
                 else if (purpose == "immigrate")
                 {
@@ -488,6 +486,12 @@ namespace paplease {
             bool wasSuccessfulAnalysis = true;
 
             auto documentType = documents::ToDocType(docView.appearanceType);
+            if (documentType == documents::DocType::Passport)
+            {
+                auto country = data::LocationBank::GetCountryFromPassportType(documents::ToPassportType(docView.appearanceType));
+                m_entrant.GetEntrantInfo().SetNationaility(country);
+            }
+
             bool isSealed = docView.ToDocument(gameView).IsAuthentic();
             if (!isSealed)
             {

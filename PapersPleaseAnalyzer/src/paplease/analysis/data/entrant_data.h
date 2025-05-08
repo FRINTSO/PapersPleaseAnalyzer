@@ -1,6 +1,5 @@
 #pragma once
 #include "paplease/analysis/data/location_bank.h"
-#include "paplease/analysis/data/rules.h"
 #include "paplease/core/enum_base.h"
 
 namespace paplease {
@@ -76,34 +75,6 @@ namespace paplease {
                     return (m_data & FromAltanDistrict) == FromAltanDistrict;
                 }
 
-                constexpr bool IsTarget(ERuleTarget ruleTarget) const noexcept
-                {
-                    switch (ruleTarget)
-                    {
-                        case ERuleTarget::Invalid:
-                            return false;
-                        case ERuleTarget::Entrant:
-                            return true;
-                        case ERuleTarget::Citizens:
-                            return IsCitizen();
-                        case ERuleTarget::Foreigners:
-                            return IsForeigner();
-                        case ERuleTarget::Workers:
-                            return IsWorker();
-                        case ERuleTarget::Diplomats:
-                            return IsDiplomat();
-                        case ERuleTarget::AsylumSeekers:
-                            return IsAsylumSeeker();
-                        case ERuleTarget::Kolechians:
-                            return IsFromKolechia();
-                        case ERuleTarget::FromImpor:
-                            return IsFromImpor();
-                        case ERuleTarget::FromUnitedFederation:
-                            return IsFromUnitedFed();
-                        case ERuleTarget::FromAltanDistrict:
-                            return IsFromAltanDistrict();
-                    }
-                }
             };
 
             struct EntrantInfo
@@ -163,9 +134,28 @@ namespace paplease {
                 {
                     this->city = city;
                 }
-                void SetEntrantClassification(u8 classification)
+                void SetEntrantClassification(EntrantClass classification)
                 {
-                    entrantClass |= classification;
+                    if (classification.HasFlag(EntrantClass::FromKolechia))
+                    {
+                        this->SetNationaility(ECountry::Kolechia);
+                    }
+                    else if (classification.HasFlag(EntrantClass::FromImpor))
+                    {
+                        this->SetNationaility(ECountry::Impor);
+                    }
+                    else if (classification.HasFlag(EntrantClass::FromUnitedFed))
+                    {
+                        this->SetNationaility(ECountry::UnitedFederation);
+                    }
+                    else if (classification.HasFlag(EntrantClass::FromAltanDistrict))
+                    {
+                        this->SetEntrantDistrict(EDistrict::Altan);
+                    }
+                    else
+                    {
+                        entrantClass |= classification;
+                    }
                 }
 
             };

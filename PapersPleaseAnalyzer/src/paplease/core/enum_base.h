@@ -68,6 +68,16 @@ namespace paplease {
                 return *this;
             }
 
+            constexpr bool HasFlag(const EnumBase other) const noexcept
+            {
+                return (m_data & other) == other;
+            }
+
+            constexpr bool HasAnyFlag(const EnumBase other) const noexcept
+            {
+                return (m_data & other) != 0;
+            }
+
         protected:
             T m_data;
         };

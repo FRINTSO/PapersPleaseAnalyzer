@@ -125,7 +125,7 @@ namespace paplease {
             m_game.Reset();
             m_game.SetCurrentDate(date);
             m_entrant.Reset();
-            m_ruleEngine.Reset();
+            m_ruleEngine.ResetDay();
             m_requiredDocsTracker.ResetDay();
         }
 

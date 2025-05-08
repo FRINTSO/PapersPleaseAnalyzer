@@ -3,13 +3,6 @@
 
 namespace paplease {
     namespace analysis {
-        std::string DocLookup::ToString() const noexcept
-        {
-            return std::format("{}:{}",
-                               magic_enum::enum_name(documentType),
-                               magic_enum::enum_name(passportType));
-        }
-
 
         core::FixedArray<RequiredDocStatus, RequiredDocsTracker::DocTypeSize> RequiredDocsTracker::GetNonAnalyzedRequiredDocuments() const
         {
@@ -25,12 +18,17 @@ namespace paplease {
             return remainingDocs;
         }
 
-        void RequiredDocsTracker::AddRequiredDocument(DocLookup docLookup)
+        void RequiredDocsTracker::AddRequiredDocument(documents::DocLookup docLookup)
         {
-            m_requiredDocs.Set(docLookup, RequiredDocStatus{docLookup});
+            // Don't add if we already have document as requirement
+            if (!m_requiredDocs.Contains(docLookup))
+            {
+                m_requiredDocs.Set(docLookup, RequiredDocStatus{docLookup});
+                m_requiredCount++;
+            }
         }
 
-        void RequiredDocsTracker::RemoveRequiredDocument(DocLookup docLookup)
+        void RequiredDocsTracker::RemoveRequiredDocument(documents::DocLookup docLookup)
         {
             m_requiredDocs.Remove(docLookup);
         }
@@ -38,30 +36,32 @@ namespace paplease {
         // Returns true if document is required, up until it has been fully analyzed, whence it will return false
         bool RequiredDocsTracker::Requires(documents::AppearanceType appearanceType) const noexcept
         {
-            DocLookup lookupType{ appearanceType };
+            documents::DocLookup lookupType{ appearanceType };
             //if (lookupType.passportType == documents::PassportType::Invalid && lookupType.documentType != documents::DocType::Passport)
             if (lookupType.documentType != documents::DocType::Passport)
             {  // lookup type is not passport (passport is special case)
-                return m_requiredDocs.Contains(lookupType);
-            }
-
-            DocLookup passportLookupType = this->TryGetPassportLookupType();
-            if (passportLookupType.documentType != documents::DocType::Passport)
-            {
+                const RequiredDocStatus* outDocStatus = nullptr;
+                if (m_requiredDocs.Get(lookupType, outDocStatus))
+                {
+                    return !outDocStatus->analyzed;
+                }
                 return false;
             }
-
-            if (passportLookupType.passportType == documents::PassportType::Invalid)
-            {  // matches passport of any type
-                return true;
+            documents::DocLookup passportLookupType = this->TryGetPassportLookupType();
+            if (lookupType.AppliesTo(passportLookupType))
+            {
+                const RequiredDocStatus* outDocStatus = nullptr;
+                if (m_requiredDocs.Get(passportLookupType, outDocStatus))
+                {
+                    return !outDocStatus->analyzed;
+                }
             }
-
-            return passportLookupType.passportType == lookupType.passportType;
+            return false;
         }
 
         void RequiredDocsTracker::SetExists(documents::AppearanceType appearanceType)
         {
-            DocLookup lookupType = this->GetDocumentLookupType(appearanceType);
+            documents::DocLookup lookupType = this->GetDocumentLookupType(appearanceType);
             if (!lookupType.IsValid())
             {
                 return;
@@ -77,7 +77,7 @@ namespace paplease {
         }
         void RequiredDocsTracker::SetAnalyzed(documents::AppearanceType appearanceType)
         {
-            DocLookup lookupType = this->GetDocumentLookupType(appearanceType);
+            documents::DocLookup lookupType = this->GetDocumentLookupType(appearanceType);
             if (!lookupType.IsValid())
             {
                 return;
@@ -90,24 +90,22 @@ namespace paplease {
 
             auto& docStatus = m_requiredDocs[lookupType];
             docStatus.analyzed = true;
-
-            // This following code is a thought
-            this->RemoveRequiredDocument(lookupType);
+            m_requiredCount--;
         }
 
-        DocLookup RequiredDocsTracker::GetDocumentLookupType(documents::AppearanceType appearanceType) const noexcept
+        documents::DocLookup RequiredDocsTracker::GetDocumentLookupType(documents::AppearanceType appearanceType) const noexcept
         {
-            DocLookup lookupType{ appearanceType };
+            documents::DocLookup lookupType{ appearanceType };
             if (lookupType.passportType == documents::PassportType::Invalid && lookupType.documentType != documents::DocType::Passport)
             {
                 return lookupType;
             }
             
-            DocLookup passportQualifier = this->TryGetPassportLookupType();
+            documents::DocLookup passportQualifier = this->TryGetPassportLookupType();
             return passportQualifier;
         }
 
-        DocLookup RequiredDocsTracker::TryGetPassportLookupType() const noexcept
+        documents::DocLookup RequiredDocsTracker::TryGetPassportLookupType() const noexcept
         {
             for (auto& kv : m_requiredDocs)
             {
@@ -117,7 +115,7 @@ namespace paplease {
                 }
             }
 
-            return DocLookup{ documents::AppearanceType::Invalid };
+            return documents::DocLookup{ documents::AppearanceType::Invalid };
         }
 
         void RequiredDocsTracker::WarnMissingRequiredDocuments()

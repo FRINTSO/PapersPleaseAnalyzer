@@ -55,6 +55,7 @@
     <ClCompile Include="src\paplease\analysis\rule_engine.cpp" />
     <ClCompile Include="src\paplease\analysis\required_docs_tracker.cpp" />
     <ClCompile Include="src\test\test_document_scanning.cpp" />
+    <ClCompile Include="src\paplease\documents\doc_lookup.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\paplease\analysis_v1\analysis_context.h" />
@@ -147,6 +148,7 @@
     <ClInclude Include="src\test\test_document_scanning.h" />
     <ClInclude Include="src\paplease\scannable\scan_utils.h" />
     <ClInclude Include="src\paplease\analysis\discrepancy_engine.h" />
+    <ClInclude Include="src\paplease\documents\doc_lookup.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\paplease\documents\bounding_box_finder.inc" />

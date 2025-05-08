@@ -2,6 +2,7 @@
 #include "paplease/analysis/rule_engine.h"
 
 #include "paplease/analysis/data/location_bank.h"
+#include "paplease/documents/doc_lookup.h"
 
 namespace paplease{
     namespace analysis {
@@ -15,89 +16,71 @@ namespace paplease{
         {
             for (const data::Rule rule : m_rulebook->GetRules())
             {
-                const auto& [action, subject, target] = rule.GetDescriptor();
                 const data::ERule eRule = rule.GetRule();
+                if (m_ruleCtx.applicableRules.Contains(eRule))
+                {  // rule is already applicable
+                    continue;
+                }
 
-                if (m_entrant.GetEntrantInfo().entrantClass.IsTarget(target) && !m_ruleCtx.applicableRules.Contains(eRule))
+                if (rule.AppliesTo(m_entrant.GetEntrantInfo()))
                 {  // the rule applies to the current understanding of whom the entrant is
-                    contexts::TrackedRule trackedRule{ rule, contexts::TrackedRule::Status::Unmet };
 #if DEBUG_LOG_APPLICABLE_RULES
-                    LOG("Applicable rule: {}", trackedRule.rule.GetDescription());
-#endif              
+                    LOG("Applicable rule: {}", rule.GetDescription());
+#endif
+                    m_ruleCtx.applicableRules.Set(rule.GetRule(), { rule, contexts::TrackedRule::Status::Unmet });
 
-                    switch (eRule)
-				    {
-					    case data::ERule::RequireEntryPermitFromForeigners:
-                        {
-                            const auto& entrantClass = m_entrant.GetEntrantInfo().entrantClass;
-                            if (entrantClass.IsAsylumSeeker() || entrantClass.IsDiplomat())
-                            {
-                                continue;
-                            }
-                            break;
-                        }
-					    case data::ERule::RequireAccessPermitFromForeigners:
-					    case data::ERule::RequireArstotzkanPassportFromEntrant:
-					    case data::ERule::RequireDiplomaticAuthorizationFromDiplomats:
-					    case data::ERule::RequireEntryTicketFromForeigners:
-					    case data::ERule::RequireGrantFromAsylumSeekers:
-					    case data::ERule::RequireIdentityCardFromCitizens:
-					    case data::ERule::RequireIdentitySupplementFromForeigners:
-					    case data::ERule::RequirePassportFromEntrant:
-					    case data::ERule::RequirePolioVaccinationFromEntrant:
-					    case data::ERule::RequireWorkPassFromWorkers:
-					    {
-						    break;
-					    }
-                        default:
-                        {
-                            // Store the rule in the rule context
-                            m_ruleCtx.applicableRules.Set(eRule, std::move(trackedRule));
-                            continue;
-                        }
-				    }
-                    // Store the rule in the rule context
-                    m_ruleCtx.applicableRules.Set(eRule, std::move(trackedRule));
-
-                    DocLookup requiredDocLookup = data::ERuleSubjectToDocType(rule.GetDescriptor().subject);
-                    m_requiredDocsTracker.AddRequiredDocument(requiredDocLookup);
-
+                    if (rule.GetAction() == data::ERuleAction::RequireDocument)
+                    {
+                        documents::DocLookup lookupType = data::ERuleSubjectToDocType(rule.GetSubject());
+                        m_requiredDocsTracker.AddRequiredDocument(lookupType);
+                    }
                 }
             }
         }
 
         void RuleEngine::ClassifyEntrantBasedOnDocument(documents::AppearanceType appearanceType)
         {
-            DocLookup lookupType{ appearanceType };
-            if (lookupType.IsPassport())
+            if (m_rulebook == nullptr)
             {
-                data::ECountry country = data::LocationBank::GetCountryFromPassportType(lookupType.passportType);
-                m_entrant.GetEntrantInfo().SetNationaility(country);
-            }
-            else if (lookupType.documentType == documents::DocType::WorkPass)
-            {
-                m_entrant.GetEntrantInfo().SetEntrantClassification(
-                    data::EntrantClass::Worker
-                );
-            }
-            else if (lookupType.documentType == documents::DocType::DiplomaticAuthorization)
-            {
-                m_entrant.GetEntrantInfo().SetEntrantClassification(
-                    data::EntrantClass::Diplomat
-                );
-            }
-            else if (lookupType.documentType == documents::DocType::GrantOfAsylum)
-            {
-                m_entrant.GetEntrantInfo().SetEntrantClassification(
-                    data::EntrantClass::AsylumSeeker
-                );
-            }
-            else
-            {
+                LOG_ERR("Tried to call 'ClassifyEntrantBasedOnDocument' when m_rulebook is null");
                 return;
+            }
+
+            documents::DocLookup lookupType{ appearanceType };
+            for (const data::Rule rule : m_rulebook->GetRules())
+            {
+                if (rule.GetAction() == data::ERuleAction::RequireDocument)
+                {
+                    const auto ruleLookupType = data::ERuleSubjectToDocType(rule.GetSubject());
+                    if (lookupType.AppliesTo(ruleLookupType))
+                    {
+                        m_entrant.GetEntrantInfo().SetEntrantClassification(rule.GetTargetEntrantClass());
+                        break;
+                    }
+                }
             }
 
             this->UpdateApplicableRules();
         }
-    }
-}
+
+        void RuleEngine::RequireDocumentsBasedOnEntrantClassification()
+        {
+            for (const data::Rule rule : m_rulebook->GetRules())
+            {
+                if (m_ruleCtx.applicableRules.Contains(rule.GetRule()))
+                {
+                    continue;
+                }
+
+                if (rule.AppliesTo(m_entrant.GetEntrantInfo()) && rule.GetAction() == data::ERuleAction::RequireDocument)
+                {
+                    documents::DocLookup lookupType = data::ERuleSubjectToDocType(rule.GetSubject());
+                    m_requiredDocsTracker.AddRequiredDocument(lookupType);
+
+                    m_ruleCtx.applicableRules.Set(rule.GetRule(), { rule, contexts::TrackedRule::Status::Unmet });
+                }
+            }
+        }
+
+    }  // namespace analysis
+}  // namespace paplease

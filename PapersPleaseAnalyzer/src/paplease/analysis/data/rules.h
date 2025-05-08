@@ -1,8 +1,8 @@
 #pragma once
-#include "paplease/analysis/doc_store.h"
-#include "paplease/analysis/required_docs_tracker.h"
-#include "paplease/documents/doc_class.h"
+#include "paplease/analysis/data/entrant_data.h"
 #include "paplease/core/fixed.h"
+#include "paplease/documents/doc_class.h"
+#include "paplease/documents/doc_lookup.h"
 
 #include <optional>
 
@@ -85,6 +85,7 @@ namespace paplease {
             {
                 Invalid = static_cast<u8>(-1),
                 Require = 0,    // Need information
+                RequireDocument,
                 Prohibit,   // Limit
                 Confiscate  // Limit
             };
@@ -109,7 +110,7 @@ namespace paplease {
                 Entry,
             };
 
-            static inline constexpr DocLookup ERuleSubjectToDocType(ERuleSubject subject)
+            static inline constexpr documents::DocLookup ERuleSubjectToDocType(ERuleSubject subject)
             {
                 switch (subject)
                 {
@@ -180,6 +181,12 @@ namespace paplease {
                 ERule GetRule() const;
                 std::string_view GetDescription() const;
                 const RuleDescriptor& GetDescriptor() const;
+                ERuleAction GetAction() const;
+                ERuleSubject GetSubject() const;
+                ERuleTarget GetTarget() const;
+
+                bool AppliesTo(const EntrantInfo& entrant) const;
+                EntrantClass GetTargetEntrantClass() const;
             private:
                 ERule m_rule = ERule::Invalid;
                 RuleDescriptor m_descriptor{};

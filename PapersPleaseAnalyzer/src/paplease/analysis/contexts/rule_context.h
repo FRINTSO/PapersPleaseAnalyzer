@@ -1,5 +1,7 @@
 #pragma once
+#include "paplease/analysis/data/rules.h"
 #include "paplease/core/fixed.h"
+#include "paplease/types.h"
 
 namespace paplease {
     namespace analysis {
