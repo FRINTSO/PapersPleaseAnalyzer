@@ -1,0 +1,221 @@
+#pragma once
+#include "paplease/analysis/data/entrant_data.h"
+#include "paplease/core/fixed.h"
+#include "paplease/documents/doc_class.h"
+#include "paplease/documents/doc_lookup.h"
+
+#include <optional>
+
+namespace paplease {
+    namespace analysis {
+        namespace data {
+
+            /*
+            
+            struct Rule
+            {
+                ERule type;
+                std::function<bool(const EntrantInfo&)> appliesTo;
+                std::string description;
+            };
+
+
+            if (rule.appliesTo(context.GetEntrantInfo()))
+            {
+                context.MarkRuleAsApplicable(rule.type);
+                if (!context.IsRuleComplied(rule.type))
+                    context.MarkRuleAsBroken(rule.type);
+            }
+
+            // Rule: All Kolechians must be searched
+            Rule{
+                .type = ERule::SearchKolechians,
+                .appliesTo = [](const EntrantInfo& info) { return info.country == ECountry::Kolechia; },
+                .description = "All Kolechians must be searched."
+            }
+
+            */
+
+            enum class ERule : u8
+            {
+                Invalid = static_cast<u8>(-1),
+
+                // === REQUIREMENTS ===
+                RequireCurrentDocumentsFromEntrant = 0, // If this flag is set, mediator should know what functions to call
+                RequirePassportFromEntrant,
+                RequireArstotzkanPassportFromEntrant,
+                RequireIdentityCardFromCitizens,
+                RequireEntryTicketFromForeigners,
+                RequireWorkPassFromWorkers,
+                RequireDiplomaticAuthorizationFromDiplomats,
+                RequireIdentitySupplementFromForeigners,
+                RequireGrantFromAsylumSeekers,
+                RequirePolioVaccinationFromEntrant,
+                RequireAccessPermitFromForeigners,
+                RequireEntryPermitFromForeigners,
+                RequireSearchOfKolechians,
+
+                // === PROHIBITIONS ===
+                ProhibitEntryFromImpor,
+                ProhibitEntryFromUnitedFederation,        // something to realize when
+                ProhibitWeaponsAndContrabandFromEntrant,  // needs to be same weight 
+
+                // === CONFISCATIONS ===
+                ConfiscateArstotzkanPassportsFromAltanDistrict,
+                ConfiscateArstotzkanPassportFromEntrant,
+
+                Count
+            };
+
+            // Scan order:
+            // All entrants require passport (RequirePassportFromEntrant)
+            // 1. Passport belongs to citizen
+            //  -> Require id card (RequireIdentityCardFromCitizens)
+            //  .
+            // 2. Passport belongs to foreigner
+            //  -> Require EntryTicket (RequireEntryTicketFromForeigners)
+            //  .
+            //  -> Require IdentitySupplement (RequireIdentitySupplementFromForeigners)
+            //  -> Require AccessPermit (RequireAccessPermitFromForeigners)
+            //  -> Require EntryPermit (RequireEntryPermitFromForeigners)
+            // 
+            //
+
+            enum class ERuleAction : u8
+            {
+                Invalid = static_cast<u8>(-1),
+                Require = 0,    // Need information
+                RequireDocument,
+                Prohibit,   // Limit
+                Confiscate  // Limit
+            };
+
+            enum class ERuleSubject : u8
+            {
+                Invalid = static_cast<u8>(-1),
+                CurrentDocuments = 0,
+                Passport,
+                ArstotzkanPassport,
+                IdentityCard,
+                EntryTicket,
+                WorkPass,
+                DiplomaticAuthorization,
+                IdentitySupplement,
+                Grant,
+                PolioVaccination,
+                AccessPermit,
+                EntryPermit,
+                WeaponsAndContraband,
+                Search,
+                Entry,
+            };
+
+            static inline constexpr documents::DocLookup ERuleSubjectToDocType(ERuleSubject subject)
+            {
+                switch (subject)
+                {
+                    case ERuleSubject::Passport:
+                        return { documents::DocType::Passport };
+                    case ERuleSubject::ArstotzkanPassport:
+                        return { documents::DocType::Passport, documents::PassportType::Arstotzka };
+                    case ERuleSubject::IdentityCard:
+                        return { documents::DocType::IdentityCard };
+                    case ERuleSubject::EntryTicket:
+                        return { documents::DocType::EntryTicket };
+                    case ERuleSubject::WorkPass:
+                        return { documents::DocType::WorkPass };
+                    case ERuleSubject::DiplomaticAuthorization:
+                        return { documents::DocType::DiplomaticAuthorization };
+                    case ERuleSubject::IdentitySupplement:
+                        return { documents::DocType::IdentitySupplement };
+                    case ERuleSubject::Grant:
+                        return { documents::DocType::GrantOfAsylum };
+                    case ERuleSubject::PolioVaccination:
+                        return { documents::DocType::CertificateOfVaccination };
+                    case ERuleSubject::AccessPermit:
+                        return { documents::DocType::AccessPermit };
+                    case ERuleSubject::EntryPermit:
+                        return { documents::DocType::EntryPermit };
+                    default:
+                        return { documents::DocType::Invalid, documents::PassportType::Invalid };
+                }
+            }
+
+            enum class ERuleTarget : u8
+            {
+                Invalid = static_cast<u8>(-1),
+                Entrant = 0,
+                Citizens,
+                Foreigners,
+                Workers,
+                Diplomats,
+                AsylumSeekers,
+                Kolechians,
+                FromImpor,
+                FromUnitedFederation,
+                FromAltanDistrict
+            };
+
+            struct RuleDescriptor
+            {
+                constexpr RuleDescriptor() = default;
+                constexpr RuleDescriptor(ERuleAction action, ERuleSubject subject, ERuleTarget target)
+                    : action{action}, subject{subject}, target{target}
+                {}
+
+                ERuleAction action = ERuleAction::Invalid;
+                ERuleSubject subject = ERuleSubject::Invalid;
+                ERuleTarget target = ERuleTarget::Invalid;
+            };
+
+            class Rule
+            {
+            public:
+                constexpr Rule() = default;
+                constexpr Rule(ERule rule, RuleDescriptor descriptor)
+                    : m_rule{ rule }, m_descriptor{ descriptor }
+                {}
+
+            public:
+                // void ApplyRule() const;
+                ERule GetRule() const;
+                std::string_view GetDescription() const;
+                const RuleDescriptor& GetDescriptor() const;
+                ERuleAction GetAction() const;
+                ERuleSubject GetSubject() const;
+                ERuleTarget GetTarget() const;
+
+                bool AppliesTo(const EntrantInfo& entrant) const;
+                EntrantClass GetTargetEntrantClass() const;
+            private:
+                ERule m_rule = ERule::Invalid;
+                RuleDescriptor m_descriptor{};
+            };
+
+            class RuleBook
+            {
+            public:
+                RuleBook() = default;
+                static constexpr size_t MaxRuleCount = 10;
+
+                const core::FixedArray<Rule, MaxRuleCount>& GetRules() const
+                {
+                    return m_activeRules;
+                }
+                
+            private:
+                void RegisterRule(ERule rule);
+
+            private:
+                core::FixedArray<Rule, MaxRuleCount> m_activeRules{};
+
+                friend std::optional<RuleBook> CreateRuleBook(const documents::Doc& document);
+                friend std::optional<RuleBook> CreateRuleBook(const documents::DocData& data);
+            };
+
+            std::optional<RuleBook> CreateRuleBook(const documents::Doc& document);
+            std::optional<RuleBook> CreateRuleBook(const documents::DocData& data);
+
+        }  // namespace data
+    }  // namespace analysis
+}  // namespace paplease

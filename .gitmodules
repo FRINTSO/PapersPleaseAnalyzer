@@ -1,0 +1,6 @@
+[submodule "PapersPleaseAnalyzer/vendor/spdlog"]
+	path = PapersPleaseAnalyzer/vendor/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "PapersPleaseAnalyzer/vendor/magic_enum"]
+	path = PapersPleaseAnalyzer/vendor/magic_enum
+	url = https://github.com/Neargye/magic_enum.git

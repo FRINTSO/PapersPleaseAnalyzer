@@ -2,28 +2,67 @@
 
 #include <opencv2/core/utils/logger.hpp>
 
-#include "test/test_document_data_extraction.h"
-#include "test/test_document_text_boxing.h"
+//#include "paplease/analysis/game_analyzer.h"
+#include "paplease/analysis/analysis_statemachine.h"
+#include "paplease/analysis_v1/game_controller.h"
+#include "paplease/screencap/screencap.h"
+#include "paplease/core/resource_manager.h"
+#include "test/test_document_scanning.h"
 
 
-int main()
+void RunWithSimulatedGame()
+{
+	paplease::analysis_v1::GameAnalysisController analyzer{ false };
+	paplease::GameView view;
+	while (paplease::GetNextGameSimView("1", view))
+	{
+		analyzer.Update(view);
+	}
+
+	// Don't scan transcript until finished?
+	cv::waitKey();
+}
+
+void RunWithLiveGame()
+{
+	//paplease::analysis::GameAnalysisController analyzer{ false };
+	// paplease::analysis::scannable::DocTracker tracker{};
+	//paplease::core::ResourceManager resources;
+	//paplease::analysis::GameAnalyzer analyzer{resources};
+	//paplease::analysis::GameAnalyzer analyzer{};
+	paplease::analysis::AnalysisStateMachine sm{};
+	while (true)
+	{
+		auto result = paplease::screencap::CaptureGameWindow();
+
+		if (result.empty())
+		{
+			std::cout << "Empty\n";
+			continue;
+		}
+
+		paplease::GameView view(std::move(result));
+		//analyzer.Scan(view);
+		sm.Run(view);
+
+		//tracker.Update(view);
+		//analyzer.Update(view);
+		//cv::imshow("output", result);
+		cv::waitKey(30);
+	}
+}
+
+void main()
 {
 	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
+	paplease::utils::Log::Init();
 
-	test_entry_permit_data_extraction("52");
-	std::cout << "\n";
-	test_passport_data_extraction("52");
-	std::cout << "\n";
-	test_identity_supplement_data_extraction("52");
-	std::cout << "\n";
-	test_certificate_of_vaccination_data_extraction("53");
+	// RunWithSimulatedGame();
+	RunWithLiveGame();
 
-	/*test_identity_card_text_boxing("47");
-	test_identity_card_data_extraction("47");*/
+	//test::test_document_scanning();
 
-	//test_certificate_of_vaccination_data_extraction("53");
-	//test_certificate_of_vaccination_text_boxing("53");
+	//test::test_fixed_hash_table();
 
-	cv::waitKey();
 	std::cin.get();
 }

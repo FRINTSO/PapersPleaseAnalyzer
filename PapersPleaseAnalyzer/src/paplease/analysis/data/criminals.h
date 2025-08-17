@@ -1,0 +1,27 @@
+#pragma once
+#include "paplease/documents/doc_class.h"
+#include "paplease/documents/data/photo.h"
+
+#include <array>
+
+namespace paplease {
+	namespace analysis {
+		namespace data {
+
+			class CriminalData
+			{
+			public:
+				CriminalData() = default;
+
+				friend CriminalData CreateCriminalData(const documents::Doc& document);
+			private:
+				static constexpr size_t CriminalCapacity = 3;
+			private:
+				std::array<documents::data::Photo, CriminalData::CriminalCapacity> m_photos;
+			};
+
+			CriminalData CreateCriminalData(const documents::Doc& document);
+
+		}  // namespace data
+	}  // namespace analysis
+}  // namespace paplease

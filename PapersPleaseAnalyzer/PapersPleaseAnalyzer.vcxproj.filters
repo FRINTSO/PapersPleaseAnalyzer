@@ -1,162 +1,156 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="src\paplease\analysis_v1\analysis_context_v1.cpp" />
+    <ClCompile Include="src\paplease\analysis\data\location_bank.cpp" />
+    <ClCompile Include="src\paplease\analysis\game_analyzer.cpp" />
+    <ClCompile Include="src\paplease\analysis\photo_analysis\photo_analyzer.cpp" />
+    <ClCompile Include="src\paplease\documents\data\date.cpp" />
+    <ClCompile Include="src\paplease\analysis\doc_tracker.cpp" />
+    <ClCompile Include="src\paplease\scannable\doc_scan.cpp" />
+    <ClCompile Include="src\paplease\documents\seal.cpp" />
+    <ClCompile Include="src\paplease\scannable\scan_context.cpp" />
+    <ClCompile Include="src\paplease\screencap\screencap.cpp" />
+    <ClCompile Include="src\paplease\utils\log.cpp" />
+    <ClCompile Include="src\paplease\documents\doc_appearance.cpp" />
+    <ClCompile Include="src\paplease\documents\doc_layout.cpp" />
+    <ClCompile Include="src\paplease\analysis\data\criminals.cpp" />
+    <ClCompile Include="src\paplease\analysis_v1\game_controller.cpp" />
+    <ClCompile Include="src\paplease\analysis\data\rules.cpp" />
+    <ClCompile Include="src\paplease\scannable\booth.cpp" />
+    <ClCompile Include="src\paplease\scannable\inspection.cpp" />
+    <ClCompile Include="src\paplease\documents\doc_data.cpp" />
+    <ClCompile Include="src\paplease\documents\doc_class.cpp" />
+    <ClCompile Include="src\paplease\analysis\data\transcript.cpp" />
+    <ClCompile Include="src\paplease\game_view.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\paplease\ocr\font.cpp" />
+    <ClCompile Include="src\paplease\ocr\ocr.cpp" />
+    <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\test\documents\test_document_data_extraction.cpp" />
+    <ClCompile Include="src\test\documents\test_document_preprocessing.cpp" />
+    <ClCompile Include="src\test\documents\test_document_boxing.cpp" />
+    <ClCompile Include="src\test\documents\test_hsv.cpp" />
+    <ClCompile Include="src\test\test_faces.cpp" />
+    <ClCompile Include="src\test\test_rulebook.cpp" />
+    <ClCompile Include="src\test\test_booth.cpp" />
+    <ClCompile Include="src\test\test_transcript.cpp" />
+    <ClCompile Include="src\paplease\documents\doc_view.cpp" />
+    <ClCompile Include="src\test\test_fixed.cpp" />
+    <ClCompile Include="src\paplease\analysis\doc_pipeline.cpp" />
+    <ClCompile Include="src\paplease\analysis\doc_validator.cpp" />
+    <ClCompile Include="src\paplease\analysis\doc_store.cpp" />
+    <ClCompile Include="src\paplease\analysis\doc_analyzer.cpp" />
+    <ClCompile Include="src\paplease\analysis\analysis_context.cpp" />
+    <ClCompile Include="src\paplease\analysis_v1\doc_tracker_v1.cpp" />
+    <ClCompile Include="src\paplease\analysis_v1\data\criminals_v1.cpp" />
+    <ClCompile Include="src\paplease\analysis_v1\data\location_bank_v1.cpp" />
+    <ClCompile Include="src\paplease\analysis_v1\data\rules_v1.cpp" />
+    <ClCompile Include="src\paplease\analysis_v1\data\transcript_v1.cpp" />
+    <ClCompile Include="src\paplease\analysis_v1\photo_analysis\photo_analyzer_v1.cpp" />
+    <ClCompile Include="src\paplease\core\pool.cpp" />
+    <ClCompile Include="src\test\core\pool_test.cpp" />
+    <ClCompile Include="src\paplease\analysis\analysis_statemachine.cpp" />
+    <ClCompile Include="src\paplease\analysis\doc_engine.cpp" />
+    <ClCompile Include="src\paplease\analysis\rule_engine.cpp" />
+    <ClCompile Include="src\paplease\analysis\required_docs_tracker.cpp" />
+    <ClCompile Include="src\test\test_document_scanning.cpp" />
+    <ClCompile Include="src\paplease\documents\doc_lookup.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\passport.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\ocr\ocr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\identity_card.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\work_pass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\entry_permit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\ocr\font.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\seal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\booth.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\diplomatic_authorization.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\identity_supplement.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\certificate_of_vaccination.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\grant_of_asylum.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\access_permit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\documents\entry_ticket.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\test\test_document_text_boxing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\test\test_hsv.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\test\test_document_data_extraction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\test\test_document_preprocessing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClInclude Include="src\paplease\analysis_v1\analysis_context.h" />
+    <ClInclude Include="src\paplease\analysis_v1\analysis_context.inl.h" />
+    <ClInclude Include="src\paplease\analysis\data\entrant_data.h" />
+    <ClInclude Include="src\paplease\analysis\data\location_bank.h" />
+    <ClInclude Include="src\paplease\analysis\game_analyzer.h" />
+    <ClInclude Include="src\paplease\analysis\photo_analysis\photo_analyzer.h" />
+    <ClInclude Include="src\paplease\core\fixed.h" />
+    <ClInclude Include="src\paplease\analysis\doc_tracker.h" />
+    <ClInclude Include="src\base\analysis\scannable\scanned_doc.h" />
+    <ClInclude Include="src\paplease\documents\doc_data.inl.h" />
+    <ClInclude Include="src\paplease\documents\doc_data_type.h" />
+    <ClInclude Include="src\paplease\scannable\doc_scan.h" />
+    <ClInclude Include="src\paplease\documents\seal.h" />
+    <ClInclude Include="src\paplease\documents\doc_type.inl.h" />
+    <ClInclude Include="src\paplease\documents\utils\str_scanner.h" />
+    <ClInclude Include="src\paplease\scannable\scan_context.h" />
+    <ClInclude Include="src\paplease\common\scaled.h" />
+    <ClInclude Include="src\paplease\screencap\screencap.h" />
+    <ClInclude Include="src\paplease\utils\enum_range.h" />
+    <ClInclude Include="src\paplease\utils\log.h" />
+    <ClInclude Include="src\paplease\analysis_v1\game_controller.h" />
+    <ClInclude Include="src\paplease\scannable\booth.h" />
+    <ClInclude Include="src\paplease\scannable\inspection.h" />
+    <ClInclude Include="src\paplease\common\color.h" />
+    <ClInclude Include="src\paplease\common\common.h" />
+    <ClInclude Include="src\paplease\documents\doc_appearance.inl.h" />
+    <ClInclude Include="src\paplease\documents\doc_layout.inl.h" />
+    <ClInclude Include="src\paplease\documents\data\date.h" />
+    <ClInclude Include="src\paplease\documents\doc_class.h" />
+    <ClInclude Include="src\paplease\documents\doc_appearance.h" />
+    <ClInclude Include="src\paplease\documents\doc_data.h" />
+    <ClInclude Include="src\paplease\documents\doc_layout.h" />
+    <ClInclude Include="src\paplease\documents\doc_type.h" />
+    <ClInclude Include="src\paplease\documents\data\field_data.h" />
+    <ClInclude Include="src\paplease\documents\data\photo.h" />
+    <ClInclude Include="src\paplease\analysis\data\criminals.h" />
+    <ClInclude Include="src\paplease\analysis\data\rules.h" />
+    <ClInclude Include="src\paplease\analysis\data\transcript.h" />
+    <ClInclude Include="src\paplease\game_view.h" />
+    <ClInclude Include="src\paplease\common\image_process.h" />
+    <ClInclude Include="src\paplease\ocr\font.h" />
+    <ClInclude Include="src\paplease\ocr\ocr.h" />
+    <ClInclude Include="src\paplease\common\shape.h" />
+    <ClInclude Include="src\paplease\utils\metaprogramming.h" />
+    <ClInclude Include="src\paplease\core\pystr.h" />
+    <ClInclude Include="src\paplease\utils\strfuncs.h" />
+    <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\test\documents\test_document_data_extraction.h" />
+    <ClInclude Include="src\test\documents\test_document_preprocessing.h" />
+    <ClInclude Include="src\test\documents\test_document_boxing.h" />
+    <ClInclude Include="src\test\documents\test_hsv.h" />
+    <ClInclude Include="src\test\test_faces.h" />
+    <ClInclude Include="src\test\test_rulebook.h" />
+    <ClInclude Include="src\test\test_booth.h" />
+    <ClInclude Include="src\test\test_transcript.h" />
+    <ClInclude Include="src\paplease\documents\doc_view.h" />
+    <ClInclude Include="src\paplease\types.h" />
+    <ClInclude Include="src\paplease\core\ref.h" />
+    <ClInclude Include="src\test\test_fixed.h" />
+    <ClInclude Include="src\paplease\analysis\doc_analyzer.h" />
+    <ClInclude Include="src\paplease\analysis\doc_pipeline.h" />
+    <ClInclude Include="src\paplease\analysis\doc_store.h" />
+    <ClInclude Include="src\paplease\analysis\doc_validator.h" />
+    <ClInclude Include="src\paplease\analysis\analysis_context.h" />
+    <ClInclude Include="src\paplease\analysis\data\profile.h" />
+    <ClInclude Include="src\paplease\analysis_v1\doc_tracker.h" />
+    <ClInclude Include="src\paplease\analysis_v1\data\criminals.h" />
+    <ClInclude Include="src\paplease\analysis_v1\data\entrant_data.h" />
+    <ClInclude Include="src\paplease\analysis_v1\data\location_bank.h" />
+    <ClInclude Include="src\paplease\analysis_v1\data\rules.h" />
+    <ClInclude Include="src\paplease\analysis_v1\data\transcript.h" />
+    <ClInclude Include="src\paplease\analysis_v1\photo_analysis\photo_analyzer.h" />
+    <ClInclude Include="src\paplease\core\enum_base.h" />
+    <ClInclude Include="src\paplease\analysis\good_ideas.h" />
+    <ClInclude Include="src\paplease\core\string_buffer.h" />
+    <ClInclude Include="src\paplease\core\resource_manager.h" />
+    <ClInclude Include="src\paplease\core\pool.h" />
+    <ClInclude Include="src\test\core\pool_test.h" />
+    <ClInclude Include="src\paplease\analysis\combination.txt" />
+    <ClInclude Include="src\paplease\analysis\contexts\entrant_context.h" />
+    <ClInclude Include="src\paplease\analysis\rule_engine.h" />
+    <ClInclude Include="src\paplease\analysis\contexts\rule_context.h" />
+    <ClInclude Include="src\paplease\analysis\contexts\frame_context.h" />
+    <ClInclude Include="src\paplease\analysis\contexts\game_context.h" />
+    <ClInclude Include="src\paplease\analysis\required_docs_tracker.h" />
+    <ClInclude Include="src\paplease\analysis\analysis_statemachine.h" />
+    <ClInclude Include="src\paplease\analysis\doc_engine.h" />
+    <ClInclude Include="src\test\test_document_scanning.h" />
+    <ClInclude Include="src\paplease\scannable\scan_utils.h" />
+    <ClInclude Include="src\paplease\analysis\discrepancy_engine.h" />
+    <ClInclude Include="src\paplease\documents\doc_lookup.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\base\documents\passport.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\color.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\ocr\ocr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\layout.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\shape.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\identity_card.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\document.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\work_pass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\entry_permit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\booth.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\seal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\ocr\font.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\image_process.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\diplomatic_authorization.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\identity_supplement.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\certificate_of_vaccination.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\grant_of_asylum.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\access_permit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\entry_ticket.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\game_view.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\test\test_document_text_boxing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\test\test_document_data_extraction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\test\test_hsv.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\test\test_document_preprocessing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\documents\bounding_box_finder.inc">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <None Include="src\paplease\documents\bounding_box_finder.inc" />
   </ItemGroup>
 </Project>
