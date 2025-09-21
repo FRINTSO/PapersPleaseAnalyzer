@@ -2,8 +2,9 @@
 #include "paplease/analysis/contexts/entrant_context.h"
 #include "paplease/analysis/contexts/frame_context.h"
 #include "paplease/analysis/contexts/game_context.h"
-#include "paplease/analysis/doc_engine.h"
-#include "paplease/analysis/rule_engine.h"
+#include "paplease/analysis/engines/doc_engine.h"
+#include "paplease/analysis/engines/rule_engine.h"
+#include "paplease/analysis/engines/transcript_engine.h"
 #include "paplease/analysis/required_docs_tracker.h"
 #include "paplease/game_view.h"
 
@@ -30,7 +31,9 @@ namespace paplease {
         public:
             AnalysisStateMachine()
                 : m_game(), m_entrant(),
-                m_docEngine(m_game, m_entrant, m_requiredDocsTracker), m_ruleEngine(m_entrant, m_requiredDocsTracker),
+                m_docEngine(m_game, m_entrant, m_requiredDocsTracker),
+                m_ruleEngine(m_entrant, m_requiredDocsTracker),
+                m_transcriptEngine(),
                 m_requiredDocsTracker()
             {}
             void Run(const GameView& gameView);
@@ -40,7 +43,7 @@ namespace paplease {
             FrameAnalysisResult RunAnalyzeFrame(contexts::FrameContext& frame);
             void RunDocumentAnalysis(contexts::FrameContext& frame);
             void RunDocumentAnalysisByRequiredDocumentsTracker(contexts::FrameContext& frame);
-            void HandleDocumentAnalysisResult(DocAnalysisResult result);
+            void HandleDocumentAnalysisResult(engines::DocAnalysisResult result);
             void RunRuleEngine();
 
             void HandleNewRuleBook(data::RuleBook&& rulebook);
@@ -58,8 +61,9 @@ namespace paplease {
             contexts::GameContext    m_game;
             contexts::EntrantContext m_entrant;
 
-            DocEngine  m_docEngine;
-            RuleEngine m_ruleEngine;
+            engines::DocEngine  m_docEngine;
+            engines::RuleEngine m_ruleEngine;
+            engines::TranscriptEngine m_transcriptEngine;
 
             RequiredDocsTracker m_requiredDocsTracker;
         };

@@ -50,7 +50,6 @@ namespace paplease {
     }  // namespace documents
 }  // namespace paplease
 
-// #include <functional>
 namespace std {
     template <>
     struct hash<paplease::documents::DocLookup>
@@ -58,13 +57,6 @@ namespace std {
         static_assert(sizeof(paplease::documents::DocLookup) == sizeof(paplease::u16));
         size_t operator()(const paplease::documents::DocLookup& key) const noexcept
         {
-            //using doc_utype = std::underlying_type_t<paplease::documents::DocType>;
-            //using pass_utype = std::underlying_type_t<paplease::documents::PassportType>;
-
-            //size_t h1 = std::hash<doc_utype>{}(static_cast<doc_utype>(key.documentType));
-            //size_t h2 = std::hash<pass_utype>{}(static_cast<pass_utype>(key.passportType));
-            //return h1 ^ (h2 << 1); // Standard combine pattern
-
             const paplease::documents::DocLookup* pLookup = &key;
             paplease::u16 value = *reinterpret_cast<const paplease::u16*>(pLookup);
             return std::hash<paplease::u16>{}(value);

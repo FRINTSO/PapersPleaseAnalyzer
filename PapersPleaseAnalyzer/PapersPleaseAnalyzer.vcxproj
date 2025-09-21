@@ -73,6 +73,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(IncludePath)</IncludePath>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <ExcludePath>
+    </ExcludePath>
+    <SourcePath>$(VC_SourcePath);C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\crt\src</SourcePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\crt\src</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(IncludePath)</IncludePath>
@@ -113,7 +117,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\opencv\build\include;$(SolutionDir)PapersPleaseAnalyzer\src;$(SolutionDir)PapersPleaseAnalyzer\vendor\spdlog\include;$(SolutionDir)PapersPleaseAnalyzer\src;$(SolutionDir)PapersPleaseAnalyzer\vendor\magic_enum\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\opencv\build\include;$(SolutionDir)PapersPleaseAnalyzer\src;$(SolutionDir)PapersPleaseAnalyzer\vendor\spdlog\include;$(SolutionDir)PapersPleaseAnalyzer\vendor\magic_enum\include;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\crt\src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/external:I C:\opencv\build\include /external:W0 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -154,17 +158,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\paplease\analysis\analysis_statemachine.cpp" />
-    <ClCompile Include="src\paplease\analysis\doc_engine.cpp" />
+    <ClCompile Include="src\paplease\analysis\engines\doc_engine.cpp" />
+    <ClCompile Include="src\paplease\analysis\engines\transcript_engine.cpp" />
     <ClCompile Include="src\paplease\analysis\required_docs_tracker.cpp" />
-    <ClCompile Include="src\paplease\analysis\rule_engine.cpp" />
+    <ClCompile Include="src\paplease\analysis\engines\rule_engine.cpp" />
     <ClCompile Include="src\paplease\analysis_v1\analysis_context_v1.cpp" />
-    <ClCompile Include="src\paplease\analysis\analysis_context.cpp" />
     <ClCompile Include="src\paplease\analysis\data\location_bank.cpp" />
-    <ClCompile Include="src\paplease\analysis\doc_analyzer.cpp" />
-    <ClCompile Include="src\paplease\analysis\doc_pipeline.cpp" />
-    <ClCompile Include="src\paplease\analysis\doc_store.cpp" />
-    <ClCompile Include="src\paplease\analysis\doc_validator.cpp" />
-    <ClCompile Include="src\paplease\analysis\game_analyzer.cpp" />
     <ClCompile Include="src\paplease\analysis\photo_analysis\photo_analyzer.cpp" />
     <ClCompile Include="src\paplease\analysis_v1\data\criminals_v1.cpp" />
     <ClCompile Include="src\paplease\analysis_v1\data\location_bank_v1.cpp" />
@@ -176,7 +175,6 @@
     <ClCompile Include="src\paplease\documents\data\date.cpp" />
     <ClCompile Include="src\paplease\documents\doc_lookup.cpp" />
     <ClCompile Include="src\paplease\documents\doc_view.cpp" />
-    <ClCompile Include="src\paplease\analysis\doc_tracker.cpp" />
     <ClCompile Include="src\paplease\scannable\doc_scan.cpp" />
     <ClCompile Include="src\paplease\documents\seal.cpp" />
     <ClCompile Include="src\paplease\scannable\scan_context.cpp" />
@@ -215,27 +213,21 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\paplease\analysis\analysis_statemachine.h" />
-    <ClInclude Include="src\paplease\analysis\combination.txt" />
     <ClInclude Include="src\paplease\analysis\contexts\entrant_context.h" />
     <ClInclude Include="src\paplease\analysis\contexts\frame_context.h" />
     <ClInclude Include="src\paplease\analysis\contexts\game_context.h" />
     <ClInclude Include="src\paplease\analysis\contexts\rule_context.h" />
     <ClInclude Include="src\paplease\analysis\discrepancy_engine.h" />
-    <ClInclude Include="src\paplease\analysis\doc_engine.h" />
+    <ClInclude Include="src\paplease\analysis\engines\doc_engine.h" />
+    <ClInclude Include="src\paplease\analysis\engines\transcript_engine.h" />
     <ClInclude Include="src\paplease\analysis\good_ideas.h" />
     <ClInclude Include="src\paplease\analysis\required_docs_tracker.h" />
-    <ClInclude Include="src\paplease\analysis\rule_engine.h" />
+    <ClInclude Include="src\paplease\analysis\engines\rule_engine.h" />
     <ClInclude Include="src\paplease\analysis_v1\analysis_context.h" />
     <ClInclude Include="src\paplease\analysis_v1\analysis_context.inl.h" />
-    <ClInclude Include="src\paplease\analysis\analysis_context.h" />
     <ClInclude Include="src\paplease\analysis\data\entrant_data.h" />
     <ClInclude Include="src\paplease\analysis\data\location_bank.h" />
     <ClInclude Include="src\paplease\analysis\data\profile.h" />
-    <ClInclude Include="src\paplease\analysis\doc_analyzer.h" />
-    <ClInclude Include="src\paplease\analysis\doc_pipeline.h" />
-    <ClInclude Include="src\paplease\analysis\doc_store.h" />
-    <ClInclude Include="src\paplease\analysis\doc_validator.h" />
-    <ClInclude Include="src\paplease\analysis\game_analyzer.h" />
     <ClInclude Include="src\paplease\analysis\photo_analysis\photo_analyzer.h" />
     <ClInclude Include="src\paplease\analysis_v1\data\criminals.h" />
     <ClInclude Include="src\paplease\analysis_v1\data\entrant_data.h" />
@@ -254,7 +246,6 @@
     <ClInclude Include="src\paplease\core\fixed.h" />
     <ClInclude Include="src\paplease\core\ref.h" />
     <ClInclude Include="src\paplease\documents\doc_view.h" />
-    <ClInclude Include="src\paplease\analysis\doc_tracker.h" />
     <ClInclude Include="src\base\analysis\scannable\scanned_doc.h" />
     <ClInclude Include="src\paplease\documents\doc_data.inl.h" />
     <ClInclude Include="src\paplease\documents\doc_data_type.h" />

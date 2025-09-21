@@ -55,6 +55,41 @@ namespace paplease {
 				return count;
 			}
 
+			static inline constexpr int CountContinuousPixelsCol(const cv::Mat& mat, int row, int left, PixelMatchCondition whatPixelShouldMatch)
+			{
+				int count = 0;
+				for (int col = left; col < mat.cols; col++)
+				{
+					if (whatPixelShouldMatch(row, col))
+					{ // isPixel
+						count++;
+					}
+					else
+					{
+						break;
+					}
+				}
+				return count;
+			}
+
+			static inline constexpr int CountContinuousPixelsRow(const cv::Mat& mat, int top, int col, PixelMatchCondition whatPixelShouldMatch)
+			{
+				int count = 0;
+				for (int row = top; row < mat.rows; row++)
+				{
+					if (whatPixelShouldMatch(row, col))
+					{ // isPixel
+						count++;
+					}
+					else
+					{
+						break;
+					}
+				}
+				return count;
+			}
+
+
 			static inline constexpr int FindValidRightEdge(const cv::Mat& transcript, int row, int left, int minColLimit)
 			{
 				int colCount = CountContinuousBlackPixelsCol(transcript, row, left);

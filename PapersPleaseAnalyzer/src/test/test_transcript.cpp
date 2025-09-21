@@ -16,7 +16,7 @@ namespace test {
 
     void test_transcript()
     {
-        GameView game("C:\\dev\\PapersPleaseAnalyzer\\PapersPleaseAnalyzer\\images\\game_59.png");
+        GameView game("C:\\dev\\PapersPleaseAnalyzer\\PapersPleaseAnalyzer\\images\\game_60.png");
         auto transcriptDocOpt = ScanForDocument(game, ViewArea::InspectionView, DocType::Transcript);
         if (!transcriptDocOpt)
             assert(false && "Couldn't find a transcript!");
@@ -35,6 +35,8 @@ namespace test {
                 magic_enum::enum_name(entry.speakerRole),
                 entry.dialogueLine);
         }
+
+        rulebook.GetData();
     }
 
 }  // namespace test

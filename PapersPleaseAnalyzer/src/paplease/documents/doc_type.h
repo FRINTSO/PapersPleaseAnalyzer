@@ -27,7 +27,7 @@ namespace paplease {
 
         enum class PassportType : u8
         {
-            Invalid = static_cast<uint8_t>(-1),
+            Invalid = static_cast<u8>(-1),
             Antegria = static_cast<u8>(DocType::Passport),
             Arstotzka,
             Impor,
@@ -42,7 +42,7 @@ namespace paplease {
 
         enum class AppearanceType : u8
         {
-            Invalid = static_cast<uint8_t>(-1),
+            Invalid = static_cast<u8>(-1),
             AccessPermit = 0,
             CertificateOfVaccination,
             DiplomaticAuthorization,

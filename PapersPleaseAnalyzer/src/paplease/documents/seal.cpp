@@ -4,6 +4,8 @@
 #include "paplease/common/image_process.h"
 #include "paplease/documents/bounding_box_finder.inc"
 
+#include "test/documents/test_hsv.h"
+
 #include <optional>
 
 namespace paplease {
@@ -112,8 +114,11 @@ namespace paplease {
 		{
 			if (mat.empty()) return false;
 
-			static constinit HSVConfig config{ 0, 179, 128, 216, 182, 255 };
+			static constinit HSVConfig config{ 0, 179, 111, 216, 182, 255 };
+			//test::documents::find_hsv(mat, config);
 			auto binary = ToHSVBinary(mat, config);
+			//cv::imshow("binary", binary);
+			//cv::waitKey();
 			auto seal = ExtractSeal(binary);
 			if (!seal)
 			{

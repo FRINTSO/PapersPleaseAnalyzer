@@ -4,6 +4,7 @@
 namespace paplease {
     namespace analysis {
 
+        // ==== Entry Point ====
         void AnalysisStateMachine::Run(const GameView& gameView)
         {
             scannable::ScanContext scanContext = scannable::Scan(gameView);
@@ -11,6 +12,7 @@ namespace paplease {
             this->RunInternal(frame);
         }
 
+        // ==== Main Flow ====
         void AnalysisStateMachine::RunInternal(contexts::FrameContext& frame)
         {
             auto analysisResult = this->RunAnalyzeFrame(frame); // First step, to gather what needs to be done
@@ -64,27 +66,7 @@ namespace paplease {
             this->RunDocumentAnalysisByRequiredDocumentsTracker(frame);
 
             m_requiredDocsTracker.WarnMissingRequiredDocuments();
-
-#if OLD
-            // Other states here
-            // 
-            // If rule book engine, run it
-            if (m_ruleEngine.IsInitialized())
-            {
-                this->RunRuleEngine();
-            }
-
-            // Default case (always run)
-            this->RunDocumentAnalysis(frame);
-#endif
         }
-
-        void AnalysisStateMachine::PromptUserAnalysisFinishState()
-        {
-            LOG("ANALYSIS OF CURRENT ENTRANT IS COMPLETE!");
-            m_entrant.SetAnalysisCompleted();
-        }
-
         FrameAnalysisResult AnalysisStateMachine::RunAnalyzeFrame(contexts::FrameContext& frame)
         {
             // Update entrant context - only set once
@@ -120,6 +102,7 @@ namespace paplease {
             return FrameAnalysisResult::ContinueAnalysis;
         }
 
+        // ==== State Change Handlers ====
         void AnalysisStateMachine::OnNewDate(documents::data::Date date)
         {
             m_game.Reset();
@@ -128,7 +111,6 @@ namespace paplease {
             m_ruleEngine.ResetDay();
             m_requiredDocsTracker.ResetDay();
         }
-
         void AnalysisStateMachine::OnNewEntrant(int entrantNumber)
         {
             m_entrant.Reset();
@@ -137,6 +119,19 @@ namespace paplease {
             m_requiredDocsTracker.ResetEntrant();
         }
 
+        // ==== Rule Engine ====
+        void AnalysisStateMachine::RunRuleEngine()
+        {
+            m_ruleEngine.UpdateApplicableRules();
+            
+        }
+        void AnalysisStateMachine::PromptUserAnalysisFinishState()
+        {
+            LOG("ANALYSIS OF CURRENT ENTRANT IS COMPLETE!");
+            m_entrant.SetAnalysisCompleted();
+        }
+
+        // ==== Document Analysis ====
         void AnalysisStateMachine::RunDocumentAnalysis(contexts::FrameContext& frame)
         {  // document pipeline - process documents - add to profile - find discrepancies - etc.
             for (const auto& doc : frame.documents)
@@ -151,7 +146,6 @@ namespace paplease {
             }
 
         }
-
         void AnalysisStateMachine::RunDocumentAnalysisByRequiredDocumentsTracker(contexts::FrameContext& frame)
         {
             for (const auto& doc : frame.documents)
@@ -171,7 +165,7 @@ namespace paplease {
                 }
 
                 auto result = m_docEngine.RunAnalysis(doc, frame.gameView);
-                if (result == DocAnalysisResult::SuccessfulAnalysis)
+                if (result == engines::DocAnalysisResult::SuccessfulAnalysis)
                 {
                     m_requiredDocsTracker.SetAnalyzed(doc.appearanceType);
                 }
@@ -181,12 +175,11 @@ namespace paplease {
                 }
             }
         }
-
-        void AnalysisStateMachine::HandleDocumentAnalysisResult(DocAnalysisResult result)
+        void AnalysisStateMachine::HandleDocumentAnalysisResult(engines::DocAnalysisResult result)
         {
             switch (result)
             {
-                case DocAnalysisResult::CanBuildRuleBook:
+                case engines::DocAnalysisResult::CanBuildRuleBook:
                 {
                     auto rulebookOpt = m_docEngine.TryBuildRuleBook();
                     if (!rulebookOpt) return;
@@ -196,17 +189,23 @@ namespace paplease {
                     m_requiredDocsTracker.SetAnalyzed(documents::AppearanceType::RuleBook);
                     break;
                 }
-                case DocAnalysisResult::CanBuildTranscript:
+                case engines::DocAnalysisResult::CanBuildTranscript:
                 {
-                    break;  // MISSING
+                    auto transcriptOpt = m_docEngine.TryBuildTranscript();
+                    if (!transcriptOpt) return;
+                    this->HandleNewTranscript(std::move(transcriptOpt.value()));
+
+                    m_requiredDocsTracker.SetAnalyzed(documents::AppearanceType::Transcript);
+                    break;
                 }
-                case DocAnalysisResult::CanBuildCriminalData:
+                case engines::DocAnalysisResult::CanBuildCriminalData:
                 {
                     break;  // MISSING
                 }
             }
         }
 
+        // ==== Data Handlers ====
         void AnalysisStateMachine::HandleNewRuleBook(data::RuleBook&& rulebook)
         {
             m_game.SetRuleBook(std::move(rulebook));
@@ -214,18 +213,19 @@ namespace paplease {
             m_ruleEngine.Initialize(rulebook_);
             LOG("Rulebook initialized!");
         }
-
+        void AnalysisStateMachine::HandleNewTranscript(data::Transcript&& transcript)
+        {
+            m_entrant.SetTranscript(std::move(transcript));
+            const auto& transcript_ = m_entrant.GetTranscript();
+            m_transcriptEngine.Initialize(transcript_);
+            LOG_WARN("NO IMPL: HandleNewTranscript");
+        }
         void AnalysisStateMachine::HandleNewCriminalData(data::CriminalData&& criminalData)
         {
             LOG_WARN("NO IMPL: HandleNewCriminalData");
         }
 
-        void AnalysisStateMachine::HandleNewTranscript(data::Transcript&& transcript)
-        {
-            LOG_WARN("NO IMPL: HandleNewTranscript");
-        }
-
-
+        // ==== Classification ====
         void AnalysisStateMachine::AttemptEntrantClassificationByProvidedDocument(documents::AppearanceType appearanceType)
         {
             if (!m_ruleEngine.IsInitialized())
@@ -235,11 +235,5 @@ namespace paplease {
             m_ruleEngine.ClassifyEntrantBasedOnDocument(appearanceType);
         }
 
-        void AnalysisStateMachine::RunRuleEngine()
-        {
-            m_ruleEngine.UpdateApplicableRules();
-            
-        }
-
-    }
-}
+    }  // namespace analysis
+}  // namespace paplease
