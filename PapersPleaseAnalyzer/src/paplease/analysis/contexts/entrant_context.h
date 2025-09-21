@@ -35,6 +35,13 @@ namespace paplease {
                 std::optional<documents::data::SIUnitValue> GetApproximateHeight() const { return m_approximateHeight; }
                 void SetAnalysisCompleted() noexcept { m_currentAnalysisCompleted = true; }
                 bool AnalysisCompleted() const noexcept { return m_currentAnalysisCompleted; }
+
+                void SetTranscript(data::Transcript&& transcript)
+                {
+                    m_transcript = std::move(transcript);
+                }
+                const data::Transcript& GetTranscript() const { return m_transcript.value(); }
+
                 void Reset()
                 {
                     m_entrant = data::EntrantInfo{};

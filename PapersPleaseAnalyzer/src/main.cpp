@@ -35,20 +35,27 @@ static void RunWithLiveGame()
 	while (true)
 	{
 		auto result = paplease::screencap::CaptureGameWindow();
-
+		auto resultOpt = paplease::screencap::ExtractGameWindow(result);
+		if (!resultOpt.has_value())
+		{
+			std::cout << "couldn't extract view\n";
+			continue;
+		}
+		result = *resultOpt;
 		if (result.empty())
 		{
 			std::cout << "Empty\n";
 			continue;
 		}
 
+		paplease::screencap::CalculatePixelGroupSize(result);
+
+		cv::imshow("Win", result);
+		cv::waitKey();
+
 		paplease::GameView view(std::move(result));
-		//analyzer.Scan(view);
 		sm.Run(view);
 
-		//tracker.Update(view);
-		//analyzer.Update(view);
-		//cv::imshow("output", result);
 		cv::waitKey(30);
 	}
 }

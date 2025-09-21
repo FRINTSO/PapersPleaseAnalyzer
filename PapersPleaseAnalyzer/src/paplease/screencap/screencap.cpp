@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "paplease/screencap/screencap.h"
 
+#include "paplease/common/color.h"
+#include "paplease/scannable/scan_utils.h"
+
 #include <Windows.h>
 
 namespace paplease {
@@ -88,7 +91,7 @@ namespace paplease {
             static HWND desktopWindow = GetDesktopWindow();
             HWND gameWindow = GetGameWindowHandle();
             
-            static auto result = ResizeGameWindowIfNeeded(gameWindow);
+            // static auto result = ResizeGameWindowIfNeeded(gameWindow);
 
             if (!IsWindowForeground(gameWindow))
             {
@@ -117,6 +120,61 @@ namespace paplease {
             auto finalWindow = windowMat(rect);
 
             return finalWindow;
+        }
+
+        std::optional<cv::Mat> ExtractGameWindow(const cv::Mat& mat)
+        {
+            // cutout black area
+
+            auto boundingBoxOpt = paplease::scannable::scan_utils::FindBoundingBox(mat, [&](int row, int column)
+            {
+                return paplease::BgrVal(*mat.ptr<paplease::BgrColor>(row, column)) != 0;
+            });
+
+            if (!boundingBoxOpt.has_value())
+            {
+                return std::nullopt;
+            }
+
+            return mat(boundingBoxOpt.value());
+        }
+
+        Shape CalculatePixelGroupSize(const cv::Mat& mat)
+        {
+            cv::imshow("T", mat);
+            cv::waitKey();
+            Shape pixelGroupSize{ INT_MAX, INT_MAX };
+
+            int offset = 0;
+            for (size_t row = 0; row < mat.rows; row++)
+            {
+                while (offset < mat.cols)
+                {
+                    int currentColor = BgrVal(*mat.ptr<BgrColor>(row, offset));
+                    int count = paplease::scannable::scan_utils::CountContinuousPixelsCol(mat, row, offset, [&](int row, int column)
+                    {
+                        return BgrVal(*mat.ptr<BgrColor>(row, column)) == currentColor;
+                    });
+                    int rowCount = paplease::scannable::scan_utils::CountContinuousPixelsRow(mat, row, offset + count - 1, [&](int row, int column)
+                    {
+                        return BgrVal(*mat.ptr<BgrColor>(row, column)) == currentColor;
+                    });
+
+                    if (count != 0)
+                    {
+                        if (count == 2)
+                        {
+                            __debugbreak();
+                        }
+                        pixelGroupSize.width = std::min(pixelGroupSize.width, count);
+                        pixelGroupSize.height = std::min(pixelGroupSize.height, rowCount);
+                    }
+
+                    offset += count + 1;
+                }
+            }
+
+            return pixelGroupSize;
         }
 
     }

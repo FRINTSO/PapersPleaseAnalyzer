@@ -1,6 +1,7 @@
 #pragma once
 #include "paplease/core/fixed.h"
 #include "paplease/documents/doc_class.h"
+#include "paplease/documents/doc_data.h"
 #include "paplease/types.h"
 
 
@@ -35,6 +36,8 @@ namespace paplease {
                 {
                     return m_entries;
                 }
+
+                documents::DocData GetData() const;
 
             private:
                 core::FixedArray<Entry, MaxTranscriptEntries> m_entries;

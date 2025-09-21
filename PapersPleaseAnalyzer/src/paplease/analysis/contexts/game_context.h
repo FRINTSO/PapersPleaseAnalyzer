@@ -17,7 +17,7 @@ namespace paplease {
 
                 void SetRuleBook(data::RuleBook&& rulebook)
                 {
-                    m_rulebook = rulebook;
+                    m_rulebook = std::move(rulebook);
                 }
                 const data::RuleBook& GetRuleBook() const { return m_rulebook.value(); }
                 void SetCurrentDate(documents::data::Date date)

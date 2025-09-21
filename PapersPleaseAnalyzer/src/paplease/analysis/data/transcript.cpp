@@ -132,6 +132,53 @@ namespace paplease {
 				return ocr::ImageToString(textBox, ocr::GetFontInfo(documents::DocType::Transcript));
 			}
 
+			static std::string ScanPurposeResponse(std::string_view str)
+			{
+				LOG("SCANPURPOSERESPONSE: {}", str);
+				return {};
+			}
+
+			static std::string ScanDurationResponse(std::string_view str)
+			{
+				LOG("SCANDURATIONRESPONSE: {}", str);
+				return {};
+			}
+
+			documents::DocData Transcript::GetData() const
+			{
+				bool scanPurpose = false;
+				bool scanDuration = false;
+				documents::DocDataBuilder builder{};
+				for (const auto& entry : this->Entries())
+				{
+					if (entry.speakerRole == SpeakerRole::Inspector)
+					{ // 
+						if (entry.dialogueLine.find("purpose") != std::string::npos)
+						{
+							scanPurpose = true;
+						}
+						else if (entry.dialogueLine.find("Duration") != std::string::npos)
+						{
+							scanDuration = true;
+						}
+					}
+					else
+					{
+						if (scanPurpose)
+						{
+							ScanPurposeResponse(entry.dialogueLine);
+							scanPurpose = false;
+						}
+						else if (scanDuration)
+						{
+							ScanDurationResponse(entry.dialogueLine);
+							scanDuration = false;
+						}
+					}
+				}
+				return builder.Build();
+			}
+
 			std::optional<Transcript> CreateTranscript(const documents::Doc& document)
 			{
 				Transcript my_transcript{};
