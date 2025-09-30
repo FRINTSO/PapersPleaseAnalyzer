@@ -14,3 +14,5 @@ Paplease-Core/vendor/opencv-build
 Paplease-Core/vendor/opencv-install
 
 !vendor/premake/bin
+
+.cache/

@@ -1,4 +1,4 @@
-project "paplease-cli"
+project "sandbox"
   kind "ConsoleApp"
   language "C++"
   cppdialect "C++20"
@@ -18,6 +18,10 @@ project "paplease-cli"
   includedirs {
     "src",
     "%{wks.location}/paplease-core/src",
+  }
+
+  libdirs {
+    "%{wks.location}/bin/" .. outputdir .. "/paplease-core"
   }
 
   links {
@@ -42,6 +46,10 @@ project "paplease-cli"
     libdirs { "%{wks.location}/paplease-core/vendor/opencv-install/lib" }
     links { "opencv_core", "opencv_imgcodecs", "opencv_imgproc" }
     includedirs { "%{wks.location}/paplease-core/vendor/opencv-install/include/opencv4" }
+    linkoptions { "-Wl,-rpath,$ORIGIN" }
+    postbuildcommands {
+      "{COPY} %{wks.location}/paplease-core/vendor/opencv-install/lib/*.so* %{cfg.targetdir}"
+    }
 
   filter "configurations:Debug"
     defines { "_DEBUG" }
