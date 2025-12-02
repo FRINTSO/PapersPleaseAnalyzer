@@ -15,10 +15,11 @@ def download_file(url: str, filepath: str) -> None:
     with open(filepath, "wb") as f:
         f.write(response.content)
 
+
 def unzip_file(filepath: str, delete_zip_file: bool = True) -> None:
     archive_path = os.path.abspath(filepath)
     target_dir = os.path.dirname(archive_path)
-    
+
     if filepath.endswith(".zip"):
         with ZipFile(archive_path, "r") as zip_file:
             zip_file.extractall(target_dir)
@@ -27,7 +28,7 @@ def unzip_file(filepath: str, delete_zip_file: bool = True) -> None:
             tar_file.extractall(target_dir)
     else:
         raise ValueError(f"Unsupported archive format: {filepath}")
-    
+
     if delete_zip_file:
         os.remove(archive_path)
 
@@ -44,6 +45,6 @@ def get_platform() -> Platform:
         raise SystemExit("Unsupported platform: {system}")
     return Platform(system)
 
+
 def get_project_root() -> Path:
     return (Path(__file__).parent.parent).resolve()
-

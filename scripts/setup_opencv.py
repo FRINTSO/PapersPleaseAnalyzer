@@ -12,11 +12,12 @@ __platform_archive_table = {
 }
 
 platform = utils.get_platform()
-vendor_dir = utils.get_project_root() / "paplease-core/vendor"
+vendor_dir = utils.get_project_root() / "core/vendor"
 
 opencv_directory_name = "opencv-4.x"
 opencv_archive_name = f"4.x{__platform_archive_table[platform]}"
-opencv_archive_url = f"https://github.com/opencv/opencv/archive/{opencv_archive_name}"
+opencv_archive_url = f"https://github.com/opencv/opencv/archive/{
+    opencv_archive_name}"
 opencv_archive_path = str(vendor_dir / opencv_archive_name)
 opencv_directory = vendor_dir / opencv_directory_name
 
@@ -32,10 +33,11 @@ opencv_build_options = [
     # Only include these modules
     "-DBUILD_LIST=core,imgproc,imgcodecs",
     "-DBUILD_opencv_world=OFF",
-    
+
     # Optional GUI for development/debugging
-    #"-DBUILD_opencv_highgui=ON",
+    # "-DBUILD_opencv_highgui=ON",
 ]
+
 
 def install_opencv() -> bool:
     if is_installed():
@@ -67,11 +69,16 @@ def install_opencv() -> bool:
     # install opencv
     print("Installing opencv")
     cores = os.cpu_count() or 4
-    subprocess.call(["cmake", "--build", ".", "--config", "Release", "--parallel", str(cores)], cwd=str(build_dir), stdout=sys.stdout, stderr=sys.stderr)
-    subprocess.call(["cmake", "--build", ".", "--config", "Debug", "--parallel", str(cores)], cwd=str(build_dir), stdout=sys.stdout, stderr=sys.stderr)
-    subprocess.call(["cmake", "--build", ".", "--target", "install", "--config", "Release", "--parallel", str(cores)], cwd=str(build_dir), stdout=sys.stdout, stderr=sys.stderr)
-    subprocess.call(["cmake", "--build", ".", "--target", "install", "--config", "Debug", "--parallel", str(cores)], cwd=str(build_dir), stdout=sys.stdout, stderr=sys.stderr)
+    subprocess.call(["cmake", "--build", ".", "--config", "Release", "--parallel",
+                    str(cores)], cwd=str(build_dir), stdout=sys.stdout, stderr=sys.stderr)
+    subprocess.call(["cmake", "--build", ".", "--config", "Debug", "--parallel",
+                    str(cores)], cwd=str(build_dir), stdout=sys.stdout, stderr=sys.stderr)
+    subprocess.call(["cmake", "--build", ".", "--target", "install", "--config", "Release",
+                    "--parallel", str(cores)], cwd=str(build_dir), stdout=sys.stdout, stderr=sys.stderr)
+    subprocess.call(["cmake", "--build", ".", "--target", "install", "--config", "Debug",
+                    "--parallel", str(cores)], cwd=str(build_dir), stdout=sys.stdout, stderr=sys.stderr)
     return True
+
 
 def is_installed() -> bool:
     return False

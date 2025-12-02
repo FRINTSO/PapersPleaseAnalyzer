@@ -1,26 +1,24 @@
-include "./vendor/premake/premake_customization/solution_items.lua"
-include "Dependencies.lua"
+include("dependencies.lua")
 
-workspace "PapleaseAnalyzer"
-    architecture "x64"
-    startproject "Paplease-CLI"
+workspace("PapleaseAnalyzer")
+architecture("x64")
+startproject("cli")
 
-    configurations { "Debug", "Release", "Dist" }
+configurations({ "Debug", "Release", "Dist" })
 
-    flags
-    {
-        "MultiProcessorCompile"
-    }
+flags({
+	"MultiProcessorCompile",
+})
 
-    -- Workspace-wide build options for MSVC
-    filter "system:windows"
-        buildoptions { "/EHsc", "/Zc:preprocessor", "/Zc:__cplusplus" }
+-- Workspace-wide build options for MSVC
+filter("system:windows")
+buildoptions({ "/EHsc", "/Zc:preprocessor", "/Zc:__cplusplus" })
 
 outputdir = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
 
-group "Core"
-    include "Paplease-Core"
-group ""
+group("Core")
+include("core")
+group("")
 
-include "Paplease-Runtime"
-include "Paplease-CLI"
+include("sandbox")
+include("cli")
