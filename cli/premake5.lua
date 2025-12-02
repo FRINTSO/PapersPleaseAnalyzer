@@ -7,8 +7,8 @@ staticruntime("off")
 targetdir("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 objdir("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
-pchheader("pch.h")
-pchsource("src/pch.cpp")
+--pchheader("pch.h")
+--pchsource("src/pch.cpp")
 
 files({
 	"src/**.h",
@@ -17,12 +17,14 @@ files({
 
 includedirs({
 	"src",
-	"%{wks.location}/core/src",
+	"%{wks.location}/core/include",
 })
 
 links({
 	"core",
 })
+
+dependson("core")
 
 filter("system:windows")
 libdirs({ "%{wks.location}/core/vendor/opencv-install/x64/vc17/lib" })
