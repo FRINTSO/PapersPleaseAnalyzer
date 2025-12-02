@@ -1,6 +1,6 @@
-[submodule "paplease-core/vendor/spdlog"]
-	path = paplease-core/vendor/spdlog
+[submodule "core/vendor/spdlog"]
+	path = core/vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
-[submodule "paplease-core/vendor/magic_enum"]
-	path = paplease-core/vendor/magic_enum
+[submodule "core/vendor/magic_enum"]
+	path = core/vendor/magic_enum
 	url = https://github.com/Neargye/magic_enum.git

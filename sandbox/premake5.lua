@@ -1,69 +1,69 @@
-project "sandbox"
-  kind "ConsoleApp"
-  language "C++"
-  cppdialect "C++20"
-  staticruntime "off"
+project("sandbox")
+kind("ConsoleApp")
+language("C++")
+cppdialect("C++20")
+staticruntime("off")
 
-  targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
-  objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
+targetdir("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
+objdir("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
-  pchheader "pch.h"
-  pchsource "src/pch.cpp"
+pchheader("pch.h")
+pchsource("src/pch.cpp")
 
-  files {
-    "src/**.h",
-    "src/**.cpp",
-  }
+files({
+	"src/**.h",
+	"src/**.cpp",
+})
 
-  includedirs {
-    "src",
-    "%{wks.location}/paplease-core/src",
-  }
+includedirs({
+	"src",
+	"%{wks.location}/core/src",
+})
 
-  libdirs {
-    "%{wks.location}/bin/" .. outputdir .. "/paplease-core"
-  }
+libdirs({
+	"%{wks.location}/bin/" .. outputdir .. "/core",
+})
 
-  links {
-    "paplease-core",
-  }
+links({
+	"core",
+})
 
-  filter "system:windows"
-    libdirs { "%{wks.location}/paplease-core/vendor/opencv-install/x64/vc17/lib" }
-    includedirs { "%{wks.location}/paplease-core/vendor/opencv-install/include" }
-    postbuildcommands {
-        -- copy DLLs next to the exe
-        "{COPY} %{wks.location}/paplease-core/vendor/opencv-install/x64/vc17/bin/*.dll %{cfg.targetdir}"
-    }
+filter("system:windows")
+libdirs({ "%{wks.location}/core/vendor/opencv-install/x64/vc17/lib" })
+includedirs({ "%{wks.location}/core/vendor/opencv-install/include" })
+postbuildcommands({
+	-- copy DLLs next to the exe
+	"{COPY} %{wks.location}/core/vendor/opencv-install/x64/vc17/bin/*.dll %{cfg.targetdir}",
+})
 
-  filter { "system:windows", "configurations:Debug" }
-    links   { "opencv_core4130d", "opencv_imgproc4130d", "opencv_imgcodecs4130d" }
+filter({ "system:windows", "configurations:Debug" })
+links({ "opencv_core4130d", "opencv_imgproc4130d", "opencv_imgcodecs4130d" })
 
-  filter { "system:windows", "configurations:Release" }
-    links   { "opencv_core4130", "opencv_imgproc4130", "opencv_imgcodecs4130" }
+filter({ "system:windows", "configurations:Release" })
+links({ "opencv_core4130", "opencv_imgproc4130", "opencv_imgcodecs4130" })
 
-  filter "system:linux"
-    libdirs { "%{wks.location}/paplease-core/vendor/opencv-install/lib" }
-    links { "opencv_core", "opencv_imgcodecs", "opencv_imgproc" }
-    includedirs { "%{wks.location}/paplease-core/vendor/opencv-install/include/opencv4" }
-    linkoptions { "-Wl,-rpath,$ORIGIN" }
-    postbuildcommands {
-      "{COPY} %{wks.location}/paplease-core/vendor/opencv-install/lib/*.so* %{cfg.targetdir}"
-    }
+filter("system:linux")
+libdirs({ "%{wks.location}/core/vendor/opencv-install/lib" })
+links({ "opencv_core", "opencv_imgcodecs", "opencv_imgproc" })
+includedirs({ "%{wks.location}/core/vendor/opencv-install/include/opencv4" })
+linkoptions({ "-Wl,-rpath,$ORIGIN" })
+postbuildcommands({
+	"{COPY} %{wks.location}/core/vendor/opencv-install/lib/*.so* %{cfg.targetdir}",
+})
 
-  filter "configurations:Debug"
-    defines { "_DEBUG" }
-    runtime "Debug"
-    symbols "On"
+filter("configurations:Debug")
+defines({ "_DEBUG" })
+runtime("Debug")
+symbols("On")
 
-  filter "configurations:Release"
-    defines { "NDEBUG" }
-    runtime "Release"
-    optimize "On"
-    symbols "On"
+filter("configurations:Release")
+defines({ "NDEBUG" })
+runtime("Release")
+optimize("On")
+symbols("On")
 
-  filter "configurations:Dist"
-    defines { "DIST" }
-    runtime "Release"
-    optimize "On"
-    symbols "Off"
+filter("configurations:Dist")
+defines({ "DIST" })
+runtime("Release")
+optimize("On")
+symbols("Off")
