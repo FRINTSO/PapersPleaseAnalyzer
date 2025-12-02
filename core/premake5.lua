@@ -7,16 +7,23 @@ staticruntime("off")
 targetdir("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 objdir("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
-pchheader("pch.h")
-pchsource("src/pch.cpp")
+--pchheader("pch.h")
+--pchsource("src/pch.cpp")
 
 files({
-	"src/**.h",
-	"src/**.cpp",
+	"documents/**.cpp",
+	"documents/**.h",
+	"game_screen/**.cpp",
+	"game_screen/**.h",
+	"image/**.cpp",
+	"image/**.h",
+	"scanner/**.cpp",
+	"scanner/**.h",
+	"include/paplease/**.h",
 })
 
 includedirs({
-	"src",
+	"include",
 })
 
 filter("system:windows")
