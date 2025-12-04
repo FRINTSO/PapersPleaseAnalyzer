@@ -1,5 +1,6 @@
-#ifndef PAPLEASE_INTEGRAL_TYPES_H
-#define PAPLEASE_INTEGRAL_TYPES_H
+#ifndef PAPLEASE_TYPES_H
+#define PAPLEASE_TYPES_H
+
 #include <cstdint>
 
 // Unsigned integers
@@ -14,4 +15,4 @@ using i16 = std::int16_t;
 using i32 = std::int32_t;
 using i64 = std::int64_t;
 
-#endif // PAPLEASE_INTEGRAL_TYPES_H
+#endif // PAPLEASE_TYPES_H

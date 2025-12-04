@@ -1,3 +1,6 @@
+#include <algorithm>
+#include <cctype>
+#include <filesystem>
 #include <string>
 
 #include <opencv2/imgcodecs.hpp>
@@ -5,7 +8,6 @@
 #include <paplease/game_screen.h>
 #include <paplease/geometry.h>
 #include <paplease/compiler.h>
-#include <paplease/image.h>
 
 // Screen geometry constants
 static constexpr int GAME_SCREEN_WIDTH = 1140;
@@ -36,6 +38,28 @@ bool validate_game_screen(const game_screen &screen)
 	       screen.pixels.rows == GAME_SCREEN_HEIGHT;
 }
 
+static bool is_image_file(const std::string &path)
+{
+	if (!std::filesystem::exists(path) ||
+	    !std::filesystem::is_regular_file(path))
+		return false;
+
+	std::string ext = std::filesystem::path(path).extension();
+	std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+	if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".tif" ||
+	    ext == ".tiff" || ext == ".bmp" || ext == ".webp")
+		return true;
+	return false;
+}
+
+static bool read_image(cv::Mat &out, const std::string &path)
+{
+	if (!is_image_file(path))
+		return false;
+
+	cv::imread(path, out);
+	return !out.empty();
+}
 bool load_game_screen_from_file(game_screen &out, const std::string &path)
 {
 	cv::Mat img;

@@ -1,7 +1,8 @@
 #ifndef PAPLEASE_GEOMETRY_H
 #define PAPLEASE_GEOMETRY_H
 
-#include "opencv2/core/types.hpp"
+#include <opencv2/core/types.hpp>
+
 struct shape {
 	int width, height;
 };

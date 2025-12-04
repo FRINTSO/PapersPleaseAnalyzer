@@ -1,4 +1,42 @@
-#pragma once
+constexpr doc_type type_of(doc_variant v)
+{
+	switch (v) {
+	case doc_variant::access_permit:
+		return doc_type::access_permit;
+	case doc_variant::certificate_of_vaccination:
+		return doc_type::certificate_of_vaccination;
+	case doc_variant::diplomatic_authorization:
+		return doc_type::diplomatic_authorization;
+	case doc_variant::entry_permit:
+		return doc_type::entry_permit;
+	case doc_variant::entry_ticket:
+		return doc_type::entry_ticket;
+	case doc_variant::grant_of_asylum:
+		return doc_type::grant_of_asylum;
+	case doc_variant::identity_card:
+		return doc_type::identity_card;
+	case doc_variant::identity_supplement:
+		return doc_type::identity_supplement;
+	case doc_variant::work_pass:
+		return doc_type::work_pass;
+	case doc_variant::rulebook:
+		return doc_type::rulebook;
+	case doc_variant::bulletin:
+		return doc_type::bulletin;
+	case doc_variant::transcript:
+		return doc_type::transcript;
+	case doc_variant::passport_antegria:
+	case doc_variant::passport_arstotzka:
+	case doc_variant::passport_impor:
+	case doc_variant::passport_kolechia:
+	case doc_variant::passport_obristan:
+	case doc_variant::passport_republia:
+	case doc_variant::passport_united_federation:
+		return doc_type::passport;
+	}
+	unreachable();
+}
+
 inline constexpr doc_appearance g_appearances[] = {
     // access_permit
     {{{215, 233, 210}, {176, 168, 173}}, 2, 294, 392},
@@ -18,7 +56,7 @@ inline constexpr doc_appearance g_appearances[] = {
     {{{232, 218, 199}, {181, 167, 166}}, 2, 180, 300},
     // work_pass
     {{{233, 199, 211}, {204, 175, 192}}, 2, 294, 270},
-    // rule_book
+    // rulebook
     {{{87, 72, 72}}, 1, 480, 320},
     // bulletin
     {{{240, 240, 240}}, 1, 298, 398},
