@@ -1,4 +1,10 @@
+#include "opencv2/core/cvstd.hpp"
+#include "opencv2/core/utility.hpp"
+#include "opencv2/imgcodecs.hpp"
+#include "paplease/resources.h"
 #include <cassert>
+#include <filesystem>
+#include <string_view>
 #include <unordered_map>
 #include <vector>
 
@@ -22,11 +28,11 @@ struct font_info {
 };
 
 static constexpr font_info BOOTH_FONT_INFO{ .tf = typeface::booth,
-					    .max_pixels_tall = 12,
-					    .letter_spacing_horizontal = 4,
-					    .whitespace_pixel_width = 6,
-					    .letter_spacing_vertical = 8,
-					    .newline_size = 4 };
+									.max_pixels_tall = 12,
+									.letter_spacing_horizontal = 4,
+									.whitespace_pixel_width = 6,
+									.letter_spacing_vertical = 8,
+									.newline_size = 4 };
 
 static const font_info &font_info_for(typeface tf)
 {
@@ -47,9 +53,9 @@ static cv::Mat downscale_image(const cv::Mat &image)
 {
 	cv::Mat result;
 	cv::resize(image, result,
-		   cv::Size((int)((float)image.cols * 0.5f),
-			    (int)((float)image.rows * 0.5f)),
-		   0, 0, cv::INTER_NEAREST);
+					cv::Size((int)((float)image.cols * 0.5f),
+							(int)((float)image.rows * 0.5f)),
+					0, 0, cv::INTER_NEAREST);
 	return result;
 }
 
@@ -77,7 +83,30 @@ static u64 encode_character_bits(const cv::Mat &character)
 
 static const std::unordered_map<u64, char> &charset_for(typeface tf)
 {
-	TODO("implement resource system");
+	static std::unordered_map<u64, char> charset{};
+
+	std::filesystem::path typeface_path = resources_get_typeface_path(tf);
+	std::vector<cv::String> files{};
+	cv::glob(typeface_path / "*.png", files, true);
+	for (const cv::String &font_char_path : files) {
+		char charset_char;
+
+		std::string_view file_name = std::filesystem::path(font_char_path).stem().c_str();
+
+		if (file_name == "QUESTION_MARK") {
+			charset_char = '?';
+		} else if (file_name.length() == 1) {
+			charset_char = file_name[0];
+		} else {
+			throw;
+		}
+
+		cv::Mat character_image = cv::imread(font_char_path, cv::IMREAD_GRAYSCALE);
+		u64 character_bits = encode_character_bits(character_image);
+		
+		charset[character_bits] = charset_char;
+	}
+	return charset;
 }
 
 static int find_top_line(const cv::Mat &mat)
@@ -93,7 +122,7 @@ static int find_top_line(const cv::Mat &mat)
 }
 
 static int find_next_top_line(const cv::Mat &mat, int previous_line,
-			      int font_size)
+									int font_size)
 {
 	for (int row = previous_line + font_size; row < mat.rows; row++) {
 		for (int col = 0; col < mat.cols; col++) {
@@ -106,7 +135,7 @@ static int find_next_top_line(const cv::Mat &mat, int previous_line,
 }
 
 std::vector<rectangle> extract_character_boxes_multiline(const cv::Mat &image,
-							 const font_info &font)
+								const font_info &font)
 {
 	std::vector<rectangle> boxes{};
 	constexpr int max_allowed_whitespace = 10;
@@ -159,14 +188,14 @@ std::vector<rectangle> extract_character_boxes_multiline(const cv::Mat &image,
 		}
 
 		line_top = find_next_top_line(image, line_top,
-					      font.max_pixels_tall);
+											font.max_pixels_tall);
 	}
 
 	return boxes;
 }
 
 std::vector<rectangle> extract_character_boxes(const cv::Mat &image,
-					       const font_info &font)
+												const font_info &font)
 {
 	if (image.rows / font.max_pixels_tall > 1)
 		return extract_character_boxes_multiline(image, font);
@@ -236,7 +265,7 @@ bool extract_text_strict(std::string &out, const cv::Mat &image, typeface tf)
 		u64 encoded_char = encode_character_bits(character);
 
 		if (encoded_char == 0 ||
-		    charset.find(encoded_char) == charset.end()) {
+						charset.find(encoded_char) == charset.end()) {
 			// TODO: Add error logging
 			return false;
 		}
@@ -246,17 +275,17 @@ bool extract_text_strict(std::string &out, const cv::Mat &image, typeface tf)
 		if (previous_rectangle) { // add spaces
 			int horizontal_space_from_last_box =
 				box.x - (previous_rectangle->x +
-					 previous_rectangle->width);
+						previous_rectangle->width);
 			const int letter_space_size =
 				font.letter_spacing_horizontal;
 			const int whitespace_size = font.whitespace_pixel_width;
 
 			int whitespaces = ((horizontal_space_from_last_box -
-					    letter_space_size) /
-					   whitespace_size);
+									letter_space_size) /
+								whitespace_size);
 
 			if (!(whitespaces >= 1 && ch == '1' &&
-			      field.back() == '1')) {
+									field.back() == '1')) {
 				if (whitespaces > 0)
 					field.append(whitespaces, ' ');
 			}
@@ -265,15 +294,15 @@ bool extract_text_strict(std::string &out, const cv::Mat &image, typeface tf)
 		if (previous_rectangle) { // add newlines
 			int vertical_space_from_last_box =
 				box.y - (previous_rectangle->y +
-					 previous_rectangle->height);
+						previous_rectangle->height);
 			const int wrapSize = font.letter_spacing_vertical;
 			const int newLineSize = font.newline_size;
 			int newlines =
 				((vertical_space_from_last_box - wrapSize) /
-				 newLineSize);
+					newLineSize);
 
 			if (vertical_space_from_last_box - wrapSize >=
-			    0) { // add extra space when wrapping
+							0) { // add extra space when wrapping
 				field.push_back(' ');
 			}
 

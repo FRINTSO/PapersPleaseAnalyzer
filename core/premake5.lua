@@ -11,14 +11,20 @@ objdir("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 --pchsource("src/pch.cpp")
 
 files({
+	"colorspace/**.cpp",
+	"colorspace/**.h",
 	"documents/**.cpp",
 	"documents/**.h",
 	"game_screen/**.cpp",
 	"game_screen/**.h",
-	"image/**.cpp",
-	"image/**.h",
-	"scanner/**.cpp",
-	"scanner/**.h",
+	"inspector/**.cpp",
+	"inspector/**.h",
+	"ocr/**.cpp",
+	"ocr/**.h",
+	"resources/**.cpp",
+	"resources/**.h",
+	"vision/**.cpp",
+	"vision/**.h",
 	"include/paplease/**.h",
 })
 

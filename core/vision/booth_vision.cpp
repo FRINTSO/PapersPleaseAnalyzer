@@ -1,3 +1,4 @@
+#include "opencv2/core.hpp"
 #include <opencv2/core/mat.hpp>
 
 #include <paplease/compiler.h>
@@ -8,11 +9,11 @@
 #include <paplease/ocr.h>
 
 static constexpr hsv_range BOOTH_TEXT_EXTRACTION_MASK_HSV{ .hue_min = 12,
-							   .hue_max = 18,
-							   .sat_min = 0,
-							   .sat_max = 255,
-							   .val_min = 106,
-							   .val_max = 106 };
+						   .hue_max = 18,
+						   .sat_min = 0,
+						   .sat_max = 255,
+						   .val_min = 106,
+						   .val_max = 106 };
 
 static constexpr rectangle BOOTH_TEXT_RECT{ .x = 168,
 					    .y = 416,
@@ -32,9 +33,9 @@ static cv::Mat preprocess_booth_for_text_extraction(const cv::Mat &booth_image)
 {
 	cv::Mat mask =
 		bgr_to_hsv_mask(booth_image, BOOTH_TEXT_EXTRACTION_MASK_HSV);
-	cv::Mat region = mask(BOOTH_TEXT_RECT.to_cv());
-	cv::Mat inverted = region ^ 255;
-	return inverted;
+	cv::Mat unflipped_region = mask(BOOTH_TEXT_RECT.to_cv());
+	unflipped_region ^= 255;
+	return mask;
 }
 
 bool extract_booth_info(booth_info &out, const game_screen &screen)

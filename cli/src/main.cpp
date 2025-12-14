@@ -2,7 +2,6 @@
 #include <filesystem>
 
 #include <paplease/game_screen.h>
-#include <paplease/resources.h>
 
 int main(int argc, char *argv[])
 {
@@ -15,7 +14,6 @@ int main(int argc, char *argv[])
 	// const char* env = std::getenv("PAPLEASE_ASSETS");
 	// if (env) asset_root = env;
 
-	resources::init(asset_root);
 	game_screen gs;
 	if (load_game_screen_from_file(gs, "c:/my_image.png")) {
 	}

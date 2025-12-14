@@ -3,13 +3,6 @@
 #include <paplease/game_screen.h>
 #include <paplease/vision.h>
 
-std::vector<doc> scan_for_inspection_documents(const game_screen &screen)
+bool find_passport_in_inspection(doc &out, const game_screen &screen)
 {
-	TODO("implement");
-}
-
-std::vector<doc_variant>
-scan_inspection_for_doc_variants(const game_screen &screen)
-{
-        TODO("implement");
 }
