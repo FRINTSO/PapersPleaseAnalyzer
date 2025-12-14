@@ -52,9 +52,8 @@ enum class doc_variant : u8 {
 	passport_kolechia,
 	passport_obristan,
 	passport_republia,
-	passport_united_federation,
+	passport_united_federation
 };
-
 
 struct doc {
 	cv::Mat pixels;
@@ -69,7 +68,6 @@ struct doc_appearance {
 };
 
 struct doc_data {
-
 };
 
 #include <paplease/documents.inl.h>

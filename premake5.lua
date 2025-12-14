@@ -22,3 +22,7 @@ group("")
 
 include("sandbox")
 include("cli")
+
+group("Tests")
+include("tests")
+group("")
