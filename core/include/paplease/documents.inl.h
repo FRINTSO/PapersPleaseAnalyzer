@@ -161,3 +161,27 @@ constexpr const doc_appearance &get_appearance(doc_variant v)
 {
 	return g_appearances[static_cast<size_t>(v)];
 }
+
+
+constexpr typeface typeface_for(doc_type type)
+{
+	switch (type) {
+	case doc_type::access_permit:
+	case doc_type::certificate_of_vaccination:
+	case doc_type::diplomatic_authorization:
+	case doc_type::entry_permit:
+	case doc_type::entry_ticket:
+	case doc_type::grant_of_asylum:
+	case doc_type::identity_supplement:
+	case doc_type::work_pass:
+	case doc_type::rulebook:
+	case doc_type::bulletin:
+	case doc_type::passport:
+		return typeface::bm_mini;
+	case doc_type::identity_card:
+		return typeface::mini_kylie;
+	case doc_type::transcript:
+		return typeface::t04b03;
+	}
+	unreachable();
+}

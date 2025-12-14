@@ -1,9 +1,11 @@
 #include <algorithm>
 #include <cctype>
+#include <cstdio>
 #include <filesystem>
 #include <string>
 
 #include <opencv2/imgcodecs.hpp>
+#include <opencv2/core/mat.hpp>
 
 #include <paplease/game_screen.h>
 #include <paplease/geometry.h>
@@ -29,6 +31,13 @@ static constexpr rectangle INSPECTION_RECT{ INSPECTION_X, INSPECTION_Y,
 
 void extract_game_screen(game_screen &out, const cv::Mat &buffer)
 {
+	if (buffer.cols == 1142 && buffer.rows == 672) {
+		out.pixels = buffer(cv::Rect(1, 1, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT));
+		return;
+	}
+
+	fprintf(stderr, "cols: %i, rows: %i\n", buffer.cols, buffer.rows);
+
 	TODO("implement extraction logic");
 }
 

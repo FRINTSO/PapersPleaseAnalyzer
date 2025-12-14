@@ -1,6 +1,5 @@
 #ifndef PAPLEASE_OCR_H
 #define PAPLEASE_OCR_H
-
 #include <string>
 
 #include <opencv2/core/mat.hpp>
@@ -12,6 +11,6 @@ enum class typeface {
 	booth,
 };
 
-bool extract_text_strict(std::string &out, const cv::Mat &image, typeface tf);
+bool extract_text_strict(std::string &out, const cv::Mat &binary_image, typeface tf);
 
 #endif // PAPLEASE_OCR_H

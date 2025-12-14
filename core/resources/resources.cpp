@@ -4,6 +4,9 @@
 #include <paplease/resources.h>
 #include <string_view>
 
+namespace resources
+{
+
 struct resourcer {
 	std::filesystem::path asset_path;
 	bool initialized;
@@ -11,15 +14,21 @@ struct resourcer {
 
 static resourcer g_resourcer{};
 
-void init_resourcer(std::string_view asset_path)
+void init(std::string_view asset_path)
 {
 	g_resourcer.asset_path = asset_path;
 	g_resourcer.initialized = true;
 }
 
-std::filesystem::path resources_get_typeface_path(typeface tf)
+const std::filesystem::path &asset_path()
 {
-	std::filesystem::path typeface_path = g_resourcer.asset_path / "typefaces";
+	return g_resourcer.asset_path;
+}
+
+std::filesystem::path typeface_path(typeface tf)
+{
+	std::filesystem::path typeface_path =
+		g_resourcer.asset_path / "typefaces";
 	switch (tf) {
 	case typeface::booth:
 		return typeface_path / "BoothNumber";
@@ -31,4 +40,6 @@ std::filesystem::path resources_get_typeface_path(typeface tf)
 		return typeface_path / "04b03";
 	}
 	unreachable();
+}
+
 }

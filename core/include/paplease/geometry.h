@@ -3,6 +3,10 @@
 
 #include <opencv2/core/types.hpp>
 
+struct point {
+	int x, y;
+};
+
 struct shape {
 	int width, height;
 };
