@@ -4,6 +4,7 @@
 #include <string>
 
 #include <paplease/game_screen.h>
+#include <vector>
 
 struct booth_info {
 	std::string current_date;
@@ -12,6 +13,8 @@ struct booth_info {
 
 bool extract_booth_info(booth_info &out, const game_screen &screen);
 
-bool find_document(doc &out, doc_type type, ui_section section, const game_screen& screen);
+bool find_document(doc &out, doc_type type, ui_section section,
+		   const game_screen &screen);
+std::vector<doc> find_all_documents(const game_screen &screen, ui_section section);
 
 #endif // PAPLEASE_VISION_H

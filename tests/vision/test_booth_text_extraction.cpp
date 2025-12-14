@@ -55,7 +55,7 @@ static std::string find_test_image(const std::string &dir)
 
 int main()
 {
-	init_resourcer("/home/wlm/dev/PapersPleaseAnalyzer/images");
+	resources::init("/home/wlm/dev/PapersPleaseAnalyzer/images");
 
 	/* Find test data directory */
 	std::string data_dir = find_test_data_dir();
