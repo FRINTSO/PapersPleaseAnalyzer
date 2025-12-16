@@ -14,43 +14,47 @@ static constexpr rectangle BOX_WEIGHT         = {156, 240, 112, 16};
 static constexpr rectangle BOX_PHYSICAL_DESC  = {30, 284, 234, 16};
 static constexpr rectangle BOX_EXPIRATION     = {156, 328, 108, 16};
 
-bool parse_access_permit(access_permit_data &out, const doc &document)
+bool parse_access_permit(access_permit_data &out, const doc &document,
+			 const resources_ctx &ctx)
 {
-	assert(document.variant == doc_variant::access_permit);
+	assert(document.type == doc_type::access_permit);
 	cv::Mat binary = preprocess_document(document.pixels);
 	typeface tf = typeface_for(doc_type::access_permit);
 
 	std::string tmp;
 
-	if (!extract_field(out.name, binary, BOX_NAME, tf))
+	if (!extract_field(out.name, binary, BOX_NAME, tf, ctx))
 		return false;
 
-	if (!extract_field(out.issuing_country, binary, BOX_ISSUING_COUNTRY, tf))
+	if (!extract_field(out.issuing_country, binary, BOX_ISSUING_COUNTRY, tf,
+			   ctx))
 		return false;
 
-	if (!extract_field(out.passport_number, binary, BOX_PASSPORT_NUM, tf))
+	if (!extract_field(out.passport_number, binary, BOX_PASSPORT_NUM, tf,
+			   ctx))
 		return false;
 
-	if (!extract_field(out.purpose, binary, BOX_PURPOSE, tf))
+	if (!extract_field(out.purpose, binary, BOX_PURPOSE, tf, ctx))
 		return false;
 
-	if (!extract_field(out.duration, binary, BOX_DURATION, tf))
+	if (!extract_field(out.duration, binary, BOX_DURATION, tf, ctx))
 		return false;
 
-	if (!extract_field(tmp, binary, BOX_HEIGHT, tf))
+	if (!extract_field(tmp, binary, BOX_HEIGHT, tf, ctx))
 		return false;
 	if (!parse_height(out.height_cm, tmp))
 		return false;
 
-	if (!extract_field(tmp, binary, BOX_WEIGHT, tf))
+	if (!extract_field(tmp, binary, BOX_WEIGHT, tf, ctx))
 		return false;
 	if (!parse_weight(out.weight_kg, tmp))
 		return false;
 
-	if (!extract_field(out.physical_desc, binary, BOX_PHYSICAL_DESC, tf))
+	if (!extract_field(out.physical_desc, binary, BOX_PHYSICAL_DESC, tf,
+			   ctx))
 		return false;
 
-	if (!extract_field(tmp, binary, BOX_EXPIRATION, tf))
+	if (!extract_field(tmp, binary, BOX_EXPIRATION, tf, ctx))
 		return false;
 	if (!parse_date(out.expiration, tmp))
 		return false;

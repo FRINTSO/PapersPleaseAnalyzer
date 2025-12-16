@@ -7,6 +7,7 @@
 
 #include "opencv2/core.hpp"
 #include "opencv2/core/types.hpp"
+#include "paplease/documents.h"
 #include "paplease/resources.h"
 #include <cstdio>
 #include <iostream>
@@ -44,7 +45,7 @@ static std::string find_test_image(const std::string &dir)
 		if (entry.is_regular_file()) {
 			std::string ext = entry.path().extension().string();
 			std::transform(ext.begin(), ext.end(), ext.begin(),
-											::tolower);
+				       ::tolower);
 			if (ext == ".png" || ext == ".jpg" || ext == ".jpeg") {
 				return entry.path().string();
 			}
@@ -55,7 +56,8 @@ static std::string find_test_image(const std::string &dir)
 
 int main()
 {
-	resources::init("/home/wlm/dev/PapersPleaseAnalyzer/images");
+	resources_ctx ctx = make_resources(
+		"/home/wlm/dev/PapersPleaseAnalyzer/images");
 
 	/* Find test data directory */
 	std::string data_dir = find_test_data_dir();
@@ -112,21 +114,25 @@ int main()
 	booth_info info;
 	bool success;
 	try {
-		success = extract_booth_info(info, screen);
+		success = extract_booth_info(info, screen, ctx);
 	} catch (const std::logic_error &e) {
 		/* OCR charset not yet implemented - skip OCR tests */
-		fprintf(stderr, "SKIP: OCR not implemented yet (%s)\n", e.what());
-		fprintf(stderr, "Vision integration test passed (slicing only)\n");
+		fprintf(stderr, "SKIP: OCR not implemented yet (%s)\n",
+			e.what());
+		fprintf(stderr,
+			"Vision integration test passed (slicing only)\n");
 		return 0;
 	} catch (const cv::Exception &e) {
 		TEST_FAIL(e.what());
 	}
+	date_t expected{ .day = 1, .month = 1, .year = 83 };
 	TEST_ASSERT(success);
-	TEST_ASSERT_EQ(info.current_date, "01.01.83");
+	TEST_ASSERT_EQ(info.current_date, expected);
 	TEST_ASSERT_EQ(info.entrant_count, "03");
 	if (success) {
-		fprintf(stderr, "Extracted date: %s, entrant: %s\n",
-			info.current_date.c_str(), info.entrant_count.c_str());
+		fprintf(stderr, "Extracted date: %u.%u.%u, entrant: %s\n",
+			(u8)info.current_date.day, (u8)info.current_date.month,
+			(u8)info.current_date.year, info.entrant_count.c_str());
 	}
 
 	/*

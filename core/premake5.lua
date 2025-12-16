@@ -30,13 +30,14 @@ files({
 
 includedirs({
 	"include",
+	"%{wks.location}/vendor/magic_enum/include",
 })
 
 filter("system:windows")
-includedirs({ "%{wks.location}/core/vendor/opencv-install/include" })
+includedirs({ "%{wks.location}/vendor/opencv-install/include" })
 
 filter("system:linux")
-includedirs({ "%{wks.location}/core/vendor/opencv-install/include/opencv4" })
+includedirs({ "%{wks.location}/vendor/opencv-install/include/opencv4" })
 
 filter("configurations:Debug")
 defines({ "_DEBUG" })

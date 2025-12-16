@@ -1,6 +1,9 @@
+#include "paplease/resources.h"
 #include <cstdio>
-
 #include <iostream>
+#include <string_view>
+
+#include <magic_enum/magic_enum.hpp>
 
 #include <paplease/compiler.h>
 #include <paplease/documents.h>
@@ -8,26 +11,16 @@
 #include <paplease/inspector.h>
 #include <paplease/vision.h>
 
+#include "print.h"
 #include "rulebook.h"
 
-static void reset_inspector(inspector &ins)
-{
-	ins.current_date = "";
-	ins.rules = {};
-	ins.has_rules = {};
+static constexpr int MAX_VACCINATIONS = 3;
 
-	// Entrant state
-	ins.current_entrant_count = "";
-	ins.entrant = {};
-}
+// === UTILITIES ===
 
 static void notify_player(std::string_view msg)
 {
-	std::cout << msg << '\n';
-}
-static bool date_is_set(const date_t &d)
-{
-	return d.year != 0;
+	printf("%.*s\n", (int)msg.size(), msg.data());
 }
 
 static bool date_expired(const date_t &doc_date, const date_t &current)
@@ -42,310 +35,214 @@ static bool date_expired(const date_t &doc_date, const date_t &current)
 		return false;
 	return doc_date.day < current.day;
 }
-static void process_passport(entrant_info &e, const doc &document)
+
+// === DOCUMENT PROCESSING ===
+
+template <typename DataT, typename ParseFn, typename PrintFn>
+static bool try_process(std::optional<DataT> &slot, const doc &document,
+			const resources_ctx &ctx, ParseFn parse, PrintFn print)
 {
-	if (e.has_passport)
-		return;  // already processed
+	if (slot)
+		return false; // Already have this doc
 
-	passport_data data;
-	if (!parse_passport(data, document))
-		return;
+	DataT parsed;
+	if (!parse(parsed, document, ctx))
+		return false;
 
-	e.has_passport = true;
-	e.nationality = country_of(document.variant);
-	e.passport_name = data.name;
-	e.passport_number = data.passport_number;
-	e.date_of_birth = data.date_of_birth;
-	e.passport_expiration = data.expiration;
-	e.is_male = data.is_male;
-
-	if (e.name.empty())
-		e.name = data.name;
-
-	printf("  [PASSPORT]\n");
-	printf("    name:       %s\n", data.name.c_str());
-	printf("    number:     %s\n", data.passport_number.c_str());
-	printf("    city:       %s\n", data.issuing_city.c_str());
-	printf("    dob:        %02d.%02d.%d\n", data.date_of_birth.day, data.date_of_birth.month, data.date_of_birth.year);
-	printf("    expiration: %02d.%02d.%d\n", data.expiration.day, data.expiration.month, data.expiration.year);
-	printf("    sex:        %s\n", data.is_male ? "M" : "F");
+	slot = std::move(parsed);
+	print(*slot);
+	return true;
 }
 
-static void process_entry_permit(entrant_info &e, const doc &document)
+static void process_document(entrant_docs &docs, const doc &document,
+			     const resources_ctx &ctx)
 {
-	if (e.has_entry_permit)
-		return;
-
-	entry_permit_data data;
-	if (!parse_entry_permit(data, document))
-		return;
-
-	e.has_entry_permit = true;
-	e.permit_name = data.name;
-	e.passport_num_from_permit = data.passport_number;
-	e.purpose = data.purpose;
-	e.duration = data.duration;
-	e.permit_expiration = data.expiration;
-
-	printf("  [ENTRY PERMIT]\n");
-	printf("    name:       %s\n", data.name.c_str());
-	printf("    passport:   %s\n", data.passport_number.c_str());
-	printf("    purpose:    %s\n", data.purpose.c_str());
-	printf("    duration:   %s\n", data.duration.c_str());
-	printf("    expiration: %02d.%02d.%d\n", data.expiration.day, data.expiration.month, data.expiration.year);
-}
-
-static void process_entry_ticket(entrant_info &e, const doc &document)
-{
-	if (e.has_entry_ticket)
-		return;
-
-	entry_ticket_data data;
-	if (!parse_entry_ticket(data, document))
-		return;
-
-	e.has_entry_ticket = true;
-	e.ticket_valid_date = data.valid_date;
-
-	printf("  [ENTRY TICKET]\n");
-	printf("    valid_date: %02d.%02d.%d\n", data.valid_date.day, data.valid_date.month, data.valid_date.year);
-}
-
-static void process_work_pass(entrant_info &e, const doc &document)
-{
-	if (e.has_work_pass)
-		return;
-
-	work_pass_data data;
-	if (!parse_work_pass(data, document))
-		return;
-
-	e.has_work_pass = true;
-	e.work_field = data.work_field;
-	e.work_pass_end = data.end_date;
-
-	printf("  [WORK PASS]\n");
-	printf("    name:     %s\n", data.name.c_str());
-	printf("    field:    %s\n", data.work_field.c_str());
-	printf("    end_date: %02d.%02d.%d\n", data.end_date.day, data.end_date.month, data.end_date.year);
-}
-
-static void process_access_permit(entrant_info &e, const doc &document)
-{
-	if (e.has_access_permit)
-		return;
-
-	access_permit_data data;
-	if (!parse_access_permit(data, document))
-		return;
-
-	e.has_access_permit = true;
-	e.access_permit_exp = data.expiration;
-	e.height_cm = data.height_cm;
-	e.weight_kg = data.weight_kg;
-	e.physical_desc = data.physical_desc;
-
-	printf("  [ACCESS PERMIT]\n");
-	printf("    name:       %s\n", data.name.c_str());
-	printf("    passport:   %s\n", data.passport_number.c_str());
-	printf("    country:    %s\n", data.issuing_country.c_str());
-	printf("    purpose:    %s\n", data.purpose.c_str());
-	printf("    duration:   %s\n", data.duration.c_str());
-	printf("    height:     %dcm\n", data.height_cm);
-	printf("    weight:     %dkg\n", data.weight_kg);
-	printf("    physical:   %s\n", data.physical_desc.c_str());
-	printf("    expiration: %02d.%02d.%d\n", data.expiration.day, data.expiration.month, data.expiration.year);
-}
-
-static void process_diplomatic_auth(entrant_info &e, const doc &document)
-{
-	if (e.has_diplomatic_auth)
-		return;
-
-	diplomatic_authorization_data data;
-	if (!parse_diplomatic_authorization(data, document))
-		return;
-
-	e.has_diplomatic_auth = true;
-	e.diplomatic_access_countries = data.access_countries;
-
-	printf("  [DIPLOMATIC AUTH]\n");
-	printf("    name:     %s\n", data.name.c_str());
-	printf("    passport: %s\n", data.passport_number.c_str());
-	printf("    from:     %s\n", data.issuing_country.c_str());
-	printf("    access:   %s\n", data.access_countries.c_str());
-}
-
-static void process_grant_of_asylum(entrant_info &e, const doc &document)
-{
-	if (e.has_grant_of_asylum)
-		return;
-
-	grant_of_asylum_data data;
-	if (!parse_grant_of_asylum(data, document))
-		return;
-
-	e.has_grant_of_asylum = true;
-	e.asylum_expiration = data.expiration;
-
-	printf("  [GRANT OF ASYLUM]\n");
-	printf("    name:       %s\n", data.name.c_str());
-	printf("    passport:   %s\n", data.passport_number.c_str());
-	printf("    from:       %s\n", data.issuing_country.c_str());
-	printf("    dob:        %02d.%02d.%d\n", data.date_of_birth.day, data.date_of_birth.month, data.date_of_birth.year);
-	printf("    height:     %dcm\n", data.height_cm);
-	printf("    weight:     %dkg\n", data.weight_kg);
-	printf("    expiration: %02d.%02d.%d\n", data.expiration.day, data.expiration.month, data.expiration.year);
-}
-
-static void process_identity_card(entrant_info &e, const doc &document)
-{
-	if (e.has_identity_card)
-		return;
-
-	identity_card_data data;
-	if (!parse_identity_card(data, document))
-		return;
-
-	e.has_identity_card = true;
-	e.id_card_name = data.name;
-	e.district = data.district;
-
-	if (e.height_cm == 0)
-		e.height_cm = data.height_cm;
-	if (e.weight_kg == 0)
-		e.weight_kg = data.weight_kg;
-
-	printf("  [ID CARD]\n");
-	printf("    name:     %s\n", data.name.c_str());
-	printf("    district: %s\n", data.district.c_str());
-	printf("    dob:      %02d.%02d.%d\n", data.date_of_birth.day, data.date_of_birth.month, data.date_of_birth.year);
-	printf("    height:   %dcm\n", data.height_cm);
-	printf("    weight:   %dkg\n", data.weight_kg);
-}
-
-static void process_identity_supplement(entrant_info &e, const doc &document)
-{
-	if (e.has_identity_supplement)
-		return;
-
-	identity_supplement_data data;
-	if (!parse_identity_supplement(data, document))
-		return;
-
-	e.has_identity_supplement = true;
-	e.id_supplement_exp = data.expiration;
-	e.physical_desc = data.physical_desc;
-
-	printf("  [ID SUPPLEMENT]\n");
-	printf("    height:     %dcm\n", data.height_cm);
-	printf("    weight:     %dkg\n", data.weight_kg);
-	printf("    physical:   %s\n", data.physical_desc.c_str());
-	printf("    expiration: %02d.%02d.%d\n", data.expiration.day, data.expiration.month, data.expiration.year);
-}
-
-static void process_vaccination_cert(entrant_info &e, const doc &document)
-{
-	if (e.has_vaccination_cert)
-		return;
-
-	certificate_of_vaccination_data data;
-	if (!parse_certificate_of_vaccination(data, document))
-		return;
-
-	e.has_vaccination_cert = true;
-
-	for (int i = 0; i < 3; i++) {
-		if (data.vaccinations[i].name.find("POLIO") != std::string::npos ||
-		    data.vaccinations[i].name.find("polio") != std::string::npos) {
-			e.has_polio_vaccine = true;
-		}
-	}
-
-	printf("  [VACCINATION CERT]\n");
-	printf("    name:     %s\n", data.name.c_str());
-	printf("    passport: %s\n", data.passport_number.c_str());
-	for (int i = 0; i < 3; i++) {
-		if (!data.vaccinations[i].name.empty()) {
-			printf("    vaccine%d: %s (%02d.%02d.%d)\n", i + 1,
-			       data.vaccinations[i].name.c_str(),
-			       data.vaccinations[i].expiration_date.day,
-			       data.vaccinations[i].expiration_date.month,
-			       data.vaccinations[i].expiration_date.year);
-		}
-	}
-	printf("    polio:    %s\n", e.has_polio_vaccine ? "YES" : "NO");
-}
-
-static void process_document(entrant_info &e, const doc &document)
-{
-	switch (type_of(document.variant)) {
+	switch (document.type) {
 	case doc_type::passport:
-		process_passport(e, document);
+		try_process(docs.passport, document, ctx, parse_passport,
+			    print_passport);
+		if (docs.passport)
+			docs.nationality = document.issuing_country;
 		break;
 	case doc_type::entry_permit:
-		process_entry_permit(e, document);
+		try_process(docs.entry_permit, document, ctx,
+			    parse_entry_permit, print_entry_permit);
 		break;
 	case doc_type::entry_ticket:
-		process_entry_ticket(e, document);
+		try_process(docs.entry_ticket, document, ctx,
+			    parse_entry_ticket, print_entry_ticket);
 		break;
 	case doc_type::work_pass:
-		process_work_pass(e, document);
+		try_process(docs.work_pass, document, ctx, parse_work_pass,
+			    print_work_pass);
 		break;
 	case doc_type::access_permit:
-		process_access_permit(e, document);
+		try_process(docs.access_permit, document, ctx,
+			    parse_access_permit, print_access_permit);
 		break;
 	case doc_type::diplomatic_authorization:
-		process_diplomatic_auth(e, document);
+		try_process(docs.diplomatic_auth, document, ctx,
+			    parse_diplomatic_authorization,
+			    print_diplomatic_auth);
 		break;
 	case doc_type::grant_of_asylum:
-		process_grant_of_asylum(e, document);
+		try_process(docs.grant_of_asylum, document, ctx,
+			    parse_grant_of_asylum, print_grant_of_asylum);
 		break;
 	case doc_type::identity_card:
-		process_identity_card(e, document);
+		try_process(docs.identity_card, document, ctx,
+			    parse_identity_card, print_identity_card);
 		break;
 	case doc_type::identity_supplement:
-		process_identity_supplement(e, document);
+		try_process(docs.identity_supplement, document, ctx,
+			    parse_identity_supplement,
+			    print_identity_supplement);
 		break;
 	case doc_type::certificate_of_vaccination:
-		process_vaccination_cert(e, document);
+		try_process(docs.vaccination_cert, document, ctx,
+			    parse_certificate_of_vaccination,
+			    print_vaccination_cert);
 		break;
 	default:
+		break;
 	}
 }
-void check_missing_documents(const day_rules &rules, const entrant_info &e)
+
+// === DATA COLLECTION ===
+
+template <typename T> struct sourced {
+	T value;
+	doc_type source;
+};
+
+static std::vector<sourced<std::string> > collect_names(const entrant_docs &e)
 {
-	if (rules.require_passport && !e.has_passport)
+	std::vector<sourced<std::string> > out;
+	if (e.passport)
+		out.push_back({ e.passport->name, doc_type::passport });
+	if (e.entry_permit)
+		out.push_back({ e.entry_permit->name, doc_type::entry_permit });
+	if (e.work_pass)
+		out.push_back({ e.work_pass->name, doc_type::work_pass });
+	if (e.access_permit)
+		out.push_back(
+			{ e.access_permit->name, doc_type::access_permit });
+	if (e.diplomatic_auth)
+		out.push_back({ e.diplomatic_auth->name,
+				doc_type::diplomatic_authorization });
+	if (e.grant_of_asylum)
+		out.push_back(
+			{ e.grant_of_asylum->name, doc_type::grant_of_asylum });
+	if (e.identity_card)
+		out.push_back(
+			{ e.identity_card->name, doc_type::identity_card });
+	if (e.vaccination_cert)
+		out.push_back({ e.vaccination_cert->name,
+				doc_type::certificate_of_vaccination });
+	return out;
+}
+
+static std::vector<sourced<std::string> >
+collect_passport_nums(const entrant_docs &e)
+{
+	std::vector<sourced<std::string> > out;
+	if (e.passport)
+		out.push_back(
+			{ e.passport->passport_number, doc_type::passport });
+	if (e.entry_permit)
+		out.push_back({ e.entry_permit->passport_number,
+				doc_type::entry_permit });
+	if (e.access_permit)
+		out.push_back({ e.access_permit->passport_number,
+				doc_type::access_permit });
+	if (e.diplomatic_auth)
+		out.push_back({ e.diplomatic_auth->passport_number,
+				doc_type::diplomatic_authorization });
+	if (e.grant_of_asylum)
+		out.push_back({ e.grant_of_asylum->passport_number,
+				doc_type::grant_of_asylum });
+	if (e.vaccination_cert)
+		out.push_back({ e.vaccination_cert->passport_number,
+				doc_type::certificate_of_vaccination });
+	return out;
+}
+
+static std::vector<sourced<date_t> >
+collect_dates_of_birth(const entrant_docs &e)
+{
+	std::vector<sourced<date_t> > out;
+	if (e.passport)
+		out.push_back(
+			{ e.passport->date_of_birth, doc_type::passport });
+	if (e.grant_of_asylum)
+		out.push_back({ e.grant_of_asylum->date_of_birth,
+				doc_type::grant_of_asylum });
+	if (e.identity_card)
+		out.push_back({ e.identity_card->date_of_birth,
+				doc_type::identity_card });
+	return out;
+}
+// === VALIDATION ===
+
+static std::string_view get_purpose(const entrant_docs &e)
+{
+	if (e.entry_permit && !e.entry_permit->purpose.empty())
+		return e.entry_permit->purpose;
+	if (e.access_permit && !e.access_permit->purpose.empty())
+		return e.access_permit->purpose;
+	return "";
+}
+
+static bool has_polio_vaccine(const entrant_docs &e)
+{
+	if (!e.vaccination_cert)
+		return false;
+	for (int i = 0; i < MAX_VACCINATIONS; i++) {
+		const std::string &name =
+			e.vaccination_cert->vaccinations[i].name;
+		if (name.find("POLIO") != std::string::npos ||
+		    name.find("polio") != std::string::npos)
+			return true;
+	}
+	return false;
+}
+
+static void check_missing_documents(const day_rules &rules,
+				    const entrant_docs &docs)
+{
+	std::string_view purpose = get_purpose(docs);
+
+	if (rules.require_passport && !docs.passport)
 		notify_player("MISSING: Passport");
 
-	if (rules.require_entry_permit && !e.has_entry_permit &&
-	    e.nationality != country::arstotzka)
+	if (rules.require_entry_permit && !docs.entry_permit &&
+	    docs.nationality != country::arstotzka)
 		notify_player("MISSING: Entry permit");
 
-	if (rules.require_entry_ticket && !e.has_entry_ticket &&
-	    e.nationality != country::arstotzka)
+	if (rules.require_entry_ticket && !docs.entry_ticket &&
+	    docs.nationality != country::arstotzka)
 		notify_player("MISSING: Entry ticket");
 
-	if (rules.require_work_pass && !e.has_work_pass && e.purpose == "WORK")
+	if (rules.require_work_pass && !docs.work_pass && purpose == "WORK")
 		notify_player("MISSING: Work pass");
 
-	if (rules.require_identity_card && !e.has_identity_card &&
-	    e.nationality == country::arstotzka)
+	if (rules.require_identity_card && !docs.identity_card &&
+	    docs.nationality == country::arstotzka)
 		notify_player("MISSING: ID card");
 
-	if (rules.require_polio_vaccination && !e.has_polio_vaccine)
+	if (rules.require_polio_vaccination && !has_polio_vaccine(docs))
 		notify_player("MISSING: Polio vaccination");
 
-	if (rules.require_diplomatic_authorization && !e.has_diplomatic_auth &&
-	    e.purpose == "DIPLOMAT")
+	if (rules.require_diplomatic_authorization && !docs.diplomatic_auth &&
+	    purpose == "DIPLOMAT")
 		notify_player("MISSING: Diplomatic authorization");
 
-	if (rules.require_asylum_grant && !e.has_grant_of_asylum &&
-	    e.purpose == "ASYLUM")
+	if (rules.require_asylum_grant && !docs.grant_of_asylum &&
+	    purpose == "ASYLUM")
 		notify_player("MISSING: Grant of asylum");
 }
 
-void check_prohibitions(const day_rules &rules, const entrant_info &e)
+static void check_prohibitions(const day_rules &rules, const entrant_docs &e)
 {
 	if (rules.prohibit_impor && e.nationality == country::impor)
 		notify_player("VIOLATION: Entry from Impor prohibited");
@@ -356,87 +253,132 @@ void check_prohibitions(const day_rules &rules, const entrant_info &e)
 			"VIOLATION: Entry from United Federation prohibited");
 }
 
-void check_expirations(const day_rules &rules, const entrant_info &e,
-		       const date_t &current)
+static void check_expirations(const day_rules &rules, const entrant_docs &e,
+			      const date_t &current)
 {
 	if (!rules.all_docs_must_be_current)
 		return;
 
-	if (e.has_passport && date_expired(e.passport_expiration, current))
+	if (e.passport && date_expired(e.passport->expiration, current))
 		notify_player("EXPIRED: Passport");
 
-	if (e.has_entry_permit && date_expired(e.permit_expiration, current))
+	if (e.entry_permit && date_expired(e.entry_permit->expiration, current))
 		notify_player("EXPIRED: Entry permit");
 
-	if (e.has_access_permit && date_expired(e.access_permit_exp, current))
+	if (e.access_permit &&
+	    date_expired(e.access_permit->expiration, current))
 		notify_player("EXPIRED: Access permit");
 
-	if (e.has_grant_of_asylum && date_expired(e.asylum_expiration, current))
+	if (e.grant_of_asylum &&
+	    date_expired(e.grant_of_asylum->expiration, current))
 		notify_player("EXPIRED: Grant of asylum");
 }
 
-void check_discrepancies(const entrant_info &e)
+template <typename T>
+static void check_discrepancies(const std::vector<sourced<T> > &values,
+				const char *field)
 {
-	// Name mismatches
-	if (!e.passport_name.empty() && !e.permit_name.empty() &&
-	    e.passport_name != e.permit_name)
-		notify_player(
-			"DISCREPANCY: Name mismatch (passport vs permit)");
-
-	if (!e.passport_name.empty() && !e.id_card_name.empty() &&
-	    e.passport_name != e.id_card_name)
-		notify_player(
-			"DISCREPANCY: Name mismatch (passport vs ID card)");
-
-	// Passport number mismatch
-	if (!e.passport_number.empty() && !e.passport_num_from_permit.empty() &&
-	    e.passport_number != e.passport_num_from_permit)
-		notify_player("DISCREPANCY: Passport number mismatch");
+	for (size_t i = 0; i < values.size(); i++) {
+		for (size_t j = i + 1; j < values.size(); j++) {
+			if (!values[i].value.empty() &&
+			    !values[j].value.empty() &&
+			    !(values[i].value == values[j].value)) {
+				printf("DISCREPANCY: %s mismatch (%s vs %s)\n",
+				       field,
+				       magic_enum::enum_name(values[i].source)
+					       .data(),
+				       magic_enum::enum_name(values[j].source)
+					       .data());
+			}
+		}
+	}
 }
-void inspector::process_game_frame(const game_screen &screen)
+
+static void check_discrepancies(const entrant_docs &e)
+{
+	check_discrepancies(collect_names(e), "Name");
+	check_discrepancies(collect_passport_nums(e), "Passport number");
+	check_discrepancies(collect_dates_of_birth(e), "Date of birth");
+}
+
+static void reset_inspector(inspector &ins)
+{
+	ins.current_date = {};
+	ins.rules = {};
+	ins.has_rules = {};
+
+	// Entrant state
+	ins.current_entrant_count = "";
+	ins.entrant = {};
+}
+
+bool update_day(inspector &ins, const booth_info &booth)
+{
+	if (ins.current_date == booth.current_date)
+		return false;
+	ins.current_date = booth.current_date;
+	ins.rules = {};
+	ins.has_rules = false;
+	ins.current_entrant_count.clear();
+	ins.entrant = {};
+	printf("=== NEW DAY: %u.%u.%u ===\n", (u8)booth.current_date.day,
+	       (u8)booth.current_date.month, (u16)booth.current_date.year);
+	return true;
+}
+
+bool update_entrant(inspector &ins, const booth_info &booth)
+{
+	if (ins.current_entrant_count == booth.entrant_count)
+		return false;
+	ins.current_entrant_count = booth.entrant_count;
+	ins.entrant = {};
+	printf("--- Entrant #%s ---\n", booth.entrant_count.c_str());
+	return true;
+}
+
+bool ensure_rules_loaded(inspector &ins, const game_screen &screen,
+			 const resources_ctx &ctx)
+{
+	if (ins.has_rules)
+		return true;
+	doc rulebook;
+	if (!find_document(rulebook, doc_type::rulebook, ui_section::inspection,
+			   screen))
+		return false;
+	day_rules parsed{};
+	if (!parse_rulebook(parsed, rulebook, ctx)) {
+		notify_player("Failed to parse rulebook");
+		return false;
+	}
+	ins.rules = parsed;
+	ins.has_rules = true;
+	notify_player("Successfully parsed rulebook");
+	return true;
+}
+
+void process_game_frame(inspector &ins, const game_screen &screen,
+			const resources_ctx &ctx)
 {
 	booth_info booth;
-	if (!extract_booth_info(booth, screen))
+	if (!extract_booth_info(booth, screen, ctx))
 		return;
 
-	if (this->current_date != booth.current_date) {
-		// reset inspector
-		reset_inspector(*this);
-		this->current_date = booth.current_date;
-		printf("=== NEW DAY: %s ===\n", booth.current_date.c_str());
-	}
+	update_day(ins, booth);
+	update_entrant(ins, booth);
 
-	if (this->current_entrant_count != booth.entrant_count) {
-		this->current_entrant_count = booth.entrant_count;
-		this->entrant = {};
-		printf("--- Entrant #%s ---\n", booth.entrant_count.c_str());
-	}
-
-	// find and scan rulebook
-	doc rulebook;
-	if (!this->has_rules && find_document(rulebook, doc_type::rulebook,
-					      ui_section::inspection, screen)) {
-		day_rules rules;
-		if (!parse_rulebook(rules, rulebook)) {
-			return;
-		}
-		notify_player("Successfully parsed rulebook");
-		this->rules = rules;
-		this->has_rules = true;
-	}
-
-	if (!this->has_rules)
+	if (!ensure_rules_loaded(ins, screen, ctx))
 		return;
 
+	/*
 	// find documents and apply rules
-	std::vector<doc> documents =
-		find_all_documents(screen, ui_section::inspection);
-	for (const doc &document : documents) {
-		process_document(this->entrant, document);
+	auto detected = scan_documents(screen, ui_section::inspection);
+	for (const auto &d : detected) {
+		process_document(ins.entrant, d, ctx);
 	}
 
-	check_missing_documents(this->rules, this->entrant);
-	check_prohibitions(this->rules, this->entrant);
-	// check_expirations(this->rules, this->entrant, current_date);
-	check_discrepancies(this->entrant);
+	check_missing_documents(ins.rules, ins.entrant);
+	check_prohibitions(ins.rules, ins.entrant);
+	check_expirations(ins.rules, ins.entrant, ins.current_date);
+	check_discrepancies(ins.entrant);
+	*/
 }

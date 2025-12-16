@@ -48,23 +48,25 @@ static constexpr passport_layout LAYOUT_UNITED_FED = {
 	{138, 212, 116, 16}, {138, 260, 116, 16}, {138, 228, 116, 16},
 };
 
-static const passport_layout *get_passport_layout(doc_variant v)
+static const passport_layout *get_passport_layout(country c)
 {
-	switch (v) {
-	case doc_variant::passport_antegria:          return &LAYOUT_ANTEGRIA;
-	case doc_variant::passport_arstotzka:         return &LAYOUT_ARSTOTZKA;
-	case doc_variant::passport_impor:             return &LAYOUT_IMPOR;
-	case doc_variant::passport_kolechia:          return &LAYOUT_KOLECHIA;
-	case doc_variant::passport_obristan:          return &LAYOUT_OBRISTAN;
-	case doc_variant::passport_republia:          return &LAYOUT_REPUBLIA;
-	case doc_variant::passport_united_federation: return &LAYOUT_UNITED_FED;
+	switch (c) {
+	case country::antegria:          return &LAYOUT_ANTEGRIA;
+	case country::arstotzka:         return &LAYOUT_ARSTOTZKA;
+	case country::impor:             return &LAYOUT_IMPOR;
+	case country::kolechia:          return &LAYOUT_KOLECHIA;
+	case country::obristan:          return &LAYOUT_OBRISTAN;
+	case country::republia:          return &LAYOUT_REPUBLIA;
+	case country::united_federation: return &LAYOUT_UNITED_FED;
 	default: return nullptr;
 	}
 }
 
-bool parse_passport(passport_data &out, const doc &document)
+bool parse_passport(passport_data &out, const doc &document,
+		    const resources_ctx &ctx)
 {
-	const passport_layout *layout = get_passport_layout(document.variant);
+	assert(document.type == doc_type::passport);
+	const passport_layout *layout = get_passport_layout(document.issuing_country);
 	if (!layout)
 		return false;
 
@@ -73,26 +75,28 @@ bool parse_passport(passport_data &out, const doc &document)
 
 	std::string tmp;
 
-	if (!extract_field(out.name, binary, layout->name, tf))
+	if (!extract_field(out.name, binary, layout->name, tf, ctx))
 		return false;
 
-	if (!extract_field(out.passport_number, binary, layout->passport_number, tf))
+	if (!extract_field(out.passport_number, binary, layout->passport_number,
+			   tf, ctx))
 		return false;
 
-	if (!extract_field(out.issuing_city, binary, layout->issuing_city, tf))
+	if (!extract_field(out.issuing_city, binary, layout->issuing_city, tf,
+			   ctx))
 		return false;
 
-	if (!extract_field(tmp, binary, layout->date_of_birth, tf))
+	if (!extract_field(tmp, binary, layout->date_of_birth, tf, ctx))
 		return false;
 	if (!parse_date(out.date_of_birth, tmp))
 		return false;
 
-	if (!extract_field(tmp, binary, layout->expiration, tf))
+	if (!extract_field(tmp, binary, layout->expiration, tf, ctx))
 		return false;
 	if (!parse_date(out.expiration, tmp))
 		return false;
 
-	if (!extract_field(tmp, binary, layout->sex, tf))
+	if (!extract_field(tmp, binary, layout->sex, tf, ctx))
 		return false;
 	out.is_male = (tmp.size() > 0 && tmp[0] == 'M');
 

@@ -9,9 +9,9 @@ bin-int/
 **.csproj
 Makefile
 
-Paplease-Core/vendor/opencv
-Paplease-Core/vendor/opencv-build
-Paplease-Core/vendor/opencv-install
+vendor/opencv
+vendor/opencv-build
+vendor/opencv-install
 
 !vendor/premake/bin
 

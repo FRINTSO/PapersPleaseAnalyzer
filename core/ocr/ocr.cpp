@@ -1,59 +1,19 @@
-#include "opencv2/core/cvstd.hpp"
-#include "opencv2/core/utility.hpp"
-#include "opencv2/imgcodecs.hpp"
-#include "paplease/resources.h"
-#include <cassert>
 #include <cstdio>
-#include <filesystem>
-#include <iostream>
-#include <string_view>
+#include <ctime>
+#include <limits.h>
 #include <unordered_map>
 #include <vector>
 
-#include <limits.h>
-
+#include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include <paplease/compiler.h>
+#include <paplease/debug.h>
 #include <paplease/geometry.h>
 #include <paplease/ocr.h>
+#include <paplease/resources.h>
 #include <paplease/types.h>
 
-struct font_info {
-	typeface tf;
-	int max_pixels_tall;
-
-	int letter_spacing_horizontal;
-	int whitespace_pixel_width;
-	int letter_spacing_vertical;
-	int newline_size;
-};
-
-static constexpr font_info BOOTH_FONT_INFO{ .tf = typeface::booth,
-					    .max_pixels_tall = 12,
-					    .letter_spacing_horizontal = 4,
-					    .whitespace_pixel_width = 6,
-					    .letter_spacing_vertical = 8,
-					    .newline_size = 4 };
-
-static constexpr font_info BM_MINI_FONT_INFO{ .tf = typeface::bm_mini,
-					      .max_pixels_tall = 16,
-					      .letter_spacing_horizontal = 2,
-					      .whitespace_pixel_width = 4,
-					      .letter_spacing_vertical = 4,
-					      .newline_size = 8 };
-
-static const font_info &font_info_for(typeface tf)
-{
-	switch (tf) {
-	case typeface::booth:
-		return BOOTH_FONT_INFO;
-	case typeface::bm_mini:
-		return BM_MINI_FONT_INFO;
-	default:
-		unreachable();
-	}
-}
+#include "font_info.h"
 
 /* The theory here is that in 'Papers, Please', every pixel is a 2x2 chunk.
  * So we can compress every 2x2 -> 1x1. Which makes processing more efficient,
@@ -69,7 +29,7 @@ static cv::Mat downscale_image(const cv::Mat &image)
 	return result;
 }
 
-static u64 encode_character_bits(const cv::Mat &character)
+u64 encode_character_bits(const cv::Mat &character)
 {
 	cv::Mat ch;
 	if (character.rows / 2 >= 1 && character.cols / 2 >= 1)
@@ -93,39 +53,91 @@ static u64 encode_character_bits(const cv::Mat &character)
 	return num;
 }
 
-static std::array<std::unordered_map<u64, char>, 4> g_charsets{};
-
-static const std::unordered_map<u64, char> &charset_for(typeface tf)
+#ifdef DEBUG_OCR
+static bool validate_roi(const cv::Mat &image, const cv::Rect &roi,
+			 const char *)
 {
-	auto &charset = g_charsets[static_cast<u64>(tf)];
-	if (!charset.empty()) {
-		return charset;
+	return roi.x >= 0 && roi.y >= 0 && roi.x + roi.width <= image.cols &&
+	       roi.y + roi.height <= image.rows;
+}
+
+static void debug_dump_character_boxes(
+	const cv::Mat &image, const std::vector<rectangle> &boxes,
+	const std::unordered_map<u64, char> &charset, const char *label)
+{
+	constexpr int SCALE = 4;
+
+	cv::Mat scaled;
+	cv::resize(image, scaled,
+		   cv::Size(image.cols * SCALE, image.rows * SCALE), 0, 0,
+		   cv::INTER_NEAREST);
+
+	cv::Mat debug_img;
+	cv::cvtColor(scaled, debug_img, cv::COLOR_GRAY2BGR);
+
+	// First pass: draw all boxes
+	for (const auto &box : boxes) {
+		if (!validate_roi(image, box.to_cv(), "debug_boxes"))
+			continue;
+
+		cv::Mat character = image(box.to_cv());
+		u64 encoded = encode_character_bits(character);
+
+		auto it = charset.find(encoded);
+		bool recognized = (it != charset.end() && encoded != 0);
+
+		cv::Scalar color = recognized ? cv::Scalar(0, 200, 0) :
+						cv::Scalar(0, 0, 255);
+
+		cv::Rect scaled_box(box.x * SCALE, box.y * SCALE,
+				    box.width * SCALE, box.height * SCALE);
+		cv::rectangle(debug_img, scaled_box, color, 1);
 	}
 
-	std::filesystem::path typeface_path = resources::typeface_path(tf);
-	std::vector<cv::String> files{};
-	cv::glob(typeface_path / "*.png", files, true);
-	for (const cv::String &font_char_path : files) {
-		char charset_char;
+	// Text report to stderr
+	DBG_OCR("\n=== OCR DEBUG: %s (%dx%d, %zu boxes) ===\n", label,
+		image.cols, image.rows, boxes.size());
+	DBG_OCR("%-4s %-6s %-10s %-12s %s\n", "#", "CHAR", "POS(x,y)",
+		"SIZE(wxh)", "ENCODED");
+	DBG_OCR("----------------------------------------------\n");
 
-		std::string_view file_name =
-			std::filesystem::path(font_char_path).stem().c_str();
+	int box_idx = 0;
+	for (const auto &box : boxes) {
+		if (!validate_roi(image, box.to_cv(), nullptr))
+			continue;
 
-		if (file_name == "QUESTION_MARK") {
-			charset_char = '?';
-		} else if (file_name.length() == 1) {
-			charset_char = file_name[0];
-		} else {
-			throw;
-		}
+		cv::Mat character = image(box.to_cv());
+		u64 encoded = encode_character_bits(character);
 
-		cv::Mat character_image =
-			cv::imread(font_char_path, cv::IMREAD_GRAYSCALE);
-		u64 character_bits = encode_character_bits(character_image);
+		auto it = charset.find(encoded);
+		char ch = (it != charset.end()) ? it->second : '?';
+		bool recognized = (it != charset.end() && encoded != 0);
 
-		charset[character_bits] = charset_char;
+		DBG_OCR("%-4d %-6c (%3d,%3d)   %2dx%-2d        0x%llx%s\n",
+			box_idx, ch, box.x, box.y, box.width, box.height,
+			(unsigned long long)encoded,
+			recognized ? "" : " <-- UNKNOWN");
+		box_idx++;
 	}
-	return charset;
+	DBG_OCR("==============================================\n\n");
+
+	char filename[256];
+	snprintf(filename, sizeof(filename), "/tmp/ocr_debug_%s_%ld.png", label,
+		 (long)time(nullptr));
+	cv::imwrite(filename, debug_img);
+	DBG_OCR("OCR debug image: %s\n", filename);
+}
+#else
+static inline void
+debug_dump_character_boxes(const cv::Mat &, const std::vector<rectangle> &,
+			   const std::unordered_map<u64, char> &, const char *)
+{
+}
+#endif
+static const std::unordered_map<u64, char> &
+charset_for(const resources_ctx &ctx, typeface tf)
+{
+	return ctx.charsets[static_cast<size_t>(tf)];
 }
 
 static int find_top_line(const cv::Mat &mat)
@@ -153,97 +165,27 @@ static int find_next_top_line(const cv::Mat &mat, int previous_line,
 	return -1;
 }
 
-std::vector<rectangle> extract_character_boxes_multiline(const cv::Mat &image,
-							 const font_info &font)
+static void scan_line_for_boxes(std::vector<rectangle> &boxes,
+				const cv::Mat &image, int line_top,
+				int line_bottom, const font_info &font)
 {
-	std::vector<rectangle> boxes{};
-	constexpr int max_allowed_whitespace = 10;
-
 	const int whitespace_size = font.whitespace_pixel_width;
+	constexpr int max_allowed_whitespace = 10;
 	const int max_steps_from_last_character =
 		whitespace_size * max_allowed_whitespace;
-
-	int line_top = find_top_line(image);
-	while (line_top != -1) {
-		int last_box_x = INT_MAX;
-
-		int left = INT_MAX;
-		int top = INT_MAX;
-		int right = 0;
-		int bottom = 0;
-		for (int x = 0; x < image.cols; x++) {
-			// check last character x position, if it's greater than max, cut scanner short
-			if (x - last_box_x > max_steps_from_last_character)
-				break;
-
-			bool column_has_black_pixel = false;
-			const int bottom_of_Line = std::min(
-				line_top + font.max_pixels_tall, image.rows);
-			for (int y = line_top; y < bottom_of_Line; y++) {
-				if (image.at<uchar>(y, x))
-					continue;
-				// We found a black pixel
-				column_has_black_pixel = true;
-
-				top = std::min(top, y);
-				bottom = std::max(bottom, y);
-			}
-
-			if (column_has_black_pixel) {
-				left = std::min(left, x);
-				right = std::max(right, x);
-			} else if (left != INT_MAX) {
-				last_box_x = x;
-
-				int width = right - left + 1;
-				int height = bottom - top + 1;
-				boxes.emplace_back(
-					rectangle{ left, top, width, height });
-				left = INT_MAX;
-				top = INT_MAX;
-				width = 0;
-				bottom = 0;
-			}
-		}
-
-		line_top = find_next_top_line(image, line_top,
-					      font.max_pixels_tall);
-	}
-
-	return boxes;
-}
-
-std::vector<rectangle> extract_character_boxes(const cv::Mat &image,
-					       const font_info &font)
-{
-	if (image.rows / font.max_pixels_tall > 1)
-		return extract_character_boxes_multiline(image, font);
-
-	std::vector<rectangle> boxes{};
 
 	int last_box_x = INT_MAX;
-	const int whitespace_size =
-		font.whitespace_pixel_width; // depends on font
-	constexpr int max_allowed_whitespace = 10;
-	const int max_steps_from_last_character =
-		whitespace_size * max_allowed_whitespace;
+	int left = INT_MAX, top = INT_MAX, right = 0, bottom = 0;
 
-	int left = INT_MAX;
-	int top = INT_MAX;
-	int right = 0;
-	int bottom = 0;
 	for (int x = 0; x < image.cols; x++) {
-		// check last character x position, if it's greater than max, cut scanner short
 		if (x - last_box_x > max_steps_from_last_character)
 			break;
 
 		bool column_has_black_pixel = false;
-		for (int y = 0; y < image.rows; y++) {
+		for (int y = line_top; y < line_bottom; y++) {
 			if (image.at<uchar>(y, x))
 				continue;
-			// We found a black pixel
 			column_has_black_pixel = true;
-
 			top = std::min(top, y);
 			bottom = std::max(bottom, y);
 		}
@@ -253,32 +195,48 @@ std::vector<rectangle> extract_character_boxes(const cv::Mat &image,
 			right = std::max(right, x);
 		} else if (left != INT_MAX) {
 			last_box_x = x;
-
-			int width = right - left + 1;
-			int height = bottom - top + 1;
-			boxes.emplace_back(
-				rectangle{ left, top, width, height });
+			boxes.emplace_back(rectangle{ left, top,
+						      right - left + 1,
+						      bottom - top + 1 });
 			left = INT_MAX;
 			top = INT_MAX;
-			width = 0;
+			right = 0;
 			bottom = 0;
 		}
+	}
+}
+
+std::vector<rectangle> extract_character_boxes(const cv::Mat &image,
+					       const font_info &font)
+{
+	std::vector<rectangle> boxes{};
+
+	int line_top = find_top_line(image);
+	while (line_top != -1) {
+		int line_bottom =
+			std::min(line_top + font.max_pixels_tall, image.rows);
+		scan_line_for_boxes(boxes, image, line_top, line_bottom, font);
+		line_top = find_next_top_line(image, line_top,
+					      font.max_pixels_tall);
 	}
 
 	return boxes;
 }
 
 bool extract_text_strict(std::string &out, const cv::Mat &binary_image,
-			 typeface tf)
+			 typeface tf, const resources_ctx &ctx)
 {
 	const font_info &font = font_info_for(tf);
 	std::vector<rectangle> boxes =
 		extract_character_boxes(binary_image, font);
 
-	const auto &charset = charset_for(tf);
+	const auto &charset = charset_for(ctx, tf);
+	if (charset.empty()) {
+		DBG_OCR("OCR error: charset for requested typeface is empty\n");
+		return false;
+	}
 
 	const rectangle *previous_rectangle = nullptr;
-	char previous_char = '\0';
 
 	std::string field{};
 	for (const auto &box : boxes) {
@@ -287,9 +245,12 @@ bool extract_text_strict(std::string &out, const cv::Mat &binary_image,
 
 		if (encoded_char == 0 ||
 		    charset.find(encoded_char) == charset.end()) {
-			// TODO: Add error logging
-			fprintf(stderr, "Invalid char");
-			std::cin.get();
+			DBG_OCR("OCR error: unrecognized character at box (%d,%d) size %dx%d, encoded=0x%llx\n",
+				box.x, box.y, box.width, box.height,
+				(unsigned long long)encoded_char);
+
+			debug_dump_character_boxes(binary_image, boxes, charset,
+						   "text_field");
 			return false;
 		}
 
@@ -334,7 +295,6 @@ bool extract_text_strict(std::string &out, const cv::Mat &binary_image,
 		}
 
 		previous_rectangle = &box;
-		previous_char = ch;
 
 		field.push_back(ch);
 	}

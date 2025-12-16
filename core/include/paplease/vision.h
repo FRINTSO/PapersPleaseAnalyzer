@@ -4,17 +4,19 @@
 #include <string>
 
 #include <paplease/game_screen.h>
+#include <paplease/resources.h>
 #include <vector>
 
 struct booth_info {
-	std::string current_date;
+	date_t current_date;
 	std::string entrant_count;
 };
 
-bool extract_booth_info(booth_info &out, const game_screen &screen);
+bool extract_booth_info(booth_info &out, const game_screen &screen,
+			const resources_ctx &ctx);
 
 bool find_document(doc &out, doc_type type, ui_section section,
 		   const game_screen &screen);
-std::vector<doc> find_all_documents(const game_screen &screen, ui_section section);
+std::vector<doc> scan_documents(const game_screen &screen, ui_section section);
 
 #endif // PAPLEASE_VISION_H
