@@ -11,12 +11,12 @@
       "-std=c++20",
       "-c",
       "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_rectangle_to_cv/test_rectangle_to_cv.o",
-      "geometry/test_rectangle_to_cv.cpp"
+      "../bin-int/linux-x86_64/Debug/tests/test_is_image_file/test_is_image_file.o",
+      "gamescreen/test_is_image_file.cpp"
     ],
     "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/geometry/test_rectangle_to_cv.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_rectangle_to_cv/test_rectangle_to_cv.o"
+    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/gamescreen/test_is_image_file.cpp",
+    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_is_image_file/test_is_image_file.o"
   },
   {
     "arguments": [
@@ -49,31 +49,12 @@
       "-std=c++20",
       "-c",
       "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_encode_character_bits/test_encode_character_bits.o",
-      "ocr/test_encode_character_bits.cpp"
+      "../bin-int/linux-x86_64/Debug/tests/test_rectangle_empty/test_rectangle_empty.o",
+      "geometry/test_rectangle_empty.cpp"
     ],
     "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/ocr/test_encode_character_bits.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_encode_character_bits/test_encode_character_bits.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../core/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_is_image_file/test_is_image_file.o",
-      "gamescreen/test_is_image_file.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/gamescreen/test_is_image_file.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_is_image_file/test_is_image_file.o"
+    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/geometry/test_rectangle_empty.cpp",
+    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_rectangle_empty/test_rectangle_empty.o"
   },
   {
     "arguments": [
@@ -99,19 +80,19 @@
       "/usr/bin/clang++",
       "-D_DEBUG",
       "-Iinclude",
-      "-I../vendor/magic_enum/include",
+      "-I../core/include",
       "-I../vendor/opencv-install/include/opencv4",
       "-m64",
       "-g",
       "-std=c++20",
       "-c",
       "-o",
-      "../bin-int/linux-x86_64/Debug/core/access_permit.o",
-      "documents/access_permit.cpp"
+      "../bin-int/linux-x86_64/Debug/tests/test_rectangle_to_cv/test_rectangle_to_cv.o",
+      "geometry/test_rectangle_to_cv.cpp"
     ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/documents/access_permit.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/access_permit.o"
+    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
+    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/geometry/test_rectangle_to_cv.cpp",
+    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_rectangle_to_cv/test_rectangle_to_cv.o"
   },
   {
     "arguments": [
@@ -125,12 +106,31 @@
       "-std=c++20",
       "-c",
       "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_rectangle_empty/test_rectangle_empty.o",
-      "geometry/test_rectangle_empty.cpp"
+      "../bin-int/linux-x86_64/Debug/tests/test_encode_character_bits/test_encode_character_bits.o",
+      "ocr/test_encode_character_bits.cpp"
     ],
     "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/geometry/test_rectangle_empty.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_rectangle_empty/test_rectangle_empty.o"
+    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/ocr/test_encode_character_bits.cpp",
+    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_encode_character_bits/test_encode_character_bits.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-D_DEBUG",
+      "-Iinclude",
+      "-I../vendor/magic_enum/include",
+      "-I../vendor/opencv-install/include/opencv4",
+      "-m64",
+      "-g",
+      "-std=c++20",
+      "-c",
+      "-o",
+      "../bin-int/linux-x86_64/Debug/core/access_permit.o",
+      "documents/access_permit.cpp"
+    ],
+    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
+    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/documents/access_permit.cpp",
+    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/access_permit.o"
   },
   {
     "arguments": [
@@ -391,6 +391,44 @@
       "-std=c++20",
       "-c",
       "-o",
+      "../bin-int/linux-x86_64/Debug/core/inspector2.o",
+      "inspector/inspector2.cpp"
+    ],
+    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
+    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/inspector/inspector2.cpp",
+    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/inspector2.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-D_DEBUG",
+      "-Iinclude",
+      "-I../vendor/magic_enum/include",
+      "-I../vendor/opencv-install/include/opencv4",
+      "-m64",
+      "-g",
+      "-std=c++20",
+      "-c",
+      "-o",
+      "../bin-int/linux-x86_64/Debug/core/observation.o",
+      "inspector/observation.cpp"
+    ],
+    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
+    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/inspector/observation.cpp",
+    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/observation.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-D_DEBUG",
+      "-Iinclude",
+      "-I../vendor/magic_enum/include",
+      "-I../vendor/opencv-install/include/opencv4",
+      "-m64",
+      "-g",
+      "-std=c++20",
+      "-c",
+      "-o",
       "../bin-int/linux-x86_64/Debug/core/ocr.o",
       "ocr/ocr.cpp"
     ],
@@ -467,12 +505,31 @@
       "-std=c++20",
       "-c",
       "-o",
-      "../bin-int/linux-x86_64/Debug/core/rulebook.o",
-      "inspector/rulebook.cpp"
+      "../bin-int/linux-x86_64/Debug/core/rules.o",
+      "inspector/rules.cpp"
     ],
     "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/inspector/rulebook.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/rulebook.o"
+    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/inspector/rules.cpp",
+    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/rules.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-D_DEBUG",
+      "-Iinclude",
+      "-I../vendor/magic_enum/include",
+      "-I../vendor/opencv-install/include/opencv4",
+      "-m64",
+      "-g",
+      "-std=c++20",
+      "-c",
+      "-o",
+      "../bin-int/linux-x86_64/Debug/core/test.o",
+      "inspector/test.cpp"
+    ],
+    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
+    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/inspector/test.cpp",
+    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/test.o"
   },
   {
     "arguments": [
@@ -526,12 +583,12 @@
       "-std=c++20",
       "-c",
       "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_bgr_to_hsv_mask/test_bgr_to_hsv_mask.o",
-      "colorspace/test_bgr_to_hsv_mask.cpp"
+      "../bin-int/linux-x86_64/Debug/tests/test_booth_text_extraction/test_booth_text_extraction.o",
+      "vision/test_booth_text_extraction.cpp"
     ],
     "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/colorspace/test_bgr_to_hsv_mask.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_bgr_to_hsv_mask/test_bgr_to_hsv_mask.o"
+    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/vision/test_booth_text_extraction.cpp",
+    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_booth_text_extraction/test_booth_text_extraction.o"
   },
   {
     "arguments": [
@@ -545,12 +602,12 @@
       "-std=c++20",
       "-c",
       "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_validate_dimensions/test_validate_dimensions.o",
-      "gamescreen/test_validate_dimensions.cpp"
+      "../bin-int/linux-x86_64/Debug/tests/test_bgr_to_hsv_mask/test_bgr_to_hsv_mask.o",
+      "colorspace/test_bgr_to_hsv_mask.cpp"
     ],
     "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/gamescreen/test_validate_dimensions.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_validate_dimensions/test_validate_dimensions.o"
+    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/colorspace/test_bgr_to_hsv_mask.cpp",
+    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_bgr_to_hsv_mask/test_bgr_to_hsv_mask.o"
   },
   {
     "arguments": [
@@ -583,50 +640,31 @@
       "-std=c++20",
       "-c",
       "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_booth_text_extraction/test_booth_text_extraction.o",
-      "vision/test_booth_text_extraction.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/vision/test_booth_text_extraction.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_booth_text_extraction/test_booth_text_extraction.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../core/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_run_scenario_1/test_run_scenario_1.o",
-      "inspector/test_run_scenario_1.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/inspector/test_run_scenario_1.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_run_scenario_1/test_run_scenario_1.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../core/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
       "../bin-int/linux-x86_64/Debug/tests/test_slice_section/test_slice_section.o",
       "gamescreen/test_slice_section.cpp"
     ],
     "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
     "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/gamescreen/test_slice_section.cpp",
     "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_slice_section/test_slice_section.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-D_DEBUG",
+      "-Iinclude",
+      "-I../core/include",
+      "-I../vendor/opencv-install/include/opencv4",
+      "-m64",
+      "-g",
+      "-std=c++20",
+      "-c",
+      "-o",
+      "../bin-int/linux-x86_64/Debug/tests/test_validate_dimensions/test_validate_dimensions.o",
+      "gamescreen/test_validate_dimensions.cpp"
+    ],
+    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
+    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/gamescreen/test_validate_dimensions.cpp",
+    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_validate_dimensions/test_validate_dimensions.o"
   },
   {
     "arguments": [
@@ -646,6 +684,25 @@
     "directory": "/home/wlm/dev/PapersPleaseAnalyzer/cli",
     "file": "/home/wlm/dev/PapersPleaseAnalyzer/cli/src/pch.cpp",
     "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/cli/pch.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-D_DEBUG",
+      "-Iinclude",
+      "-I../core/include",
+      "-I../vendor/opencv-install/include/opencv4",
+      "-m64",
+      "-g",
+      "-std=c++20",
+      "-c",
+      "-o",
+      "../bin-int/linux-x86_64/Debug/tests/test_run_scenario_1/test_run_scenario_1.o",
+      "inspector/test_run_scenario_1.cpp"
+    ],
+    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
+    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/inspector/test_run_scenario_1.cpp",
+    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_run_scenario_1/test_run_scenario_1.o"
   },
   {
     "arguments": [
