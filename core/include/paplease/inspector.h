@@ -2,6 +2,7 @@
 #define PAPLEASE_INSPECTOR_H
 
 #include <map>
+#include <optional>
 #include <set>
 #include <string_view>
 #include <vector>
@@ -18,18 +19,19 @@ enum class fact_field {
 	passport_number,
 	sex,
 	issuing_city,
+	nationality,
 	district,
 	purpose,
 	duration,
 	work_field,
 	physical_desc,
 	valid_date,
-	end_date,
-	expiration,
 	height_cm,
 	weight_kg,
 	access_countries,
-	nationality,
+	end_date,
+
+	expiration,
 };
 
 struct fact_table {
@@ -39,42 +41,73 @@ struct fact_table {
 	{
 		cells[f][src] = val;
 	}
-
-	std::vector<std::string> distinct_values(fact_field f) const
-	{
-		std::vector<std::string> out;
-		auto it = cells.find(f);
-		if (it == cells.end())
-			return out;
-		for (auto &[src, val] : it->second) {
-			if (std::find(out.begin(), out.end(), val) == out.end())
-				out.push_back(val);
-		}
-		return out;
-	}
 };
 
-struct discrepancy {
-	fact_field field; // e.g. fact_field::name
-	std::vector<std::pair<doc_type, std::string> >
-		values; // conflicting values + sources
+// === DISCREPANCY: Cross-doc identity mismatch (unchanged) ===
+enum class source {
+	// Documents
+	passport,
+	entry_permit,
+	work_pass,
+	id_card,
+	access_permit,
+	vaccination_cert,
+	asylum_grant,
+	identity_supplement,
+
+	// Booth
+	booth_date,
+	booth_scale,
+};
+
+enum class response {
+	deny, // missing doc, expired, wrong papers
+	interrogate, // ask questions (minor discrepancy)
+	fingerprint, // verify identity (identity mismatch)
+	detain, // criminal, smuggler, hidden items
+};
+
+enum class problem_kind {
+	identity_mismatch,
+	expired,
+	weight_mismatch,
+	height_mismatch,
+	photo_mismatch,
+	fingerprint_mismatch,
+	invalid_seal,
+};
+
+struct claim {
+	source who;
+	std::string what;
+};
+
+struct problem {
+	problem_kind kind;
+	std::vector<claim> claims;
+	response action;
 };
 
 struct case_file {
+	// === IDENTITY (cross-doc, should match) ===
+	fact_table facts;
+
+	// === PER-DOC VALUES (checked individually against external source) ===
+	std::map<doc_type, date_t> expirations; // check each against today
+
+	// === OTHER ===
 	// what documents did the entrant give me?
 	std::set<doc_type> docs_seen;
 
-	fact_table facts;
-
-	// vaccines (from vaccination cert)
+	// Structured
 	certificate_of_vaccination_data::vaccination_row vaccines[3];
 	int vaccine_count = 0;
-
-	// nationality (from passport)
 	std::optional<country> nationality;
+	std::optional<int> booth_weight_kg; // will always have a value when there is an entrant
 
 	// computed discrepancies
-	std::vector<discrepancy> discrepancies;
+	std::vector<problem> problems;
+	// ...
 };
 
 struct inspector {
@@ -92,5 +125,6 @@ struct inspector {
 
 void inspector_step(inspector &ins, const game_screen &screen,
 		    const resources_ctx &ctx);
+source doc_to_source(doc_type d);
 
 #endif // PAPLEASE_INSPECTOR_H

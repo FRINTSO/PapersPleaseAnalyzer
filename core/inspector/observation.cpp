@@ -17,6 +17,7 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 	if (obs.booth_ok) {
 		obs.date = booth.current_date;
 		obs.entrant_count = std::stoi(booth.entrant_count);
+		obs.entrant_weight = booth.entrant_weight;
 	}
 
 	// === RULEBOOK ===
@@ -41,7 +42,7 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 			continue;
 
 		obs.entrant_docs.visible.push_back(d.type);
-		auto &f = obs.entrant_docs.fields[d.type];
+		auto &f = obs.entrant_docs.identity_fields[d.type];
 
 		switch (d.type) {
 		case doc_type::passport: { //✅
@@ -51,7 +52,6 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 				f[fact_field::passport_number] = data.passport_number;
 				f[fact_field::issuing_city] = data.issuing_city;
 				f[fact_field::date_of_birth] = format_date(data.date_of_birth);
-				f[fact_field::expiration] = format_date(data.expiration);
 				f[fact_field::sex] = data.is_male ? "M" : "F";
 
 				std::string_view country_name;
@@ -80,6 +80,8 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 				}
 				f[fact_field::nationality] = country_name;
 
+				obs.entrant_docs.expirations[d.type] = data.expiration;
+
 				// cannot be invalid, it determines source of truth of nationality
 				obs.entrant_docs.nationality = d.issuing_country;
 
@@ -92,12 +94,13 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 			entry_permit_data data;
 			if (parse_entry_permit(data, d, ctx)) {
 				f[fact_field::name] = data.name;
-				f[fact_field::passport_number] =
-					data.passport_number;
+				f[fact_field::passport_number] = data.passport_number;
 				f[fact_field::purpose] = data.purpose;
 				f[fact_field::duration] = data.duration;
-				f[fact_field::expiration] =
-					format_date(data.expiration);
+
+				// Typed field -> separate map
+
+				obs.entrant_docs.expirations[d.type] = data.expiration;
 
 				print_entry_permit(data);
 			}
@@ -139,7 +142,8 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 				f[fact_field::height_cm] = std::to_string(data.height_cm);
 				f[fact_field::weight_kg] = std::to_string(data.weight_kg);
 				f[fact_field::physical_desc] = data.physical_desc;
-				f[fact_field::expiration] = format_date(data.expiration);
+
+				obs.entrant_docs.expirations[d.type] = data.expiration;
 
 				print_access_permit(data);
 
@@ -171,8 +175,8 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 				f[fact_field::date_of_birth] = format_date(data.date_of_birth);
 				f[fact_field::height_cm] = std::to_string(data.height_cm);
 				f[fact_field::weight_kg] = std::to_string(data.weight_kg);
-				f[fact_field::expiration] = format_date(data.expiration);
 
+				obs.entrant_docs.expirations[d.type] = data.expiration;
 				// TODO: Check seal
 
 				print_grant_of_asylum(data);
@@ -198,7 +202,8 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 				f[fact_field::height_cm] = std::to_string(data.height_cm);
 				f[fact_field::weight_kg] = std::to_string(data.weight_kg);
 				f[fact_field::physical_desc] = data.physical_desc;
-				f[fact_field::expiration] = format_date(data.expiration);
+
+				obs.entrant_docs.expirations[d.type] = data.expiration;
 
 				print_identity_supplement(data);
 			}

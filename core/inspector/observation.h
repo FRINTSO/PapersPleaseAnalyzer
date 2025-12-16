@@ -14,6 +14,7 @@ struct observation {
 	bool booth_ok = false;
 	date_t date;
 	int entrant_count;
+	std::optional<int> entrant_weight;
 
 	// === RULEBOOK ===
 	bool rulebook_visible = false;
@@ -23,7 +24,12 @@ struct observation {
 	// === DOCUMENTS ===
 	struct {
 		std::vector<doc_type> visible;
-		std::map<doc_type, std::map<fact_field, std::string> > fields;
+
+		// Cross-doc identity fields (string comparison)
+		std::map<doc_type, std::map<fact_field, std::string> > identity_fields;
+
+		// Typed per-doc fields (checked against external values)
+		std::map<doc_type, date_t> expirations;
 
 		// structured data that doesn't fit the string map
 		certificate_of_vaccination_data::vaccination_row vaccines[3];

@@ -10,6 +10,7 @@
 struct booth_info {
 	date_t current_date;
 	std::string entrant_count;
+	std::optional<int> entrant_weight;
 };
 
 bool extract_booth_info(booth_info &out, const game_screen &screen,
