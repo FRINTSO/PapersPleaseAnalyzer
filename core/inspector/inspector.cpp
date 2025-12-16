@@ -1,6 +1,5 @@
-#include "paplease/resources.h"
+#if 0
 #include <cstdio>
-#include <iostream>
 #include <string_view>
 
 #include <magic_enum/magic_enum.hpp>
@@ -8,11 +7,11 @@
 #include <paplease/compiler.h>
 #include <paplease/documents.h>
 #include <paplease/game_screen.h>
-#include <paplease/inspector.h>
+#include <paplease/resources.h>
+#include <paplease/rules.h>
 #include <paplease/vision.h>
 
 #include "print.h"
-#include "rulebook.h"
 
 static constexpr int MAX_VACCINATIONS = 3;
 
@@ -207,99 +206,6 @@ static bool has_polio_vaccine(const entrant_docs &e)
 	return false;
 }
 
-static void check_missing_documents(const day_rules &rules,
-				    const entrant_docs &docs)
-{
-	std::string_view purpose = get_purpose(docs);
-
-	if (rules.require_passport && !docs.passport)
-		notify_player("MISSING: Passport");
-
-	if (rules.require_entry_permit && !docs.entry_permit &&
-	    docs.nationality != country::arstotzka)
-		notify_player("MISSING: Entry permit");
-
-	if (rules.require_entry_ticket && !docs.entry_ticket &&
-	    docs.nationality != country::arstotzka)
-		notify_player("MISSING: Entry ticket");
-
-	if (rules.require_work_pass && !docs.work_pass && purpose == "WORK")
-		notify_player("MISSING: Work pass");
-
-	if (rules.require_identity_card && !docs.identity_card &&
-	    docs.nationality == country::arstotzka)
-		notify_player("MISSING: ID card");
-
-	if (rules.require_polio_vaccination && !has_polio_vaccine(docs))
-		notify_player("MISSING: Polio vaccination");
-
-	if (rules.require_diplomatic_authorization && !docs.diplomatic_auth &&
-	    purpose == "DIPLOMAT")
-		notify_player("MISSING: Diplomatic authorization");
-
-	if (rules.require_asylum_grant && !docs.grant_of_asylum &&
-	    purpose == "ASYLUM")
-		notify_player("MISSING: Grant of asylum");
-}
-
-static void check_prohibitions(const day_rules &rules, const entrant_docs &e)
-{
-	if (rules.prohibit_impor && e.nationality == country::impor)
-		notify_player("VIOLATION: Entry from Impor prohibited");
-
-	if (rules.prohibit_united_federation &&
-	    e.nationality == country::united_federation)
-		notify_player(
-			"VIOLATION: Entry from United Federation prohibited");
-}
-
-static void check_expirations(const day_rules &rules, const entrant_docs &e,
-			      const date_t &current)
-{
-	if (!rules.all_docs_must_be_current)
-		return;
-
-	if (e.passport && date_expired(e.passport->expiration, current))
-		notify_player("EXPIRED: Passport");
-
-	if (e.entry_permit && date_expired(e.entry_permit->expiration, current))
-		notify_player("EXPIRED: Entry permit");
-
-	if (e.access_permit &&
-	    date_expired(e.access_permit->expiration, current))
-		notify_player("EXPIRED: Access permit");
-
-	if (e.grant_of_asylum &&
-	    date_expired(e.grant_of_asylum->expiration, current))
-		notify_player("EXPIRED: Grant of asylum");
-}
-
-template <typename T>
-static void check_discrepancies(const std::vector<sourced<T> > &values,
-				const char *field)
-{
-	for (size_t i = 0; i < values.size(); i++) {
-		for (size_t j = i + 1; j < values.size(); j++) {
-			if (!values[i].value.empty() &&
-			    !values[j].value.empty() &&
-			    !(values[i].value == values[j].value)) {
-				printf("DISCREPANCY: %s mismatch (%s vs %s)\n",
-				       field,
-				       magic_enum::enum_name(values[i].source)
-					       .data(),
-				       magic_enum::enum_name(values[j].source)
-					       .data());
-			}
-		}
-	}
-}
-
-static void check_discrepancies(const entrant_docs &e)
-{
-	check_discrepancies(collect_names(e), "Name");
-	check_discrepancies(collect_passport_nums(e), "Passport number");
-	check_discrepancies(collect_dates_of_birth(e), "Date of birth");
-}
 
 static void reset_inspector(inspector &ins)
 {
@@ -345,8 +251,8 @@ bool ensure_rules_loaded(inspector &ins, const game_screen &screen,
 	if (!find_document(rulebook, doc_type::rulebook, ui_section::inspection,
 			   screen))
 		return false;
-	day_rules parsed{};
-	if (!parse_rulebook(parsed, rulebook, ctx)) {
+	std::set<rule> parsed{};
+	if (!parse_rules(parsed, rulebook, ctx)) {
 		notify_player("Failed to parse rulebook");
 		return false;
 	}
@@ -354,6 +260,11 @@ bool ensure_rules_loaded(inspector &ins, const game_screen &screen,
 	ins.has_rules = true;
 	notify_player("Successfully parsed rulebook");
 	return true;
+}
+
+void print_applicable_rules(inspector &ins)
+{
+
 }
 
 void process_game_frame(inspector &ins, const game_screen &screen,
@@ -369,6 +280,8 @@ void process_game_frame(inspector &ins, const game_screen &screen,
 	if (!ensure_rules_loaded(ins, screen, ctx))
 		return;
 
+	print_applicable_rules(ins);
+
 	/*
 	// find documents and apply rules
 	auto detected = scan_documents(screen, ui_section::inspection);
@@ -382,3 +295,4 @@ void process_game_frame(inspector &ins, const game_screen &screen,
 	check_discrepancies(ins.entrant);
 	*/
 }
+#endif

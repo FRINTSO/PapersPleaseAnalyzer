@@ -12,6 +12,7 @@
 #include <paplease/resources.h>
 
 #include "test.h"
+#include <string_view>
 
 namespace fs = std::filesystem;
 
@@ -57,10 +58,13 @@ int main()
 	resources_ctx ctx = make_resources(
 		"/home/wlm/dev/PapersPleaseAnalyzer/images");
 
-	inspector ins;
+	inspector ins{};
+	ins.inform_player = +[](std::string_view msg){
+		std::cout << msg << '\n';
+	};
 	game_screen screen;
 	while (get_next_frame(screen, ctx)) {
-		process_game_frame(ins, screen, ctx);
+		inspector_step(ins, screen, ctx);
 		std::cin.get();
 	}
 }

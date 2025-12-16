@@ -1,3 +1,4 @@
+#if 0
 #include <map>
 #include <set>
 #include <string>
@@ -365,3 +366,4 @@ void inspector_step(inspector_v2 &ins, const game_screen &screen,
 
 	advice adv = decide(ins.rules, ins.entrant_case);
 }
+#endif
