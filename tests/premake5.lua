@@ -25,16 +25,16 @@ local function test_project(name, source_file, needs_core)
 
 	-- All tests need OpenCV includes because paplease headers depend on it
 	filter("system:windows")
-	includedirs({ "%{wks.location}/core/vendor/opencv-install/include" })
+	includedirs({ "%{wks.location}/vendor/opencv-install/include" })
 	libdirs({
-		"%{wks.location}/core/vendor/opencv-install/x64/vc16/lib",
+		"%{wks.location}/vendor/opencv-install/x64/vc16/lib",
 		"%{wks.location}/bin/" .. outputdir .. "/core",
 	})
 
 	filter("system:linux")
-	includedirs({ "%{wks.location}/core/vendor/opencv-install/include/opencv4" })
+	includedirs({ "%{wks.location}/vendor/opencv-install/include/opencv4" })
 	libdirs({
-		"%{wks.location}/core/vendor/opencv-install/lib",
+		"%{wks.location}/vendor/opencv-install/lib",
 		"%{wks.location}/bin/" .. outputdir .. "/core",
 	})
 

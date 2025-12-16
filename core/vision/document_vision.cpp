@@ -1,11 +1,19 @@
-#include "opencv2/core.hpp"
-#include "paplease/colorspace.h"
-#include <paplease/compiler.h>
-#include <paplease/documents.h>
-#include <paplease/geometry.h>
-#include <paplease/game_screen.h>
-#include <paplease/vision.h>
+#include <climits>
+#include <ctime>
 #include <vector>
+
+#include <magic_enum/magic_enum.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
+
+#include <paplease/colorspace.h>
+#include <paplease/compiler.h>
+#include <paplease/debug.h>
+#include <paplease/documents.h>
+#include <paplease/game_screen.h>
+#include <paplease/geometry.h>
+#include <paplease/vision.h>
 
 static cv::Mat preprocess_for_scanning(const cv::Mat &area, ui_section section)
 {
@@ -13,36 +21,28 @@ static cv::Mat preprocess_for_scanning(const cv::Mat &area, ui_section section)
 		TODO("Implement preprocessing for booth document scanning.");
 	}
 
-	static hsl_range config{ 0, 179, 45, 255, 0, 255 };
+	constexpr hsl_range config{ 0, 179, 45, 255, 0, 255 };
 	auto mask = bgr_to_hsl_mask(area, config);
 	cv::Mat result;
 	cv::bitwise_and(area, area, result, mask);
-
-	// HIGHLIGHT DISCREPANCIES
-	static hsl_range highlightDiscrepanciesActiveConfig{ 0,	  0,   112,
-							     112, 157, 157 };
-	auto highlightMask =
-		bgr_to_hsl_mask(area, highlightDiscrepanciesActiveConfig);
-
-	static hsl_range majorDocumentLocatorConfig{ 0, 179, 135, 255, 0, 255 };
 	return result;
 }
 
 static constexpr rgb_color passport_colors[] = {
-	{ /* antegria RGB */ get_appearance(doc_variant::passport_antegria)
+	{ /* antegria RGB */ get_passport_appearance(country::antegria)
 		  .border_colors[0] },
-	{ /* arstotzka RGB */ get_appearance(doc_variant::passport_arstotzka)
+	{ /* arstotzka RGB */ get_passport_appearance(country::arstotzka)
 		  .border_colors[0] },
-	{ /* impor RGB */ get_appearance(doc_variant::passport_impor)
+	{ /* impor RGB */ get_passport_appearance(country::impor)
 		  .border_colors[0] },
-	{ /* kolechia RGB */ get_appearance(doc_variant::passport_kolechia)
+	{ /* kolechia RGB */ get_passport_appearance(country::kolechia)
 		  .border_colors[0] },
-	{ /* obristan RGB */ get_appearance(doc_variant::passport_obristan)
+	{ /* obristan RGB */ get_passport_appearance(country::obristan)
 		  .border_colors[0] },
-	{ /* republia RGB */ get_appearance(doc_variant::passport_republia)
+	{ /* republia RGB */ get_passport_appearance(country::republia)
 		  .border_colors[0] },
-	{ /* united_federation RGB */ get_appearance(
-		  doc_variant::passport_united_federation)
+	{ /* united_federation RGB */ get_passport_appearance(
+		  country::united_federation)
 		  .border_colors[0] },
 };
 
@@ -84,7 +84,8 @@ static bool is_border_color_at(const cv::Mat &image, int x, int y,
 	return matches_border_color(pixel, app);
 }
 
-rectangle find_doc_bounding_box(const cv::Mat &image, const doc_appearance &app)
+static rectangle find_doc_bounding_box(const cv::Mat &image,
+				       const doc_appearance &app)
 {
 	int left = INT_MAX, top = INT_MAX, right = 0, bottom = 0;
 	bool found_first = false;
@@ -144,6 +145,18 @@ rectangle find_doc_bounding_box(const cv::Mat &image, const doc_appearance &app)
 		return {}; // nothing found
 
 	return { left, top, right - left + 1, bottom - top + 1 };
+}
+
+static bool is_valid_doc(const cv::Mat &image, const rectangle &bbox,
+			 const doc_appearance &appearance)
+{
+	if (bbox.empty())
+		return false;
+
+	if (bbox.width != appearance.width || bbox.height != appearance.height)
+		return false;
+
+	return true;
 }
 
 // Check if corner pixel traces inward along border
@@ -207,53 +220,66 @@ bool find_document(doc &out, doc_type type, ui_section section,
 	// 2. Preprocess
 	cv::Mat processed = preprocess_for_scanning(area, section);
 
-	// 3. Handle passport special case
-	doc_variant variant;
-	if (type == doc_type::passport) {
-		country c;
-		if (!detect_passport_country(c, processed))
-			return false;
+	// 3. Get appearance (handle passport special case)
+	const doc_appearance *appearance;
+	country detected_country{};
 
-		variant = variant_from_country(c);
+	if (type == doc_type::passport) {
+		if (!detect_passport_country(detected_country, processed))
+			return false;
+		appearance = &get_passport_appearance(detected_country);
 	} else {
-		variant = variant_from_type(type); // simple mapping
+		appearance = &get_appearance(type);
 	}
 
-	// 4. Get appearance
-	const doc_appearance &appearance = get_appearance(variant);
-
-	// 5. Find bounding box
-	rectangle bbox = find_doc_bounding_box(processed, appearance);
-	if (bbox.empty())
+	// 4. Find bounding box
+	rectangle bbox = find_doc_bounding_box(processed, *appearance);
+	if (!is_valid_doc(processed, bbox, *appearance))
 		return false;
 
-	// 6. Extract and return
+	// 5. Extract and return
 	out.pixels = area(bbox.to_cv());
-	out.variant = variant;
+	out.type = type;
+	out.issuing_country = detected_country;
 	return true;
 }
 
-std::vector<doc> find_all_documents(const game_screen &screen, ui_section section)
+std::vector<doc> scan_documents(const game_screen &screen, ui_section section)
 {
 	cv::Mat area = slice_section(screen, section);
 	cv::Mat processed = preprocess_for_scanning(area, section);
 
 	std::vector<doc> documents{};
-	constexpr u64 max_count =
-		static_cast<u64>(doc_variant::passport_united_federation);
-	for (int i = 0; i <= max_count; i++) {
-		doc_variant variant = static_cast<doc_variant>(i);
-		const doc_appearance &appearance = get_appearance(variant);
+	constexpr int non_passport_count = static_cast<int>(doc_type::passport);
+	for (int i = 0; i < non_passport_count; i++) {
+		doc_type type = static_cast<doc_type>(i);
+		const doc_appearance &appearance = get_appearance(type);
 
-		// 5. Find bounding box
 		rectangle bbox = find_doc_bounding_box(processed, appearance);
-		if (bbox.empty())
+		if (!is_valid_doc(processed, bbox, appearance))
 			continue;
 
-		// 6. Extract and return
-		documents.emplace_back(
-			doc{ .pixels = area(bbox.to_cv()), .variant = variant });
+		documents.emplace_back(doc{
+			.pixels = area(bbox.to_cv()),
+			.type = type,
+			.issuing_country = {} // Not applicable for non-passports
+		});
 	}
 
+	// Scan passports (one per country)
+	constexpr int country_count =
+		static_cast<int>(country::united_federation) + 1;
+	for (int i = 0; i < country_count; i++) {
+		country c = static_cast<country>(i);
+		const doc_appearance &appearance = get_passport_appearance(c);
+
+		rectangle bbox = find_doc_bounding_box(processed, appearance);
+		if (!is_valid_doc(processed, bbox, appearance))
+			continue;
+
+		documents.emplace_back(doc{ .pixels = area(bbox.to_cv()),
+					    .type = doc_type::passport,
+					    .issuing_country = c });
+	};
 	return documents;
 }

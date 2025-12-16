@@ -12,39 +12,42 @@ static constexpr rectangle BOX_HEIGHT         = {182, 210, 116, 16};
 static constexpr rectangle BOX_WEIGHT         = {182, 228, 116, 16};
 static constexpr rectangle BOX_EXPIRATION     = {156, 326, 100, 16};
 
-bool parse_grant_of_asylum(grant_of_asylum_data &out, const doc &document)
+bool parse_grant_of_asylum(grant_of_asylum_data &out, const doc &document,
+			   const resources_ctx &ctx)
 {
-	assert(document.variant == doc_variant::grant_of_asylum);
+	assert(document.type == doc_type::grant_of_asylum);
 	cv::Mat binary = preprocess_document(document.pixels);
 	typeface tf = typeface_for(doc_type::grant_of_asylum);
 
 	std::string tmp;
 
-	if (!extract_field(out.name, binary, BOX_NAME, tf))
+	if (!extract_field(out.name, binary, BOX_NAME, tf, ctx))
 		return false;
 
-	if (!extract_field(out.issuing_country, binary, BOX_ISSUING_COUNTRY, tf))
+	if (!extract_field(out.issuing_country, binary, BOX_ISSUING_COUNTRY, tf,
+			   ctx))
 		return false;
 
-	if (!extract_field(out.passport_number, binary, BOX_PASSPORT_NUM, tf))
+	if (!extract_field(out.passport_number, binary, BOX_PASSPORT_NUM, tf,
+			   ctx))
 		return false;
 
-	if (!extract_field(tmp, binary, BOX_DOB, tf))
+	if (!extract_field(tmp, binary, BOX_DOB, tf, ctx))
 		return false;
 	if (!parse_date(out.date_of_birth, tmp))
 		return false;
 
-	if (!extract_field(tmp, binary, BOX_HEIGHT, tf))
+	if (!extract_field(tmp, binary, BOX_HEIGHT, tf, ctx))
 		return false;
 	if (!parse_height(out.height_cm, tmp))
 		return false;
 
-	if (!extract_field(tmp, binary, BOX_WEIGHT, tf))
+	if (!extract_field(tmp, binary, BOX_WEIGHT, tf, ctx))
 		return false;
 	if (!parse_weight(out.weight_kg, tmp))
 		return false;
 
-	if (!extract_field(tmp, binary, BOX_EXPIRATION, tf))
+	if (!extract_field(tmp, binary, BOX_EXPIRATION, tf, ctx))
 		return false;
 	if (!parse_date(out.expiration, tmp))
 		return false;

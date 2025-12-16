@@ -38,7 +38,7 @@ void extract_game_screen(game_screen &out, const cv::Mat &buffer)
 
 	fprintf(stderr, "cols: %i, rows: %i\n", buffer.cols, buffer.rows);
 
-	TODO("implement extraction logic");
+	//TODO("implement extraction logic");
 }
 
 bool validate_game_screen(const game_screen &screen)

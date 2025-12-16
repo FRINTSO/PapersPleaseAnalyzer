@@ -1,3 +1,5 @@
+#ifndef _PAPLEASE_CORE_INSPECTOR_RULEBOOK_H
+#define _PAPLEASE_CORE_INSPECTOR_RULEBOOK_H
 #include "opencv2/core/mat.hpp"
 #include "opencv2/imgproc.hpp"
 #include <algorithm>
@@ -95,7 +97,8 @@ static bool apply_rule(day_rules &out, std::string_view rule)
 	return true; // rule applied
 }
 
-bool parse_rulebook(day_rules &out, const doc &rulebook)
+bool parse_rulebook(day_rules &out, const doc &rulebook,
+		    const resources_ctx &ctx)
 {
 	constexpr typeface tf = typeface_for(doc_type::rulebook);
 	cv::Mat binary_rulebook = preprocess_rulebook(rulebook.pixels);
@@ -103,7 +106,7 @@ bool parse_rulebook(day_rules &out, const doc &rulebook)
 		rectangle rule_box = nth_rule_box(i);
 		std::string rule;
 		cv::Mat rule_region = binary_rulebook(rule_box.to_cv());
-		if (!extract_text_strict(rule, rule_region, tf))
+		if (!extract_text_strict(rule, rule_region, tf, ctx))
 			return false;
 
 		std::transform(rule.begin(), rule.end(), rule.begin(), ::tolower);
@@ -113,3 +116,4 @@ bool parse_rulebook(day_rules &out, const doc &rulebook)
 	}
 	return true;
 }
+#endif // _PAPLEASE_CORE_INSPECTOR_RULEBOOK_H

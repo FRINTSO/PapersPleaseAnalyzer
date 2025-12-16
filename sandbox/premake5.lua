@@ -29,11 +29,11 @@ links({
 })
 
 filter("system:windows")
-libdirs({ "%{wks.location}/core/vendor/opencv-install/x64/vc17/lib" })
-includedirs({ "%{wks.location}/core/vendor/opencv-install/include" })
+libdirs({ "%{wks.location}/vendor/opencv-install/x64/vc17/lib" })
+includedirs({ "%{wks.location}/vendor/opencv-install/include" })
 postbuildcommands({
 	-- copy DLLs next to the exe
-	"{COPY} %{wks.location}/core/vendor/opencv-install/x64/vc17/bin/*.dll %{cfg.targetdir}",
+	"{COPY} %{wks.location}/vendor/opencv-install/x64/vc17/bin/*.dll %{cfg.targetdir}",
 })
 
 filter({ "system:windows", "configurations:Debug" })
@@ -43,12 +43,12 @@ filter({ "system:windows", "configurations:Release" })
 links({ "opencv_core4130", "opencv_imgproc4130", "opencv_imgcodecs4130" })
 
 filter("system:linux")
-libdirs({ "%{wks.location}/core/vendor/opencv-install/lib" })
+libdirs({ "%{wks.location}/vendor/opencv-install/lib" })
 links({ "opencv_core", "opencv_imgcodecs", "opencv_imgproc" })
-includedirs({ "%{wks.location}/core/vendor/opencv-install/include/opencv4" })
+includedirs({ "%{wks.location}/vendor/opencv-install/include/opencv4" })
 linkoptions({ "-Wl,-rpath,$ORIGIN" })
 postbuildcommands({
-	"{COPY} %{wks.location}/core/vendor/opencv-install/lib/*.so* %{cfg.targetdir}",
+	"{COPY} %{wks.location}/vendor/opencv-install/lib/*.so* %{cfg.targetdir}",
 })
 
 filter("configurations:Debug")

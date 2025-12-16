@@ -1,17 +1,18 @@
 #ifndef PAPLEASE_RESOURCES_H
 #define PAPLEASE_RESOURCES_H
 
+#include <array>
 #include <filesystem>
 #include <string_view>
+#include <unordered_map>
 
-#include <paplease/ocr.h>
+#include <paplease/types.h>
 
-namespace resources {
+struct resources_ctx {
+	std::filesystem::path asset_root;
+	std::array<std::unordered_map<u64, char>, 4> charsets;
+};
 
-void init(std::string_view asset_path);
-const std::filesystem::path& asset_path();
-std::filesystem::path typeface_path(typeface tf);
-
-}
+resources_ctx make_resources(std::string_view root);
 
 #endif // PAPLEASE_RESOURCES_H

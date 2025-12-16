@@ -2,30 +2,13 @@
 #define PAPLEASE_INSPECTOR_H
 
 #include <optional>
+#include <string_view>
+#include <vector>
 
 #include <paplease/documents.h>
 #include <paplease/game_screen.h>
+#include <paplease/resources.h>
 #include <paplease/types.h>
-
-struct entrant_class {
-	// Nationality axis
-	bool is_citizen; // true = Arstotzkan, false = foreigner
-	bool nationality_known; // do we know yet?
-
-	// Purpose axis
-	enum class purpose { unknown, visitor, worker, diplomat, asylum };
-	purpose visit_purpose;
-
-	// Criminal axis
-	bool is_wanted; // matches criminal bulletin
-};
-
-struct doc_status {
-	enum class state : u8 { seen_in_booth, seen_in_inspection, scanned };
-
-	state current_state;
-	std::optional<doc_data> data;
-};
 
 struct day_rules {
 	// === REQUIREMENTS ===
@@ -53,73 +36,33 @@ struct day_rules {
 	bool confiscate_arstotzkan_passports = false;
 };
 
-// Accumulated facts about the current entrant
-struct entrant_info {
-	// === IDENTITY (from multiple docs) ===
-	std::string name;              // from passport, permits, etc
-	std::string passport_number;   // cross-reference key
-	date_t date_of_birth;
-	bool is_male;
-	country nationality;           // from passport variant
-
-	// === PHYSICAL (for discrepancy checks) ===
-	u16 height_cm;
-	u16 weight_kg;
-	std::string physical_desc;
-	std::string district;          // from ID card
-
-	// === DOCUMENTS PRESENT ===
-	bool has_passport;
-	bool has_entry_permit;
-	bool has_entry_ticket;
-	bool has_work_pass;
-	bool has_access_permit;
-	bool has_diplomatic_auth;
-	bool has_grant_of_asylum;
-	bool has_identity_card;
-	bool has_identity_supplement;
-	bool has_vaccination_cert;
-
-	// === KEY DATES (for expiration checks) ===
-	date_t passport_expiration;
-	date_t permit_expiration;      // entry_permit
-	date_t ticket_valid_date;      // entry_ticket
-	date_t work_pass_end;
-	date_t access_permit_exp;
-	date_t asylum_expiration;
-	date_t id_supplement_exp;
-
-	// === PURPOSE/WORK ===
-	std::string purpose;           // from permits
-	std::string duration;
-	std::string work_field;
-
-	// === DIPLOMATIC ===
-	std::string diplomatic_access_countries;
-
-	// === VACCINATION ===
-	bool has_polio_vaccine;
-
-	// === FOR DISCREPANCY DETECTION ===
-	// Store names/numbers from each doc to cross-check
-	std::string passport_name;
-	std::string permit_name;
-	std::string id_card_name;
-	std::string passport_num_from_permit;
+struct entrant_docs {
+	// Parsed data (valid when corresponding flag is true)
+	std::optional<passport_data> passport;
+	country nationality;
+	std::optional<entry_permit_data> entry_permit;
+	std::optional<entry_ticket_data> entry_ticket;
+	std::optional<work_pass_data> work_pass;
+	std::optional<access_permit_data> access_permit;
+	std::optional<diplomatic_authorization_data> diplomatic_auth;
+	std::optional<grant_of_asylum_data> grant_of_asylum;
+	std::optional<identity_card_data> identity_card;
+	std::optional<identity_supplement_data> identity_supplement;
+	std::optional<certificate_of_vaccination_data> vaccination_cert;
 };
 
 struct inspector {
 	// Days state
-	std::string current_date;
+	date_t current_date;
 	day_rules rules;
 	bool has_rules;
 
 	// Entrant state
 	std::string current_entrant_count;
-	entrant_info entrant;
-
-	// Funcs
-	void process_game_frame(const game_screen &screen);
+	entrant_docs entrant;
 };
+
+void process_game_frame(inspector &ins, const game_screen &screen,
+			const resources_ctx &ctx);
 
 #endif // PAPLEASE_INSPECTOR_H

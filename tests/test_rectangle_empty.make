@@ -28,7 +28,7 @@ ifeq ($(origin AR), default)
   AR = ar
 endif
 RESCOMP = windres
-INCLUDES += -Iinclude -I../core/include -I../core/vendor/opencv-install/include/opencv4
+INCLUDES += -Iinclude -I../core/include -I../vendor/opencv-install/include/opencv4
 FORCE_INCLUDE +=
 ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
 ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
@@ -49,7 +49,7 @@ OBJDIR = ../bin-int/linux-x86_64/Debug/tests/test_rectangle_empty
 DEFINES += -D_DEBUG
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++20
-ALL_LDFLAGS += $(LDFLAGS) -L../core/vendor/opencv-install/lib -L../bin/linux-x86_64/Debug/core -L/usr/lib64 -m64
+ALL_LDFLAGS += $(LDFLAGS) -L../vendor/opencv-install/lib -L../bin/linux-x86_64/Debug/core -L/usr/lib64 -m64
 
 else ifeq ($(config),release)
 TARGETDIR = ../bin/linux-x86_64/Release/tests
@@ -58,7 +58,7 @@ OBJDIR = ../bin-int/linux-x86_64/Release/tests/test_rectangle_empty
 DEFINES += -DNDEBUG
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -g
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -g -std=c++20
-ALL_LDFLAGS += $(LDFLAGS) -L../core/vendor/opencv-install/lib -L../bin/linux-x86_64/Release/core -L/usr/lib64 -m64
+ALL_LDFLAGS += $(LDFLAGS) -L../vendor/opencv-install/lib -L../bin/linux-x86_64/Release/core -L/usr/lib64 -m64
 
 else ifeq ($(config),dist)
 TARGETDIR = ../bin/linux-x86_64/Dist/tests
@@ -67,7 +67,7 @@ OBJDIR = ../bin-int/linux-x86_64/Dist/tests/test_rectangle_empty
 DEFINES +=
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -std=c++20
-ALL_LDFLAGS += $(LDFLAGS) -L../core/vendor/opencv-install/lib -L../bin/linux-x86_64/Dist/core -L/usr/lib64 -m64
+ALL_LDFLAGS += $(LDFLAGS) -L../vendor/opencv-install/lib -L../bin/linux-x86_64/Dist/core -L/usr/lib64 -m64
 
 endif
 
