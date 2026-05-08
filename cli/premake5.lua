@@ -18,13 +18,16 @@ files({
 includedirs({
 	"src",
 	"%{wks.location}/core/include",
+	"%{wks.location}/capture/include",
+	"%{wks.location}/vendor/magic_enum/include",
 })
 
 links({
 	"core",
+	"capture",
 })
 
-dependson("core")
+dependson("core", "capture")
 
 filter("system:windows")
 libdirs({ "%{wks.location}/vendor/opencv-install/x64/vc17/lib" })
@@ -44,6 +47,11 @@ filter("system:linux")
 libdirs({ "%{wks.location}/vendor/opencv-install/lib" })
 links({ "opencv_core", "opencv_imgcodecs", "opencv_imgproc" })
 includedirs({ "%{wks.location}/vendor/opencv-install/include/opencv4" })
+linkoptions({ "-Wl,-rpath,'$$ORIGIN'" })
+postbuildcommands({
+	"{COPY} %{wks.location}/vendor/opencv-install/lib/*.so* %{cfg.targetdir}",
+	"{COPY} %{wks.location}/images %{cfg.targetdir}/images",
+})
 
 filter("configurations:Debug")
 defines({ "_DEBUG" })

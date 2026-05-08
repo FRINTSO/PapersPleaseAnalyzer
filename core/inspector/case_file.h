@@ -5,8 +5,7 @@
 #include <paplease/date.h>
 #include <paplease/documents.h>
 #include <paplease/inspector.h>
-
-#include "observation.h"
+#include <paplease/observation.h>
 
 std::set<doc_type> update_case(case_file &cf, const observation &obs);
 

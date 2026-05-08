@@ -7,13 +7,13 @@
 #include <paplease/compiler.h>
 #include <paplease/date.h>
 #include <paplease/documents.h>
-#include <paplease/rules.h>
 #include <paplease/inspector.h>
+#include <paplease/observation.h>
+#include <paplease/rules.h>
 #include <paplease/vision.h>
 
 #include "case_file.h"
 #include "checks.h"
-#include "observation.h"
 
 static void update_day(inspector &ins, const date_t &scanned_date)
 {

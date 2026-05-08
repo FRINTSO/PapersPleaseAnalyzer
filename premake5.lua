@@ -18,6 +18,7 @@ outputdir = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
 
 group("Core")
 include("core")
+include("capture")
 group("")
 
 include("sandbox")

@@ -1,10 +1,12 @@
-#include "paplease/documents.h"
-#include "paplease/inspector.h"
+#include <paplease/observation.h>
+
+#include <string_view>
+
+#include <paplease/documents.h>
+#include <paplease/inspector.h>
 #include <paplease/vision.h>
 
-#include "observation.h"
 #include "print.h"
-#include <string_view>
 
 observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 			  const observe_options &opts)
@@ -32,7 +34,7 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 	}
 
 	// === ENTRANT DOCUMENTS ===
-	auto detected = scan_documents(screen, ui_section::inspection);
+	auto detected = scan_for_documents(screen, ui_section::inspection);
 
 	for (const auto &d : detected) {
 		// skip non-entrant docs
