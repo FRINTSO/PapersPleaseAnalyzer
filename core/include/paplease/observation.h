@@ -1,5 +1,5 @@
-#ifndef _PAPLEASE_CORE_INSPECTOR_OBSERVARION_H
-#define _PAPLEASE_CORE_INSPECTOR_OBSERVARION_H
+#ifndef PAPLEASE_OBSERVATION_H
+#define PAPLEASE_OBSERVATION_H
 #include <map>
 #include <optional>
 #include <set>
@@ -46,4 +46,4 @@ struct observe_options {
 observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 			  const observe_options &opts = {});
 
-#endif // _PAPLEASE_CORE_INSPECTOR_OBSERVARION_H
+#endif // PAPLEASE_OBSERVATION_H

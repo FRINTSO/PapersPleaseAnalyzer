@@ -244,7 +244,7 @@ bool find_document(doc &out, doc_type type, ui_section section,
 	return true;
 }
 
-std::vector<doc> scan_documents(const game_screen &screen, ui_section section)
+std::vector<doc> scan_for_documents(const game_screen &screen, ui_section section)
 {
 	cv::Mat area = slice_section(screen, section);
 	cv::Mat processed = preprocess_for_scanning(area, section);

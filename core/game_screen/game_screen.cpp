@@ -1,3 +1,5 @@
+#include "opencv2/imgproc.hpp"
+#include "paplease/colorspace.h"
 #include <algorithm>
 #include <cctype>
 #include <cstdio>
@@ -28,17 +30,49 @@ static constexpr rectangle INSPECTION_RECT{ INSPECTION_X, INSPECTION_Y,
 					    INSPECTION_WIDTH,
 					    INSPECTION_HEIGHT };
 
+static rectangle find_game_content(const cv::Mat &buffer);
 
 void extract_game_screen(game_screen &out, const cv::Mat &buffer)
 {
 	if (buffer.cols == 1142 && buffer.rows == 672) {
-		out.pixels = buffer(cv::Rect(1, 1, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT));
+		out.pixels = buffer(
+			cv::Rect(1, 1, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT));
 		return;
 	}
 
-	fprintf(stderr, "cols: %i, rows: %i\n", buffer.cols, buffer.rows);
+	rectangle content = find_game_content(buffer);
 
-	//TODO("implement extraction logic");
+	if (content.empty())
+		return;
+	cv::Mat cropped = buffer(content.to_cv());
+	if (cropped.cols == GAME_SCREEN_WIDTH &&
+	    cropped.rows == GAME_SCREEN_HEIGHT) {
+		out.pixels = cropped;
+		return;
+	}
+	cv::resize(cropped, out.pixels,
+		   cv::Size(GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT), 0, 0,
+		   cv::INTER_AREA);
+
+	fprintf(stderr, "cols: %i, rows: %i\n", buffer.cols, buffer.rows);
+}
+
+static rectangle find_game_content(const cv::Mat &buffer)
+{
+	constexpr hsv_range non_black{ 0, 179, 0, 255, 10, 255 };
+	cv::Mat mask = bgr_to_hsv_mask(buffer, non_black);
+	// Scan inward from each edge to find where the solid black border ends
+	int top = 0, bottom = mask.rows - 1;
+	int left = 0, right = mask.cols - 1;
+	while (top < bottom && cv::countNonZero(mask.row(top)) == 0)
+		top++;
+	while (bottom > top && cv::countNonZero(mask.row(bottom)) == 0)
+		bottom--;
+	while (left < right && cv::countNonZero(mask.col(left)) == 0)
+		left++;
+	while (right > left && cv::countNonZero(mask.col(right)) == 0)
+		right--;
+	return { left, top, right - left + 1, bottom - top + 1 };
 }
 
 bool validate_game_screen(const game_screen &screen)

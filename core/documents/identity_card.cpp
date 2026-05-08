@@ -1,3 +1,4 @@
+#include "opencv2/core.hpp"
 #include <cassert>
 #include <paplease/documents.h>
 #include <paplease/geometry.h>
@@ -15,6 +16,9 @@ bool parse_identity_card(identity_card_data &out, const doc &document,
 {
 	assert(document.type == doc_type::identity_card);
 	cv::Mat binary = preprocess_document(document.pixels);
+	cv::Mat inset(binary, BOX_DISTRICT.to_cv());
+	cv::bitwise_not(inset, inset);
+
 	typeface tf = typeface_for(doc_type::identity_card);
 
 	std::string tmp;

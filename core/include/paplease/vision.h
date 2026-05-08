@@ -1,11 +1,14 @@
 #ifndef PAPLEASE_VISION_H
 #define PAPLEASE_VISION_H
 
+#include <optional>
 #include <string>
+#include <vector>
 
+#include <paplease/date.h>
+#include <paplease/documents.h>
 #include <paplease/game_screen.h>
 #include <paplease/resources.h>
-#include <vector>
 
 struct booth_info {
 	date_t current_date;
@@ -18,6 +21,6 @@ bool extract_booth_info(booth_info &out, const game_screen &screen,
 
 bool find_document(doc &out, doc_type type, ui_section section,
 		   const game_screen &screen);
-std::vector<doc> scan_documents(const game_screen &screen, ui_section section);
+std::vector<doc> scan_for_documents(const game_screen &screen, ui_section section);
 
 #endif // PAPLEASE_VISION_H
