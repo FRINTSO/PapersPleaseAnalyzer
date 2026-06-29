@@ -1,7 +1,6 @@
 import subprocess
 import sys
 
-import setup_premake
 import setup_opencv
 
 from utils import get_platform, Platform
@@ -24,7 +23,6 @@ def run_git_submodules():
 
 
 def install_dependencies():
-    setup_premake.install_premake()
     setup_opencv.install_opencv()
 
 

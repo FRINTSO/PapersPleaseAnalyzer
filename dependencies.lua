@@ -1,5 +1,0 @@
-IncludeDir = {}
-
-LibraryDir = {}
-
-Library = {}

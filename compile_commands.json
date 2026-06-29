@@ -1,749 +1,254 @@
 [
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../core/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_is_image_file/test_is_image_file.o",
-      "gamescreen/test_is_image_file.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/gamescreen/test_is_image_file.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_is_image_file/test_is_image_file.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/access_permit.o",
-      "documents/access_permit.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/documents/access_permit.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/access_permit.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/booth_vision.o",
-      "vision/booth_vision.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/vision/booth_vision.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/booth_vision.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../core/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_rectangle_empty/test_rectangle_empty.o",
-      "geometry/test_rectangle_empty.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/geometry/test_rectangle_empty.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_rectangle_empty/test_rectangle_empty.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../core/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_encode_character_bits/test_encode_character_bits.o",
-      "ocr/test_encode_character_bits.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/ocr/test_encode_character_bits.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_encode_character_bits/test_encode_character_bits.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../core/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_rectangle_to_cv/test_rectangle_to_cv.o",
-      "geometry/test_rectangle_to_cv.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/geometry/test_rectangle_to_cv.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_rectangle_to_cv/test_rectangle_to_cv.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../core/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_extract_character_boxes/test_extract_character_boxes.o",
-      "ocr/test_extract_character_boxes.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/ocr/test_extract_character_boxes.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_extract_character_boxes/test_extract_character_boxes.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../core/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_rgb_to_u32/test_rgb_to_u32.o",
-      "colorspace/test_rgb_to_u32.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/colorspace/test_rgb_to_u32.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_rgb_to_u32/test_rgb_to_u32.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/case_file.o",
-      "inspector/case_file.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/inspector/case_file.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/case_file.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/certificate_of_vaccination.o",
-      "documents/certificate_of_vaccination.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/documents/certificate_of_vaccination.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/certificate_of_vaccination.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/checks.o",
-      "inspector/checks.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/inspector/checks.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/checks.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/colorspace.o",
-      "colorspace/colorspace.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/colorspace/colorspace.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/colorspace.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/diplomatic_authorization.o",
-      "documents/diplomatic_authorization.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/documents/diplomatic_authorization.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/diplomatic_authorization.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/document_vision.o",
-      "vision/document_vision.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/vision/document_vision.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/document_vision.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/entry_permit.o",
-      "documents/entry_permit.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/documents/entry_permit.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/entry_permit.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/entry_ticket.o",
-      "documents/entry_ticket.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/documents/entry_ticket.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/entry_ticket.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/game_screen.o",
-      "game_screen/game_screen.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/game_screen/game_screen.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/game_screen.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/grant_of_asylum.o",
-      "documents/grant_of_asylum.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/documents/grant_of_asylum.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/grant_of_asylum.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/identity_card.o",
-      "documents/identity_card.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/documents/identity_card.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/identity_card.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/identity_supplement.o",
-      "documents/identity_supplement.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/documents/identity_supplement.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/identity_supplement.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/inspection_vision.o",
-      "vision/inspection_vision.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/vision/inspection_vision.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/inspection_vision.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/inspector.o",
-      "inspector/inspector.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/inspector/inspector.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/inspector.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/observation.o",
-      "inspector/observation.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/inspector/observation.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/observation.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/ocr.o",
-      "ocr/ocr.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/ocr/ocr.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/ocr.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/passport.o",
-      "documents/passport.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/documents/passport.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/passport.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/print.o",
-      "inspector/print.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/inspector/print.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/print.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/resources.o",
-      "resources/resources.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/resources/resources.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/resources.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/rules.o",
-      "inspector/rules.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/inspector/rules.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/rules.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../vendor/magic_enum/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/core/work_pass.o",
-      "documents/work_pass.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/core",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/core/documents/work_pass.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/core/work_pass.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-x",
-      "c++-header",
-      "-D_DEBUG",
-      "-Isrc",
-      "-I../core/src",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/sandbox/pch.h.gch",
-      "src/pch.h"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/sandbox",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/sandbox/src/pch.h",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/sandbox/pch.h.gch"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../core/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_validate_dimensions/test_validate_dimensions.o",
-      "gamescreen/test_validate_dimensions.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/gamescreen/test_validate_dimensions.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_validate_dimensions/test_validate_dimensions.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../core/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_booth_text_extraction/test_booth_text_extraction.o",
-      "vision/test_booth_text_extraction.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/vision/test_booth_text_extraction.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_booth_text_extraction/test_booth_text_extraction.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../core/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_bgr_to_hsv_mask/test_bgr_to_hsv_mask.o",
-      "colorspace/test_bgr_to_hsv_mask.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/colorspace/test_bgr_to_hsv_mask.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_bgr_to_hsv_mask/test_bgr_to_hsv_mask.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Isrc",
-      "-I../core/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/cli/main.o",
-      "src/main.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/cli",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/cli/src/main.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/cli/main.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../core/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_slice_section/test_slice_section.o",
-      "gamescreen/test_slice_section.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/gamescreen/test_slice_section.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_slice_section/test_slice_section.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Isrc",
-      "-I../core/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/cli/pch.o",
-      "src/pch.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/cli",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/cli/src/pch.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/cli/pch.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-D_DEBUG",
-      "-Iinclude",
-      "-I../core/include",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/tests/test_run_scenario_1/test_run_scenario_1.o",
-      "inspector/test_run_scenario_1.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/tests",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/tests/inspector/test_run_scenario_1.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/tests/test_run_scenario_1/test_run_scenario_1.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-include",
-      "../bin-int/linux-x86_64/Debug/sandbox/pch.h",
-      "-D_DEBUG",
-      "-Isrc",
-      "-I../core/src",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/sandbox/main.o",
-      "src/main.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/sandbox",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/sandbox/src/main.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/sandbox/main.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-include",
-      "../bin-int/linux-x86_64/Debug/sandbox/pch.h",
-      "-D_DEBUG",
-      "-Isrc",
-      "-I../core/src",
-      "-I../vendor/opencv-install/include/opencv4",
-      "-m64",
-      "-g",
-      "-std=c++20",
-      "-c",
-      "-o",
-      "../bin-int/linux-x86_64/Debug/sandbox/pch.o",
-      "src/pch.cpp"
-    ],
-    "directory": "/home/wlm/dev/PapersPleaseAnalyzer/sandbox",
-    "file": "/home/wlm/dev/PapersPleaseAnalyzer/sandbox/src/pch.cpp",
-    "output": "/home/wlm/dev/PapersPleaseAnalyzer/bin-int/linux-x86_64/Debug/sandbox/pch.o"
-  }
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/include -g -std=c++20 -o CMakeFiles/spdlog.dir/src/spdlog.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/src/spdlog.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/src/spdlog.cpp",
+  "output": "vendor/spdlog/CMakeFiles/spdlog.dir/src/spdlog.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/include -g -std=c++20 -o CMakeFiles/spdlog.dir/src/stdout_sinks.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/src/stdout_sinks.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/src/stdout_sinks.cpp",
+  "output": "vendor/spdlog/CMakeFiles/spdlog.dir/src/stdout_sinks.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/include -g -std=c++20 -o CMakeFiles/spdlog.dir/src/color_sinks.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/src/color_sinks.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/src/color_sinks.cpp",
+  "output": "vendor/spdlog/CMakeFiles/spdlog.dir/src/color_sinks.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/include -g -std=c++20 -o CMakeFiles/spdlog.dir/src/file_sinks.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/src/file_sinks.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/src/file_sinks.cpp",
+  "output": "vendor/spdlog/CMakeFiles/spdlog.dir/src/file_sinks.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/include -g -std=c++20 -o CMakeFiles/spdlog.dir/src/async.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/src/async.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/src/async.cpp",
+  "output": "vendor/spdlog/CMakeFiles/spdlog.dir/src/async.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/include -g -std=c++20 -o CMakeFiles/spdlog.dir/src/cfg.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/src/cfg.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/src/cfg.cpp",
+  "output": "vendor/spdlog/CMakeFiles/spdlog.dir/src/cfg.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/include -g -std=c++20 -o CMakeFiles/spdlog.dir/src/bundled_fmtlib_format.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/src/bundled_fmtlib_format.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/vendor/spdlog/src/bundled_fmtlib_format.cpp",
+  "output": "vendor/spdlog/CMakeFiles/spdlog.dir/src/bundled_fmtlib_format.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/colorspace.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/colorspace.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/colorspace.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/colorspace.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/colorspace/colorspace.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/colorspace/colorspace.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/colorspace/colorspace.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/colorspace/colorspace.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/documents/access_permit.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/documents/access_permit.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/documents/access_permit.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/documents/access_permit.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/documents/certificate_of_vaccination.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/documents/certificate_of_vaccination.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/documents/certificate_of_vaccination.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/documents/certificate_of_vaccination.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/documents/diplomatic_authorization.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/documents/diplomatic_authorization.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/documents/diplomatic_authorization.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/documents/diplomatic_authorization.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/documents/entry_permit.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/documents/entry_permit.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/documents/entry_permit.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/documents/entry_permit.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/documents/entry_ticket.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/documents/entry_ticket.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/documents/entry_ticket.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/documents/entry_ticket.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/documents/grant_of_asylum.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/documents/grant_of_asylum.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/documents/grant_of_asylum.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/documents/grant_of_asylum.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/documents/identity_card.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/documents/identity_card.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/documents/identity_card.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/documents/identity_card.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/documents/identity_supplement.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/documents/identity_supplement.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/documents/identity_supplement.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/documents/identity_supplement.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/documents/passport.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/documents/passport.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/documents/passport.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/documents/passport.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/documents/work_pass.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/documents/work_pass.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/documents/work_pass.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/documents/work_pass.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/game_screen.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/game_screen.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/game_screen.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/game_screen.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/game_screen/game_screen.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/game_screen/game_screen.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/game_screen/game_screen.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/game_screen/game_screen.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/inspector/case_file.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/inspector/case_file.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/inspector/case_file.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/inspector/case_file.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/inspector/checks.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/inspector/checks.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/inspector/checks.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/inspector/checks.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/inspector/inspector.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/inspector/inspector.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/inspector/inspector.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/inspector/inspector.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/inspector/observation.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/inspector/observation.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/inspector/observation.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/inspector/observation.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/inspector/print.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/inspector/print.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/inspector/print.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/inspector/print.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/inspector/rules.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/inspector/rules.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/inspector/rules.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/inspector/rules.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/ocr.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/ocr.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/ocr.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/ocr.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/ocr/ocr.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/ocr/ocr.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/ocr/ocr.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/ocr/ocr.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/resources.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/resources.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/resources.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/resources.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/resources/resources.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/resources/resources.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/resources/resources.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/resources/resources.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/vision/booth_vision.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/vision/booth_vision.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/vision/booth_vision.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/vision/booth_vision.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/vision/document_vision.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/vision/document_vision.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/vision/document_vision.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/vision/document_vision.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/vision/inspection_vision.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/vision/inspection_vision.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/vision/inspection_vision.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/vision/inspection_vision.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/vision_booth.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/vision_booth.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/vision_booth.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/vision_booth.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/core",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/core -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-core.dir/vision_document.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/core/vision_document.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/core/vision_document.cpp",
+  "output": "core/CMakeFiles/paplease-core.dir/vision_document.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/capture",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/capture/include -I/home/wlm/personal/PapersPleaseAnalyzer/capture -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-capture.dir/src/capture.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/capture/src/capture.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/capture/src/capture.cpp",
+  "output": "capture/CMakeFiles/paplease-capture.dir/src/capture.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/cli",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/cli -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -I/home/wlm/personal/PapersPleaseAnalyzer/capture/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-cli.dir/src/cmd_live.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/cli/src/cmd_live.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/cli/src/cmd_live.cpp",
+  "output": "cli/CMakeFiles/paplease-cli.dir/src/cmd_live.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/cli",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/cli -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -I/home/wlm/personal/PapersPleaseAnalyzer/capture/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-cli.dir/src/cmd_scan.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/cli/src/cmd_scan.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/cli/src/cmd_scan.cpp",
+  "output": "cli/CMakeFiles/paplease-cli.dir/src/cmd_scan.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/cli",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/cli -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -I/home/wlm/personal/PapersPleaseAnalyzer/capture/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-cli.dir/src/cmd_scenario.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/cli/src/cmd_scenario.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/cli/src/cmd_scenario.cpp",
+  "output": "cli/CMakeFiles/paplease-cli.dir/src/cmd_scenario.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/cli",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/cli -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -I/home/wlm/personal/PapersPleaseAnalyzer/capture/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-cli.dir/src/main.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/cli/src/main.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/cli/src/main.cpp",
+  "output": "cli/CMakeFiles/paplease-cli.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/wlm/personal/PapersPleaseAnalyzer/cli",
+  "command": "/usr/bin/c++ -DAPP_DEBUG -DAPP_ENABLE_ASSERTS -DAPP_PROFILE -I/home/wlm/personal/PapersPleaseAnalyzer/cli -I/home/wlm/personal/PapersPleaseAnalyzer/core/include -I/home/wlm/personal/PapersPleaseAnalyzer/vendor/magic_enum/include -I/home/wlm/personal/PapersPleaseAnalyzer/capture/include -isystem /home/wlm/personal/PapersPleaseAnalyzer/vendor/opencv/install/include/opencv4  -O0 -fsanitize=address -g -g -std=gnu++20 -Wall -Wextra -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Werror -Wmisleading-indentation -Wduplicated-branches -Wduplicated-cond -Wlogical-op -Wuseless-cast -o CMakeFiles/paplease-cli.dir/src/pch.cpp.o -c /home/wlm/personal/PapersPleaseAnalyzer/cli/src/pch.cpp",
+  "file": "/home/wlm/personal/PapersPleaseAnalyzer/cli/src/pch.cpp",
+  "output": "cli/CMakeFiles/paplease-cli.dir/src/pch.cpp.o"
+}
 ]

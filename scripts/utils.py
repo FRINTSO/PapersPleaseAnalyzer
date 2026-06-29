@@ -11,9 +11,11 @@ import requests
 def download_file(url: str, filepath: str) -> None:
     filepath = os.path.abspath(filepath)
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
-    response = requests.get(url)
+    response = requests.get(url, stream=True)
+    response.raise_for_status()
     with open(filepath, "wb") as f:
-        f.write(response.content)
+        for chunk in response.iter_content(chunk_size=8192):
+            f.write(chunk)
 
 
 def unzip_file(filepath: str, delete_zip_file: bool = True) -> None:

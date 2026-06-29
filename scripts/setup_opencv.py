@@ -14,11 +14,15 @@ __platform_archive_table = {
 platform = utils.get_platform()
 vendor_dir = utils.get_project_root() / "vendor"
 
-opencv_directory_name = "opencv-4.x"
-opencv_archive_name = f"4.x{__platform_archive_table[platform]}"
+opencv_version = "4.x"
+opencv_dir = vendor_dir / "opencv"
+opencv_src_dir = opencv_dir / "src"
+opencv_build_dir = opencv_dir / "build"
+opencv_install_dir = opencv_dir / "install"
+
+opencv_archive_name = f"{opencv_version}{__platform_archive_table[platform]}"
 opencv_archive_url = f"https://github.com/opencv/opencv/archive/{opencv_archive_name}"
-opencv_archive_path = str(vendor_dir / opencv_archive_name)
-opencv_directory = vendor_dir / opencv_directory_name
+opencv_archive_path = str(opencv_dir / opencv_archive_name)
 
 opencv_build_options = [
     "-DBUILD_PERF_TESTS:BOOL=OFF",
@@ -40,50 +44,52 @@ def install_opencv() -> bool:
     if is_installed():
         return True
 
-    if not opencv_directory.exists():
+    opencv_dir.mkdir(0o755, parents=True, exist_ok=True)
+
+    if not opencv_src_dir.exists():
         print("Download opencv")
         utils.download_file(opencv_archive_url, opencv_archive_path)
         print("Unzip opencv")
         utils.unzip_file(opencv_archive_path)
+        # The archive extracts to opencv-4.x/, rename it to src/
+        (opencv_dir / f"opencv-{opencv_version}").rename(opencv_src_dir)
 
     print("Making build and install directories")
-    build_dir = vendor_dir / "opencv-build"
-    build_dir.mkdir(0o755, parents=True, exist_ok=True)
+    opencv_build_dir.mkdir(0o755, parents=True, exist_ok=True)
+    opencv_install_dir.mkdir(0o755, parents=True, exist_ok=True)
 
-    install_dir = vendor_dir / "opencv-install"
-    install_dir.mkdir(0o755, parents=True, exist_ok=True)
-
-    # build opencv
     print("Building opencv")
-    subprocess.call(
+    if subprocess.call(
         [
             "cmake",
             *opencv_build_options,
             "-DCMAKE_BUILD_TYPE=Release",
-            f"-DCMAKE_INSTALL_PREFIX={install_dir}",
-            "../opencv-4.x",
+            f"-DCMAKE_INSTALL_PREFIX={opencv_install_dir}",
+            str(opencv_src_dir),
         ],
-        cwd=str(build_dir),
+        cwd=str(opencv_build_dir),
         stdout=sys.stdout,
         stderr=sys.stderr,
-    )
+        ) != 0:
+        return False
 
-    # install opencv
     print("Installing opencv")
     cores = os.cpu_count() or 4
-    subprocess.call(
+    if subprocess.call(
         ["cmake", "--build", ".", "--config", "Release", "--parallel", str(cores)],
-        cwd=str(build_dir),
+        cwd=str(opencv_build_dir),
         stdout=sys.stdout,
         stderr=sys.stderr,
-    )
-    subprocess.call(
+        ) != 0:
+        return False
+    if subprocess.call(
         ["cmake", "--build", ".", "--config", "Debug", "--parallel", str(cores)],
-        cwd=str(build_dir),
+        cwd=str(opencv_build_dir),
         stdout=sys.stdout,
         stderr=sys.stderr,
-    )
-    subprocess.call(
+        ) != 0:
+        return False
+    if subprocess.call(
         [
             "cmake",
             "--build",
@@ -95,11 +101,12 @@ def install_opencv() -> bool:
             "--parallel",
             str(cores),
         ],
-        cwd=str(build_dir),
+        cwd=str(opencv_build_dir),
         stdout=sys.stdout,
         stderr=sys.stderr,
-    )
-    subprocess.call(
+        ) != 0:
+        return False
+    if subprocess.call(
         [
             "cmake",
             "--build",
@@ -111,12 +118,21 @@ def install_opencv() -> bool:
             "--parallel",
             str(cores),
         ],
-        cwd=str(build_dir),
+        cwd=str(opencv_build_dir),
         stdout=sys.stdout,
         stderr=sys.stderr,
-    )
+        ) != 0:
+        return False
     return True
 
 
 def is_installed() -> bool:
+    if platform == Platform.LINUX:
+        return (opencv_install_dir / "lib" / "libopencv_core.so").exists()
+    if platform == Platform.WINDOWS:
+        # needs verification on windows
+        return (opencv_install_dir / "x64" / "vc17" / "lib" / "opencv_core4130.lib").exists()
+    if platform == Platform.MACOS:
+        # needs verification on mac
+        return (opencv_install_dir / "lib" / "libopencv_core.dylib").exists()
     return False

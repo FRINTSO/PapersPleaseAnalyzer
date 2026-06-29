@@ -9,10 +9,11 @@ bin-int/
 **.csproj
 Makefile
 
-vendor/opencv
+vendor/opencv*
 vendor/opencv-build
 vendor/opencv-install
 
 !vendor/premake/bin
 
 .cache/
+__pycache__/
