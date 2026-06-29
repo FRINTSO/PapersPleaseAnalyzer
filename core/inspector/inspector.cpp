@@ -28,8 +28,8 @@ static void update_day(inspector &ins, const date_t &scanned_date)
 		ins.last_printed_rules = "";
 		ins.last_advice = "";
 
-		char buf[64];
-		(void)sprintf(buf, "=== NEW DAY: %u.%u.%u ===\n",
+		char buf[48];
+		(void)snprintf(buf, sizeof(buf), "=== NEW DAY: %u.%u.%u ===\n",
 			      (unsigned)ins.current_date.day,
 			      (unsigned)ins.current_date.month,
 			      (unsigned)ins.current_date.year);
@@ -48,8 +48,8 @@ static void update_entrant(inspector &ins, int scanned_entrant_count,
 		ins.last_printed_rules = "";
 		ins.last_advice = "";
 
-		char buf[64];
-		(void)sprintf(buf, "--- Entrant #%i ---\n",
+		char buf[32];
+		(void)snprintf(buf, sizeof(buf), "--- Entrant #%i ---\n",
 			      ins.current_entrant);
 		ins.inform_player(buf);
 	}
