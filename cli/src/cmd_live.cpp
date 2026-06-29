@@ -3,13 +3,13 @@
 #include "opencv2/imgcodecs.hpp"
 #include "paplease/game_screen.h"
 #include <iostream>
+#include <filesystem>
 
 #include <sys/ioctl.h>
 #include <unistd.h>
 
 #include <paplease/capture.h>
 #include "paplease/inspector.h"
-#include "paplease/resources.h"
 
 constexpr int TWO_SECONDS = 200000;
 static const std::string TMP_FRAME = "/tmp/paplease_frame.png";
@@ -32,7 +32,7 @@ static void show_image_kitty(const std::filesystem::path &path)
 	system(cmd);
 }
 
-int cmd_live(const resources_ctx &ctx)
+int cmd_live()
 {
 	inspector ins{};
 	ins.inform_player =
@@ -44,7 +44,7 @@ int cmd_live(const resources_ctx &ctx)
 		if (load_game_screen_from_buffer(gs, buffer)) {
 			cv::imwrite(TMP_FRAME, gs.pixels);
 			show_image_kitty(TMP_FRAME);
-			inspector_step(ins, gs, ctx);
+			inspector_step(ins, gs);
 		} else {
 			std::cout << "Cannot see screen\n";
 		}

@@ -4,9 +4,11 @@
 #include <paplease/compiler.h>
 #include <paplease/game_screen.h>
 #include <paplease/geometry.h>
-#include <paplease/vision.h>
 #include <paplease/colorspace.h>
-#include <paplease/ocr.h>
+
+#include "ocr/ocr.h"
+#include "vision/colorspace.h"
+#include "vision/vision.h"
 
 static constexpr hsv_range BOOTH_TEXT_EXTRACTION_MASK_HSV{ .hue_min = 12,
 							   .hue_max = 18,
@@ -51,25 +53,24 @@ inline bool parse_weight(int &out, const std::string &text)
 	return true;
 }
 
-bool extract_booth_info(booth_info &out, const game_screen &screen,
-			const resources_ctx &ctx)
+bool extract_booth_info(booth_info &out, const game_screen &screen)
 {
 	cv::Mat booth = slice_section(screen, ui_section::booth);
 	cv::Mat processed_booth = preprocess_booth_for_text_extraction(booth);
 
 	cv::Mat current_date_region = processed_booth(BOOTH_CURRENT_DATE_RECT.to_cv());
 	std::string current_date;
-	if (!extract_text_strict(current_date, current_date_region, typeface::booth, ctx))
+	if (!extract_text_strict(current_date, current_date_region, typeface::booth))
 		return false;
 
 	cv::Mat entrant_count_region = processed_booth(BOOTH_ENTRACT_COUNTER_RECT.to_cv());
 	std::string entrant_count;
-	if (!extract_text_strict(entrant_count, entrant_count_region, typeface::booth, ctx))
+	if (!extract_text_strict(entrant_count, entrant_count_region, typeface::booth))
 		return false;
 
 	cv::Mat entrant_weight_region = processed_booth(BOOTH_ENTRANT_WEIGHT_RECT.to_cv());
 	std::string entrant_weight;
-	if (!extract_text_strict(entrant_weight, entrant_weight_region, typeface::booth, ctx))
+	if (!extract_text_strict(entrant_weight, entrant_weight_region, typeface::booth))
 		return false;
 
 	if (current_date.empty() || entrant_count.empty() || entrant_weight.empty())

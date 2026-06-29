@@ -1,5 +1,5 @@
-#ifndef INSPECTOR_PRINT_H
-#define INSPECTOR_PRINT_H
+#ifndef PAPLEASE_CORE_INSPECTOR_PRINT_H
+#define PAPLEASE_CORE_INSPECTOR_PRINT_H
 #include <paplease/documents.h>
 
 void print_passport(const passport_data &data);
@@ -13,4 +13,5 @@ void print_identity_card(const identity_card_data &data);
 void print_identity_supplement(const identity_supplement_data &data);
 void print_vaccination_cert(const certificate_of_vaccination_data &data);
 
-#endif // INSPECTOR_PRINT_H
+#endif // PAPLEASE_CORE_INSPECTOR_PRINT_H
+

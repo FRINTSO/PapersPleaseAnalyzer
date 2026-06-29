@@ -1,7 +1,7 @@
 #include <cassert>
 #include <paplease/documents.h>
 #include <paplease/geometry.h>
-#include <paplease/ocr.h>
+#include "ocr/ocr.h"
 #include "parse_helpers.h"
 
 struct passport_layout {
@@ -62,8 +62,7 @@ static const passport_layout *get_passport_layout(country c)
 	}
 }
 
-bool parse_passport(passport_data &out, const doc &document,
-		    const resources_ctx &ctx)
+bool parse_passport(passport_data &out, const doc &document)
 {
 	assert(document.type == doc_type::passport);
 	const passport_layout *layout = get_passport_layout(document.issuing_country);
@@ -75,28 +74,27 @@ bool parse_passport(passport_data &out, const doc &document,
 
 	std::string tmp;
 
-	if (!extract_field(out.name, binary, layout->name, tf, ctx))
+	if (!extract_field(out.name, binary, layout->name, tf))
 		return false;
 
 	if (!extract_field(out.passport_number, binary, layout->passport_number,
-			   tf, ctx))
+			   tf))
 		return false;
 
-	if (!extract_field(out.issuing_city, binary, layout->issuing_city, tf,
-			   ctx))
+	if (!extract_field(out.issuing_city, binary, layout->issuing_city, tf))
 		return false;
 
-	if (!extract_field(tmp, binary, layout->date_of_birth, tf, ctx))
+	if (!extract_field(tmp, binary, layout->date_of_birth, tf))
 		return false;
 	if (!parse_date(out.date_of_birth, tmp))
 		return false;
 
-	if (!extract_field(tmp, binary, layout->expiration, tf, ctx))
+	if (!extract_field(tmp, binary, layout->expiration, tf))
 		return false;
 	if (!parse_date(out.expiration, tmp))
 		return false;
 
-	if (!extract_field(tmp, binary, layout->sex, tf, ctx))
+	if (!extract_field(tmp, binary, layout->sex, tf))
 		return false;
 	out.is_male = (tmp.size() > 0 && tmp[0] == 'M');
 

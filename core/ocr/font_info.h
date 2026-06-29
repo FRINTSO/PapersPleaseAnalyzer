@@ -2,7 +2,8 @@
 #define PAPLEASE_OCR_FONT_INFO_H
 
 #include <paplease/compiler.h>
-#include <paplease/ocr.h>
+
+#include "ocr.h"
 
 struct font_info {
 	typeface tf;

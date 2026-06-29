@@ -5,6 +5,7 @@
 #include <opencv2/core/mat.hpp>
 #include <opencv2/imgproc.hpp>
 #include <paplease/colorspace.h>
+#include "vision/colorspace.h"
 #include "test.h"
 
 int main()

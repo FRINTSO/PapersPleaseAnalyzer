@@ -8,8 +8,6 @@
 #include <paplease/date.h>
 #include <paplease/documents.h>
 #include <paplease/game_screen.h>
-#include <paplease/resources.h>
-#include <paplease/vision.h>
 
 #include "cmd.h"
 
@@ -29,20 +27,17 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	std::filesystem::path exe_dir = std::filesystem::path(argv[0]).parent_path();
-	auto ctx = make_resources((exe_dir / "images").string());
-
 	std::string_view cmd = argv[1];
 	if (argc == 2) {
 		if (cmd == "live")
-			return cmd_live(ctx);
+			return cmd_live();
 	} else {
 		std::string image_path = argv[2];
 
 		if (cmd == "scan")
-			return cmd_scan(image_path, ctx);
+			return cmd_scan(image_path);
 		if (cmd == "scenario")
-			return cmd_scenario(image_path, ctx);
+			return cmd_scenario(argv[2]);
 	}
 
 	fprintf(stderr, "Unknown command: %s\n", argv[1]);

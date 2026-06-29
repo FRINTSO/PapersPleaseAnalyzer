@@ -1,13 +1,13 @@
 #include "cmd.h"
 
 #include <iostream>
+#include <filesystem>
 
 #include <sys/ioctl.h>
 #include <unistd.h>
 
 #include <paplease/inspector.h>
 #include <paplease/game_screen.h>
-#include <paplease/resources.h>
 
 
 static inline int scenario_frames(const std::string &path)
@@ -23,18 +23,15 @@ static inline int scenario_frames(const std::string &path)
 
 static bool next_scenario_frame(game_screen &screen,
 				std::filesystem::path &image_path,
-				const std::string &scenario_name,
-				const resources_ctx &ctx)
+				const std::string &scenario_path)
 {
-	auto path = ctx.asset_root / "game_sim" / scenario_name;
-
-	static auto fileCount = scenario_frames(path) + 1;
+	static auto fileCount = scenario_frames(scenario_path) + 1;
 	static int count = 1;
 
 	if (count < fileCount) {
 		std::cout << "..scanning " << count << "\n";
-		auto filePath =
-			path / ("game_" + std::to_string(count) + ".png");
+		auto filePath = std::filesystem::path(scenario_path) /
+			("game_" + std::to_string(count) + ".png");
 
 		image_path = filePath;
 		load_game_screen_from_file(screen, filePath);
@@ -64,7 +61,7 @@ static void show_image_kitty(const std::filesystem::path &path)
 	system(cmd);
 }
 
-int cmd_scenario(const std::string &scenario_name, const resources_ctx &ctx)
+int cmd_scenario(const std::string &scenario_path)
 {
 	inspector ins{};
 	ins.inform_player =
@@ -72,9 +69,9 @@ int cmd_scenario(const std::string &scenario_name, const resources_ctx &ctx)
 
 	game_screen gs;
 	std::filesystem::path image_path;
-	while (next_scenario_frame(gs, image_path, scenario_name, ctx)) {
+	while (next_scenario_frame(gs, image_path, scenario_path)) {
 		show_image_kitty(image_path);
-		inspector_step(ins, gs, ctx);
+		inspector_step(ins, gs);
 		std::cin.get();
 	}
 

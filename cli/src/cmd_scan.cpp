@@ -4,10 +4,8 @@
 
 #include <paplease/game_screen.h>
 #include <paplease/inspector.h>
-#include <paplease/observation.h>
-#include <paplease/resources.h>
 
-int cmd_scan(const std::string &image_path, const resources_ctx &ctx)
+int cmd_scan(const std::string &image_path)
 {
 	game_screen gs;
 	if (!load_game_screen_from_file(gs, image_path)) {
@@ -16,7 +14,7 @@ int cmd_scan(const std::string &image_path, const resources_ctx &ctx)
 	}
 
 	observe_options opts{ .skip_rulebook = true };
-	observation obs = observe_frame(gs, ctx, opts);
+	observation obs = observe_frame(gs, opts);
 
 	if (obs.entrant_docs.visible.empty()) {
 		printf("No documents found.\n");

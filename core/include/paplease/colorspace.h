@@ -1,8 +1,6 @@
 #ifndef PAPLEASE_COLORSPACE_H
 #define PAPLEASE_COLORSPACE_H
 
-#include <opencv2/core/mat.hpp>
-
 #include <paplease/types.h>
 
 struct rgb_color {
@@ -55,8 +53,5 @@ struct hsl_range {
 	i32 lit_min = 0;
 	i32 lit_max = 255;
 };
-
-cv::Mat bgr_to_hsv_mask(const cv::Mat& bgr_image, const hsv_range& range);
-cv::Mat bgr_to_hsl_mask(const cv::Mat& bgr_image, const hsl_range& range);
 
 #endif // PAPLEASE_COLORSPACE_H

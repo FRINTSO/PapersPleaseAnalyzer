@@ -1,21 +1,23 @@
-#include <paplease/observation.h>
+#include <paplease/inspector.h>
 
 #include <string_view>
 
 #include <paplease/documents.h>
 #include <paplease/inspector.h>
-#include <paplease/vision.h>
+
+#include "vision/vision.h"
 
 #include "print.h"
+#include "rules.h"
 
-observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
+observation observe_frame(const game_screen &screen,
 			  const observe_options &opts)
 {
 	observation obs;
 
 	// === BOOTH ===
 	booth_info booth;
-	obs.booth_ok = extract_booth_info(booth, screen, ctx);
+	obs.booth_ok = extract_booth_info(booth, screen);
 	if (obs.booth_ok) {
 		obs.date = booth.current_date;
 		obs.entrant_count = std::stoi(booth.entrant_count);
@@ -29,7 +31,7 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 			find_document(rulebook, doc_type::rulebook,
 				      ui_section::inspection, screen);
 		if (obs.rulebook_visible) {
-			obs.rulebook_ok = parse_rules(obs.rules, rulebook, ctx);
+			obs.rulebook_ok = parse_rules(obs.rules, rulebook);
 		}
 	}
 
@@ -49,7 +51,7 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 		switch (d.type) {
 		case doc_type::passport: { //✅
 			passport_data data;
-			if (parse_passport(data, d, ctx)) {
+			if (parse_passport(data, d)) {
 				f[fact_field::name] = data.name;
 				f[fact_field::passport_number] = data.passport_number;
 				f[fact_field::issuing_city] = data.issuing_city;
@@ -94,7 +96,7 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 
 		case doc_type::entry_permit: {
 			entry_permit_data data;
-			if (parse_entry_permit(data, d, ctx)) {
+			if (parse_entry_permit(data, d)) {
 				f[fact_field::name] = data.name;
 				f[fact_field::passport_number] = data.passport_number;
 				f[fact_field::purpose] = data.purpose;
@@ -111,7 +113,7 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 
 			case doc_type::entry_ticket: { //✅
 			entry_ticket_data data;
-			if (parse_entry_ticket(data, d, ctx)) {
+			if (parse_entry_ticket(data, d)) {
 				f[fact_field::valid_date] = format_date(data.valid_date);
 
 				print_entry_ticket(data);
@@ -121,7 +123,7 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 
 		case doc_type::work_pass: { //✅
 			work_pass_data data;
-			if (parse_work_pass(data, d, ctx)) {
+			if (parse_work_pass(data, d)) {
 				f[fact_field::name] = data.name;
 				f[fact_field::work_field] = data.work_field;
 				f[fact_field::end_date] = format_date(data.end_date);
@@ -135,7 +137,7 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 
 		case doc_type::access_permit: { //✅
 			access_permit_data data;
-			if (parse_access_permit(data, d, ctx)) {
+			if (parse_access_permit(data, d)) {
 				f[fact_field::name] = data.name;
 				f[fact_field::passport_number] = data.passport_number;
 				f[fact_field::nationality] = data.issuing_country;
@@ -156,7 +158,7 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 
 		case doc_type::identity_card: { //✅
 			identity_card_data data;
-			if (parse_identity_card(data, d, ctx)) {
+			if (parse_identity_card(data, d)) {
 				f[fact_field::name] = data.name;
 				f[fact_field::district] = data.district;
 				f[fact_field::date_of_birth] = format_date(data.date_of_birth);
@@ -170,7 +172,7 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 
 		case doc_type::grant_of_asylum: { //✅
 			grant_of_asylum_data data;
-			if (parse_grant_of_asylum(data, d, ctx)) {
+			if (parse_grant_of_asylum(data, d)) {
 				f[fact_field::name] = data.name;
 				f[fact_field::passport_number] = data.passport_number;
 				f[fact_field::nationality] = data.issuing_country;
@@ -188,7 +190,7 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 
 		case doc_type::diplomatic_authorization: {
 			diplomatic_authorization_data data;
-			if (parse_diplomatic_authorization(data, d, ctx)) {
+			if (parse_diplomatic_authorization(data, d)) {
 				f[fact_field::name] = data.name;
 				f[fact_field::passport_number] = data.passport_number;
 				f[fact_field::access_countries] = data.access_countries;
@@ -200,7 +202,7 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 
 		case doc_type::identity_supplement: {
 			identity_supplement_data data;
-			if (parse_identity_supplement(data, d, ctx)) {
+			if (parse_identity_supplement(data, d)) {
 				f[fact_field::height_cm] = std::to_string(data.height_cm);
 				f[fact_field::weight_kg] = std::to_string(data.weight_kg);
 				f[fact_field::physical_desc] = data.physical_desc;
@@ -214,14 +216,14 @@ observation observe_frame(const game_screen &screen, const resources_ctx &ctx,
 
 		case doc_type::certificate_of_vaccination: { //✅
 			certificate_of_vaccination_data data;
-			if (parse_certificate_of_vaccination(data, d, ctx)) {
+			if (parse_certificate_of_vaccination(data, d)) {
 				f[fact_field::name] = data.name;
 				f[fact_field::passport_number] = data.passport_number;
 				// store vaccines if needed
 				constexpr size_t MAX_VACCINES =
 					sizeof(data.vaccinations) /
 					sizeof(data.vaccinations[0]);
-				for (int i = 0; i < MAX_VACCINES; i++) {
+				for (size_t i = 0; i < MAX_VACCINES; i++) {
 					obs.entrant_docs.vaccines[i] =
 						data.vaccinations[i];
 				}

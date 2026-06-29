@@ -7,11 +7,12 @@
 #include <string_view>
 #include <vector>
 
+#include <paplease/date.h>
 #include <paplease/documents.h>
 #include <paplease/game_screen.h>
-#include <paplease/resources.h>
 #include <paplease/types.h>
-#include <paplease/rules.h>
+
+// ── Inspector types ──────────────────────────────────────────────
 
 enum class fact_field {
 	name,
@@ -30,7 +31,6 @@ enum class fact_field {
 	weight_kg,
 	access_countries,
 	end_date,
-
 	expiration,
 };
 
@@ -110,6 +110,37 @@ struct case_file {
 	// ...
 };
 
+enum class rule {
+	// === DOCUMENT REQUIREMENTS ===
+	entrant_needs_passport,
+	entrant_needs_polio_vaccine,
+	citizens_need_id_card,
+	foreigners_need_entry_permit,
+	foreigners_need_entry_ticket,
+	foreigners_need_access_permit,
+	foreigners_need_id_supplement,
+	workers_need_work_pass,
+	diplomats_need_authorization,
+	asylum_seekers_need_grant,
+
+	// === VALIDITY ===
+	all_docs_must_be_current,
+
+	// === PROHIBITIONS ===
+	arstotzkan_citizens_only,
+	no_entry_from_impor,
+	no_entry_from_united_federation,
+	no_weapons_or_contraband,
+
+	// === SEARCH ===
+	kolechians_must_be_searched,
+
+	// === CONFISCATIONS ===
+	confiscate_arstotzkan_passports,
+	confiscate_altan_passports,
+};
+
+
 struct inspector {
 	date_t current_date;
 	std::set<rule> rules;
@@ -123,8 +154,48 @@ struct inspector {
 	std::string last_advice;
 };
 
-void inspector_step(inspector &ins, const game_screen &screen,
-		    const resources_ctx &ctx);
+// ── Observation ──────────────────────────────────────────────────
+
+struct observation {
+	bool booth_ok = false;
+	date_t date;
+	int entrant_count;
+	std::optional<int> entrant_weight;
+
+	// === RULEBOOK ===
+	bool rulebook_visible = false;
+	bool rulebook_ok = false;
+	std::set<rule> rules;
+
+	// === DOCUMENTS ===
+	struct {
+		std::vector<doc_type> visible;
+
+		// Cross-doc identity fields (string comparison)
+		std::map<doc_type, std::map<fact_field, std::string> > identity_fields;
+
+		// Typed per-doc fields (checked against external values)
+		std::map<doc_type, date_t> expirations;
+
+		// structured data that doesn't fit the string map
+		certificate_of_vaccination_data::vaccination_row vaccines[3];
+		int vaccine_count = 0;
+
+		std::optional<country> nationality;
+	} entrant_docs;
+};
+
+struct observe_options {
+	bool skip_rulebook = false;
+};
+
+// ── Public API ───────────────────────────────────────────────────
+
+void inspector_step(inspector &ins, const game_screen &screen);
+
+observation observe_frame(const game_screen &screen,
+			  const observe_options &opts = {});
+
 source doc_to_source(doc_type d);
 
 #endif // PAPLEASE_INSPECTOR_H

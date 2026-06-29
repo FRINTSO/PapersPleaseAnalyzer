@@ -1,6 +1,6 @@
 # Tests
 
-Framework-less test suite. Each test is a standalone executable that returns 0 on success, non-zero on failure.
+Framework-less test suite. Each test is a standalone executable that returns 0 on success, non-zero on failure. Built with CMake, run with CTest.
 
 ## Structure
 
@@ -12,8 +12,9 @@ tests/
 ├── ocr/                   # OCR algorithm tests
 ├── gamescreen/            # Game screen handling tests
 ├── vision/                # Integration tests with real images
-├── data/                  # Test data (screenshots)
-├── premake5.lua           # Build config
+├── inspector/             # Inspector integration tests
+├── data/                  # Test data (screenshots, game_sim/)
+├── CMakeLists.txt         # Test build definitions
 ├── setup_test_data.sh     # Script to copy test images
 └── README.md              # This file
 ```
@@ -23,35 +24,34 @@ tests/
 From the project root:
 
 ```bash
-# Generate makefiles
-./vendor/premake/bin/premake5 gmake2
+cd build && cmake .. && make
+```
 
-# Build tests (and everything else)
-make config=debug
+To skip building tests:
+
+```bash
+cmake .. -DPAPLEASE_BUILD_TESTS=OFF
 ```
 
 ## Setting Up Test Data
 
-Before running vision tests, copy some game screenshots:
+Before running integration tests, copy some game screenshots:
 
 ```bash
 chmod +x tests/setup_test_data.sh
 ./tests/setup_test_data.sh
 ```
 
-This copies images from `before_resturcture/core/assets/images/` to `tests/data/screenshots/`.
-
 ## Running Tests
 
 ```bash
-# Run all tests
-./run_tests.sh
+cd build
 
-# Run with Release config
-./run_tests.sh Release
-
-# Run individual test
-./bin/linux-x86_64/Debug/tests/test_rectangle_empty
+ctest                        # run all tests
+ctest --output-on-failure    # show stderr on failure
+ctest -R charset             # run only charset tests
+ctest -L integration         # run integration tests (require screenshots)
+ctest -R test_rectangle      # run rectangle tests
 ```
 
 ## Writing New Tests
@@ -59,7 +59,10 @@ This copies images from `before_resturcture/core/assets/images/` to `tests/data/
 1. Create `tests/<category>/test_<name>.cpp`
 2. Include `"test.h"` for assertions
 3. Write a `main()` that returns 0 on success
-4. Add to `tests/premake5.lua` using `test_project()`
+4. Add one line to `tests/CMakeLists.txt`:
+   ```cmake
+   paplease_test(test_<name> <category>/test_<name>.cpp)
+   ```
 
 Example:
 
@@ -86,4 +89,3 @@ int main()
 - `TEST_ASSERT_LE(a, b)` - Fail if a not <= b
 - `TEST_ASSERT_STR_EQ(a, b)` - Fail if strings differ
 - `TEST_FAIL(msg)` - Unconditional failure
-

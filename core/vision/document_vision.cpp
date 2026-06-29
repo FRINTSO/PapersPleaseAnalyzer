@@ -9,11 +9,13 @@
 
 #include <paplease/colorspace.h>
 #include <paplease/compiler.h>
-#include <paplease/debug.h>
 #include <paplease/documents.h>
 #include <paplease/game_screen.h>
 #include <paplease/geometry.h>
-#include <paplease/vision.h>
+
+#include "vision/vision.h"
+#include "vision/colorspace.h"
+#include "debug.h"
 
 static cv::Mat preprocess_for_scanning(const cv::Mat &area, ui_section section)
 {

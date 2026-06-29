@@ -13,6 +13,8 @@
 #include <paplease/geometry.h>
 #include <paplease/compiler.h>
 
+#include "vision/colorspace.h"
+
 // Screen geometry constants
 static constexpr int GAME_SCREEN_WIDTH = 1140;
 static constexpr int GAME_SCREEN_HEIGHT = 670;

@@ -6,8 +6,6 @@
 #include <paplease/colorspace.h>
 #include <paplease/compiler.h>
 #include <paplease/date.h>
-#include <paplease/ocr.h>
-#include <paplease/resources.h>
 #include <paplease/types.h>
 
 enum class doc_type : u8 {
@@ -138,28 +136,19 @@ struct passport_data {
 
 // === PARSE FUNCTIONS ===
 
-bool parse_access_permit(access_permit_data &out, const doc &document,
-			 const resources_ctx &ctx);
+bool parse_access_permit(access_permit_data &out, const doc &document);
 bool parse_certificate_of_vaccination(certificate_of_vaccination_data &out,
-				      const doc &document,
-				      const resources_ctx &ctx);
+				      const doc &document);
 bool parse_diplomatic_authorization(diplomatic_authorization_data &out,
-				    const doc &document,
-				    const resources_ctx &ctx);
-bool parse_entry_permit(entry_permit_data &out, const doc &document,
-			const resources_ctx &ctx);
-bool parse_entry_ticket(entry_ticket_data &out, const doc &document,
-			const resources_ctx &ctx);
-bool parse_grant_of_asylum(grant_of_asylum_data &out, const doc &document,
-			   const resources_ctx &ctx);
-bool parse_identity_card(identity_card_data &out, const doc &document,
-			 const resources_ctx &ctx);
+				    const doc &document);
+bool parse_entry_permit(entry_permit_data &out, const doc &document);
+bool parse_entry_ticket(entry_ticket_data &out, const doc &document);
+bool parse_grant_of_asylum(grant_of_asylum_data &out, const doc &document);
+bool parse_identity_card(identity_card_data &out, const doc &document);
 bool parse_identity_supplement(identity_supplement_data &out,
-			       const doc &document, const resources_ctx &ctx);
-bool parse_work_pass(work_pass_data &out, const doc &document,
-		     const resources_ctx &ctx);
-bool parse_passport(passport_data &out, const doc &document,
-		    const resources_ctx &ctx);
+			       const doc &document);
+bool parse_work_pass(work_pass_data &out, const doc &document);
+bool parse_passport(passport_data &out, const doc &document);
 
 inline constexpr doc_appearance g_appearances[] = {
 	// access_permit
@@ -213,26 +202,4 @@ constexpr const doc_appearance& get_passport_appearance(country c) {
 	return g_passport_appearances[static_cast<size_t>(c)];
 }
 
-constexpr typeface typeface_for(doc_type type)
-{
-	switch (type) {
-	case doc_type::access_permit:
-	case doc_type::certificate_of_vaccination:
-	case doc_type::diplomatic_authorization:
-	case doc_type::entry_permit:
-	case doc_type::entry_ticket:
-	case doc_type::grant_of_asylum:
-	case doc_type::identity_supplement:
-	case doc_type::work_pass:
-	case doc_type::rulebook:
-	case doc_type::bulletin:
-	case doc_type::passport:
-		return typeface::bm_mini;
-	case doc_type::identity_card:
-		return typeface::mini_kylie;
-	case doc_type::transcript:
-		return typeface::t04b03;
-	}
-	unreachable();
-}
 #endif // PAPLEASE_DOCUMENTS_H

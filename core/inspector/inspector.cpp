@@ -8,12 +8,12 @@
 #include <paplease/date.h>
 #include <paplease/documents.h>
 #include <paplease/inspector.h>
-#include <paplease/observation.h>
-#include <paplease/rules.h>
-#include <paplease/vision.h>
+
+#include "vision/vision.h"
 
 #include "case_file.h"
 #include "checks.h"
+#include "rules.h"
 
 static void update_day(inspector &ins, const date_t &scanned_date)
 {
@@ -153,7 +153,7 @@ static bool has_weight_mismatch(const case_file &cf, std::optional<int> booth_we
 	const auto& it = cf.facts.cells.find(fact_field::weight_kg);
 	if (it == cf.facts.cells.end())
 		return false; // undecided, no documents mentioning weight yet
-	
+
 	for (const auto& k : it->second) {
 		int document_weigth = std::stoi(k.second);
 		if (document_weigth != booth_weight)
@@ -316,10 +316,9 @@ static std::string format_missing(const std::set<doc_type> &missing)
 	return out;
 }
 
-void inspector_step(inspector &ins, const game_screen &screen,
-		    const resources_ctx &ctx)
+void inspector_step(inspector &ins, const game_screen &screen)
 {
-	auto obs = observe_frame(screen, ctx);
+	auto obs = observe_frame(screen);
 
 	if (!obs.booth_ok) {
 		ins.inform_player("Booth is not in a valid state");

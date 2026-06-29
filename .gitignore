@@ -1,19 +1,39 @@
+# Build artifacts
+build/
 **/bin/
 bin-int/
+Makefile
 
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+Testing/
+CMakeFiles/
+*.cmake.check_cache
+compile_commands.json
+
+# Visual Studio
 .vs/
 **.sln
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
 **.csproj
-Makefile
 
+# OpenCV vendor builds
 vendor/opencv*
 vendor/opencv-build
 vendor/opencv-install
 
 !vendor/premake/bin
 
+# Editor / tooling
 .cache/
+.clang-tidy
 __pycache__/
+
+# Agent skills
+.agents/
+skills-lock.json

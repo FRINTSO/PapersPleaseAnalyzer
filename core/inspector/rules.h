@@ -1,38 +1,9 @@
-#ifndef _PAPLEASE_CORE_INSPECTOR_RULES_H
-#define _PAPLEASE_CORE_INSPECTOR_RULES_H
+#ifndef PAPLEASE_CORE_INSPECTOR_RULES_H
+#define PAPLEASE_CORE_INSPECTOR_RULES_H
 #include <set>
 
 #include <paplease/documents.h>
-
-enum class rule {
-	// === DOCUMENT REQUIREMENTS ===
-	entrant_needs_passport,
-	entrant_needs_polio_vaccine,
-	citizens_need_id_card,
-	foreigners_need_entry_permit,
-	foreigners_need_entry_ticket,
-	foreigners_need_access_permit,
-	foreigners_need_id_supplement,
-	workers_need_work_pass,
-	diplomats_need_authorization,
-	asylum_seekers_need_grant,
-
-	// === VALIDITY ===
-	all_docs_must_be_current,
-
-	// === PROHIBITIONS ===
-	arstotzkan_citizens_only,
-	no_entry_from_impor,
-	no_entry_from_united_federation,
-	no_weapons_or_contraband,
-
-	// === SEARCH ===
-	kolechians_must_be_searched,
-
-	// === CONFISCATIONS ===
-	confiscate_arstotzkan_passports,
-	confiscate_altan_passports,
-};
+#include <paplease/inspector.h>
 
 enum class condition {
 	always,
@@ -64,8 +35,7 @@ struct rule_def {
 };
 
 
-bool parse_rules(std::set<rule> &out, const doc &rulebook,
-		    const resources_ctx &ctx);
+bool parse_rules(std::set<rule> &out, const doc &rulebook);
 
 constexpr rule_def all_rules[] = {
 	// === DOCUMENT REQUIREMENTS ===
@@ -141,4 +111,4 @@ constexpr rule_def all_rules[] = {
 };
 
 
-#endif // _PAPLEASE_CORE_INSPECTOR_RULES_H
+#endif // PAPLEASE_CORE_INSPECTOR_RULES_H

@@ -1,0 +1,2 @@
+add_executable(gen_charset gen_charset.cpp)
+target_link_libraries(gen_charset PRIVATE opencv_core opencv_imgproc opencv_imgcodecs)

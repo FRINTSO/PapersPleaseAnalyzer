@@ -8,8 +8,10 @@
 #include <paplease/documents.h>
 #include <paplease/geometry.h>
 #include <paplease/inspector.h>
-#include <paplease/ocr.h>
-#include <paplease/rules.h>
+
+#include "ocr/ocr.h"
+
+#include "rules.h"
 
 static constexpr int RULE_COL1_X = 32;
 static constexpr int RULE_COL2_X = 274;
@@ -93,8 +95,7 @@ static bool parse_rule(rule &out, std::string_view text)
 	return true;
 }
 
-bool parse_rules(std::set<rule> &out, const doc &rulebook,
-		 const resources_ctx &ctx)
+bool parse_rules(std::set<rule> &out, const doc &rulebook)
 {
 	constexpr typeface tf = typeface_for(doc_type::rulebook);
 	cv::Mat binary_rulebook = preprocess_rulebook(rulebook.pixels);
@@ -102,7 +103,7 @@ bool parse_rules(std::set<rule> &out, const doc &rulebook,
 		rectangle rule_box = nth_rule_box(i);
 		std::string rule_text;
 		cv::Mat rule_region = binary_rulebook(rule_box.to_cv());
-		if (!extract_text_strict(rule_text, rule_region, tf, ctx))
+		if (!extract_text_strict(rule_text, rule_region, tf))
 			return false;
 
 		std::transform(rule_text.begin(), rule_text.end(),

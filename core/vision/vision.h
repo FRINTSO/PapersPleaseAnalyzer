@@ -8,7 +8,6 @@
 #include <paplease/date.h>
 #include <paplease/documents.h>
 #include <paplease/game_screen.h>
-#include <paplease/resources.h>
 
 struct booth_info {
 	date_t current_date;
@@ -16,8 +15,7 @@ struct booth_info {
 	std::optional<int> entrant_weight;
 };
 
-bool extract_booth_info(booth_info &out, const game_screen &screen,
-			const resources_ctx &ctx);
+bool extract_booth_info(booth_info &out, const game_screen &screen);
 
 bool find_document(doc &out, doc_type type, ui_section section,
 		   const game_screen &screen);

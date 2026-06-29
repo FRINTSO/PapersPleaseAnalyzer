@@ -1,7 +1,6 @@
 #ifndef PAPLEASE_PARSE_HELPERS_H
 #define PAPLEASE_PARSE_HELPERS_H
 
-#include "paplease/resources.h"
 #include <opencv2/imgproc.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <paplease/documents.h>
@@ -23,7 +22,6 @@ inline cv::Mat preprocess_document(const cv::Mat &img, int threshValue = 127,
 	return thresh;
 }
 
-// Safely extract a region, returns empty Mat if out of bounds
 inline cv::Mat safe_region(const cv::Mat &img, const rectangle &box)
 {
 	if (box.x < 0 || box.y < 0)
@@ -33,15 +31,13 @@ inline cv::Mat safe_region(const cv::Mat &img, const rectangle &box)
 	return img(box.to_cv());
 }
 
-// Extract text from a region, returns false if region invalid or OCR fails
 inline bool extract_field(std::string &out, const cv::Mat &img,
-			  const rectangle &box, typeface tf,
-			  const resources_ctx &ctx)
+			  const rectangle &box, typeface tf)
 {
 	cv::Mat region = safe_region(img, box);
 	if (region.empty())
 		return false;
-	return extract_text_strict(out, region, tf, ctx);
+	return extract_text_strict(out, region, tf);
 }
 
 inline bool parse_height(u16 &out, const std::string &text)

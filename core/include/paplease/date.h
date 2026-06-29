@@ -18,16 +18,6 @@ struct date_t {
 			   year == other.year;
 	}
 
-	/*constexpr bool operator<(const date_t &other)
-	{
-		if (year != other.year)
-			return year < other.year;
-
-		if (month != other.month)
-			return month < other.month;
-
-		return day < other.day;
-	}*/
 	constexpr bool empty() const noexcept
 	{
 		return day == 0 && month == 0 && year == 0;
