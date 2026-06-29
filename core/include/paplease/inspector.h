@@ -100,7 +100,7 @@ struct case_file {
 	std::set<doc_type> docs_seen;
 
 	// Structured
-	certificate_of_vaccination_data::vaccination_row vaccines[3];
+	certificate_of_vaccination_data::vaccination_row vaccines[MAX_VACCINATIONS];
 	int vaccine_count = 0;
 	std::optional<country> nationality;
 	std::optional<int> booth_weight_kg; // will always have a value when there is an entrant

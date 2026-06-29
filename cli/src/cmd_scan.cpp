@@ -22,6 +22,3 @@ int cmd_scan(const std::string &image_path)
 
 	return 0;
 }
-
-
-

@@ -61,6 +61,8 @@ struct access_permit_data {
 	date_t expiration;
 };
 
+static constexpr int MAX_VACCINATIONS = 3;
+
 struct certificate_of_vaccination_data {
 	struct vaccination_row {
 		date_t expiration_date;
@@ -68,7 +70,7 @@ struct certificate_of_vaccination_data {
 	};
 	std::string name;
 	std::string passport_number;
-	vaccination_row vaccinations[3]; // up to 3 vaccines
+	vaccination_row vaccinations[MAX_VACCINATIONS];
 };
 
 struct diplomatic_authorization_data {
