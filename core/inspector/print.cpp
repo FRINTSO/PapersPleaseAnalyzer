@@ -2,8 +2,6 @@
 
 #include <paplease/documents.h>
 
-static constexpr int MAX_VACCINATIONS = 3;
-
 // === DOCUMENT PRINTING ===
 
 void print_passport(const passport_data &data)
